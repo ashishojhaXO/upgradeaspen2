@@ -1,0 +1,13 @@
+<div class="tag-wrap">
+  <div class="form-group" [ngClass]="tagVisible ? '' : 'hidden'">
+    <tag-input [(ngModel)]='inputValues' [inputClass]=tagDisable [removable]=removableData [editable]=editableData
+      [clearOnBlur]='true' [placeholder]=placeHolder [secondaryPlaceholder]=secondaryPlaceHolder [disable]=disableData
+      [hideForm]=hideFormData >
+      <tag-input-dropdown [showDropdownIfEmpty]="true" [autocompleteItems]=tagDropDownValues >
+      </tag-input-dropdown>
+    </tag-input>
+    <div class="valid-msg">
+      Required Field
+    </div>
+  </div>
+</div>

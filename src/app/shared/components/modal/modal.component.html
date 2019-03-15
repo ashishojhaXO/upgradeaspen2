@@ -1,0 +1,43 @@
+
+<div *ngIf="isModalShown" [config]="{ show: true,backdrop:true, ignoreBackdropClick: true }" (onHidden)="onHidden()" bsModal #autoShownModal="bs-modal"
+     class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div  *ngIf="configuration.isHeader" class="modal-header">
+        <h4 id="dialog-auto-name" class="modal-title pull-left">{{ title }}</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+          <div *ngIf="inHerit">
+              <button  type="button" id="" class="btn disabled">Add</button>
+              <button *ngIf="gridData.options.isDeleteOption" type="button" id="remove-parameter" class="btn disabled" (click)="handleRemove($event)">Remove</button>
+          </div>
+          <div *ngIf="!inHerit">
+            <button *ngIf="gridData.options.isAddRow" type="button" id="add-parameter" class="btn">Add</button>
+            <button *ngIf="gridData.options.isDeleteOption" type="button" id="remove-parameter" class="btn disabled" (click)="handleRemove($event)">Remove</button>
+          </div>
+          <div class="clearfix"></div>
+          <div *ngIf="isDataAvailable">
+            <app-data-table-popup
+              (filterValues)="refreshData($event)"
+              [id]="gridId2"
+              [data]="gridData">
+            </app-data-table-popup>
+          </div>
+          <div class="page-header" *ngIf="!isDataAvailable">
+            <app-custom-spinner class="page-spinner" ></app-custom-spinner>
+          </div>
+          <div class="clearfix"></div>
+          <button  type="button" class="btn pull-right" (click)="saveModal()">SAVE</button>
+          <button  type="button" class="btn pull-right" (click)="hideModal()" style="margin-right:10px">Close</button>
+          <p [ngClass]="errorVisible?'':'hidden'" class="pull-right alert alert-danger">{{errorMessage}}</p>
+          <div class="clearfix"></div>
+      </div>
+
+    </div>
+  </div>
+</div>

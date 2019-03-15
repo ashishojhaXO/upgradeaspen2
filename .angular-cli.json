@@ -1,0 +1,107 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "project": {
+    "name": "user-management"
+  },
+  "apps": [
+    {
+      "root": "src",
+      "outDir": "build",
+      "assets": [
+        "assets",
+        "favicon.ico"
+      ],
+      "index": "index.html",
+      "main": "main.ts",
+      "polyfills": "polyfills.ts",
+      "test": "test.ts",
+      "tsconfig": "tsconfig.app.json",
+      "testTsconfig": "tsconfig.spec.json",
+      "prefix": "app",
+      "styles": [
+          "../node_modules/font-awesome/css/font-awesome.css",
+          "../node_modules/simple-line-icons/css/simple-line-icons.css",
+          "../node_modules/bootstrap/dist/css/bootstrap.css",
+          "../node_modules/ng2-toastr/ng2-toastr.css",
+          "../node_modules/datatables.net-dt/css/jquery.dataTables.css",
+          "../node_modules/datatables.net-bs/css/dataTables.bootstrap.css",
+          "../node_modules/datatables.net-select-bs/css/select.bootstrap.min.css",
+          "../node_modules/datatables.net-buttons-dt/css/buttons.dataTables.min.css",
+          "../node_modules/dragula/dist/dragula.css",
+          "../node_modules/ng2-dnd/bundles/style.css",
+          "../node_modules/ng2-slim-loading-bar/style.css",
+          "../node_modules/primeng/resources/themes/omega/theme.css",
+          "../node_modules/primeng/resources/primeng.min.css",
+          "../node_modules/select2/dist/css/select2.css",
+          "styles/datatables.css",
+          "styles/fixedHeader.dataTables.min.css",
+          "styles/app.scss",
+          "../node_modules/angular-tree-component/dist/angular-tree-component.css"
+      ],
+      "scripts": [
+          "../node_modules/chart.js/dist/Chart.js",
+          "../node_modules/jquery/dist/jquery.min.js",
+          "../node_modules/select2/dist/js/select2.full.js",
+          "../node_modules/bootstrap/dist/js/bootstrap.js",
+          "../node_modules/popper.js/dist/umd/popper.min.js",
+          "../node_modules/datatables.net",
+          "scripts/jquery.dataTables.min.js",
+          "../node_modules/datatables.net-bs/js/dataTables.bootstrap.js",
+          "../node_modules/datatables.net-select/js/dataTables.select.min.js",
+          "../node_modules/datatables.net-buttons/js/dataTables.buttons.min.js",
+          "../node_modules/datatables.net-buttons/js/buttons.flash.min.js",
+          "../node_modules/datatables.net-buttons/js/buttons.print.min.js",
+          "../node_modules/datatables.net-buttons/js/buttons.html5.min.js",
+          "../node_modules/datatables.net-buttons/js/buttons.colVis.min.js",
+          "../node_modules/datatables.net-rowreorder/js/dataTables.rowReorder.min.js",
+          "scripts/dataTables.fixedHeader.min.js",
+          "scripts/data-table/sorting.js",
+          "scripts/treegrid/jquery.jqgrid.src.js",
+          "../node_modules/dragula/dist/dragula.js",
+          "../node_modules/jspdf/dist/jspdf.min.js",
+          "../node_modules/mermaid/dist/mermaid.js",
+          "../node_modules/mermaid/dist/mermaid.core.js"
+
+      ],
+      "environmentSource": "environments/environment.ts",
+      "environments": {
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
+    }
+  ],
+  "e2e": {
+    "protractor": {
+      "config": "./protractor.conf.js"
+    }
+  },
+  "lint": [
+    {
+      "project": "src/tsconfig.app.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "src/tsconfig.spec.json",
+      "exclude": "**/node_modules/**"
+    },
+    {
+      "project": "e2e/tsconfig.e2e.json",
+      "exclude": "**/node_modules/**"
+    }
+  ],
+  "test": {
+    "karma": {
+      "config": "./karma.conf.js"
+    }
+  },
+  "defaults": {
+    "styleExt": "css",
+    "class": {
+      "spec": false
+    },
+    "component": {},
+    "serve" : {
+      "port" : 4300
+    }
+  }
+}

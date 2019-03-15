@@ -1,0 +1,11 @@
+<div>
+    <div class="header" style="background-color: #44505B">
+        <div class="logo">
+            <img src="../../assets/images/f7_logo.png" style="width: 115px;">
+        </div>
+    </div>
+</div>
+<div [hidden]="!error ? 'hidden' : ''" style="color:red; margin: 20px">
+    <span>{{error}}</span>
+</div>
+<app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>

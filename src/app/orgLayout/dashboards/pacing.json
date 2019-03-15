@@ -1,0 +1,25 @@
+{
+  "filterProps" : [
+    {
+      "f7Name" : "type",
+      "label" : "View",
+      "values" : "Monthly",
+      "isMultiSelect" : false,
+      "dependentOn" : [],
+      "type" : "toggle",
+      "toggleOptions" : ["Monthly","Daily"]
+    },
+    {
+      "f7Name" : "period",
+      "label" : "Period",
+      "values" : [{
+        "id": '2018-02-01",
+        "itemName" : "Feb 2018"
+      }],
+      "isMultiSelect" : false,
+      "dependentOn" : [],
+      "type" : "dropdown"
+    }
+  ]
+}
+

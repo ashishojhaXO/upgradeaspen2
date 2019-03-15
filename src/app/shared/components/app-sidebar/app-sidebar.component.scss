@@ -1,0 +1,61 @@
+.sidebar {
+  float: left;
+  background-color: #3F4649;
+  border-right: 6px solid #0777bc;
+  height: 123vh;
+  width: 17%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 4px;
+  -webkit-transition-property: width; /* Safari */
+  -webkit-transition-duration: 300ms; /* Safari */
+  -webkit-transition-delay: 0s; /* Safari */
+  transition-property: width;
+  transition-duration: 300ms;
+  transition-delay: 0s;
+  //overflow: scroll;
+}
+
+.sidebar.closed {
+  float: left;
+  background-color: #3F4649;
+  border-right: 6px solid #0777bc;
+  height: 123vh;
+  width: 0%;
+  -webkit-transition-property: width; /* Safari */
+  -webkit-transition-duration: 300ms; /* Safari */
+  -webkit-transition-delay: 0s; /* Safari */
+  transition-property: width;
+  transition-duration: 300ms;
+  transition-delay: 0s;
+}
+
+.sidebar-toggle {
+  color: white;
+  font-size: 20px;
+  float: right;
+  margin: 0px 0px 5px 5px;
+  width: 30px;
+  border: 6px solid #0777bc;
+  background-color: #0777bc;
+  cursor: pointer;
+  .fa {
+    position: relative;
+    left: 6px;
+  }
+}
+
+.sidebar-toggle.collapsed {
+  color: white;
+  font-size: 20px;
+  float: right;
+  margin: 0px 0px 5px 5px;
+  width: 30px;
+  border: 6px solid #0777bc;
+  background-color: #0777bc;
+  cursor: pointer;
+  position: absolute;
+  left: 10px;
+}
+
+

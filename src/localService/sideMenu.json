@@ -1,0 +1,99 @@
+{
+  "context": {
+    "client": {
+      "name": "Organisation",
+      "code": "f7admin"
+    },
+    "version": {
+      "minor": 0,
+      "major": 1
+    }
+  },
+  "admin":[
+    {
+      "index":1,
+      "name":"client_onboarding",
+      "title":"Client OnBoarding",
+      "selected": false,
+      "css":"fa fa-fw fa-dashboard",
+      "submenu":[
+        {
+          "index":1,
+          "name":"partnerType",
+          "urllink":"partnerType",
+          "title":"Partner Type",
+          "selected": false
+        },
+        {
+          "index":2,
+          "name":"Organization",
+          "urllink":"",
+          "title":"Organization",
+          "selected": false
+        },
+        {
+          "index":3,
+          "name":"OrganizationDetails",
+          "urllink":"",
+          "title":"Organization Details",
+          "selected": false
+        }
+      ]
+    },
+    {
+      "index":2,
+      "name":"organization",
+      "title":"Organization",
+      "selected": false,
+      "css":"fa fa-th-list",
+      "submenu":[
+        {
+          "index":1,
+          "name":"editOrganization",
+          "urllink":"editOrganization",
+          "title":"Edit Organization",
+          "selected": false
+        }
+      ]
+    },
+    {
+      "index":3,
+      "name":"GlobalOperations",
+      "title":"Global Operations",
+      "selected": false,
+      "css":"fa fa-th-list",
+      "submenu":[
+        {
+          "index":1,
+          "name":"adminUser",
+          "urllink":"adminUser",
+          "title":"Add User",
+          "selected": false
+        },
+        {
+          "index":2,
+          "name":"globalAdminUsers",
+          "urllink":"",
+          "title":"Global Admin Users",
+          "selected": false
+        }
+      ]
+    },
+    {
+      "index":4,
+      "name":"NewMenu",
+      "title":"New Menu",
+      "selected": false,
+      "css":"fa fa-th-list",
+      "submenu":[
+        {
+          "index":1,
+          "name":"NewSubMenu",
+          "urllink":"",
+          "title":"NewSubMenu",
+          "selected": false
+        }
+      ]
+    }
+  ]
+}

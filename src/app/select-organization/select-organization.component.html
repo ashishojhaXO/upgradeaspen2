@@ -1,0 +1,88 @@
+<app-custom-spinner class="page-spinner" [ngClass]="appSpinner?'page-layout-spinner':'hidden'" style="z-index:9999999"></app-custom-spinner>
+<div class="modal fade in select-organization-wrap" (onShown)="onShown()" id="myModal1" role="dialog" bsModal #autoShownModal="bs-modal" style="display: block">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <form>
+        <div class="modal-header">
+          <h4 class="modal-title">Select Organization</h4>
+        </div>
+        <div class="container">
+          <div class="row">
+            <div class="modal-body">
+              <p class="modal-text">You have access to multiple organizations. Select the organization you want to view from
+                the list below.</p>
+              <div class="selectorg-dropdown">
+                <table class="table reset-password">
+                  <tbody>
+                    <tr>
+                      <td colspan="2">&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td >
+                        <div style="width:220px">
+                          <ng-multiselect-dropdown
+                            name="selectOrganization"
+                            id="selectOrganization"
+                            [placeholder]="'Select Organization'"
+                            [data]="organizations"
+                            [(ngModel)]="selectedOrganization"
+                            (onSelect)="onItemSelect($event)"
+                            [settings]="dropDownSettings"
+                            (onDeSelect)="onItemDeSelect($event)"
+                            >
+                          </ng-multiselect-dropdown>
+                        </div>
+                      </td>
+                      <td>
+                        <div style="width:170px">
+                          <ng-multiselect-dropdown
+                            name="selectCountry"
+                            id="selectCountry"
+                            [placeholder]="'Select Country'"
+                            [data]="countries"
+                            [(ngModel)]="selectedCountry"
+                            (onSelect)="onCountrySelect($event)"
+                            [settings]="dropDownSettings"
+                            [disabled]="isCountryDisabled"
+                            >
+                          </ng-multiselect-dropdown>
+                        </div>
+                      </td>
+                      <td>
+
+                        <div class="pull-right">
+                          <label class="control control--checkbox">
+                            <input type="checkbox" id="defaultOrganization" [checked]="onDefaultOrgSelector" (change)="onDefaultOrgChanged($event)" [disabled]="isCheckboxDisabled">
+                            <div class="control__indicator"></div>
+                            <span class="checkbox-lable-wrap">Make default organization</span>
+                          </label>
+
+                        </div>
+                      </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="pull-left">
+            <label class="control control--checkbox">
+              <input type="checkbox" id="showmeAgain" [checked]="showOrgSelection" (change)="onShowOrgSelectionChanged($event)" [disabled]="isCheckboxDisabled">
+              <div class="control__indicator"></div>
+              <span class="checkbox-lable-wrap">Don't show me this again</span>
+            </label>
+          </div>
+          <button type="button" value="cancel" class="inaction-btn" data-dismiss="modal" id="cancel" (click)=resetModel()>CANCEL</button>
+          <button type="button" class="action-btn" id="submit" (click)=submit()>OK</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>

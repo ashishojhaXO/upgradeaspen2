@@ -1,0 +1,12 @@
+<div class="accordion-heading" (click) = "handlePanelClick($event)">
+  <h5 class="accordion-title">
+    <i class='glyphicon accordion-heading-li' [class.glyphicon-triangle-top] = "!isPanelOpen" [class.glyphicon-triangle-bottom] = "isPanelOpen" >
+    </i>
+    {{title}}
+  </h5>
+</div>
+<div class="accordion-collapse" [class.collapse]='!isPanelOpen'>
+  <div class="accordion-body">
+    <ng-content></ng-content>
+  </div>
+</div>

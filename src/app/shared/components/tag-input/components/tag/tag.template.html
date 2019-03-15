@@ -1,0 +1,78 @@
+<div (click)="select($event)"
+     (dblclick)="toggleEditMode()"
+     (mousedown)="rippleState='clicked'"
+     (mouseup)="rippleState='none'"
+     [ngSwitch]="!!template"
+     [class.disabled]="disabled"
+     [attr.tabindex]="-1"
+     [attr.aria-label]="getDisplayValue(model)">
+
+    <div *ngSwitchCase="true" [attr.contenteditable]="editing" >
+        <!-- CUSTOM TEMPLATE -->
+        <ng-template
+            [ngOutletContext]="{ item: model, index: index }"
+            [ngTemplateOutlet]="template">
+        </ng-template>
+    </div>
+
+    <div *ngSwitchCase="false" class="tag-wrapper">
+        <!-- TAG NAME -->
+        <div [attr.contenteditable]="false"
+             [attr.title]="getDisplayValue(model)"
+             class="tag__text inline"
+             spellcheck="false"
+             (keydown.enter)="disableEditMode($event)"
+             (keydown.escape)="disableEditMode($event)"
+             (click)="editing ? $event.stopPropagation() : undefined"
+             (blur)="onBlurred($event)" *ngIf="!editing && (model.category !== 'InputFields')">
+            {{ getDisplayValue(model) }}
+        </div>
+        <!--<div [attr.contenteditable]="true"-->
+             <!--[attr.title]="getDisplayValue(model)"-->
+             <!--class="tag__text inline"-->
+             <!--spellcheck="false"-->
+             <!--(keydown.enter)="disableEditMode($event)"-->
+             <!--(keydown.escape)="disableEditMode($event)"-->
+             <!--(click)="true ? $event.stopPropagation() : undefined"-->
+             <!--(blur)="onBlurredEdit($event)" *ngIf="model.header === 'input'" style="background: whitesmoke;color: black" >-->
+            <!--{{ getDisplayValue(model) }}-->
+        <!--</div>-->
+        <div *ngIf="model.category === 'InputFields' && model.display ==='Text' " [attr.contenteditable]="true" >
+            <input #input type="text" style="height:23px;width:100px;color: black; padding-top: 4px;padding-left: 0px;padding-right: 0px"
+                   [attr.contenteditable]="true"
+                   [attr.title]="getDisplayValue(model)"
+                   class="tag__text inline"
+                   spellcheck="false"
+                   (keydown.enter)="handleKeyBoardEvent($event)"
+                   (keydown.escape)="disableEditMode($event)"
+                   (click)="true ? $event.stopPropagation() : undefined"
+                   (blur)="onBlurred($event)" [(ngModel)]="model.value" placeholder="Text">
+        </div>
+
+
+        <div *ngIf="model.category === 'InputFields'  && model.display ==='Date' " [attr.contenteditable]="true">
+            <p-calendar [showIcon]="true"
+                        [(ngModel)]="model.value"
+                        dateFormat="mm/dd/yy"
+                        [inputStyle]="{'height':'20px','width':'100px', 'padding-top':'6px','margin-right':'4px'}"
+                        [style]="{'width':'127px'}"
+                        readonlyInput="true"
+                        appendTo="body"
+                        dataType="string">
+            </p-calendar>
+        </div>
+
+        <!-- 'X' BUTTON -->
+        <delete-icon
+            aria-label="Remove tag"
+            role="button"
+            (click)="remove($event)"
+            *ngIf="isDeleteIconVisible()" style="vertical-align: top;width: 8px;height: 8px">
+        </delete-icon>
+    </div>
+</div>
+
+<tag-ripple [state]="rippleState"
+            [attr.tabindex]="-1"
+            *ngIf="isRippleVisible">
+</tag-ripple>

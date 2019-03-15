@@ -1,0 +1,10 @@
+<tree-root *ngIf="nodes" [focused]="true" #tree [nodes]="nodes" (initialized)="onTreeLoad($event)" [options]="options">
+  <ng-template #treeNodeTemplate let-node let-index="index">
+    <div *ngIf="node.data.children ; else templateList">
+      <span style="text-transform: capitalize"><b>{{ node.data.name }}</b></span>
+    </div>
+    <ng-template #templateList>
+      <span id={{node.data.id}} (click)="onEvent($event)">{{ node.data.name }}</span>
+    </ng-template>
+  </ng-template>
+</tree-root>

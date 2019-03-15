@@ -1,0 +1,38 @@
+{
+  "filterProps": [
+    {
+      "f7Name": "dimensions",
+      "label": "Dimensions",
+      "values": [],
+      "isMultiSelect": false,
+      "dependentOn": [
+      ],
+      "includeCustom": true,
+      "isMultipleCustomType": true,
+      "isTag": false,
+      "placeHolderText": "Name",
+      "placeHolderValue": "Text",
+      "apiRequestUrl": "",
+      "apiRequestType": "",
+      "apiRequestPayload":  [],
+      "type": "popupButton"
+    },
+    {
+      "f7Name": "metrics",
+      "label": "Metrics",
+      "values": [],
+      "isMultiSelect": false,
+      "dependentOn": [
+      ],
+      "includeCustom": true,
+      "isMultipleCustomType": true,
+      "isTag": false,
+      "placeHolderText": "Name",
+      "placeHolderValue": "Text",
+      "apiRequestUrl": "",
+      "apiRequestType": "",
+      "apiRequestPayload": {},
+      "type": "popupButton"
+    }
+  ]
+}

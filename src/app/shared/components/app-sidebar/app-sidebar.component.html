@@ -1,0 +1,18 @@
+<div class="sidebar">
+  <div class="sidebar-toggle" (click)="toggleSideBar()">
+    <i class="fa fa-caret-left" aria-hidden="true"></i>
+  </div>
+  <div class="sidebar-form">
+    <div>
+      <ng-content select=".sidebar-title"></ng-content>
+    </div>
+    <div class="sidebar-sub-title">
+      <ng-content select=".sidebar-sub-title"></ng-content>
+    </div>
+    <div class="sidebar-content">
+      <div>
+        <ng-content select=".sidebar-form-control"></ng-content>
+      </div>
+    </div>
+  </div>
+</div>

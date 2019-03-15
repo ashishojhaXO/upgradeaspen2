@@ -1,0 +1,23 @@
+<div class="dropdown-wrap">
+  <div class="form-group">
+    <input type="hidden" name="select" id={{ddID}} value={{onSelected}} attr.data-index="{{oldData}}">
+    <ng-multiselect-dropdown
+                         class = "form-fields"
+                         [ngClass] = "ddClass"
+                         id={{ddID}}
+                         [name]="itemName"
+                         [placeholder]="itemPlaceholder"
+                         [data]="data"
+                         [disabled]="disabled"
+                         (onSelect)="onSelect($event)"
+                         [(ngModel)]="selectedData"
+                         (onSelectAll)="onSelectAll($event)"
+                         (onDeSelectAll)="onDeSelectAll($event)"
+                         (onDeSelect)="onDeselect($event)"
+                         [settings]="dropDownSettings">
+    </ng-multiselect-dropdown>
+    <div  class="valid-msg" >
+      Reuired Field
+    </div>
+  </div>
+</div>

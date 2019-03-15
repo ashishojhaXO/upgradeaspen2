@@ -1,0 +1,84 @@
+{
+	"email": "fusionseven.io+admin9@gmail.com",
+	"name": "f7 admin2",
+	"password": "tes",
+	"status": "active",
+	"roles": ["5af82878ace04f0eb284a4f5"],
+	"type": "user",
+	"contex": {
+		"version": {
+			"major": 1,
+			"minor": 0,
+			"_id": "5a7de401d4b8b341a30d3e9d"
+		},
+		"type": "",
+		"created_on": "05/09/2017",
+		"clien": {
+			"code": "dcci",
+			"_id": "5a7de401d4b8b341a30d3e9c"
+		},
+		"partner": {
+			"code": ["face"],
+			"type": ["prov"]
+		},
+		"country": {
+			"code": "us",
+			"_id": "5a7de401d4b8b341a30d3e9b"
+		},
+		"_id": "5a7de401d4b8b341a30d3e9a",
+		"providers": [],
+		"partners": []
+	},
+	"address": {
+		"type": "",
+		"address": "150 Bovet Road",
+		"additional": "street2",
+		"zipCode": "92705",
+		"city": "San Mateo",
+		"state": "CA",
+		"country": "US",
+		"phone": "1300-344"
+	}
+}
+
+
+
+
+
+{
+	"email": "fusionseven.io+admin2@gmail.com",
+	"name": "f7 admin2",
+	"password": "test",
+	"status": "active",
+	"roles": ["5af82878ace04f0eb284a4f5"],
+	"type": "user",
+	"context": {
+		"version": {
+			"major": 1,
+			"minor": 0,
+			"_id": "5a7de401d4b8b341a30d3e9d"
+		},
+		"type": "",
+		"created_on": "05/09/2017",
+		"client": {
+			"code": "dcci",
+			"_id": "5a7de401d4b8b341a30d3e9c"
+		},
+		"partner": {
+			"code": ["face"
+
+			],
+			"type": ["prov"
+
+			]
+		},
+		"country": {
+			"code": "us",
+			"_id": "5a7de401d4b8b341a30d3e9b"
+
+		},
+		"_id": "5a7de401d4b8b341a30d3e9a",
+		"providers": [],
+		"partners": []
+	}
+}

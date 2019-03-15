@@ -1,0 +1,13 @@
+<label class="switch">
+  <input #checkBoxSwitch
+         id="checkBoxSwitch"
+         type="checkbox"
+         [checked]="value"
+         (change)="handleOnChange(checkBoxSwitch.checked)"/>
+  <span class="switch-checkbox slider round " [ngClass]="value ? 'a-tive' : 'in-active'">
+    <span class="yes-no-wrap">
+      <span class="yes-wrap" style="width: 45%">Yes</span>
+      <span class="no-wrap" style="width: 45%">No</span>
+    </span>
+  </span>
+</label>

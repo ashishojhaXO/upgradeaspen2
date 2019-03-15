@@ -1,0 +1,20 @@
+<div>
+    <tag-input
+      [ngModel]="data"
+      [identifyBy]="settings.identifyBy"
+      [displayBy]="settings.displayBy"
+      [editable]="settings.isEditable"
+      [dragZone]="dragZone"
+      [hideForm]="settings.hideInputBox"
+      [theme]="'custom-tag-theme'"
+      (onAdd)="onAdd($event)"
+      (onRemove)="onRemove($event)"
+      (onTagEdited)="onEdit($event)">
+    </tag-input>
+
+  <!--<tag-input [ngModel]="['@item']"-->
+             <!--[clearOnBlur]="true">-->
+    <!--<tag-input-dropdown [focusFirstElement]="true" [autocompleteItems]="autocompleteItems">-->
+    <!--</tag-input-dropdown>-->
+  <!--</tag-input>-->
+</div>

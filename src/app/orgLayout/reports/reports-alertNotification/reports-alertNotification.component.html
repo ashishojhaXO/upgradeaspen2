@@ -1,0 +1,80 @@
+<div class="alertDashboard">
+  <div><h3 class="title">ALERTS & NOTIFICATION DASHBOARD</h3>
+  </div>
+  <div>
+    <div style="float: left; width: 20%; display: inline-block; margin: 20px 0px">
+      <div class="alert-btn type-create" style="display: inline-block">
+        <a title="create" class="button btn btn-success" href="javscript:void(0)">CREATE NEW REPORT</a>
+      </div>
+    </div>
+    <div style="width: 80%; display: inline-block; margin: 20px 0px">
+      <div class="alert-btn type-create" style="display: inline-block; float: right; margin: 0px 5px">
+        <a title="create" class="button btn btn-success" href="javscript:void(0)">EDIT ALERT</a>
+      </div>
+      <div class="alert-btn type-create" style="display: inline-block; float: right; margin: 0px 5px">
+        <a title="create" class="button btn btn-success" href="javscript:void(0)">DELETE ALERT</a>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div style="width:60%; float: left; display: inline-block">
+      <app-charts [config]="chartConfig"></app-charts>
+    </div>
+    <div style="width:38%; display: inline-block">
+      <div class="alertscroll">
+        <div class="alertscrollcomp">
+          <p><span>Alert !</span>Impressions = 1 <<label style="text-transform: lowercase;">Threshold (100) on </label>Nov
+            2018</p>
+          <p><span>Alert !</span>Impressions = 1 <<label style="text-transform: lowercase;">Threshold (100) on </label>Nov
+            2018</p>
+          <p><span>Alert !</span>Impressions = 1 <<label style="text-transform: lowercase;">Threshold (100) on </label>Nov
+            2018</p>
+          <p><span>Alert !</span>Impressions = 1 <<label style="text-transform: lowercase;">Threshold (100) on </label>Nov
+            2018</p>
+          <p><span>Alert !</span>Impressions = 1 <<label style="text-transform: lowercase;">Threshold (100) on </label>Nov
+            2018</p>
+          <p><span>Alert !</span>Impressions = 1 <<label style="text-transform: lowercase;">Threshold (100) on </label>Nov
+            2018</p>
+          <p><span>Alert !</span>Impressions = 1 <<label style="text-transform: lowercase;">Threshold (100) on </label>Nov
+            2018</p>
+          <p><span>Alert !</span>Impressions = 1 <<label style="text-transform: lowercase;">Threshold (100) on </label>Nov
+            2018</p>
+          <p><span>Alert !</span>Impressions = 1 <<label style="text-transform: lowercase;">Threshold (100) on </label>Nov
+            2018</p>
+          <p><span>Alert !</span>Impressions = 1 <<label style="text-transform: lowercase;">Threshold (100) on </label>Nov
+            2018</p>
+          <p><span>Alert !</span>Impressions = 1 <<label style="text-transform: lowercase;">Threshold (100) on </label>Nov
+            2018</p>
+          <p><span>Alert !</span>Impressions = 1 <<label style="text-transform: lowercase;">Threshold (100) on </label>Nov
+            2018</p>
+          <p><span>Alert !</span>Impressions = 1 <<label style="text-transform: lowercase;">Threshold (100) on </label>Nov
+            2018</p>
+          <p><span>Alert !</span>Impressions = 1 <<label style="text-transform: lowercase;">Threshold (100) on </label>Nov
+            2018</p>
+          <p><span>Alert !</span>Impressions = 1 <<label style="text-transform: lowercase;">Threshold (100) on </label>Nov
+            2018</p>
+          <p><span>Alert !</span>Impressions = 1 <<label style="text-transform: lowercase;">Threshold (100) on </label>Nov
+            2018</p>
+          <p><span>Alert !</span>Impressions = 1 <<label style="text-transform: lowercase;">Threshold (100) on </label>Nov
+            2018</p>
+          <p><span>Alert !</span>Impressions = 1 <<label style="text-transform: lowercase;">Threshold (100) on </label>Nov
+            2018</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="gridOverflow" *ngIf="dataObject.isDataAvailable">
+        <app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height" [serverSide]="serverSide" [serviceMethod]="serviceMethod" [serviceURI]="serviceURI"></app-data-table1>
+      </div>
+      <div class="page-header" *ngIf="!dataObject.isDataAvailable">
+        <app-custom-spinner class="page-spinner"></app-custom-spinner>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+

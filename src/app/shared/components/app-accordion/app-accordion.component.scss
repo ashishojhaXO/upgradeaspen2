@@ -1,0 +1,20 @@
+$base-color: #3FA8F4;
+$btn-background: #fff;
+$btn-border: #ccc;
+$btn-text-color: #333;
+$btn-arrow: #333;
+
+.accordion-heading {
+  background-color: #333333;
+  display: -webkit-flex;
+  display: flex;
+  align-items: center;
+  height: 37px;
+  cursor: pointer;
+}
+
+.accordion-heading-li {
+  margin-left: 10px;
+  margin-right: 10px;
+  cursor: pointer;
+}

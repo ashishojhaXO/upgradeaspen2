@@ -1,0 +1,33 @@
+<div class="col-lg-2 col-md-2 col-sm-3 fusion-side summary-side">
+  <div class="sidebar content-box" style="display: block;">
+    <nav class="navbar navbar-default">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-2"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+      </div>
+      <div class="collapse navbar-collapse" id="navbar-collapse-2">
+        <div class="sidebar-menulist clearfix">
+          <form class="form-inline my-2 my-lg-0" *ngIf="activeMenu=='Organizations'">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <label class="search-input"><i class="fa fa-search" aria-hidden="true"></i></label>
+          </form>
+          <ul class="nav navbar-nav">
+          <ng-template ngFor let-mm [ngForOf]="sideMenu" >
+            <ng-template ngFor let-bmm [ngForOf]="mm.submenu" let-j="index" *ngIf="mm.name!='profile'">
+              <ng-template ngFor let-smm [ngForOf]="bmm.sideBar" let-k="index">
+                <li *ngIf="activeMenu==bmm.name"><a routerLink="/{{smm.url}}" routerLinkActive="organizations" [routerLinkActiveOptions]="{exact: true}" [queryParams]="smm.queryValue"><span class="sitemap-menu"><i class="{{smm.iconCss}}" aria-hidden="true"></i></span> {{smm.title}}</a>
+                  <ul class="sidebar-dropdown" *ngIf="smm.clientList">
+                    <ng-template ngFor let-ssmm [ngForOf]="smm.subsidebar" let-l="index">
+                    <li><a routerLink="/{{ssmm.url}}" routerLinkActive="organizations" title="{{ssmm.title}}">{{ssmm.title}} <span class="arrow-left {{ssmm.activeicon}}"><i class="fa fa-caret-left" aria-hidden="true"></i></span></a></li>
+                    </ng-template>
+                  </ul>
+                </li>
+
+              </ng-template>
+            </ng-template>
+          </ng-template>
+        </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>

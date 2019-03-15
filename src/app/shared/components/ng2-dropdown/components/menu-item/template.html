@@ -1,0 +1,19 @@
+<div *ngIf="value.header !== ''" class="ng2-menu-item-header ">
+        <!--<span class="ng2-menu-divider"></span>-->
+        {{value.header }}
+</div>
+
+<div class='ng2-menu-item'
+     role="button"
+     tabindex="0"
+     [class.ng2-menu-item--selected]="isSelected"
+     (keydown.enter)="selectAndEnter()"
+     (click)="click()"
+     (mouseover)="select()" *ngIf="!value.isNonFunctionalField">
+        <!--<ng-content></ng-content>-->
+        {{value.display}}
+</div>
+
+<div class='ng2-menu-item-grayed' *ngIf="value.isNonFunctionalField">
+        {{value.display}}
+</div>

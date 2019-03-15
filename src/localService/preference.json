@@ -1,0 +1,73 @@
+{
+  "context": {
+    "client": {
+      "name": "Organization",
+      "code": "f7admin"
+    },
+    "version": {
+      "minor": 0,
+      "major": 1
+    }
+  },
+  "admin": [
+    {
+      "index": 4,
+      "name": "dashboards",
+      "title": "Dashboards",
+      "selected": false,
+      "id": "dashboards",
+      "url":"app/dashboards",
+      "submenu": [
+        {
+          "index": 1,
+          "name": "Pacing",
+          "title": "Pacing",
+          "selected": false,
+          "id": "pacing",
+          "url": "app/dashboards/pacing"
+        },
+        {
+          "index": 2,
+          "name": "Spend",
+          "title": "Spend",
+          "selected": false,
+          "id": "spend",
+          "url": "app/dashboards/spend"
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "name": "orders",
+      "title": "Orders",
+      "selected": false,
+      "id": "orders",
+      "url":"app/orders"
+    },
+    {
+      "index": 7,
+      "name": "payments",
+      "title": "Payments",
+      "selected": false,
+      "id": "payments",
+      "url":"app/payments"
+    },
+    {
+      "index": 8,
+      "name": "admin",
+      "title": "Admin",
+      "selected": false,
+      "id": "admin",
+      "url":"app/admin/usermanagement",
+      "submenu": [
+        {
+          "index": 1,
+          "name": "usermanagement",
+          "title": "User Management",
+          "id": "usermanagement",
+          "url": "app/admin/usermanagement"
+        }
+      ]
+    }
+  ]
+}

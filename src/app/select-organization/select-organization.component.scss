@@ -1,0 +1,64 @@
+@import "../../styles/variables";
+.select-organization-wrap{
+  z-index: 999999;
+  .modal-dialog{
+    margin-top: 195px;
+    width:637px;
+    margin-bottom:195px;
+    .modal-content{
+      box-shadow: none;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+    }
+    .modal-header {
+      height: 58px;
+       h4 {
+        line-height: initial;
+    }
+    }
+  }
+  .selectorg-dropdown{
+    width: 100% !important;
+    margin: 0 auto;
+  }
+  .modal-body{
+    padding: 25px 35px;
+    min-height: 184px;
+    .modal-text{
+      font-size: 12px;
+      font-family: $tertiary-font;
+    }
+  }
+  label.control.control--checkbox {
+      color: #b0b0b0;
+      font-size: 12px;
+  }
+  .modal-footer{
+    padding: 25px 35px 25px;
+    background: #fcfcfc;
+    label.control.control--checkbox {
+      color: #646464;
+    }
+    .modal-body {
+      min-height: 192px;
+  }
+  }
+  .multiselect-dropdown .btn {
+    height: 44px;
+    line-height: 27px;
+    font-size: 16px;
+    font-family: "Poppins", sans-serif;
+}
+button {
+  font-family: "Raleway", sans-serif;
+  font-size: 12px;
+}
+button.inaction-btn {
+  padding: 4px 2px;
+  width: 66px;
+}
+button.action-btn {
+  padding: 4px 2px;
+  width: 58px;
+}
+}

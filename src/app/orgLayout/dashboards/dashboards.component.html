@@ -1,0 +1,79 @@
+<app-sidebar1>
+  <div class="sidebar-title">
+    <h3>FILTERS</h3>
+  </div>
+  <div class="sidebar-form-control">
+    <div *ngFor="let filter of dashboardConfig.filterProps; let i = index;">
+      <div class="sidebar-form-control" *ngIf="filter.type === 'toggle'" >
+        <p class="title">{{filter.label}}</p>
+        <div class="sidebar-container">
+          <label (click)="setActive(filter,toggleOption)" *ngFor="let toggleOption of filter.toggleOptions; let j = index;" [class]="filter.values === toggleOption ? 'active' : ''">
+            {{toggleOption}}
+          </label>
+        </div>
+      </div>
+      <div class="sidebar-form-control" *ngIf="filter.type === 'dropdown'" >
+        <p class="title">{{filter.label}}</p>
+        <app-wrapper-multiselect-drop-down (valueUpdate)="updateFilterConfig($event)" [filterConfig]="filter" [dependentConfig]="getDependentConfig(filter.dependentOn)"
+        ></app-wrapper-multiselect-drop-down>
+      </div>
+      <div class="sidebar-form-control" *ngIf="filter.type === 'popupButton'" >
+        <p class="title">{{filter.label}}</p>
+        <app-popup-button [popupDataAction]="this" (valueUpdate)="updateFilterConfig($event)" [filterConfig]="filter" [dependentConfig]="getDependentConfig(filter.dependentOn)">
+        </app-popup-button>
+      </div>
+      <div class="sidebar-form-control" *ngIf="filter.type === 'text'" >
+        <p class="title">{{filter.label}}</p>
+        <input type="text" style="position: relative;
+                      width: 100%;
+                      padding: 0 10px;
+                      color: #333;
+                      background: #f7f7f7;
+                      border-radius: 3px;
+                      border: 1px solid #f7f7f7;
+                      text-align: left;
+                      line-height: 34px;">
+      </div>
+    </div>
+  </div>
+  <div class="sidebar-form-control">
+    <button style="text-align: center;background-color: #666;color: #fff;border: 1px solid #666;width: 98%;height: 30px;border-radius: 4px;position: relative;
+    top: 20px;" (click)="search()">SEARCH</button>
+  </div>
+</app-sidebar1>
+<div class="app-container">
+  <div style="height: 100px; overflow: auto;">
+    <div style="float: left; display: inline; width:20%">
+      <p class="dashboardTitle">{{(dashboardType ? dashboardType.toUpperCase() : '') + ' ' + (selectedView ? selectedView.toUpperCase() : '')}}</p>
+    </div>
+    <div class="breadcrumbsection">
+      <div class="breadcrumbinner">
+        <h4>Filters selected :</h4>
+
+        <div style="display: inline-block" *ngFor="let filter of dashboardConfig.filterProps; let i = index;">
+          <div class="breadcrumbList">
+              <span class="breadcrumblabel">{{filter.label}}:
+                <span class="breadcrumbValue" [innerHTML]="filter.f7Name === 'period' ? (filter.values.length ? filter.values[0].itemName : '') : ( isArray(filter.values) ? ( filter.values.length ? getSelectedValues(filter.values) : 'ALL' ) : ( filter.values ? filter.values : 'ALL' ))"></span>
+              </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="chartConfig.data.length">
+      <app-charts [config]="chartConfig"></app-charts>
+  </div>
+  <div class="page-header" style="padding-top: 1px" *ngIf="!chartConfig.data.length">
+    <div style="height: 200px;background-color: #ffff; width: 100%;margin-top: 60px;padding: 17% 42%;">There is no data to plot.</div>
+  </div>
+  <div>
+    <div class="gridOverflow" *ngIf="dataObject.isDataAvailable">
+      <app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height"></app-data-table1>
+    </div>
+    <div class="page-header" *ngIf="!dataObject.isDataAvailable">
+      <div style="height: 200px;background-color: #ffff; width: 100%;margin-top: 60px;padding: 17% 42%;">There is no data to display.</div>
+    </div>
+  </div>
+</div>
+<app-custom-spinner class="page-spinner" *ngIf="showSpinner"></app-custom-spinner>
+

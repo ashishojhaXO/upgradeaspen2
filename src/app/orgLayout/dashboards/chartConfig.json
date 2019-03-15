@@ -1,0 +1,18 @@
+{
+  "title": "",
+  "type": "column",
+  "isStacked": true,
+  "toolTipHeader": true,
+  "XAxis": {
+    "dataPropertyName": "",
+    "labelName": "",
+    "showGrid": true
+  },
+  "YAxis": {
+    "data" : [],
+    "showGrid": true
+  },
+  "dataPoints" : [],
+  "includeMarkingsForLineType": false,
+  "data": []
+}

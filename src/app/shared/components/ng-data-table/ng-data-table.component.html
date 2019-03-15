@@ -1,0 +1,41 @@
+<button type="button" id="addRow" class="btn" (click)="handleAddRow($event)">Add</button>
+<button type="button" id="removeBtn" (click)="handleDelete()" class="btn disabled">Remove</button>
+
+<table id="ng-data-table" class="table order-column admin-user gridtable">
+    <thead>
+        <tr>
+            <th *ngFor="let headerObj of tableData.headers; let i = index"
+                        [class]="headerObj.fieldType == 'hidden' ? '' : ''"
+            >
+                <div [ngSwitch]="headerObj.fieldType">
+                    <ng-container *ngSwitchCase="'hidden'"></ng-container>
+                    <ng-container *ngSwitchCase="'checkbox'">
+                       <input type="checkbox" (click)="handleCheckBoxClick($event);">
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'text'">{{headerObj.title}}</ng-container>
+                    <ng-container *ngSwitchDefault>{{headerObj.title}}</ng-container>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let rowObj of tableData.result; let i = index">              
+            <td *ngFor="let rowData of rowObj | keys; let j = index"
+                [class]="rowObj[rowData] == 'hidden' ? 'hidden' : ''"
+            >
+                    <div [ngSwitch]="rowObj[rowData]">
+                            <div *ngSwitchCase="'checkbox'">
+                               <input type="checkbox" (click)="handleCheckBoxClick($event);">
+                            </div>
+                            <div *ngSwitchCase="'text'">
+                                    {{rowObj[tableData.headers[i].data]}}
+                            </div>
+                            <div *ngSwitchCase="'tag'">
+                                <tag-input [inputId]="rowObj[rowData]" [(ngModel)]="rowObj[rowData]"></tag-input>
+                            </div>
+                            <div *ngSwitchDefault>{{rowObj[rowData]}}</div>
+                    </div>
+            </td>
+        </tr>
+    </tbody>
+</table>

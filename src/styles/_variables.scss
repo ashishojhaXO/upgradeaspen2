@@ -1,0 +1,107 @@
+@font-face {
+  font-family: 'lucidagrande';
+  src: url('/assets/fonts/lucidagrande-regular/lucidagrande.eot'); /* IE9 Compat Modes */
+  src: url('/assets/fonts/lucidagrande-regular/lucidagrande.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('/assets/fonts/lucidagrande-regular/lucidagrande.woff2') format('woff2'), /* Super Modern Browsers */
+       url('/assets/fonts/lucidagrande-regular/lucidagrande.woff') format('woff'), /* Pretty Modern Browsers */
+       url('/assets/fonts/lucidagrande-regular/lucidagrande.ttf')  format('truetype'), /* Safari, Android, iOS */
+       url('/assets/fonts/lucidagrande-regular/lucidagrande.svg#svgFontName') format('svg'); /* Legacy iOS */
+}
+@font-face {
+  font-family: 'lucidagrande-bold';
+  src: url('/assets/fonts/lucidagrande-bold/lucidagrandebold.eot'); /* IE9 Compat Modes */
+  src: url('/assets/fonts/lucidagrande-bold/lucidagrandebold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('/assets/fonts/lucidagrande-bold/lucidagrandebold.woff2') format('woff2'), /* Super Modern Browsers */
+       url('/assets/fonts/lucidagrande-bold/lucidagrandebold.woff') format('woff'), /* Pretty Modern Browsers */
+       url('/assets/fonts/lucidagrande-bold/lucidagrandebold.ttf')  format('truetype'), /* Safari, Android, iOS */
+       url('/assets/fonts/lucidagrande-bold/lucidagrandebold.svg#svgFontName') format('svg'); /* Legacy iOS */
+}
+/***FONT family****/
+$primary-font: 'Poppins', sans-serif;
+$secondary-font: 'Raleway', sans-serif;
+$tertiary-font: 'Arimo', sans-serif;
+$quaternary-font: 'lucidagrande',sans-serif;
+$quinary-font: 'lucidagrande-bold',sans-serif;
+
+/*********Font Size*************/
+$font-primary: 12px;
+$font-small: 10px;
+$font-normal: 16px;
+$font-large: 22px;
+$font-secondary: 14px;
+$font-tertiary: 20px;
+
+
+/******Text color**********/
+$primary-color: #44505B;
+$secondary-color: #cbcbcb;
+$tertiary-color: #ffffff;
+$quaternary-color: #384349;
+$quinary-color: #3FA8F4;
+$senary-color: #f3f3f3;
+$septenary-color: #1c252b;
+$octonary-color:#333333;
+
+/******Background color**********/
+$primary-bg: $quaternary-color;
+$secondary-bg: $quinary-color;
+$tertiary-bg: $tertiary-color;
+$quaternary-bg: #fcfcfc;
+$quinary-bg: $senary-color;
+$senary-bg: $septenary-color;
+$septenary-bg:$octonary-color;
+
+/******Border color**********/
+$primary-border: $secondary-color;
+$secondary-border: $tertiary-color;
+$tertiary-border: $quaternary-color;
+$quaternary-border: $quinary-color;
+$quinary-border: $senary-color;
+$senary-border: #5FA1DE;
+$septenary-border:$octonary-color;
+$octonary-border:#aaa;
+//$gray-border:
+
+
+//Breadcrumb Component
+$inactive-color: #414C51;
+$active-color: #3FA8F4;
+
+//checkbox
+$check-color: $quinary-color;
+$check-bg: $quinary-color;
+$check-border: $quinary-color;
+$check-disabled: $quinary-color;
+
+$form-invalid-color: #ff0000;
+$form-invalid-border: #ff0000;
+$form-valid-border: #42A948;
+
+//table Grid
+$grid-button-option: $quinary-color;
+$grid-column-visible-checkbox-color: #c5c5c5;
+$grid-column-visible-checkbox-checked-color: $quinary-color;
+$grid-column-visible-checkbox-font: 18px;
+
+//Header
+$header-bardk-bg: #242424;
+$header-menu-hover-list: #242424;
+$header-menu-hover-list-line: $primary-color;
+$header-drop-down-bg: $octonary-color;
+$header-menu-hover-bg: #424242;
+$header-menu-hover-border: #424242;
+
+
+
+//Nav bar Toggle
+$navbar-toggle-bg:#1dc1da;
+$navbar-toggle-hover-bg:#0fa6bc;
+$navbar-toggle-border:$navbar-toggle-hover-bg;
+
+//Drop down Menu
+
+$dropdown-menu-a-txt : #888;
+$dropdown-menu-a-hover-txt : #666;
+
+//schema
+$schema-right-title-font-size: 18px;

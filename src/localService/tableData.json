@@ -1,0 +1,69 @@
+{
+    "headers": [
+      {
+        "key": "1",
+        "title": "",
+        "data": "id",
+        "isFilterRequired": false,
+        "isCheckbox": true,
+        "fieldType": "hidden"
+      },
+      {
+        "key": "2",
+        "title": "Label",
+        "data": "Label",
+        "isFilterRequired": true,
+        "isCheckbox": false,
+        "fieldType": "text"
+      },
+      {
+        "key": "3",
+        "title": "Type",
+        "data": "Type",
+        "isFilterRequired": true,
+        "editButton": true,
+        "isCheckbox": false,
+        "fieldType": "text"
+      },
+      {
+        "key": "4",
+        "title": "Value",
+        "data": "Value",
+        "isFilterRequired": true,
+        "editButton": true,
+        "isCheckbox": false,
+        "fieldType": "tag"
+      }
+    ],
+    "options": {
+      "isSearchColumn": true,
+      "isOrdering": true,
+      "isEditOption": true,
+      "isDeleteOption": true,
+      "isAddRow": false,
+      "isColVisibility": true,
+      "isDownload": true,
+      "isPageLength": 10,
+      "isTableInfo": true
+    },
+    "result": [
+      {
+        "id": "0854beae-6a4e-461c-b1c8-7ec8572dd0e0",
+        "Label": "Recon",
+        "Type": "Boolean",
+        "Value": "Yes"
+      },
+      {
+        "id": "0854bsdf-6a4e-461c-b1c8-7ec8572dd0e0",
+        "Label": "Country",
+        "Type": "Text",
+        "Value": ["US","JP","UK"]
+      },
+      {
+        "id": "0854werdf-6a4e-461c-b1c8-7ec8572dd0e0",
+        "Label": "Currency",
+        "Type": "Text",
+        "Value": ["USD","INR"]
+      }
+    ]
+  }

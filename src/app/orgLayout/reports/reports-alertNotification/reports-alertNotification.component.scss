@@ -1,0 +1,26 @@
+.highcharts-title tspan {
+  padding-bottom: 30px;
+}
+
+.alertscroll {
+  background: #fff;
+  padding: 10px;
+  height: 401px;
+  width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  margin: 0px 0px 0px 28px;
+  p span {
+    color: #ff4500;
+    margin: 0 10px 0 0;
+  }
+}
+
+.alertDashboard .title {
+  color: #0074bd;
+  font-weight: 400;
+  font-size: 25px;
+  padding-bottom: 25px;
+  border-bottom: 1px solid #737373;
+}
+

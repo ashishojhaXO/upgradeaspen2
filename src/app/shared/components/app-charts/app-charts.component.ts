@@ -1,0 +1,182 @@
+/**
+ * Copyright 2018. FusionSeven Inc. All rights reserved.
+ *
+ * Author: Dinesh Yadav
+ * Date: 2018-12-26 10:00:00
+ */
+import {Component, EventEmitter, Input, ViewChild, OnInit, Output, ElementRef, Sanitizer, SimpleChanges, OnChanges} from '@angular/core';
+import 'datatables.net';
+// import * as highcharts from 'Highcharts';
+import {errorComparator} from 'tslint/lib/test/lintError';
+
+@Component({
+  selector: 'app-charts',
+  templateUrl: './app-charts.component.html',
+  styleUrls: ['./app-charts.component.scss'],
+  moduleId: module.id
+})
+
+export class AppChartsComponent implements OnInit, OnChanges {
+
+  chartOptions: any;
+  @Input()
+  config: any;
+
+  constructor() {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    // only run when property "data" changed
+    if (changes['config']) {
+      this.updateChart();
+    }
+  }
+
+  updateChart() {
+
+    console.log('this.config >>>>')
+    console.log(this.config);
+
+    var categories = [];
+    if (this.config.data) {
+      categories = this.config.data.map(function (d) {
+        return d[this.config.XAxis.dataPropertyName];
+      }, this);
+    } else {
+      throw new Error('No Data Provided');
+    }
+
+    // Set YAxis Properties
+    const YAxis = [];
+    const yAxis = this.config.YAxis;
+    yAxis.data.forEach(function (y, index) {
+      const obj: any = {};
+      obj.labels = {
+        format: '{value}' + y.unitType,
+        style: {
+          color: '#000000'
+        }
+      };
+      obj.title = {
+        text: y.labelName,
+        style: {
+          color: '#000000'
+        }
+      };
+      obj.minRange = 0.1;
+      obj.type = y.tickIntervalType ? y.tickIntervalType : '';
+      obj.gridLineWidth = yAxis.showGrid ? 1 : 0;
+      if (yAxis.data.length > 1 && index === (yAxis.data.length - 1)) {
+        obj.min = 0;
+        obj.opposite = true;
+      }
+      YAxis.push(obj);
+    });
+
+    // Set Series
+    const series = [];
+    const config = this.config;
+    config.dataPoints.forEach(function (data) {
+      const obj: any = {};
+      obj.type = data.type;
+      obj.name = data.propertyName;
+      obj.color = data.color || 'rgb(80, 130, 186)';
+      obj.data = config.data.map(function (d) {
+        return d[data.propertyName];
+      });
+      if (data.type === 'line' && config.includeMarkingsForLineType) {
+        obj.marker = {
+          lineWidth: 2,
+          color: '#000000',
+          fillColor: 'rgb(253, 8, 0)'
+        };
+      }
+
+      config.YAxis.data.forEach(function (axis, index) {
+          if (axis.labelName === data.YaxisAssociation) {
+            obj.yAxis = index;
+          }
+      });
+      series.push(obj);
+    });
+
+    // Create Chart with options
+    this.chartOptions = {
+      credits: {
+        enabled: false
+      },
+      chart: {
+        type: this.config.type || 'column'
+      },
+      title: {
+        text: this.config.title || ''
+      },
+      legend: {
+        layout: 'horizontal',
+        align: 'left',
+        verticalAlign: 'top',
+        y: 20, // change this to adjust chart title location
+        padding: 5,
+      },
+      xAxis: {
+        categories: categories,
+        gridLineWidth: this.config.XAxis.showGrid ? 1 : 0,
+        title: {
+          text: this.config.XAxis.labelName
+        },
+        align: 'low'
+      },
+      yAxis: YAxis,
+      tooltip: {
+        borderColor: 'rgb(151, 160, 169)',
+        borderRadius: 7,
+        headerFormat: this.config.toolTipHeader ? '<span style="font-size: 16px;margin-bottom: 10px"><b>{point.key} ' + this.config.XAxis.labelName + '</b></span>' : '',
+        padding: 10,
+        valueDecimals: 2,
+        pointFormatter: function () {
+            return '<div style="padding: 5px 0px"><span style="background-color: whitesmoke">' + this.series.name + '</span>:<b> ' +  this.y + '</b><br/></div>';
+          },
+       // pointFormat: '<span style="background-color: whitesmoke">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
+       // pointFormat: '<div style="padding: 5px 0px"><span style="background-color: whitesmoke">{series.name}</span>: <b>{point.y}</b><br/></div>',
+        shared: true,
+        useHTML: true
+      },
+      plotOptions: {
+        column: {
+          stacking: this.config.isStacked ? 'normal' : ''
+        },
+        line: {
+          marker: {
+            enabled: this.config.includeMarkingsForLineType ? true : false
+          }
+        }
+      },
+      series: series
+      // series: [{
+      //   type: 'column',
+      //   name: 'Monthly Cumulative Spend',
+      //   data: mcs,
+      //   color: 'rgb(80, 130, 186)'
+      // }, {
+      //   type: 'column',
+      //   name: 'Daily Spend',
+      //   data: ds,
+      //   color: 'rgb(56, 199, 224)'
+      // }, {
+      //   type: 'line',
+      //   name: 'Monthly Budget',
+      //   data: mb,
+      //   marker: {
+      //     lineWidth: 2,
+      //     color: '#FF0000',
+      //     lineColor: highcharts.getOptions().colors[2],
+      //     fillColor: 'rgb(253, 8, 0)'
+      //   }
+      // }]
+    };
+  }
+
+  ngOnInit() {
+    // this.setId = this.id ? this.id : 'gridtable1';
+    // this.displayDataTable();
+  }
+}

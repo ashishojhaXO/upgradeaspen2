@@ -1,0 +1,104 @@
+.ng2-menu-item {
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial;
+
+    background: #fff;
+    color: rgba(0, 0, 0, 0.87);
+    cursor: pointer;
+    //font-size: 0.9em;
+    font-size: 12px;
+    text-transform: none;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+
+    height: 20px;
+    //line-height: 48px;
+    //padding: 0.3em 1.25rem;
+    padding-left: 30px;
+    padding-top: 0px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+
+    transition: background 0.25s;
+    vertical-align: middle;
+}
+
+.ng2-menu-item--selected {
+    background: rgba(158, 158, 158, 0.2);
+    outline: 0;
+}
+
+.ng2-menu-item:focus {
+    outline: 0;
+}
+
+.ng2-menu-item:active {
+    background: rgba(158, 158, 158, 0.4);
+}
+
+:host(ng2-menu-item) /deep/ [ng2-menu-item-icon] {
+    vertical-align: middle;
+    font-size: 28px;
+    width: 1.5em;
+    height: 30px;
+    color: rgba(0, 0, 0, 0.44);
+}
+
+
+.ng2-menu-item-header {
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial;
+    background: #fff;
+    //color: rgba(0, 0, 0, 0.87);
+    color:#0074bd !important;
+    font-size: 12px;
+    text-transform: none;
+    font-weight: bold;
+    letter-spacing: 0.03em;
+
+    height: 30px;
+    //line-height: 48px;
+    //padding: 0.3em 1.25rem;
+    padding-left: 15px;
+    padding-top: 8px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+
+    transition: background 0.25s;
+    vertical-align: middle;
+    //border-top: 1px solid black;
+    //border-top: 1px solid rgba(158, 158, 158, 0.4);
+}
+
+.ng2-menu-divider {
+    height: 1px;
+    min-height: 1px;
+    max-height: 1px;
+    width: 95%;
+    display: block;
+    background:rgba(158, 158, 158, 0.4);
+}
+
+.ng2-menu-item-grayed {
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial;
+
+    background: #fff;
+    color: silver;
+    font-size: 0.9em;
+    text-transform: none;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+
+    height: 30px;
+    padding-left: 30px;
+    padding-top: 8px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+
+    transition: background 0.25s;
+    vertical-align: middle;
+}

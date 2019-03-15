@@ -1,0 +1,38 @@
+<ng2-dropdown>
+    <ng2-dropdown-menu [focusFirstElement]="focusFirstElement"
+                       [appendToBody]="appendToBody"
+                       [offset]="offset">
+
+        <ng2-menu-item *ngFor="let item of items; let index = index; let last = last"
+                       [value]="item"
+                       [ngSwitch]="!!templates.length">
+
+            <!--<div *ngIf="item.header !== ''">-->
+                    <!--&lt;!&ndash;<div class='ng2-menu-divider'>&ndash;&gt;-->
+
+                    <!--<div style="height: 1px; min-height: 1px; max-height: 1px; width: 100%; display: block; background: gainsboro">-->
+                        <!--{{item[displayBy]}}-->
+                    <!--</div>-->
+            <!--</div>-->
+
+            <!--<div *ngIf="item.header === ''">-->
+                    <!--{{item[displayBy]}}-->
+            <!--</div>-->
+
+
+                <!--<span *ngSwitchCase="false"-->
+                      <!--[innerHTML]="item[displayBy] | highlight : tagInput.inputForm.value.value" >-->
+                <!--</span>-->
+
+
+
+            <ng-template *ngSwitchDefault
+                      [ngTemplateOutlet]="templates.first"
+                      [ngOutletContext]="{ item: item, index: index, last: last }">
+            </ng-template>
+        </ng2-menu-item>
+
+
+    </ng2-dropdown-menu>
+
+</ng2-dropdown>

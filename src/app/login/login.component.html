@@ -1,0 +1,18 @@
+<link
+  href="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/2.14.0/css/okta-sign-in.min.css"
+  type="text/css"
+  rel="stylesheet"/>
+<link
+  href="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/2.14.0/css/okta-theme.css"
+  type="text/css"
+  rel="stylesheet"/>
+
+<div id="login-bg-image" class="login-bg-image" data-se="login-bg-image">
+  <div class="login-container" style="margin-top: 100px">
+    <div id="okta-signin-container">
+    </div>
+  </div>
+</div>
+<div [hidden]="!error ? 'hidden' : ''" style="margin: 0 auto; text-align: center; margin-top: 15px">
+  <span style="color: red; font-weight: bold;">{{error}}</span>
+</div>

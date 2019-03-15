@@ -1,0 +1,14 @@
+div.modal-body {
+  height: 800px !important;
+}
+
+.displayLabel {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  margin: 5px;
+  display: flex;
+  width: 95% !important;
+}
+

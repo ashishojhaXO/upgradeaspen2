@@ -1,0 +1,16 @@
+<multiselect-dropdown [data]="data" [(ngModel)]="selectedItems"
+                        [loading]="loading"
+                        [settings]="settings"
+                        (onSelect)="onItemSelect($event)"
+                        (onDeSelect)="OnItemDeSelect($event)"
+                        (onSelectAll)="handleOnSelectAll($event)"
+                        (onDeSelectAll)="handleOnDeSelectAll($event)"
+                        (onAddFilterNewItem)="onAddItem($event)"
+                        (onScrollToEnd)="fetchMore($event)">
+    <c-search *ngIf="settings.enableServerSideSearch">
+      <ng-template>
+        <input type="text" (keyup)="onSearch($event)" placeholder="Search"
+               style="border: none;width: 100%; height: 100%;outline: none;"/>
+      </ng-template>
+    </c-search>
+</multiselect-dropdown>

@@ -1,0 +1,223 @@
+{
+  "frequencyTypes": [
+    {
+      "key": "Daily",
+      "displayText": "Daily"
+    },
+    {
+      "key": "Weekly",
+      "displayText": "Weekly"
+    },
+    {
+      "key": "Monthly",
+      "displayText": "Monthly"
+    },
+    {
+      "key": "Quarterly",
+      "displayText": "Quarterly"
+    }
+  ],
+  "timeZone": [
+    {
+      "key": "est",
+      "displayText": "EST"
+    },
+    {
+      "key": "cst",
+      "displayText": "CST"
+    },
+    {
+      "key": "mst",
+      "displayText": "MST"
+    },
+    {
+      "key": "pst",
+      "displayText": "PST"
+    },
+    {
+      "key": "akst",
+      "displayText": "AKST"
+    },
+    {
+      "key": "hast",
+      "displayText": "HAST"
+    },
+    {
+      "key": "edt",
+      "displayText": "EDT"
+    },
+    {
+      "key": "cdt",
+      "displayText": "CDT"
+    },
+    {
+      "key": "mdt",
+      "displayText": "MDT"
+    },
+    {
+      "key": "pdt",
+      "displayText": "PDT"
+    },
+    {
+      "key": "akdt",
+      "displayText": "AKDT"
+    },
+    {
+      "key": "hadt",
+      "displayText": "HADT"
+    },
+    {
+      "key": "gmt",
+      "displayText": "GMT"
+    }
+  ],
+  "connectorTypes": [
+    {
+      "key": "none",
+      "displayText": "None"
+    },
+    {
+      "key": "api",
+      "displayText": "API"
+    },
+    {
+      "key": "email",
+      "displayText": "Email"
+    },
+    {
+      "key": "s3",
+      "displayText": "S3"
+    }
+  ],
+  "attachmentFileTypes": [
+    {
+      "key": "csv",
+      "displayText": "CSV"
+    },
+    {
+      "key": "zip",
+      "displayText": "ZIP"
+    }
+  ],
+  "fileTypes": [
+    {
+      "key": "csv",
+      "displayText": "CSV"
+    }
+  ],
+  "compressionFormats": [
+    {
+      "key": "zip",
+      "displayText": "ZIP"
+    }
+  ],
+  "delimiters": [
+    {
+      "key": "comma",
+      "displayText": "Comma"
+    }
+  ],
+  "dateValues":[
+    {
+      "key": "since",
+      "displayText": "Since"
+    },
+    {
+      "key": "on",
+      "displayText": "On"
+    },
+    {
+      "key": "till",
+      "displayText": "Till"
+    }
+  ],
+  "equals": [
+    {
+      "key": "equals",
+      "displayText": "Equals To"
+    }
+  ],
+  "matches": [
+    {
+      "key": "contains",
+      "displayText": "Contains"
+    },
+    {
+      "key": "equals",
+      "displayText": "Equals To"
+    },
+    {
+      "key": "startsWith",
+      "displayText": "Starts With"
+    },
+    {
+      "key": "endsWith",
+      "displayText": "Ends With"
+    }
+  ],
+  "api": [
+    {
+      "key": "crit",
+      "displayText": "Criteo"
+    },
+    {
+      "key": "rock",
+      "displayText": "Rocketfuel"
+    },
+    {
+      "key": "goad",
+      "displayText": "Google AdWords"
+    },
+    {
+      "key": "gdbm",
+      "displayText": "GDBM"
+    }
+  ],
+  "email": [
+    {
+      "key": "outlook",
+      "displayText": "Outlook"
+    },
+    {
+      "key": "gmail",
+      "displayText": "Gmail"
+    },
+    {
+      "key": "yahoo",
+      "displayText": "Yahoo"
+    }
+  ],
+  "outlook":
+    {
+      "port": "110",
+      "host": "outlook.office365.com"
+    },
+  "gmail":
+    {
+      "port": "993",
+      "host": "smtp.gmail.com"
+    },
+  "yahoo":
+    {
+      "port": "465",
+      "host": "mail.yahoo.com"
+    },
+    "dateRangeValues": [
+      {
+        "key": "lastMonth",
+        "displayText": "Last Month"
+      },
+      {
+        "key": "lastWeek",
+        "displayText": "Last Week"
+      },
+      {
+        "key": "lastndays",
+        "displayText": "Last N Days"
+      },
+      {
+        "key": "customPeriod",
+        "displayText": "Custom Period"
+      }
+    ]
+}

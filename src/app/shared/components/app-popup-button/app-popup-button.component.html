@@ -1,0 +1,38 @@
+<div *ngIf="filterConfig" class="sidebar-container">
+  <label (click)="invokePopUp(displayPopUp)" class="displayLabel" [title]="filterConfig.values.length ? 'Selected ' + filterConfig.label + ' : ' +  selectedText : 'Click to select values'">{{filterConfig.values.length ? (hideSelectedValues ? ('Select ' + filterConfig.label) : selectedText ): 'Select ' + filterConfig.label}}</label>
+  <div style="width:100%">
+    <app-pop-up-modal #displayPopUp>
+      <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
+        Select {{ filterConfig.label }}
+      </div>
+      <div class="app-modal-body">
+        <div *ngIf="filterConfig.includeCustom">
+          <label style="display: inline">Custom Fields</label>
+          <div style="margin-top: 5px;display: inline-block;">
+            <input type="text" [(ngModel)]="customText" [placeholder]="filterConfig.placeHolderText" style="border-radius: 4px;"/>
+            <input *ngIf="!filterConfig.isTag" type="text" [(ngModel)]="customValue" [placeholder]="filterConfig.placeHolderValue" style="border-radius: 4px;"/>
+
+            <button (click)="addItem()" type="button" class="action-btn">Add</button>
+          </div>
+        </div>
+        <div class="app-modal-body-div" *ngIf="showPopUp">
+          <app-data-table1 (filterValues)="refreshData($event)"
+                           [sendResponseOnCheckboxClick]="true"
+                           (triggerActions)="interceptActions($event)"
+                           [dataObject]="dataObject" [id]="tableId"></app-data-table1>
+        </div>
+        <div class="page-header" *ngIf="!showPopUp">
+          <app-custom-spinner class="page-spinner"></app-custom-spinner>
+        </div>
+      </div>
+      <div class="app-modal-footer">
+        <button type="button" class="inaction-btn" (click)="handleCloseModal(displayPopUp)">
+          Cancel
+        </button>
+        <button type="button" class="action-btn" (click)="onValueUpdate(displayPopUp)">
+          Save
+        </button>
+      </div>
+    </app-pop-up-modal>
+  </div>
+</div>

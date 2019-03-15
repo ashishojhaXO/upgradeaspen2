@@ -1,0 +1,220 @@
+.main-content.org-content{
+  .table-content{
+    padding: 0;
+    #gridtable,.table-content .gridtable{
+      width: 100% !important;
+    }
+  }
+  .dt-buttons{
+    right: 0 !important;
+  }
+}
+
+//schemaForm
+.schemaForm{
+  .table-responsive1{
+    strong{
+      margin-top: 50px;
+      display: inline-block;
+      font-weight: normal;
+    }
+    .table.table.admin-user{
+      margin-top: 0 !important;
+      border-bottom: none !important;
+    }
+  }
+  .table-responsive.bg-grey{
+    .nav.nav-tabs{
+      margin-bottom: 5px;
+    }
+  }
+  table.table.admin-user tr td .temp-btn button, table.table.admin-user tr th .temp-btn button{
+    min-width: 70px;
+  }
+  .table-content {
+    min-height: 50px;
+  }
+  .gridtable .form-group{
+    width: 135px;
+  }
+  .nav-tabs a{
+    min-width: inherit;
+  }
+  .tab-pane .table > thead > tr > th{
+    padding: 8px 8px 6px;
+  }
+  .add-schema-wrap{
+    position: relative;
+    padding-top: 20px;
+    .schema-view-noEdit{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255,255,255,0);
+      z-index: 99999;
+    }
+    .dimensionsWrap .gridtable.dimensionsGrid tr th:first-of-type,.metricsWrap .gridtable.dimensionsGrid tr th:first-of-type{
+      min-width: 35px !important;
+    }
+
+    table tr.schemahover{
+      background: #f3fAff;
+    }
+    table tr{
+      &:hover{
+        background: #f3fAff;
+      }
+      td{
+        vertical-align: top !important;
+        &:nth-of-type(2), &:nth-of-type(3) {
+          dtext{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 170px;
+          }
+        }
+      }
+      label.control span{
+        top: 5px;
+      }
+    }
+  }
+  button.inaction-btn{
+    font-family: $quaternary-font;
+    padding-top: 9px;
+  }
+  .btn{
+    font-family: $quaternary-font;
+  }
+  hr{
+    border-width: 0;
+    &:last-of-type{
+      border-bottom-width: 1px;
+      border-style: ridge;
+      margin-top: 50px;
+      margin-bottom: 10px;
+    }
+  }
+
+}
+
+.setup-partner-wrap{
+  .form-group{
+    overflow: hidden;
+    transition: all 1s;
+    -webkit-transition: all 1s;
+    .form-fields.ng-invalid.ng-touched:hover + .valid-msg{
+      display: none;
+    }
+  }
+}
+
+.setup-partner-wrap table.table.admin-user tr td, .setup-partner-wrap table.table.admin-user tr th,.clone-parameter table.table.admin-user tr td{
+      vertical-align: middle;
+}
+.clone-parameter{
+  padding: 0;
+  table.table.admin-user tr.editRow td, table.table.admin-user tr.newRow th{
+      vertical-align: top;
+  }
+  .form-group{
+    select,option{
+      text-transform: initial;
+    }
+  }
+  .parameter-wrap{
+    .table-content{
+      min-height: inherit;
+    }
+  }
+  table.gridtable tr > td{
+    min-height: 40px;
+    height: 45px;
+    &:first-of-type{
+      min-width: inherit;
+    }
+    &:last-of-type .tag-wrap{ 
+      display: inline-block;
+      width: inherit;
+      .form-group{
+        max-width: inherit;
+        tag-input-form{
+          width: auto;
+        }
+        .ng2-tag-input__text-input{
+          height: 25px;
+        }
+      }
+    }
+  }
+  .modal-content table.gridtable tr > td{
+    height: inherit;
+  }
+}
+
+.clone-parameter table.table.admin-user tr.editRow td,.clone-parameter table.table.admin-user tr.newRow td{
+  vertical-align: top;
+}
+
+.setup-partner-wrap table.table.admin-user tr td:nth-child(4){
+      text-align: center;
+}
+
+
+.setup-partner-wrap table.dataTable thead .sorting:after, .setup-partner-wrap table.dataTable thead .sorting_asc:after {
+  display:none;
+}
+
+.setup-partner-wrap .table-content #gridtable tbody tr td, .setup-partner-wrap .table-content .gridtable tbody tr td{
+  word-break: normal;
+}
+.arrow-down,.arrow-downSummary{
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 14px solid $primary-color;
+    position: relative;
+    right: 0;
+    float: right;
+    top: 4px;
+    cursor: pointer;
+}
+.arrow-right{
+  width: 0;
+  height: 0;
+  border-left: 14px solid $primary-color;
+  border-bottom: 7px solid transparent;
+  border-top: 7px solid transparent;
+  position: relative;
+  right: 0;
+  float: right;
+  top: 4px;
+  cursor: pointer;
+}
+.period-table{
+  .form-fileds-date-pick .mydpicon.icon-mydpcalendar{
+    font-size: 20px;
+    color: #3FA8F4;
+  }
+  td{
+    vertical-align: top !important;
+    .form-group{
+      width: 100% !important;
+    }
+  }
+  .run-timer-wrap{
+    .run-timer-input-wrap{
+      width: 100% !important;
+      margin: 0 !important;
+    }
+    .form-fileds-date-pick,.form-group select{
+      padding: 7px 7px 4px;
+    }
+  }
+}
