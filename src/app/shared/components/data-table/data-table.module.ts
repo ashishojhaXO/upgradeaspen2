@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { DomService } from '../dom.service';
 import { DataTableService } from '../../../../services';
 import { TagComponent } from '../tag/tag.component';
-import { DropDownComponent } from '../dropdown/dropdown.component';
+// import { DropDownComponent } from '../dropdown/dropdown.component';
 import { TagInputModule } from 'ngx-chips';
 import { Ng2MultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
@@ -22,10 +22,10 @@ import { Ng2MultiSelectDropDownModule } from 'ng-multiselect-dropdown';
         Ng2MultiSelectDropDownModule.forRoot()
     ],
     declarations: [
-        DataTableComponent, TagComponent, DataTablePopupComponent, DropDownComponent
+        DataTableComponent, TagComponent, DataTablePopupComponent
     ],
     exports: [DataTableComponent, DataTablePopupComponent],
     providers: [DomService, DataTableService],
-    entryComponents: [TagComponent, DropDownComponent]
+    entryComponents: [TagComponent]
 })
 export class DataTableModule { }
