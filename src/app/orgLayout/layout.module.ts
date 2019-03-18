@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutRoutingModule } from './layout-routing.module';
@@ -26,6 +26,9 @@ import { AuthGuard } from './../shared';
         LayoutComponent,
         SidebarComponentDirective,
     ],
-    providers: [AuthGuard]
+    providers: [AuthGuard],
+    schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
+    ]
 })
 export class LayoutModule { }
