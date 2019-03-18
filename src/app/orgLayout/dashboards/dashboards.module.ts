@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DashboardsRoutingModule } from './dashboards-routing.module';
@@ -24,7 +24,10 @@ import {AppDataTableModule, AppSpinnerModule, DataTableModule} from '../../share
     AppSpinnerModule
   ],
   declarations: [DashboardsComponent],
-  providers: []
+  providers: [],
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
+  ]
 })
 
 export class DashboardsModule { }
