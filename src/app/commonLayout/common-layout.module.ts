@@ -4,12 +4,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DataTableModule } from '../shared/components';
 import { Ng2MultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-import { HeaderComponentDirective, FooterComponent } from '../shared';
+import { FooterComponent } from '../shared';
 import { CommonLayoutRoutingModule } from './common-layout-routing.module';
 import { CommonLayoutComponent } from './common-layout.component';
 import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
 import { McBreadcrumbsModule } from 'ngx-breadcrumbs';
 import { PopUpModalModule } from '../shared/components/pop-up-modal/pop-up-modal.module';
+import { HeaderComponentDirective } from '../shared/components/header/header.component';
 
 @NgModule({
   imports: [
