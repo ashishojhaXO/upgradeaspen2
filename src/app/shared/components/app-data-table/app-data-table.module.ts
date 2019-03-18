@@ -6,7 +6,7 @@ import { AppDataTablePopupComponent } from './app-data-table-popup.component';
 import { Select2Module } from 'ng2-select2';
 import { FormsModule } from '@angular/forms';
 import { DomService } from '../dom.service';
-import { Tag1Component } from '../tag1/tag1.component';
+// import { Tag1Component } from '../tag1/tag1.component';
 // import { DropDownComponent } from '../dropdown/dropdown.component';
 import { PopUpModalModule } from '../pop-up-modal/pop-up-modal.module';
 import { TagInputModule } from 'ngx-chips';
@@ -25,10 +25,10 @@ import { DataTableService, ReportsService } from '../../../../services';
         Ng2MultiSelectDropDownModule.forRoot()
     ],
     declarations: [
-      AppDataTableComponent, Tag1Component, AppDataTablePopupComponent
+      AppDataTableComponent, AppDataTablePopupComponent
     ],
     exports: [AppDataTableComponent, AppDataTablePopupComponent],
     providers: [DomService, DataTableService, DataTablesResponse, ReportsService],
-    entryComponents: [Tag1Component]
+    entryComponents: []
 })
 export class AppDataTableModule { }
