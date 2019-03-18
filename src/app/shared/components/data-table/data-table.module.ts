@@ -18,7 +18,6 @@ import { Ng2MultiSelectDropDownModule } from 'ng-multiselect-dropdown';
         TranslateModule,
         Select2Module,
         FormsModule,
-        TagInputModule,
         Ng2MultiSelectDropDownModule.forRoot()
     ],
     declarations: [
