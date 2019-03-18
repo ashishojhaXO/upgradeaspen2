@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import {CommonModule, DatePipe} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AppSidebarModule} from '../../shared/components/app-sidebar/app-sidebar.module';
@@ -40,7 +40,10 @@ import {ReportsUtil} from '../../shared/util/reports-util';
     AppSpinnerModule
   ],
   declarations: [ReportsSummaryComponent, AdhocReportBuilderComponent, AlertNoticationdashboardsComponent, AlertNoticationdashboardsComponent],
-  providers: [OrganizationService, AuthService, TheReportsService, ReportsService, ReportsUtil, DatePipe]
+  providers: [OrganizationService, AuthService, TheReportsService, ReportsService, ReportsUtil, DatePipe],
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
+  ]
 })
 
 export class ReportsModule {
