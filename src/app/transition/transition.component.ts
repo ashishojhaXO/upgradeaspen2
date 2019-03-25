@@ -111,6 +111,7 @@ export class TransitionComponent implements OnInit {
 
   logout() {
     this.widget.signOut(() => {
+      this.widget.tokenManager.remove('accessToken');
       this.changeDetectorRef.detectChanges();
      // this.router.navigate(['./login'],{ queryParams: { error: '401' } });
       window.location.href = '/login?error=401';
