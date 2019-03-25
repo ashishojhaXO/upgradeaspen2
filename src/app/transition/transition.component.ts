@@ -64,6 +64,7 @@ export class TransitionComponent implements OnInit {
           if(err.status === 401) {
             this.widget.tokenManager.refresh('accessToken')
                 .then(function (newToken) {
+                  this.showSpinner = false;
                   this.widget.tokenManager.add('accessToken', newToken);
                   this.getCustomerInfoRequest();
                 });
