@@ -11,7 +11,7 @@ import {FormControl, FormGroup, FormArray, Validators} from '@angular/forms';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import {finalize, map} from 'rxjs/operators';
 import { DomSanitizer} from '@angular/platform-browser';
-import * as OktaSignIn from '@okta/okta-signin-widget/dist/js/okta-sign-in-no-jquery';
+import { OktaAuthService } from '../../../src/services/okta.service';
 
 @Component({
   selector: 'app-transition',
@@ -24,26 +24,9 @@ export class TransitionComponent implements OnInit {
   externalAuth: any;
   error: any;
   showSpinner: any;
-  widget = new OktaSignIn({
-    logo: 'https://op1static.oktacdn.com/bc/image/fileStoreRecord?id=fs0iw1hhzapgSwb4s0h7', // Try changing "okta.com" to other domains, like: "workday.com", "splunk.com", or "delmonte.com"
-    language: 'en',                       // Try: [fr, de, es, ja, zh-CN] Full list: https://github.com/okta/okta-signin-widget#language-and-text
-    i18n: {
-      'en': {
-        'primaryauth.title': 'Sign In',   // Changes the sign in text
-        'primaryauth.submit': 'Sign In',  // Changes the sign in button
-      }
-    },
-    baseUrl: JSON.parse(localStorage.getItem('externalAuth')).api,
-    clientId: JSON.parse(localStorage.getItem('externalAuth')).clientId,
-    redirectUri: JSON.parse(localStorage.getItem('apis_fs')).redirectUrl + '/app/dashboards',
-    authParams: {
-      issuer: 'default',
-      responseType: ['id_token', 'token'],
-      scopes: ['openid', 'email', 'profile']
-    }
-  });
+  widget;
 
-  constructor(private route: ActivatedRoute, private router: Router, private http: Http, private sanitizer: DomSanitizer, private changeDetectorRef: ChangeDetectorRef) {
+  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http, private sanitizer: DomSanitizer, private changeDetectorRef: ChangeDetectorRef) {
     this.showSpinner = false;
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
@@ -55,31 +38,40 @@ export class TransitionComponent implements OnInit {
 
   performActions() {
     this.showSpinner = true;
-    return this.getCustomerInfo().subscribe(
-      responseDetails => {
-        this.showSpinner = false;
-        if (responseDetails.body && responseDetails.body.length) {
-          console.log('responseDetails.body[0] >>')
-          console.log(responseDetails)
-          localStorage.setItem('loggedInUserGroup', JSON.stringify(responseDetails.body[0].groups));
-          localStorage.setItem('customerInfo', JSON.stringify(responseDetails.body[0]));
-          localStorage.setItem('customerStatus', responseDetails.body[0].external_status);
-          localStorage.setItem('loggedInUserName', responseDetails.body[0].user.first_name + ' ' + responseDetails.body[0].user.last_name);
-          localStorage.setItem('loggedInUserEmail', responseDetails.body[0].user.email_id);
-          this.checkForAppAccess();
-          //  this.router.navigate(['./app/dashboards']);
+    this.widget = this.okta.getWidget();
+    this.getCustomerInfoRequest();
+  }
 
-        } else {
-          this.error = 'No User details found. Please contact administrator';
-          console.log('No Vendor details found');
+  getCustomerInfoRequest() {
+    return this.getCustomerInfo().subscribe(
+        responseDetails => {
+          this.showSpinner = false;
+          if (responseDetails.body && responseDetails.body.length) {
+            console.log('responseDetails.body[0] >>')
+            console.log(responseDetails)
+            localStorage.setItem('loggedInUserGroup', JSON.stringify(responseDetails.body[0].groups));
+            localStorage.setItem('customerInfo', JSON.stringify(responseDetails.body[0]));
+            localStorage.setItem('customerStatus', responseDetails.body[0].external_status);
+            localStorage.setItem('loggedInUserName', responseDetails.body[0].user.first_name + ' ' + responseDetails.body[0].user.last_name);
+            localStorage.setItem('loggedInUserEmail', responseDetails.body[0].user.email_id);
+            this.checkForAppAccess();
+          } else {
+            this.error = 'No User details found. Please contact administrator';
+            console.log('No Vendor details found');
+          }
+        },
+        err => {
+          if(err.status === 401) {
+            this.widget.tokenManager.refresh('accessToken')
+                .then(function (newToken) {
+                  this.widget.tokenManager.add('accessToken', newToken);
+                  this.getCustomerInfoRequest();
+                });
+          } else {
+            this.showSpinner = false;
+            this.error = err;
+          }
         }
-      },
-      err => {
-        this.showSpinner = false;
-        this.error = 'Error Fetching User Details . Please contact administrator';
-        console.log('err cust details')
-        console.log(err);
-      }
     );
   }
 
@@ -143,7 +135,11 @@ export class TransitionComponent implements OnInit {
   }
 
   getCustomerInfo(): any {
-    const token = localStorage.getItem('accessToken');
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
     const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
     const urserID = localStorage.getItem('loggedInUserID') || '';

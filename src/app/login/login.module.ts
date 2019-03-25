@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LoginRoutingModule } from './login-routing.module';
 import { LoginComponent } from './login.component';
+import { OktaAuthService } from '../../../src/services/okta.service';
 
 import {
   OktaAuthModule,
@@ -24,6 +25,6 @@ const config = {
     ReactiveFormsModule
   ],
   declarations: [LoginComponent],
-  providers: []
+  providers: [OktaAuthService]
 })
 export class LoginModule { }

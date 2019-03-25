@@ -10,10 +10,11 @@ import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
 import {Router, ActivatedRoute} from '@angular/router';
-import {DataTableOptions} from "../../../models/dataTableOptions";
+import {DataTableOptions} from '../../../models/dataTableOptions';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-modal.component';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
+import { OktaAuthService } from '../../../services/okta.service';
 
 @Component({
   selector: 'app-usermanagement',
@@ -67,8 +68,9 @@ export class UserManagementComponent implements OnInit  {
     }];
 
   vendorOptions = [];
+  widget: any;
 
-  constructor(private route: ActivatedRoute, private router: Router, private http: Http) {
+  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
 
     this.userForm = new FormGroup({
       email: new FormControl('', Validators.required),
@@ -86,47 +88,95 @@ export class UserManagementComponent implements OnInit  {
 
   ngOnInit() {
 
+    this.widget = this.okta.getWidget();
     this.showSpinner = true;
     this.selectedSource = 'f7';
     this.height = '50vh';
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
+    this.searchDataRequest();
+  }
+
+  searchDataRequest() {
     return this.searchData().subscribe(
-      response => {
-        if (response) {
-          if (response.body) {
-            this.showSpinner = false;
-            this.populateDataTable(response.body, true);
-            return this.getVendors().subscribe(
-              response1 => {
-                  console.log('response1');
-                  console.log(response1);
-                  if (response1 && response1.body) {
+        response => {
+          if (response) {
+            if (response.body) {
+              this.showSpinner = false;
+              this.populateDataTable(response.body, true);
+              return this.getVendors().subscribe(
+                  response1 => {
+                    console.log('response1');
+                    console.log(response1);
+                    if (response1 && response1.body) {
                       const vendorOptions = [];
                       response1.body.forEach(function (item) {
-                            vendorOptions.push({
-                              id: item.id,
-                              text: item.client_id + ' - ' + item.company_name
-                            });
+                        vendorOptions.push({
+                          id: item.id,
+                          text: item.client_id + ' - ' + item.company_name
+                        });
                       });
                       this.vendorOptions = vendorOptions;
                       if(response1.body.length) {
                         this.selectedVendor = response1.body[0].id;
                       }
+                    }
+                  },
+                  err1 => {
+                    if(err1.status === 401) {
+                      this.widget.tokenManager.refresh('accessToken')
+                          .then(function (newToken) {
+                            this.widget.tokenManager.add('accessToken', newToken);
+                            this.showSpinner = false;
+                            return this.getVendors().subscribe(
+                                response2 => {
+                                  console.log('response1');
+                                  console.log(response2);
+                                  if (response2 && response2.body) {
+                                    const vendorOptions = [];
+                                    response2.body.forEach(function (item) {
+                                      vendorOptions.push({
+                                        id: item.id,
+                                        text: item.client_id + ' - ' + item.company_name
+                                      });
+                                    });
+                                    this.vendorOptions = vendorOptions;
+                                    if(response2.body.length) {
+                                      this.selectedVendor = response2.body[0].id;
+                                    }
+                                  }
+                                },
+                                err2 => {
+                                  this.showSpinner = false;
+                                  console.log('err')
+                                  console.log(err2);
+                                }
+                            )
+                          });
+                    } else {
+                      this.showSpinner = false;
+                      console.log('err')
+                      console.log(err1);
+                    }
                   }
-              },
-              err1 => {
-
-              }
-            )
+              )
+            }
+          }
+        },
+        err => {
+          if(err.status === 401) {
+            this.widget.tokenManager.refresh('accessToken')
+                .then(function (newToken) {
+                  this.widget.tokenManager.add('accessToken', newToken);
+                  this.showSpinner = false;
+                  this.searchDataRequest();
+                });
+          } else {
+            this.showSpinner = false;
+            console.log('err')
+            console.log(err);
           }
         }
-      },
-      err => {
-        console.log('err')
-        console.log(err);
-        this.showSpinner = false;
-      }
     );
   }
 
@@ -143,7 +193,11 @@ export class UserManagementComponent implements OnInit  {
   }
 
   getVendors() {
-    const token = localStorage.getItem('accessToken') || '';
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token , 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/vendors';
@@ -155,7 +209,11 @@ export class UserManagementComponent implements OnInit  {
   }
 
   searchData() {
-    const token = localStorage.getItem('accessToken') || '';
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/users';
@@ -210,28 +268,45 @@ export class UserManagementComponent implements OnInit  {
       dataObj.vendor_id = this.selectedVendor;
     }
 
+    this.performUserAdditionRequest(dataObj);
+  }
+
+  performUserAdditionRequest(dataObj) {
     return this.performUserAddition(dataObj).subscribe(
-      response => {
-        console.log('response from user creation >>>')
-        console.log(response);
-        if (response) {
-          this.showSpinner = false;
-          this.error = { type : 'success' , message : response.body };
+        response => {
+          console.log('response from user creation >>>')
+          console.log(response);
+          if (response) {
+            this.showSpinner = false;
+            this.error = { type : 'success' , message : response.body };
+          }
+          // modalComponent.hide();
+        },
+        err => {
+          if(err.status === 401) {
+            this.widget.tokenManager.refresh('accessToken')
+                .then(function (newToken) {
+                  this.widget.tokenManager.add('accessToken', newToken);
+                  this.showSpinner = false;
+                  this.performUserAdditionRequest(dataObj);
+                });
+          } else {
+            console.log('err >>>')
+            console.log(err);
+            console.log('message >>> ' + JSON.parse(err._body).errorMessage);
+            this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
+            this.showSpinner = false;
+          }
         }
-        // modalComponent.hide();
-      },
-      err => {
-        console.log('err >>>')
-        console.log(err);
-        console.log('message >>> ' + JSON.parse(err._body).errorMessage);
-        this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
-        this.showSpinner = false;
-      }
     );
   }
 
   performUserAddition(dataObj) {
-    const token = localStorage.getItem('accessToken');
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     const data = JSON.stringify(dataObj);

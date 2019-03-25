@@ -10,6 +10,7 @@ import { AppPopupButtonModule} from '../../shared/components/app-popup-button/ap
 import {AppDataTableModule, AppSpinnerModule, DataTableModule} from '../../shared/components';
 import { Select2Module } from 'ng2-select2';
 import { PopUpModalModule } from '../../shared/components/pop-up-modal/pop-up-modal.module';
+import { OktaAuthService } from '../../../services/okta.service';
 
 @NgModule({
   imports: [
@@ -28,7 +29,7 @@ import { PopUpModalModule } from '../../shared/components/pop-up-modal/pop-up-mo
     PopUpModalModule
   ],
   declarations: [UserManagementComponent],
-  providers: []
+  providers: [OktaAuthService]
 })
 
 export class UserManagementModule { }

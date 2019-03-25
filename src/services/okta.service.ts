@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import * as OktaSignIn from '@okta/okta-signin-widget/dist/js/okta-sign-in-no-jquery';
-import * as ENVCONFIG from '../constants/env';
 
 @Injectable()
 export class OktaAuthService {
@@ -24,17 +23,7 @@ export class OktaAuthService {
     }
   });
 
-  getSessionInfo(): Observable<any> {
-    return Observable.create((observer) => {
-      this.widget.session.get((response) => {
-        console.log('response session >>');
-        console.log(response);
-        if (response.status !== 'INACTIVE') {
-           return response;
-        } else {
-           return null;
-        }
-      });
-    });
+  getWidget() {
+    return this.widget;
   }
 }

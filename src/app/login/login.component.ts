@@ -7,9 +7,8 @@
 
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
-import * as OktaSignIn from '@okta/okta-signin-widget/dist/js/okta-sign-in-no-jquery';
+import { OktaAuthService } from '../../../src/services/okta.service';
 import { Common } from '../shared/util/common';
-import * as ENVCONFIG from '../../constants/env';
 import {Http, Headers, RequestOptions} from '@angular/http';
 
 @Component({
@@ -23,30 +22,14 @@ export class LoginComponent implements OnInit {
   api_fs: any;
   externalAuth: any;
   error: any;
+  widget;
 
-  widget = new OktaSignIn({
-    logo: 'https://op1static.oktacdn.com/bc/image/fileStoreRecord?id=fs0iw1hhzapgSwb4s0h7', // Try changing "okta.com" to other domains, like: "workday.com", "splunk.com", or "delmonte.com"
-    language: 'en',                       // Try: [fr, de, es, ja, zh-CN] Full list: https://github.com/okta/okta-signin-widget#language-and-text
-    i18n: {
-      'en': {
-        'primaryauth.title': 'Sign In',   // Changes the sign in text
-        'primaryauth.submit': 'Sign In',  // Changes the sign in button
-      }
-    },
-    baseUrl: JSON.parse(localStorage.getItem('externalAuth')).api,
-    clientId: JSON.parse(localStorage.getItem('externalAuth')).clientId,
-    redirectUri: JSON.parse(localStorage.getItem('apis_fs')).redirectUrl + '/app/dashboards',
-    authParams: {
-      issuer: 'default',
-      responseType: ['id_token', 'token'],
-      scopes: ['openid', 'email', 'profile']
-    }
-  });
-
-  constructor(private common: Common, private changeDetectorRef: ChangeDetectorRef, private route: ActivatedRoute, private router: Router, private http: Http) {
+  constructor(private okta: OktaAuthService, private common: Common, private changeDetectorRef: ChangeDetectorRef, private route: ActivatedRoute, private router: Router, private http: Http) {
   }
 
   ngOnInit() {
+
+    this.widget = this.okta.getWidget();
 
     this.error = '';
     this.route.queryParams.subscribe(params => {
@@ -75,9 +58,9 @@ export class LoginComponent implements OnInit {
         el: '#okta-signin-container'},
       (res) => {
         if (res.status === 'SUCCESS') {
+          this.widget.tokenManager.add('accessToken', res[1]);
           localStorage.setItem('loggedInUserName', res[0].claims.name);
           localStorage.setItem('loggedInUserID', res[0].claims.sub);
-          localStorage.setItem('accessToken', res[1].accessToken);
           this.changeDetectorRef.detectChanges();
           this.performActions();
         }
@@ -102,11 +85,21 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('loggedInUserEmail', responseDetails.body[0].user.email_id);
           this.router.navigate(['./app/dashboards']);
         } else {
-          this.router.navigate(['./app/dashboards']);
+          this.changeDetectorRef.detectChanges();
+          this.error = 'No User details found. Please contact administrator';
+          console.log('No Vendor details found');
         }
       },
       err => {
-        this.error = err;
+        if(err.status === 401) {
+          this.widget.tokenManager.refresh('accessToken')
+              .then(function (newToken) {
+                this.widget.tokenManager.add('accessToken', newToken);
+                this.performActions();
+              });
+        } else {
+          this.error = err;
+        }
       }
     );
   }
@@ -123,7 +116,11 @@ export class LoginComponent implements OnInit {
   }
 
   getCustomerInfo(): any {
-    const token = localStorage.getItem('accessToken');
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
     const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
     const urserID = localStorage.getItem('loggedInUserID') || '';

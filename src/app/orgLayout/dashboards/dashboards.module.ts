@@ -8,6 +8,7 @@ import {AppSidebarModule} from '../../shared/components/app-sidebar/app-sidebar.
 import {WrapperMultiSelectDropdownModule} from '../../shared/components/wrapper-multiselect-dropdown/wrapper-multiselect-dropdown.module';
 import { AppPopupButtonModule} from '../../shared/components/app-popup-button/app-popup-button.module';
 import {AppDataTableModule, AppSpinnerModule, DataTableModule} from '../../shared/components';
+import { OktaAuthService } from '../../../services/okta.service';
 
 @NgModule({
   imports: [
@@ -24,7 +25,7 @@ import {AppDataTableModule, AppSpinnerModule, DataTableModule} from '../../share
     AppSpinnerModule
   ],
   declarations: [DashboardsComponent],
-  providers: [],
+  providers: [OktaAuthService],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ]

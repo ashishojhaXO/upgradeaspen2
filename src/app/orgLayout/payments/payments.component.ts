@@ -10,8 +10,9 @@ import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
 import {Router, ActivatedRoute} from '@angular/router';
-import {DataTableOptions} from "../../../models/dataTableOptions";
+import {DataTableOptions} from '../../../models/dataTableOptions';
 import {Http, Headers, RequestOptions} from '@angular/http';
+import { OktaAuthService } from '../../../services/okta.service';
 
 @Component({
   selector: 'app-payments',
@@ -44,48 +45,61 @@ export class PaymentsComponent implements OnInit  {
   externalAuth: any;
   showSpinner: boolean;
   summary = [];
+  widget: any;
 
-  constructor(private route: ActivatedRoute, private router: Router, private http: Http) {
+  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
   }
 
   ngOnInit() {
 
+    this.widget = this.okta.getWidget();
     this.showSpinner = true;
     this.height = '50vh';
-
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
+    this.searchDataRequest();
+  }
 
+  searchDataRequest() {
     return this.searchData().subscribe(
-      response => {
-        if (response) {
-          console.log('response >>>')
-          console.log(response);
-          if (response.body) {
-            if (response.body.summary) {
-              this.summary = response.body.summary;
+        response => {
+          if (response) {
+            console.log('response >>>')
+            console.log(response);
+            if (response.body) {
+              if (response.body.summary) {
+                this.summary = response.body.summary;
+              }
+              if (response.body.transactions) {
+                this.populateDataTable(response.body.transactions, true);
+              }
+              this.showSpinner = false;
             }
-            if (response.body.transactions) {
-              this.populateDataTable(response.body.transactions, true);
-            }
-            this.showSpinner = false;
           }
-
-
+        },
+        err => {
+          if(err.status === 401) {
+            this.widget.tokenManager.refresh('accessToken')
+                .then(function (newToken) {
+                  this.widget.tokenManager.add('accessToken', newToken);
+                  this.showSpinner = false;
+                  this.searchDataRequest();
+                });
+          } else {
+            this.showSpinner = false;
+            console.log('err')
+            console.log(err);
+          }
         }
-      },
-      err => {
-        console.log('err')
-        console.log(err);
-        this.showSpinner = false;
-      }
     );
-
-
   }
 
   searchData() {
-    const token = localStorage.getItem('accessToken') || '';
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/payments/transactions';

@@ -10,8 +10,9 @@ import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
 import {Router, ActivatedRoute} from '@angular/router';
-import {DataTableOptions} from "../../../models/dataTableOptions";
+import {DataTableOptions} from '../../../models/dataTableOptions';
 import {Http, Headers, RequestOptions} from '@angular/http';
+import { OktaAuthService } from '../../../services/okta.service';
 
 @Component({
   selector: 'app-orders',
@@ -43,40 +44,56 @@ export class OrdersComponent implements OnInit  {
   api_fs: any;
   externalAuth: any;
   showSpinner: boolean;
+  widget: any;
 
-  constructor(private route: ActivatedRoute, private router: Router, private http: Http) {
+  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
   }
 
   ngOnInit() {
 
     this.showSpinner = true;
+    this.widget = this.okta.getWidget();
 
     this.height = '50vh';
 
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
+    this.searchDataRequest();
+  }
 
+  searchDataRequest() {
     return this.searchData().subscribe(
-      response => {
-        if (response) {
+        response => {
           if (response) {
-            this.populateDataTable(response, true);
+            if (response) {
+              this.populateDataTable(response, true);
+              this.showSpinner = false;
+            }
+          }
+        },
+        err => {
+          if(err.status === 401) {
+            this.widget.tokenManager.refresh('accessToken')
+                .then(function (newToken) {
+                  this.widget.tokenManager.add('accessToken', newToken);
+                  this.showSpinner = false;
+                  this.searchDataRequest();
+                });
+          } else {
             this.showSpinner = false;
+            console.log('err')
+            console.log(err);
           }
         }
-      },
-      err => {
-        console.log('err')
-        console.log(err);
-        this.showSpinner = false;
-      }
     );
-
-
   }
 
   searchData() {
-    const token = localStorage.getItem('accessToken') || '';
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/orders/line-items';

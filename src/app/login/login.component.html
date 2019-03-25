@@ -13,6 +13,6 @@
     </div>
   </div>
 </div>
-<div [hidden]="!error ? 'hidden' : ''" style="margin: 0 auto; text-align: center; margin-top: 15px">
+<div *ngIf="error" style="margin: 0 auto; text-align: center; margin-top: 15px">
   <span style="color: red; font-weight: bold;">{{error}}</span>
 </div>

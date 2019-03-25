@@ -171,6 +171,10 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
       response => {
         const groupArr = [];
         const groups = localStorage.getItem('loggedInUserGroup') || '';
+
+        console.log('groups >>')
+        console.log(groups);
+
         if (groups) {
           const grp = JSON.parse(groups);
           grp.forEach(function (item) {
@@ -492,7 +496,11 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   }
 
   performPasswordReset(dataObj) {
-    const token = localStorage.getItem('accessToken');
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     const userID = localStorage.getItem('loggedInUserID') || '';

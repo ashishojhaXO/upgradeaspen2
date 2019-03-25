@@ -10,16 +10,11 @@ import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
 import {Router, ActivatedRoute} from '@angular/router';
-import {DataTableOptions} from "../../../models/dataTableOptions";
-
-// import * as pacingConfig from './pacing.json';
+import {DataTableOptions} from '../../../models/dataTableOptions';
 import * as chartConfig from './chartConfig.json';
-import * as spendConfig from './spendData.json';
-// import * as pacingGridData from './pacingGridData.json';
-import * as spendGridData from './spendGridData.json';
-import {Observable} from 'rxjs/Observable';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import {PopupDataAction} from '../../shared/components/app-popup-button/popup-data-action';
+import { OktaAuthService } from '../../../services/okta.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -76,8 +71,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     isEmptyTable: 'No Data',
   }];
   dashboard: any;
+  widget: any;
 
-  constructor(private route: ActivatedRoute, private router: Router, private http: Http) {
+  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
     this.showSpinner = false;
   }
 
@@ -197,6 +193,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
   ngOnInit() {
 
+    this.widget = this.okta.getWidget();
     this.showSpinner = true;
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
@@ -602,7 +599,11 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }
 
   getFilter(dashboardType): any {
-    const token = localStorage.getItem('accessToken');
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
     return this.http.get(this.api_fs.api + '/reports/dashboardtemplates?name=' + dashboardType, options).toPromise()
@@ -669,22 +670,40 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     console.log('dataObj >>>>>')
     console.log(JSON.stringify(dataObj));
 
+    this.getSearchDataRequest(dataObj);
+
+  }
+
+  getSearchDataRequest(dataObj) {
     return this.getSearchData(dataObj).subscribe(
-      response => {
-        if(response) {
-          this.populateDataTable(response, false);
-          this.populateChart(response);
+        response => {
+          if(response) {
+            this.populateDataTable(response, false);
+            this.populateChart(response);
+          }
+        },
+        err => {
+          if(err.status === 401) {
+            this.widget.tokenManager.refresh('accessToken')
+                .then(function (newToken) {
+                  this.widget.tokenManager.add('accessToken', newToken);
+                  this.getSearchDataRequest(dataObj);
+                });
+          } else {
+            console.log('err')
+            console.log(err);
+            this.showSpinner = false;
+          }
         }
-      },
-      err => {
-        console.log('err')
-        console.log(err);
-      }
     );
   }
 
   getSearchData(dataObj) {
-    const token = localStorage.getItem('accessToken');
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
     const data = JSON.stringify(dataObj);
