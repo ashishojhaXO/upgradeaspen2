@@ -61,6 +61,8 @@ export class TransitionComponent implements OnInit {
           }
         },
         err => {
+          console.log('err >>>')
+          console.log(err);
           if(err.status === 401) {
             this.widget.tokenManager.refresh('accessToken')
                 .then(function (newToken) {
