@@ -2,7 +2,7 @@
   <tr>
     <td style="vertical-align: top;"></td>
     <td>
-      <div class="col-md-12 col-lg-12 col-sm-12 clone-parameter">
+      <div class="col-md-12 col-lg-12 col-sm-12 clone-parameter" style="margin-top: 30px">
         <div *ngIf="dataObject && dataObject.buttons">
           <div *ngFor="let button of dataObject.buttons; let i = index;" style="display: inline">
             <button [id]="button.actionType" type="button" [ngClass]="button.disabled ? 'disabled':''" (click)="!button.disabled ? buttonEvent($event, i, modalAction) : 'javascript:void(0)'" [class]="button.cssClass" [ngStyle]="button.cssStyle">{{button.text}}</button>

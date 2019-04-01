@@ -101,13 +101,15 @@ export class UserManagementComponent implements OnInit  {
     return this.searchData().subscribe(
         response => {
           if (response) {
+            console.log('response >>')
+            console.log(JSON.stringify(response));
             if (response.body) {
               this.showSpinner = false;
               this.populateDataTable(response.body, true);
               return this.getVendors().subscribe(
                   response1 => {
                     console.log('response1');
-                    console.log(response1);
+                    console.log(JSON.stringify(response1));
                     if (response1 && response1.body) {
                       const vendorOptions = [];
                       response1.body.forEach(function (item) {
@@ -131,7 +133,7 @@ export class UserManagementComponent implements OnInit  {
                             return this.getVendors().subscribe(
                                 response2 => {
                                   console.log('response1');
-                                  console.log(response2);
+                                  console.log(JSON.stringify(response2));
                                   if (response2 && response2.body) {
                                     const vendorOptions = [];
                                     response2.body.forEach(function (item) {
@@ -335,6 +337,8 @@ export class UserManagementComponent implements OnInit  {
     this.selectedSource = 'f7';
     this.selectedVendor = '';
     modalComponent.hide();
+    this.dataObject.isDataAvailable = false;
+    this.searchDataRequest();
   }
 
   handleShowModal(modalComponent: PopUpModalComponent) {
