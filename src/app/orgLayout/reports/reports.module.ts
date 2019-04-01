@@ -14,12 +14,12 @@ import { MyDatePickerModule } from 'mydatepicker';
 import {AccordionModule} from '../../shared/components/app-accordion/app-accordion.module';
 import {CheckboxSwitchModule} from '../../shared/components/app-checkbox-switch/app-checkbox-switch.module';
 import {PopUpModalModule} from '../../shared/components/pop-up-modal/pop-up-modal.module';
-import {AppPopupButtonModule} from "../../shared/components/app-popup-button/app-popup-button.module";
+import {AppPopupButtonModule} from '../../shared/components/app-popup-button/app-popup-button.module';
 import {TagModule} from '../../shared/components/app-tag/tag.module';
 import { AppChartsModule } from '../../shared/components/app-charts/app-charts.module';
-import {AppDataTableModule, AppSpinnerModule} from '../../shared/components';
+import {AppDataTableHeirarchyModule, AppSpinnerModule} from '../../shared/components';
 import {ReportsUtil} from '../../shared/util/reports-util';
-// var AWS = require('aws-sdk');
+import { OktaAuthService } from '../../../services/okta.service';
 
 @NgModule({
   imports: [
@@ -33,14 +33,14 @@ import {ReportsUtil} from '../../shared/util/reports-util';
     AccordionModule,
     CheckboxSwitchModule,
     PopUpModalModule,
-    AppDataTableModule,
+    AppDataTableHeirarchyModule,
     TagModule,
     AppPopupButtonModule,
     AppChartsModule,
     AppSpinnerModule
   ],
   declarations: [ReportsSummaryComponent, AdhocReportBuilderComponent, AlertNoticationdashboardsComponent, AlertNoticationdashboardsComponent],
-  providers: [OrganizationService, AuthService, TheReportsService, ReportsService, ReportsUtil, DatePipe],
+  providers: [OrganizationService, AuthService, TheReportsService, ReportsService, ReportsUtil, DatePipe, OktaAuthService],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ]

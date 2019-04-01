@@ -2,13 +2,13 @@
     <div class="col-lg-12 col-md-12" style="margin: 0px 0px 20px">
         <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">REPORTS</p>
         <div class="alert-btn type-create pull-right">
-          <a title="create" class="button btn btn-success" [routerLink]="['/reports/adHocReportBuilder']">CREATE NEW REPORT</a>
+          <a title="create" class="button btn btn-success" [routerLink]="['/app/reports/adHocReportBuilder']">CREATE NEW REPORT</a>
         </div>
       </div>
   <div class="">
     <div class="gridOverflow pull-left" *ngIf="dataObject.isDataAvailable">
-      <app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height" [serverSide]="serverSide"
-                       [serviceMethod]="serviceMethod" [serviceURI]="serviceURI" [dataTableAction]="this"></app-data-table1>
+      <app-data-table-heirarchy [dataObject]="dataObject" [id]="dashboard" [height]="height" [serverSide]="serverSide"
+                       [serviceMethod]="serviceMethod" [serviceURI]="serviceURI" [dataTableAction]="this"></app-data-table-heirarchy>
     </div>
     <div class="clearfix"></div>
     <div class="page-header" *ngIf="!dataObject.isDataAvailable">

@@ -3,8 +3,8 @@ import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
 import {Router, ActivatedRoute} from '@angular/router';
-import {DataTableOptions} from "../../../../models/dataTableOptions";
-import * as gridData from "./gridData.json";
+import {DataTableOptions} from '../../../../models/dataTableOptions';
+import * as gridData from './gridData.json';
 import {AuthService, ReportsService} from '../../../../services';
 import {DataTableAction } from '../../../shared/components/app-data-table/data-table-action';
 import {DataTableActionType } from '../../../shared/components/app-data-table/data-table-action-type';
@@ -12,6 +12,8 @@ import * as _ from 'lodash';
 import { DatePipe } from '@angular/common';
 import {ToastsManager} from 'ng2-toastr';
 import {TheReportsService} from '../reportsLocal.service';
+import { OktaAuthService } from '../../../../services/okta.service';
+import {Http, Headers, RequestOptions} from '@angular/http';
 
 @Component({
   selector: 'app-reports',
@@ -48,13 +50,17 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
   serverSide: any;
   serviceURI: any;
   serviceMethod: any;
+  widget: any;
+  api_fs: any;
 
   constructor(private route: ActivatedRoute, private router: Router,
               public reportsService: TheReportsService, public datePipe: DatePipe,
-              public toastr: ToastsManager, private authService: AuthService) {
+              public toastr: ToastsManager, private authService: AuthService, private okta: OktaAuthService, private http: Http) {
   }
 
   ngOnInit() {
+    this.widget = this.okta.getWidget();
+    this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.localData = this.authService.getIdentityInfo('org-context');
     const org = JSON.parse(this.localData);
     this.clientCode = 'BTIL';
@@ -90,6 +96,16 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
         key: 'Report Name',
         title: 'REPORT NAME',
         data: 'name',
+        isFilterRequired: true,
+        isCheckbox: false,
+        class: 'nocolvis',
+        editButton: false,
+        width: '150'
+      },
+      {
+        key: 'Report Frequency',
+        title: 'REPORT FREQUENCY',
+        data: 'frequency',
         isFilterRequired: true,
         isCheckbox: false,
         class: 'nocolvis',
@@ -174,38 +190,114 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
     this.gridData['options'] = this.options[0];
     this.dashboard = 'schemaGrid';
     const __this = this;
-    let result = [];
-    this.reportsService.reportSummary(this.context).subscribe(response => {
-      if (response) {
-        _.forEach(response, (v, i) => {
-          let period = v.report.period.duration[0]['option'];
-          if (period === 'Custom Period') {
-            const startDate = __this.datePipe.transform(v.report.period.duration[0].start, 'MMM-dd-yyyy');
-            const endDate = __this.datePipe.transform(v.report.period.duration[0].end, 'MMM-dd-yyyy');
-            period = startDate + ' - ' + endDate;
-          }
-          v['period'] = period;
-          v['lastruntime'] = _.size(v.reportResult) > 0 ? __this.datePipe.transform(v.reportResult[0]['run_date'], 'yyyy-dd-M h:mm:ss a') : '';
-          v['status'] = _.size(v.reportResult) > 0 ? v.reportResult[0]['status'] : '';
-          const gridResult = {};
-          _.forEach(this.headers, (vv, ii) => {
-            gridResult[vv['data']] = v[vv['data']];
-          });
-          gridResult['id'] = v['_id'];
-          gridResult['downloadId'] = _.size(v.reportResult) > 0 ? v.reportResult[0]['_id'] : '';
-          gridResult['downloadurl'] = _.size(v.reportResult) > 0 ? v.reportResult[0]['signedUrl'] : '';
-          gridResult['toggleOptions'] = _.size(v.reportResult) > 0 ? v.reportResult : [];
-          gridResult['alertEnabled'] = _.size(v.report.alert) > 0;
-          result.push(gridResult);
-        });
+    const result = [];
+    return this.getReportData().subscribe(
+        response => {
+          if (response && response.body) {
+            console.log('response report data>>>')
+            console.log(JSON.stringify(response));
+            _.forEach(response.body, (v, i) => {
+              const startDate = __this.datePipe.transform(v.report_duration_begin, 'MMM-dd-yyyy');
+              const endDate = __this.datePipe.transform(v.report_duration_end, 'MMM-dd-yyyy');
+              const period = startDate + ' - ' + endDate;
+              v['period'] = period;
+              v['name'] = v.report_name;
+              v['frequency'] = v.report_frequency;
+              v['createdBy'] = v.adhoc_reports_histories && v.adhoc_reports_histories.length ? v.adhoc_reports_histories[0].created_by : '';
+              v['lastruntime'] = v.adhoc_reports_histories && v.adhoc_reports_histories.length ? __this.datePipe.transform(v.adhoc_reports_histories[0].report_run_start_time, 'yyyy-dd-M h:mm:ss a') : '';
+              v['status'] = v.adhoc_reports_histories && v.adhoc_reports_histories.length ? v.adhoc_reports_histories[0].report_run_status : '';
+              const gridResult = {};
+              _.forEach(this.headers, (vv, ii) => {
+                gridResult[vv['data']] = v[vv['data']];
+              });
+              gridResult['id'] = v.adhoc_reports_histories && v.adhoc_reports_histories.length ? v.adhoc_reports_histories[0].report_id : '';
+              gridResult['downloadId'] = v.adhoc_reports_histories && v.adhoc_reports_histories.length ? v.adhoc_reports_histories[0].id : ''; // _.size(v.reportResult) > 0 ? v.reportResult[0]['_id'] : '';
+              gridResult['downloadurl'] = v.adhoc_reports_histories && v.adhoc_reports_histories.length ? v.adhoc_reports_histories[0].report_run_file_location : ''; // _.size(v.reportResult) > 0 ? v.reportResult[0]['signedUrl'] : '';
+              gridResult['toggleOptions'] = v['id']; // _.size(v.reportResult) > 0 ? v.reportResult : [];
+              gridResult['alertEnabled'] = v.is_alert_dependent !== 0; // _.size(v.report.alert) > 0;
+              v.adhoc_reports_histories.forEach(function (ele) {
+                ele.name = v.report_name;
+                ele.frequency = v.report_frequency;
+              });
+              gridResult['heirarchyData'] = v.adhoc_reports_histories;
+              result.push(gridResult);
+            });
 
-        // result = result.reverse();
-        __this.gridData['result'] = result;
-        __this.options[0].isPageLength =  10;
-        __this.dataObject.gridData = __this.gridData;
-        __this.dataObject.isDataAvailable = __this.gridData.result && __this.gridData.result.length ? true : false;
-      }
-    });
+            // result = result.reverse();
+            __this.gridData['result'] = result;
+            __this.options[0].isPageLength =  10;
+            __this.dataObject.gridData = __this.gridData;
+            __this.dataObject.isDataAvailable = __this.gridData.result && __this.gridData.result.length ? true : false;
+
+          }
+        },
+        err => {
+          if(err.status === 401) {
+            this.widget.tokenManager.refresh('accessToken')
+                .then(function (newToken) {
+                  this.widget.tokenManager.add('accessToken', newToken);
+                  this.populateReportDataTable();
+                  // this.showSpinner = false;
+                  // this.searchDataRequest();
+                });
+          } else {
+            // this.showSpinner = false;
+            console.log('err')
+            console.log(err);
+          }
+        }
+    );
+
+    // this.reportsService.reportSummary(this.context).subscribe(response => {
+    //   if (response) {
+    //     _.forEach(response, (v, i) => {
+    //       let period = v.report.period.duration[0]['option'];
+    //       if (period === 'Custom Period') {
+    //         const startDate = __this.datePipe.transform(v.report.period.duration[0].start, 'MMM-dd-yyyy');
+    //         const endDate = __this.datePipe.transform(v.report.period.duration[0].end, 'MMM-dd-yyyy');
+    //         period = startDate + ' - ' + endDate;
+    //       }
+    //       v['period'] = period;
+    //       v['lastruntime'] = _.size(v.reportResult) > 0 ? __this.datePipe.transform(v.reportResult[0]['run_date'], 'yyyy-dd-M h:mm:ss a') : '';
+    //       v['status'] = _.size(v.reportResult) > 0 ? v.reportResult[0]['status'] : '';
+    //       const gridResult = {};
+    //       _.forEach(this.headers, (vv, ii) => {
+    //         gridResult[vv['data']] = v[vv['data']];
+    //       });
+    //       gridResult['id'] = v['_id'];
+    //       gridResult['downloadId'] = _.size(v.reportResult) > 0 ? v.reportResult[0]['_id'] : '';
+    //       gridResult['downloadurl'] = _.size(v.reportResult) > 0 ? v.reportResult[0]['signedUrl'] : '';
+    //       gridResult['toggleOptions'] = _.size(v.reportResult) > 0 ? v.reportResult : [];
+    //       gridResult['alertEnabled'] = _.size(v.report.alert) > 0;
+    //       result.push(gridResult);
+    //     });
+    //
+    //     // result = result.reverse();
+    //     __this.gridData['result'] = result;
+    //     __this.options[0].isPageLength =  10;
+    //     __this.dataObject.gridData = __this.gridData;
+    //     __this.dataObject.isDataAvailable = __this.gridData.result && __this.gridData.result.length ? true : false;
+    //   }
+    // });
+  }
+
+  getReportData() {
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+
+    console.log('token >>')
+    console.log(token);
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/reports/adhoc/summary';
+    return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   handleEdit(rowObj: any, rowData: any) {

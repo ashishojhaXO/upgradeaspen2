@@ -1,0 +1,42 @@
+<table>
+  <tr>
+    <td style="vertical-align: top;"></td>
+    <td>
+      <div class="col-md-12 col-lg-12 col-sm-12 clone-parameter" style="margin-top: 30px">
+        <div *ngIf="dataObject && dataObject.buttons">
+          <div *ngFor="let button of dataObject.buttons; let i = index;" style="display: inline">
+            <button [id]="button.actionType" type="button" [ngClass]="button.disabled ? 'disabled':''" (click)="!button.disabled ? buttonEvent($event, i, modalAction) : 'javascript:void(0)'" [class]="button.cssClass" [ngStyle]="button.cssStyle">{{button.text}}</button>
+
+            <!-- Creates a checkbox if a button needs a confirmation/acceptance checkbox. Ex: SmartContract My Actions  -->
+            <label class="control control--checkbox" *ngIf="button.confirmationCheckboxRequired">
+              <input id="headerCheckBox" type="checkbox" (click)="handleConfirmationCheckBoxClick($event, button);" [disabled]='button.disabled'>
+              <div class="control__indicator"></div><span>{{button.confirmationCheckboxText}}</span>
+            </label>
+          </div>
+        </div>
+        <div>
+          <div class="dataTableWrapper" #dataTableWrapper></div>
+        </div>
+      </div>
+    </td>
+  </tr>
+</table>
+<app-pop-up-modal #modalAction>
+  <div class="app-modal-header">
+    <div style="position: relative;top: 10px;left: 10px;" #modalHeader></div>
+  </div>
+  <div class="app-modal-body">
+    <div #modalBody></div>
+    <input *ngIf="selectedEvent && selectedEvent.target.id === Common.actionTypes.EXPORT" type="text" [value]="exportFilename" [(ngModel)]="exportFilename"/>
+  </div>
+
+  <div class="app-modal-footer">
+    <button type="button" class="btn btn-primary" (click)="confirmAction(modalAction)">
+      Confirm
+    </button>
+    <button type="button" class="btn btn-primary" (click)="closeModal(modalAction)">
+      Cancel
+    </button>
+  </div>
+</app-pop-up-modal>
+
