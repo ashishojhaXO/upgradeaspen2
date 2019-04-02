@@ -1,5 +1,5 @@
 <div class="report-builder-container">
-<form action="#" novalidate #reportform="ngForm">
+<form action="#" novalidate #reportform="ngForm" *ngIf="reportTemplate">
   <app-sidebar1>
     <div class="sidebar-title adhoc-report-sidebar-title">
       <h4>CREATE NEW REPORT</h4>
@@ -13,8 +13,8 @@
         </div>
         <div class="sidebar-form-control form-group adhoc-report-sidebar-form-control">
           <input type="text" Placeholder="Report Name" id="reportName" name="reportName" required #reportName="ngModel" class="form-fields adhoc-report-input-box" [(ngModel)]="dataModel.reportName" maxlength="250" >
-          
-          <div class="errorText" *ngIf="reportName.invalid && reportName.touched ">
+
+          <div class="errorText" *ngIf="reportName && reportName.invalid && reportName.touched ">
             <div class="warning-icon">
               <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
               <span class="tooltiptext">Please enter report name </span>
@@ -91,7 +91,7 @@
         </div>
         <div class="sidebar-form-control form-group adhoc-report-sidebar-form-control">
           <input type="text" Placeholder="File Name" id="fileName" name="fileName" required #fileName="ngModel" class="form-fields adhoc-report-input-box" [(ngModel)]="dataModel.formatAndSchedule.fileName" maxlength="250" >
-          <div class="errorText" *ngIf="fileName.invalid && fileName.touched ">
+          <div class="errorText" *ngIf="reportName && fileName.invalid && fileName.touched ">
               <div class="warning-icon">
                 <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
                 <span class="tooltiptext">Please enter file name </span>
@@ -115,7 +115,7 @@
           </div>
         </div>
 
-        <div class="sidebar-form-control adhoc-report-sidebar-form-control active-switch-div ">
+        <div class="sidebar-form-control adhoc-report-sidebar-form-control active-switch-div " style="margin-top: 30px">
           <div class="active-switch-label"> Active</div>
           <div class="active-switch-checkbox">
             <app-checkbox-switch [value]="dataModel.formatAndSchedule.active" (onChange)="onActiveChange($event)"></app-checkbox-switch>
@@ -160,7 +160,7 @@
         </div>
 
         <div class="sidebar-form-control adhoc-report-sidebar-form-control" *ngIf="!dataModel.formatAndSchedule.oneTimeRun && (isFrequencyMonthly || isFrequencyQuarterly)">
-          Day Of Month 
+          Day Of Month
         </div>
         <div class="sidebar-form-control adhoc-report-sidebar-form-control form-group" *ngIf="!dataModel.formatAndSchedule.oneTimeRun && (isFrequencyMonthly || isFrequencyQuarterly)">
           <app-multiselect-drop-down [data]="dayOfMonthList"
@@ -185,7 +185,7 @@
         <div class="sidebar-form-control adhoc-report-sidebar-form-control form-group" *ngIf="!dataModel.formatAndSchedule.oneTimeRun">
           <my-date-picker class="form-fields form-fileds-date-pick adhoc-report-input-box" [options]="myDatePickerOptions"
                           [(ngModel)]="dataModel.formatAndSchedule.startDate" name="startDate" #startDate="ngModel" [ngModelOptions]="{standalone: false}"></my-date-picker>
-            <div class="errorText" *ngIf="!startDate.invalid && startDate.touched ">
+            <div class="errorText" *ngIf="reportName && startDate.invalid && startDate.touched ">
               <div class="warning-icon">
                 <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
                 <span class="tooltiptext">Please select start date </span>
@@ -200,7 +200,7 @@
           <my-date-picker class="form-fields form-fileds-date-pick adhoc-report-input-box" [options]="myDatePickerOptions"
                           [(ngModel)]="dataModel.formatAndSchedule.endDate" #endDate="ngModel"
                           [ngModelOptions]="{standalone: false}" name="endDate"></my-date-picker>
-                <div class="errorText" *ngIf="!endDate.invalid && endDate.touched ">
+                <div class="errorText" *ngIf="reportName && endDate.invalid && endDate.touched ">
                   <div class="warning-icon">
                     <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
                     <span class="tooltiptext">Please select end date </span>
@@ -221,7 +221,7 @@
       </app-accordion>
     </div>
 
-    <div class="sidebar-sub-title">      
+    <div class="sidebar-sub-title">
       <app-accordion [title]="'EMAIL DELIVERY'" [leaveExpanded]="true">
         <div class="sidebar-form-control adhoc-report-sidebar-form-control">
           Email addresses
@@ -229,7 +229,7 @@
         <div class="sidebar-form-control adhoc-report-sidebar-form-control form-group">
           <input type="text" Placeholder="Email Address" class="form-fields adhoc-report-input-box" id="email" name="email" #email="ngModel" [(ngModel)]="dataModel.emailDelivery.email"
                  maxlength="250" >
-                 <div class="errorText" *ngIf="email.touched ">
+                 <div class="errorText" *ngIf="email && email.touched ">
                   <div class="warning-icon">
                     <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
                     <span class="tooltiptext">Please enter email address </span>
@@ -240,80 +240,80 @@
       </app-accordion>
     </div>
 
-    <div class="sidebar-sub-title">
-      <app-accordion [title]="'FTP DELIVERY'">
-        <div class="sidebar-form-control adhoc-report-sidebar-form-control">
-          Host
-        </div>
-        <div class="sidebar-form-control form-group adhoc-report-sidebar-form-control">
-          <input type="text" Placeholder="" class="form-fields adhoc-report-input-box" [(ngModel)]="dataModel.ftpDelivery.host"
-                 maxlength="250" [ngModelOptions]="{standalone: true}">
-        </div>
+    <!--<div class="sidebar-sub-title">-->
+      <!--<app-accordion [title]="'FTP DELIVERY'">-->
+        <!--<div class="sidebar-form-control adhoc-report-sidebar-form-control">-->
+          <!--Host-->
+        <!--</div>-->
+        <!--<div class="sidebar-form-control form-group adhoc-report-sidebar-form-control">-->
+          <!--<input type="text" Placeholder="" class="form-fields adhoc-report-input-box" [(ngModel)]="dataModel.ftpDelivery.host"-->
+                 <!--maxlength="250" [ngModelOptions]="{standalone: true}">-->
+        <!--</div>-->
 
-        <div class="sidebar-form-control adhoc-report-sidebar-form-control">
-          User ID
-        </div>
-        <div class="sidebar-form-control form-group adhoc-report-sidebar-form-control">
-          <input type="text" Placeholder="" class="form-fields adhoc-report-input-box" [(ngModel)]="dataModel.ftpDelivery.userId"
-                 maxlength="250" [ngModelOptions]="{standalone: true}">
-        </div>
+        <!--<div class="sidebar-form-control adhoc-report-sidebar-form-control">-->
+          <!--User ID-->
+        <!--</div>-->
+        <!--<div class="sidebar-form-control form-group adhoc-report-sidebar-form-control">-->
+          <!--<input type="text" Placeholder="" class="form-fields adhoc-report-input-box" [(ngModel)]="dataModel.ftpDelivery.userId"-->
+                 <!--maxlength="250" [ngModelOptions]="{standalone: true}">-->
+        <!--</div>-->
 
-        <div class="sidebar-form-control adhoc-report-sidebar-form-control">
-          Directory
-        </div>
-        <div class="sidebar-form-control form-group adhoc-report-sidebar-form-control">
-          <input type="text" Placeholder="" class="form-fields adhoc-report-input-box" [(ngModel)]="dataModel.ftpDelivery.directory"
-                 maxlength="250" [ngModelOptions]="{standalone: true}">
-        </div>
+        <!--<div class="sidebar-form-control adhoc-report-sidebar-form-control">-->
+          <!--Directory-->
+        <!--</div>-->
+        <!--<div class="sidebar-form-control form-group adhoc-report-sidebar-form-control">-->
+          <!--<input type="text" Placeholder="" class="form-fields adhoc-report-input-box" [(ngModel)]="dataModel.ftpDelivery.directory"-->
+                 <!--maxlength="250" [ngModelOptions]="{standalone: true}">-->
+        <!--</div>-->
 
-        <div class="sidebar-form-control adhoc-report-sidebar-form-control">
-          Password
-        </div>
-        <div class="sidebar-form-control form-group adhoc-report-sidebar-form-control">
-          <input type="text" Placeholder="" class="form-fields adhoc-report-input-box" [(ngModel)]="dataModel.ftpDelivery.password"
-                 maxlength="250" [ngModelOptions]="{standalone: true}">
-        </div>
-
-
-        <div class="sidebar-form-control adhoc-report-sidebar-form-control">
-          Port
-        </div>
-        <div class="sidebar-form-control form-group adhoc-report-sidebar-form-control">
-          <input type="text" Placeholder="" class="form-fields adhoc-report-input-box" [(ngModel)]="dataModel.ftpDelivery.port"
-                 maxlength="250" [ngModelOptions]="{standalone: true}">
-        </div>
-
-      </app-accordion>
-    </div>
-
-    <div class="sidebar-sub-title">
-      <app-accordion [title]="'S3 DELIVERY'">
-        <div class="sidebar-form-control adhoc-report-sidebar-form-control">
-          Bucket
-        </div>
-        <div class="sidebar-form-control form-group adhoc-report-sidebar-form-control">
-          <input type="text" Placeholder="" class="form-fields adhoc-report-input-box" [(ngModel)]="dataModel.s3Delivery.bucket"
-                 maxlength="250" [ngModelOptions]="{standalone: true}">
-        </div>
-
-        <div class="sidebar-form-control adhoc-report-sidebar-form-control">
-          Access Key ID
-        </div>
-        <div class="sidebar-form-control form-group adhoc-report-sidebar-form-control">
-          <input type="text" Placeholder="" class="form-fields adhoc-report-input-box" [(ngModel)]="dataModel.s3Delivery.accessKeyId"
-                 maxlength="250" [ngModelOptions]="{standalone: true}">
-        </div>
+        <!--<div class="sidebar-form-control adhoc-report-sidebar-form-control">-->
+          <!--Password-->
+        <!--</div>-->
+        <!--<div class="sidebar-form-control form-group adhoc-report-sidebar-form-control">-->
+          <!--<input type="text" Placeholder="" class="form-fields adhoc-report-input-box" [(ngModel)]="dataModel.ftpDelivery.password"-->
+                 <!--maxlength="250" [ngModelOptions]="{standalone: true}">-->
+        <!--</div>-->
 
 
-        <div class="sidebar-form-control adhoc-report-sidebar-form-control">
-          Secret Access Key
-        </div>
-        <div class="sidebar-form-control form-group adhoc-report-sidebar-form-control">
-          <input type="text" Placeholder="" class="form-fields adhoc-report-input-box" [(ngModel)]="dataModel.s3Delivery.secrectAccessKey"
-                 maxlength="250" [ngModelOptions]="{standalone: true}">
-        </div>
-      </app-accordion>
-    </div>
+        <!--<div class="sidebar-form-control adhoc-report-sidebar-form-control">-->
+          <!--Port-->
+        <!--</div>-->
+        <!--<div class="sidebar-form-control form-group adhoc-report-sidebar-form-control">-->
+          <!--<input type="text" Placeholder="" class="form-fields adhoc-report-input-box" [(ngModel)]="dataModel.ftpDelivery.port"-->
+                 <!--maxlength="250" [ngModelOptions]="{standalone: true}">-->
+        <!--</div>-->
+
+      <!--</app-accordion>-->
+    <!--</div>-->
+
+    <!--<div class="sidebar-sub-title">-->
+      <!--<app-accordion [title]="'S3 DELIVERY'">-->
+        <!--<div class="sidebar-form-control adhoc-report-sidebar-form-control">-->
+          <!--Bucket-->
+        <!--</div>-->
+        <!--<div class="sidebar-form-control form-group adhoc-report-sidebar-form-control">-->
+          <!--<input type="text" Placeholder="" class="form-fields adhoc-report-input-box" [(ngModel)]="dataModel.s3Delivery.bucket"-->
+                 <!--maxlength="250" [ngModelOptions]="{standalone: true}">-->
+        <!--</div>-->
+
+        <!--<div class="sidebar-form-control adhoc-report-sidebar-form-control">-->
+          <!--Access Key ID-->
+        <!--</div>-->
+        <!--<div class="sidebar-form-control form-group adhoc-report-sidebar-form-control">-->
+          <!--<input type="text" Placeholder="" class="form-fields adhoc-report-input-box" [(ngModel)]="dataModel.s3Delivery.accessKeyId"-->
+                 <!--maxlength="250" [ngModelOptions]="{standalone: true}">-->
+        <!--</div>-->
+
+
+        <!--<div class="sidebar-form-control adhoc-report-sidebar-form-control">-->
+          <!--Secret Access Key-->
+        <!--</div>-->
+        <!--<div class="sidebar-form-control form-group adhoc-report-sidebar-form-control">-->
+          <!--<input type="text" Placeholder="" class="form-fields adhoc-report-input-box" [(ngModel)]="dataModel.s3Delivery.secrectAccessKey"-->
+                 <!--maxlength="250" [ngModelOptions]="{standalone: true}">-->
+        <!--</div>-->
+      <!--</app-accordion>-->
+    <!--</div>-->
 
     <!--<div class="col-md-12">-->
       <!--<div class="row">-->
@@ -341,8 +341,8 @@
                                          [selectedItems]="selectedPartnerType"
                                          name="partnertype"
                                          >
-              </app-multiselect-drop-down>              
-              <div class="errorText" *ngIf="partnertype.touched ">
+              </app-multiselect-drop-down>
+              <div class="errorText" *ngIf="partnertype && partnertype.touched ">
                 <div class="warning-icon">
                   <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
                   <span class="tooltiptext">Please select partner type </span>
@@ -352,29 +352,29 @@
           </div>
         </div>
 
-        <div class="step-main-div sidebar-form-control ">
-          <div class="step-sub-div">
-            <label class="step-no">Step 2 : </label>
-            <p class="step-name">Transaction Status </p>
-            <div class="step-drop-down">
-              <app-multiselect-drop-down [data]="transactionStatusList"
-                                         [settings]="transactionStatusDropDownSettings"
-                                         [selectedItems]="selectedTransactionStatus"
-                                         name="transactionStatusList">
-              </app-multiselect-drop-down>
-              <div class="errorText" *ngIf="selectedTransactionStatus?.length <= 0 || transactionStatusList.invalid && (transactionStatusList.dirty || transactionStatusList.touched) ">
-                <div class="warning-icon">
-                  <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-                  <span class="tooltiptext">Please select Transaction Status</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <!--<div class="step-main-div sidebar-form-control ">-->
+          <!--<div class="step-sub-div">-->
+            <!--<label class="step-no">Step 2 : </label>-->
+            <!--<p class="step-name">Transaction Status </p>-->
+            <!--<div class="step-drop-down">-->
+              <!--<app-multiselect-drop-down [data]="transactionStatusList"-->
+                                         <!--[settings]="transactionStatusDropDownSettings"-->
+                                         <!--[selectedItems]="selectedTransactionStatus"-->
+                                         <!--name="transactionStatusList">-->
+              <!--</app-multiselect-drop-down>-->
+              <!--<div class="errorText" *ngIf="selectedTransactionStatus?.length <= 0 || transactionStatusList.invalid && (transactionStatusList.dirty || transactionStatusList.touched) ">-->
+                <!--<div class="warning-icon">-->
+                  <!--<i class="fa fa-exclamation-circle" aria-hidden="true"></i>-->
+                  <!--<span class="tooltiptext">Please select Transaction Status</span>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
 
         <div class="step-main-div sidebar-form-control ">
           <div class="step-sub-div">
-            <label class="step-no">Step 3 : </label>
+            <label class="step-no">Step 2 : </label>
             <p class="step-name">Filters </p>
             <div class="step-drop-down">
               <app-multiselect-drop-down [data]="filterList"
@@ -398,7 +398,7 @@
                     [popupDataAction]="this"
                     (valueUpdate)="updateFilterConfig($event, filterItem)"
                     [filterConfig]="filterItem.filterConfig">
-                  </app-popup-button>                  
+                  </app-popup-button>
                 </div>
               </div>
               <div class="rendered-sub-filter-fields-div">
@@ -414,7 +414,7 @@
 
         <div class="step-main-div sidebar-form-control ">
           <div class="step-sub-div">
-            <label class="step-no">Step 4 : </label>
+            <label class="step-no">Step 3 : </label>
             <p class="step-name">Dimensions </p>
             <div class="step-drop-down rendered-sub-filter-button">
               <app-popup-button
@@ -425,7 +425,7 @@
                 [dependentConfig]="getDependentConfig(dimensionPopupConfig)">
               </app-popup-button>
               <div class="errorText" *ngIf="dimensionTagsList?.length <= 0">
-                <div class="warning-icon">
+                <div class="warning-icon" style="left: 36px; top: -6px">
                   <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
                   <span class="tooltiptext">Please select Dimensions </span>
                 </div>
@@ -449,7 +449,7 @@
 
         <div class="step-main-div sidebar-form-control ">
           <div class="step-sub-div">
-            <label class="step-no">Step 5 : </label>
+            <label class="step-no">Step 4 : </label>
             <p class="step-name">Metrics </p>
             <div class="step-drop-down rendered-sub-filter-button">
               <app-popup-button
@@ -460,7 +460,7 @@
                 [dependentConfig]="getDependentConfig(metricsPopupConfig)">
               </app-popup-button>
               <div class="errorText" *ngIf="metricsTagsList?.length <= 0">
-                <div class="warning-icon">
+                <div class="warning-icon" style="left: 36px; top: -6px">
                   <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
                   <span class="tooltiptext">Please select Metrics </span>
                 </div>
@@ -484,113 +484,113 @@
           </ul>
         </div>
 
-        <div class="step-main-div sidebar-form-control ">
-          <div class="step-sub-div">
-            <label class="step-no">ALERTS </label>
-            <div class="step-name">
-              <input #alertCheckBoxSwitch
-                     id="alertCheckBoxSwitch"
-                     type="checkbox"
-                     [checked]="isAlertRequired"
-                     (change)="handleAlertRequiredOnChange(alertCheckBoxSwitch.checked)"/>
-            </div>
-            <div class="step-drop-down">
-            </div>
-          </div>
-        </div>
+        <!--<div class="step-main-div sidebar-form-control ">-->
+          <!--<div class="step-sub-div">-->
+            <!--<label class="step-no">ALERTS </label>-->
+            <!--<div class="step-name">-->
+              <!--<input #alertCheckBoxSwitch-->
+                     <!--id="alertCheckBoxSwitch"-->
+                     <!--type="checkbox"-->
+                     <!--[checked]="isAlertRequired"-->
+                     <!--(change)="handleAlertRequiredOnChange(alertCheckBoxSwitch.checked)"/>-->
+            <!--</div>-->
+            <!--<div class="step-drop-down">-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
 
-        <div class="alerts-main-div sidebar-form-control " *ngIf="isAlertRequired">
+        <!--<div class="alerts-main-div sidebar-form-control " *ngIf="isAlertRequired">-->
 
-          <div class="rendered-alerts-div">
+          <!--<div class="rendered-alerts-div">-->
 
-            <div class="rendered-alerts-generate-report-check-div">
-              <input #generateReportCheckBoxSwitch
-                     id="generateReportCheckBoxSwitch"
-                     type="checkbox"
-                     [checked]="generateReport"
-                     (change)="handleGenerateReportOnChange(generateReportCheckBoxSwitch.checked)"/>
-            </div>
+            <!--<div class="rendered-alerts-generate-report-check-div">-->
+              <!--<input #generateReportCheckBoxSwitch-->
+                     <!--id="generateReportCheckBoxSwitch"-->
+                     <!--type="checkbox"-->
+                     <!--[checked]="generateReport"-->
+                     <!--(change)="handleGenerateReportOnChange(generateReportCheckBoxSwitch.checked)"/>-->
+            <!--</div>-->
 
-            <div class="rendered-alerts-generate-report-label-div">
-               Generate Report even If alert is not triggered
-            </div>
-          </div>
+            <!--<div class="rendered-alerts-generate-report-label-div">-->
+               <!--Generate Report even If alert is not triggered-->
+            <!--</div>-->
+          <!--</div>-->
 
-          <div class="rendered-alerts-div">
-            <div class="rendered-alerts-label-div">
-              Type
-            </div>
-            <div class="rendered-sub-fields-div">
-              <app-multiselect-drop-down [data]="alertTypeList"
-                                         [settings]="alertTypeDropDownSettings"
-                                         [selectedItems]="selectedAlertType"
-                                         (onSelect)="onFilterSelect($event)"
-                                         (onDeSelect)="onFilterDeSelect($event)"
-                                         (onSelectAll)="onFilterSelectAll($event)"
-                                         (onDeSelectAll)="onFilterDeSelectAll($event)">
-              </app-multiselect-drop-down>
-            </div>
-          </div>
+          <!--<div class="rendered-alerts-div">-->
+            <!--<div class="rendered-alerts-label-div">-->
+              <!--Type-->
+            <!--</div>-->
+            <!--<div class="rendered-sub-fields-div">-->
+              <!--<app-multiselect-drop-down [data]="alertTypeList"-->
+                                         <!--[settings]="alertTypeDropDownSettings"-->
+                                         <!--[selectedItems]="selectedAlertType"-->
+                                         <!--(onSelect)="onFilterSelect($event)"-->
+                                         <!--(onDeSelect)="onFilterDeSelect($event)"-->
+                                         <!--(onSelectAll)="onFilterSelectAll($event)"-->
+                                         <!--(onDeSelectAll)="onFilterDeSelectAll($event)">-->
+              <!--</app-multiselect-drop-down>-->
+            <!--</div>-->
+          <!--</div>-->
 
-          <div class="rendered-alerts-div" *ngIf="movingThresholdEnable">
-            <div class="rendered-alerts-label-div">
-              Moving Average Period
-            </div>
-            <div class="rendered-sub-fields-div">
-              <app-multiselect-drop-down [data]="alertMovingAvgPeriod"
-                                         [settings]="alertTypeDropDownSettings"
-                                         [selectedItems]="selectedMovingAvgPeriodType"
-                                         (onSelect)="onFilterSelectMoving($event)"
-                                         (onDeSelect)="onFilterDeSelect($event)"
-                                         (onSelectAll)="onFilterSelectAll($event)"
-                                         (onDeSelectAll)="onFilterDeSelectAll($event)">
-              </app-multiselect-drop-down>
-            </div>
-          </div>
-          <div class="clearfix" style="background-color: #f7f7f7;"></div>
-          <div class="rendered-alerts-div">
-            <div class="rendered-alerts-label-div">
-              Metric
-            </div>
-            <div class="rendered-sub-fields-div">
-              <app-multiselect-drop-down [data]="alertMetricList"
-                                         [settings]="alertMetricDropDownSettings"
-                                         [selectedItems]="selectedAlertMetric"
-                                         (onSelect)="onFilterSelectMetric($event)"
-                                         (onDeSelect)="onFilterDeSelect($event)"
-                                         (onSelectAll)="onFilterSelectAll($event)"
-                                         (onDeSelectAll)="onFilterDeSelectAll($event)">
-              </app-multiselect-drop-down>
-            </div>
-          </div>
+          <!--<div class="rendered-alerts-div" *ngIf="movingThresholdEnable">-->
+            <!--<div class="rendered-alerts-label-div">-->
+              <!--Moving Average Period-->
+            <!--</div>-->
+            <!--<div class="rendered-sub-fields-div">-->
+              <!--<app-multiselect-drop-down [data]="alertMovingAvgPeriod"-->
+                                         <!--[settings]="alertTypeDropDownSettings"-->
+                                         <!--[selectedItems]="selectedMovingAvgPeriodType"-->
+                                         <!--(onSelect)="onFilterSelectMoving($event)"-->
+                                         <!--(onDeSelect)="onFilterDeSelect($event)"-->
+                                         <!--(onSelectAll)="onFilterSelectAll($event)"-->
+                                         <!--(onDeSelectAll)="onFilterDeSelectAll($event)">-->
+              <!--</app-multiselect-drop-down>-->
+            <!--</div>-->
+          <!--</div>-->
+          <!--<div class="clearfix" style="background-color: #f7f7f7;"></div>-->
+          <!--<div class="rendered-alerts-div">-->
+            <!--<div class="rendered-alerts-label-div">-->
+              <!--Metric-->
+            <!--</div>-->
+            <!--<div class="rendered-sub-fields-div">-->
+              <!--<app-multiselect-drop-down [data]="alertMetricList"-->
+                                         <!--[settings]="alertMetricDropDownSettings"-->
+                                         <!--[selectedItems]="selectedAlertMetric"-->
+                                         <!--(onSelect)="onFilterSelectMetric($event)"-->
+                                         <!--(onDeSelect)="onFilterDeSelect($event)"-->
+                                         <!--(onSelectAll)="onFilterSelectAll($event)"-->
+                                         <!--(onDeSelectAll)="onFilterDeSelectAll($event)">-->
+              <!--</app-multiselect-drop-down>-->
+            <!--</div>-->
+          <!--</div>-->
 
-          <div class="rendered-alerts-div">
-            <div class="rendered-alerts-label-div">
-              Threshold
-            </div>
-            <div class="rendered-sub-fields-div">
-              <app-multiselect-drop-down [data]="alertThresholdData"
-                                         [settings]="alertThresholdDropDownSettings"
-                                         [selectedItems]="selectedAlertThreshold"
-                                         (onSelect)="onFilterSelectThreshold($event)"
-                                         (onDeSelect)="onFilterDeSelect($event)"
-                                         (onSelectAll)="onFilterSelectAll($event)"
-                                         (onDeSelectAll)="onFilterDeSelectAll($event)">
-              </app-multiselect-drop-down>
-            </div>
-          </div>
+          <!--<div class="rendered-alerts-div">-->
+            <!--<div class="rendered-alerts-label-div">-->
+              <!--Threshold-->
+            <!--</div>-->
+            <!--<div class="rendered-sub-fields-div">-->
+              <!--<app-multiselect-drop-down [data]="alertThresholdData"-->
+                                         <!--[settings]="alertThresholdDropDownSettings"-->
+                                         <!--[selectedItems]="selectedAlertThreshold"-->
+                                         <!--(onSelect)="onFilterSelectThreshold($event)"-->
+                                         <!--(onDeSelect)="onFilterDeSelect($event)"-->
+                                         <!--(onSelectAll)="onFilterSelectAll($event)"-->
+                                         <!--(onDeSelectAll)="onFilterDeSelectAll($event)">-->
+              <!--</app-multiselect-drop-down>-->
+            <!--</div>-->
+          <!--</div>-->
 
-          <div class="rendered-alerts-div" *ngIf="thresholdValueField">
-            <div class="rendered-alerts-label-div">
+          <!--<div class="rendered-alerts-div" *ngIf="thresholdValueField">-->
+            <!--<div class="rendered-alerts-label-div">-->
 
-            </div>
-            <div class="rendered-sub-fields-div">
-              <input type="text" Placeholder="Threshold Value" class="form-fields adhoc-report-input-box"
-                     [(ngModel)]="alertThresholdValue" maxlength="250" [ngModelOptions]="{standalone: true}">
-            </div>
-          </div>
+            <!--</div>-->
+            <!--<div class="rendered-sub-fields-div">-->
+              <!--<input type="text" Placeholder="Threshold Value" class="form-fields adhoc-report-input-box"-->
+                     <!--[(ngModel)]="alertThresholdValue" maxlength="250" [ngModelOptions]="{standalone: true}">-->
+            <!--</div>-->
+          <!--</div>-->
 
-        </div>
+        <!--</div>-->
 
         <div class="sidebar-form-control">
           <button type="button" class="btn data-btn btn-default btn-width-100" id="saveRun" (click)="handleSubmit('saveRun', reportform)">Save & Run</button>

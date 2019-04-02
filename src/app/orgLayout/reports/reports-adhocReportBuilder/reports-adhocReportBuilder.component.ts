@@ -17,6 +17,8 @@ import * as reportsFilterConfig from '../reportsFilterConfig.json';
 import {PopupDataAction} from '../../../shared/components/app-popup-button/popup-data-action';
 import {ReportsUtil} from '../../../shared/util/reports-util';
 import * as _ from 'lodash';
+import {Http, Headers, RequestOptions} from '@angular/http';
+import { OktaAuthService } from '../../../../services/okta.service';
 // import * as Validate from './validator';
 
 const dateObj = new Date();
@@ -553,6 +555,8 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   mappingStatusEnabled = false;
   partnerType = '';
   isEditMode = false;
+  widget: any;
+  api_fs: any;
 
   @ViewChild('filterModal') public filterModalComponent: PopUpModalComponent;
   // @ViewChild('reportform') reportform: NgForm;
@@ -565,12 +569,16 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
               private route: ActivatedRoute,
               private element: ElementRef,
               private reportsUtil: ReportsUtil,
-              private authService: AuthService
+              private authService: AuthService,
+              private okta: OktaAuthService,
+              private http: Http
               ) {
   }
 
   ngOnInit() {
 
+    this.widget = this.okta.getWidget();
+    this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.route.params.subscribe(
       (params: Params) => {
         if (params['id']) {
@@ -661,61 +669,75 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   }
 
   getReportDetails() {
-    this.reportsService.getReportTemplate(this.context).subscribe(response => {
+    this.getReportData().subscribe(response => {
       console.log(response);
-      if (response) {
-        const templates = response.docs;
-        if (templates && templates.length > 0) {
-          this.reportTemplate = templates[0];
+      if (response && response.body) {
+        this.reportTemplate = response.body;
 
-          if (this.reportTemplate.report.period && this.reportTemplate.report.period.duration
+        if (this.reportTemplate.report.period && this.reportTemplate.report.period.duration
             && this.reportTemplate.report.period.duration.length > 0) {
-            this.periodList = this.reportTemplate.report.period.duration;
-            this.aggregationList = this.reportTemplate.report.period.aggregation;
-          }
+          this.periodList = this.reportTemplate.report.period.duration;
+          this.aggregationList = this.reportTemplate.report.period.aggregation;
+        }
 
-          this.fileTypeList = this.reportTemplate.report.delivery.extension;
-          this.frequencyList = this.reportTemplate.report.delivery.frequency;
-          this.transactionStatusList = this.reportTemplate.mappingOptions;
+        this.fileTypeList = this.reportTemplate.report.delivery.extension;
+        this.frequencyList = this.reportTemplate.report.delivery.frequency;
+        this.transactionStatusList = this.reportTemplate.mappingOptions;
 
-          if (this.reportTemplate.report.filterList && this.reportTemplate.report.filterList.length > 0
+        if (this.reportTemplate.report.filterList && this.reportTemplate.report.filterList.length > 0
             && this.reportTemplate.report.filterList[0].fieldSets && this.reportTemplate.report.filterList[0].fieldSets.length > 0) {
-            if (this.reportTemplate.report.filterList[0].fieldSets[0].fields) {
-              this.filterList = this.reportTemplate.report.filterList[0].fieldSets[0].fields;
-              this.populateFilterConfig();
-            }
+          if (this.reportTemplate.report.filterList[0].fieldSets[0].fields) {
+            this.filterList = this.reportTemplate.report.filterList[0].fieldSets[0].fields;
+            this.populateFilterConfig();
           }
+        }
 
-          if (this.reportTemplate.report.dimensions && this.reportTemplate.report.dimensions.length > 0
+        if (this.reportTemplate.report.dimensions && this.reportTemplate.report.dimensions.length > 0
             && this.reportTemplate.report.dimensions[0].fieldSets && this.reportTemplate.report.dimensions[0].fieldSets.length > 0) {
-            if (this.reportTemplate.report.dimensions[0].fieldSets[0].fields) {
-              this.dimensionList = this.reportTemplate.report.dimensions[0].fieldSets[0].fields;
+          if (this.reportTemplate.report.dimensions[0].fieldSets[0].fields) {
+            this.dimensionList = this.reportTemplate.report.dimensions[0].fieldSets[0].fields;
 
-              this.dimensionsPopupData.data
+            this.dimensionsPopupData.data
                 = this.dimensionList.map(dimension => {
-                return {id: dimension.f7_name, label: dimension.report_alias};
-              });
-            }
+              return {id: dimension.f7_name, label: dimension.report_alias};
+            });
           }
+        }
 
-          if (this.reportTemplate.report.metrics && this.reportTemplate.report.metrics.length > 0
+        if (this.reportTemplate.report.metrics && this.reportTemplate.report.metrics.length > 0
             && this.reportTemplate.report.metrics[0].fieldSets && this.reportTemplate.report.metrics[0].fieldSets.length > 0) {
-            if (this.reportTemplate.report.metrics[0].fieldSets[0].fields) {
-              this.metricsList = this.reportTemplate.report.metrics[0].fieldSets[0].fields;
+          if (this.reportTemplate.report.metrics[0].fieldSets[0].fields) {
+            this.metricsList = this.reportTemplate.report.metrics[0].fieldSets[0].fields;
 
-              this.metricsPopupData.data = this.metricsList.map(metric => {
-                return {id: metric.f7_name, label: metric.report_alias};
-              });
-            }
+            this.metricsPopupData.data = this.metricsList.map(metric => {
+              return {id: metric.f7_name, label: metric.report_alias};
+            });
           }
-
-
         }
       }
     }, error => {
       const message = JSON.parse(error._body).error.errors[0].message;
       this.toastr.error('ERROR!', message);
     });
+  }
+
+  getReportData() {
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+
+    console.log('token >>')
+    console.log(token);
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/reports/adhoc/org/2/template';
+    return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
 
