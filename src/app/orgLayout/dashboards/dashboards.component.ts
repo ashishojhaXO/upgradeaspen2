@@ -101,15 +101,14 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       });
     }
 
-    console.log('applyFilter >>>>')
-    console.log(applyFilter);
-
-    const client = localStorage.getItem('client') || '';
-
     if (applyFilter.length) {
 
-      const token = localStorage.getItem('jwt');
-      const headers = new Headers({'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token});
+      const AccessToken: any = this.widget.tokenManager.get('accessToken');
+      let token = '';
+      if (AccessToken) {
+        token = AccessToken.accessToken;
+      }
+      const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
       const options = new RequestOptions({headers: headers});
 
       const dataObj = {
@@ -119,11 +118,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         limit: 10
       };
 
-      console.log('dataObj >>>>>>')
-      console.log(JSON.stringify(dataObj));
-
       return this.http
-        .post('https://dev-api.fusionseven.net/api/v1/reportTransactions/getFilters', dataObj, options )
+        .post(this.api_fs.api + '/api/reports/org/homd/filters', dataObj, options )
         .map(res => {
           const result = res.json();
           const ret = [];
@@ -136,27 +132,20 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         });
     } else {
       return this.http
-        .get('https://dev-api.fusionseven.net/api/v1/reportTransactions/getSeedFilters')
-        .map(res => {
-          if (res['_body']) {
-            const result = JSON.parse(res['_body']);
-            const data = result[filterConfig.f7Name];
-            const ret = [];
-
-            console.log('result >>')
-            console.log(result);
-
-            console.log('filterConfig.f7Name >>')
-            console.log(filterConfig);
-
-            if (data.length) {
-              data.forEach(function (item) {
-                ret.push({id: item, label: item});
-              });
+          .get(this.api_fs.api + '/api/reports/org/homd/seed-filters')
+          .map(res => {
+            if (res['_body']) {
+              const result = JSON.parse(res['_body']);
+              const data = result[filterConfig.f7Name];
+              const ret = [];
+              if (data && data.length) {
+                data.forEach(function (item) {
+                  ret.push({id: item, label: item});
+                });
+              }
+              return ret;
             }
-            return ret;
-          }
-        });
+          });
     }
   }
 
@@ -207,11 +196,11 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         .getFilter(this.dashboardType)
         .then(
           response => {
-            console.log('response >>>')
-            console.log(response);
+            console.log('response filter >>>')
+            console.log(JSON.stringify(response));
             this.showSpinner = false;
-            if (response.docs && response.docs.length) {
-              this.populateFilters(response.docs[0]);
+            if (response && response.data) {
+              this.populateFilters(response.data);
               this.search();
             }
           },
@@ -239,24 +228,30 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
        var getSelectedTypeConfig = dashboardConfig.views.find(x => x.name === selectedType[0].values);
        this.selectedView = getSelectedTypeConfig.name;
        if (getSelectedTypeConfig) {
-         getSelectedTypeConfig.filters.source.forEach(function (filter, index) {
-           var newFilter: any = {};
-           newFilter.f7Name = filter.f7_name;
-           newFilter.label = filter.alias;
-           newFilter.values = [];
-         //  newFilter.values = filter.default_value ? [filter.default_value] : [];
-           newFilter.isMultiSelect = filter.isMultiSelect;
-           newFilter.dependentOn = filter.checkParent ? [filter.checkParent] : [];
-           newFilter.includeCustom = false;
-           newFilter.isMultipleCustomType = false;
-           newFilter.isTag = false;
-           newFilter.placeHolderText = '';
-           newFilter.placeHolderValue = '';
-           newFilter.apiRequestUrl = '';
-           newFilter.apiRequestType = '';
-           newFilter.type = 'popupButton';
 
-           this.dashboardConfig.filterProps.push(newFilter);
+         console.log('getSelectedTypeConfig.filters.source >>>')
+         console.log(getSelectedTypeConfig.filters.source);
+
+         getSelectedTypeConfig.filters.source.forEach(function (filter, index) {
+           if(filter.f7_name != 'month') {
+             var newFilter: any = {};
+             newFilter.f7Name = filter.f7_name;
+             newFilter.label = filter.alias;
+             newFilter.values = [];
+             //  newFilter.values = filter.default_value ? [filter.default_value] : [];
+             newFilter.isMultiSelect = filter.isMultiSelect;
+             newFilter.dependentOn = filter.checkParent ? [filter.checkParent] : [];
+             newFilter.includeCustom = false;
+             newFilter.isMultipleCustomType = false;
+             newFilter.isTag = false;
+             newFilter.placeHolderText = '';
+             newFilter.placeHolderValue = '';
+             newFilter.apiRequestUrl = '';
+             newFilter.apiRequestType = '';
+             newFilter.type = 'popupButton';
+
+             this.dashboardConfig.filterProps.push(newFilter);
+           }
          }, this);
        }
 
@@ -271,7 +266,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     console.log(response);
 
     this.chartConfig = JSON.parse(JSON.stringify(chartConfig));
-    if (response.chartData.length) {
+    if (response.chartData && response.chartData.length) {
 
       if(this.dashboardType === 'pacing') {
 
@@ -564,10 +559,11 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     this.gridData = {};
     this.gridData['result'] = [];
 
-    console.log('pacingData.gridData[0] >>')
-    console.log(pacingData.gridData[0]);
+    if(pacingData.gridData && pacingData.gridData.length) {
 
-    if(pacingData.gridData.length) {
+      console.log('pacingData.gridData[0] >>')
+      console.log(pacingData.gridData[0]);
+
       const keys = Object.keys(pacingData.gridData[0]);
       for (let i = 0; i < keys.length; i++) {
         let header = {
@@ -582,19 +578,19 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         }
         this.headers.push(header);
       }
-    }
 
-    this.gridData['headers'] = this.headers;
-    this.gridData['options'] = this.options[0];
-    this.dashboard = 'schemaGrid';
-    let result = [];
-    for (let i = 0; i < pacingData.gridData.length; i++) {
-      result.push(pacingData.gridData[i]);
+      this.gridData['headers'] = this.headers;
+      this.gridData['options'] = this.options[0];
+      this.dashboard = 'schemaGrid';
+      let result = [];
+      for (let i = 0; i < pacingData.gridData.length; i++) {
+        result.push(pacingData.gridData[i]);
+      }
+      this.gridData['result'] = result;
+      this.dataObject.gridData = this.gridData;
+      console.log(this.gridData);
+      this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
     }
-    this.gridData['result'] = result;
-    this.dataObject.gridData = this.gridData;
-    console.log(this.gridData);
-    this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
    // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
   }
 
@@ -606,7 +602,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     }
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(this.api_fs.api + '/reports/dashboardtemplates?name=' + dashboardType, options).toPromise()
+    return this.http.get(this.api_fs.api + '/api/reports/org/Home%20Depot/template/dashboard', options).toPromise()
       .then(data => data.json())
       .catch();
   }
@@ -628,14 +624,14 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     }
 
     const dataObj: any = {};
-    dataObj.clientCode = 'btil';
+    dataObj.clientCode = 'homd';
     dataObj.dashboard = this.dashboardType;
 
     if(dataObj.dashboard === 'pacing') {
-      dataObj.dimensions = [''];
-      dataObj.metrics = ['fs_total_cost'];
+      // dataObj.dimensions = [''];
+      // dataObj.metrics = ['fs_total_cost'];
     } else if (dataObj.dashboard === 'spend') {
-      dataObj.isMultiCampaign = false;
+      // dataObj.isMultiCampaign = false;
     }
     var filters = [];
     this.dashboardConfig.filterProps.forEach(function (filter) {
@@ -657,7 +653,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       }
     }, this);
     dataObj.filter = filters;
-    dataObj.partnerType = ['prov'];
+   // dataObj.partnerType = ['prov'];
     dataObj.period = {
       f7Name: 'date',
       values: {
@@ -708,6 +704,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
     const data = JSON.stringify(dataObj);
+
+    console.log('data to post >>')
+    console.log(data);
+
     var url;
     if(dataObj.dashboard === 'pacing') {
       url = this.api_fs.api + '/api/reports/pacing';
