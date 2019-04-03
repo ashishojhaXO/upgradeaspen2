@@ -496,7 +496,7 @@ export class AppDataTableComponent implements OnInit, OnChanges {
             }
           },
           headerCallback: (thead, data, start, end, display) => {
-            let allBtnDisabled = result.length > 0 ? '' : 'disabled';
+            let allBtnDisabled = result && result.length > 0 ? '' : 'disabled';
             const childNodeText = thead.childNodes[0].innerText;
             allBtnDisabled = headers[0]['disabled'] ? 'disabled' : allBtnDisabled;
             if (this.checkboxCount) {
@@ -578,7 +578,7 @@ export class AppDataTableComponent implements OnInit, OnChanges {
             }
           },
           headerCallback: (thead, data, start, end, display) => {
-            let allBtnDisabled = result.length > 0 ? '' : 'disabled';
+            let allBtnDisabled = result && result.length > 0 ? '' : 'disabled';
             const childNodeText = thead.childNodes[0].innerText;
             allBtnDisabled = headers[0]['disabled'] ? 'disabled' : allBtnDisabled;
             if (this.checkboxCount) {
@@ -641,7 +641,7 @@ export class AppDataTableComponent implements OnInit, OnChanges {
           }
         },
         headerCallback: (thead, data, start, end, display) => {
-          let allBtnDisabled = result.length > 0 ? '' : 'disabled';
+          let allBtnDisabled = result && result.length > 0 ? '' : 'disabled';
           const childNodeText = thead.childNodes[0].innerText;
           allBtnDisabled = headers[0]['disabled'] ? 'disabled' : allBtnDisabled;
           if (this.checkboxCount) {
@@ -1285,7 +1285,7 @@ export class AppDataTableComponent implements OnInit, OnChanges {
         $(comThis.removeButtonID).removeClass('disabled');
       }
 
-      if (arrayPush.length === result.length && !disableSelectAll) {
+      if (result && arrayPush.length === result.length && !disableSelectAll) {
         table.find('tr th:first-of-type input').prop('checked', true);
       }
 
@@ -1379,7 +1379,7 @@ export class AppDataTableComponent implements OnInit, OnChanges {
 
     // Selecting Row Details
     if (option.isRowSelection) {
-      if (gridData.result.length > 0) {
+      if (gridData.result && gridData.result.length > 0) {
         table.find('tbody tr').eq(0).addClass('selected');
         $('.data-right-panel').addClass('active');
         table.find('tbody tr').parents(comThis.tableWrapper).addClass('active');
@@ -1576,7 +1576,7 @@ export class AppDataTableComponent implements OnInit, OnChanges {
   }
 
   dataDraw() {
-    if (this.dataObject.gridData) {
+    if (this.dataObject.gridData && this.dataObject.gridData.result) {
       const comThis = this;
       for (let i = 0; i < comThis.tableWidget.length; i++) {
         this.tableWidget[i].clear();

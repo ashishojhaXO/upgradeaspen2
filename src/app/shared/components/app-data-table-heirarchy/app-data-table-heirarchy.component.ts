@@ -291,10 +291,6 @@ export class AppDataTableHeirarchyComponent implements OnInit, OnChanges {
       }
       if (data['toggle'] && _.includes(data['data'], 'noDataFeed') && index === 0 ) {
         def['render'] = (dat, type, full, meta) => {
-
-          console.log('full >>>><<<<');
-          console.log(full);
-
           const toogleAction = !_.isUndefined(data.toggle) && data.toggle;
           const toogleData = !_.isUndefined(full['toggleOptions']) ? full['toggleOptions'].length > 0 ? true : false : false ;
           const toogleArow =  toogleAction && toogleData ? '<div class="arrow-right toogleFunctionSummary" style="margin:0 10px;"></div>' : '';
@@ -371,10 +367,6 @@ export class AppDataTableHeirarchyComponent implements OnInit, OnChanges {
         };
       }
       hKey.push(data.data);
-
-      console.log('defs >>')
-      console.log(defs);
-
       defs.push(def);
     }, this);
 

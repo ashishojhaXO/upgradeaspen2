@@ -39,6 +39,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   clientName: string;
   localData: any;
   reportId: any;
+  _reportId: any;
   adhocReportBuilderForm: FormGroup;
   context: any;
   reportDeleteAction: any = 'no';
@@ -52,6 +53,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     dropDownWidth: 95,
     dropDownWidthUnit: '%'
   };
+  showSpinner: boolean;
   noOfDays: any = false;
   periodStartEnd: any = false;
 
@@ -78,6 +80,16 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   frequencyDropDownSettings = {
     singleSelection: true,
     text: 'Select Frequency',
+    primaryKey: 'option',
+    labelKey: 'option',
+    searchBy: ['option'],
+    dropDownWidth: 95,
+    dropDownWidthUnit: '%'
+  };
+
+  emailDropDownSettings = {
+    singleSelection: true,
+    text: 'Select email',
     primaryKey: 'option',
     labelKey: 'option',
     searchBy: ['option'],
@@ -156,6 +168,8 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   aggregationList = [];
   fileTypeList = [];
   frequencyList = [];
+  emailList = [];
+  selectedEmail = [];
   dayOfMonthList = [{option: '1'}, {option: '2'}, {option: '3'}, {option: '4'}, {option: '5'},
     {option: '6'}, {option: '7'}, {option: '8'}, {option: '9'}, {option: '10'},
     {option: '11'}, {option: '12'}, {option: '13'}, {option: '14'}, {option: '15'},
@@ -577,6 +591,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
 
   ngOnInit() {
 
+    this.showSpinner = false;
     this.widget = this.okta.getWidget();
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.route.params.subscribe(
@@ -661,14 +676,46 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     this.dimensionPopupConfig = reportsFilterConfigObj.filterProps.find(e => e.f7Name === 'dimensions');
     this.metricsPopupConfig = reportsFilterConfigObj.filterProps.find(e => e.f7Name === 'metrics');
 
+    this.getEmails().subscribe(response => {
+      console.log('getEmails >>')
+      console.log(response)
+      if(response && response.body && response.body.length) {
+        response.body.forEach(function (ele) {
+          this.emailList.push({option: ele.email, value: ele.id});
+        }, this);
+      }
+    });
+
     if(this.isEditMode){
       this.fetchReportData();
     } else {
       this.getReportDetails();
     }
+
+
+  }
+
+  getEmails() {
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+
+    console.log('token >>')
+    console.log(token);
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/reports/adhoc/email';
+    return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   getReportDetails() {
+    this.showSpinner = true;
     this.getReportData().subscribe(response => {
       console.log(response);
       if (response && response.body) {
@@ -682,6 +729,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
 
         this.fileTypeList = this.reportTemplate.report.delivery.extension;
         this.frequencyList = this.reportTemplate.report.delivery.frequency;
+
         this.transactionStatusList = this.reportTemplate.mappingOptions;
 
         if (this.reportTemplate.report.filterList && this.reportTemplate.report.filterList.length > 0
@@ -715,8 +763,10 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
           }
         }
       }
+      this.showSpinner = false;
     }, error => {
       const message = JSON.parse(error._body).error.errors[0].message;
+      this.showSpinner = false;
       this.toastr.error('ERROR!', message);
     });
   }
@@ -739,8 +789,6 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
           return res.json();
         }).share();
   }
-
-
 
   onItemSelect(item: any) {
     console.log(item);
@@ -786,6 +834,14 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
 
   onFrequencyDeSelect(item: any) {
     console.log(item);
+  }
+
+  onEmailSelect(item: any) {
+
+  }
+
+  onEmailDeSelect(item: any) {
+
   }
 
   gridEvent(event) {
@@ -879,7 +935,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   }
 
   handleCancel() {
-    this.router.navigate(['/reports']);
+    this.router.navigate(['/app/reports/reportsSummary']);
   }
 
   updateFilterConfig(event, filterItem) {
@@ -1032,12 +1088,13 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   }
 
   populateFormObj() {
-    console.log(this.dimensionTagsList);
-    console.log(this.metricsTagsList);
+
+    console.log('this.selectedPeriod >>')
+    console.log(this.selectedPeriod);
 
     const formValues: any = {};
     formValues.reportName = this.dataModel.reportName;
-    formValues.period = (this.selectedPeriod && this.selectedPeriod.length) ? this.selectedPeriod[0].value : '';
+    formValues.period = (this.selectedPeriod && this.selectedPeriod.length) ? this.selectedPeriod[0].option : '';
     formValues.noOfDays = this.dataModel.noOfDays === '' ? 0 : this.dataModel.noOfDays ; // TODO
     formValues.startDate = _.isUndefined(this.dataModel.periodStartDate) ? '' : this.dataModel.periodStartDate.formatted;
     formValues.endDate = _.isUndefined(this.dataModel.periodEndDate) ? '' : this.dataModel.periodEndDate.formatted;
@@ -1048,30 +1105,35 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
 
     formValues.filterList = [];
     if (this.selectedFilter && this.selectedFilter.length) {
-      formValues.filterList = this.selectedFilter.map( e => e.f7_name).join(',');
 
-      this.selectedFilter.forEach( filterObj => {
-        const filterKey = filterObj.f7_name;
-        const filterLabel = filterObj.report_alias;
-        const selectedFilterItems = (filterObj.selectedItems
-          && filterObj.selectedItems.length) ? filterObj.selectedItems.map( e => e.label).join('|') : '';
-        const subFilterPropertyName = 'subFilter' + ':' + filterKey + ':' + filterLabel;
-        const subFilterPropertyValue = selectedFilterItems;
-        formValues[subFilterPropertyName] = subFilterPropertyValue;
-      });
+      this.selectedFilter.forEach(function (filter) {
+          var obj: any = {};
+          obj.field_name = filter.f7_name;
+          obj.value = [];
+          if(filter.selectedItems) {
+            filter.selectedItems.forEach(function (selected) {
+              obj.value.push(selected.id);
+            });
+          }
+        formValues.filterList.push(obj);
+      }, this);
     }
 
     formValues.dimensions = [];
+
+    console.log('this.dimensionTagsList >>>')
+    console.log(this.dimensionTagsList);
+
     if (this.dimensionTagsList && this.dimensionTagsList.length) {
       formValues.dimensions = this.dimensionTagsList.map(function(e){
-        return { value: e.id, label: e.label};
+        return e.id;
       });
     }
 
     formValues.metrics = [];
     if (this.metricsTagsList && this.metricsTagsList.length) {
       formValues.metrics = this.metricsTagsList.map(function(e){
-        return { value: e.id, label: e.label};
+        return { field_name: e.id, aggregation_function: "sum"};
       });
     }
 
@@ -1099,8 +1161,8 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     formValues.dayOfMonth = 1;
     formValues.monthOfQuarter = '';
     formValues.runTime = (this.selectedRunTime && this.selectedRunTime.length) ? this.selectedRunTime[0].option : '';
-    formValues.email = this.dataModel.emailDelivery.email;
-    formValues.hasEmail = this.dataModel.emailDelivery.email !== '' ? true : false;
+    formValues.email = (this.selectedEmail && this.selectedEmail.length) ? this.selectedEmail[0].value : '';
+    formValues.hasEmail = (this.selectedEmail && this.selectedEmail.length) ? true : false;
 
     formValues.fileName = this.dataModel.formatAndSchedule.fileName;
     formValues.fileType = (this.selectedFileType && this.selectedFileType.length) ? this.selectedFileType[0].option : '';
@@ -1136,12 +1198,12 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   handleSubmit(saveType: any, reportform: any) {
    // const valid = Validate.validate(this.dataModel) ;
 
+    this.showSpinner = true;
     if (!reportform.valid) {
       _.forEach(reportform.controls , (v, i) => {
         reportform.controls[i].markAsTouched();
       });
       console.log(this.selectedPartnerType);
-      debugger;
       return false;
     }else {
       _.forEach(reportform.controls , (v, i) => {
@@ -1151,139 +1213,271 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
    // console.log(JSON.stringify(valid));
 
     const formValues = this.populateFormObj();
+    console.log('formValues >>')
     console.log(JSON.stringify(formValues));
-    const clonedReportTemplate = JSON.parse(JSON.stringify(this.reportTemplate));
-    const reportInstanceExisting = null;
-    const reportPayload = this.reportsUtil.submitDataTransformation(formValues, clonedReportTemplate, reportInstanceExisting, clonedReportTemplate);
-    this.reportsService.createOrUpdateReport(this.context, reportPayload, saveType, this.reportId).subscribe(reponse => {
-      console.log(reponse);
-      this.router.navigate(['/reports']);
-    },error => {
-      const message = JSON.parse(error._body).error.errors[0].message;
-      this.toastr.error('ERROR!', message);
-    });
+
+    const dataObj = {};
+    dataObj['org_id'] = '2';
+    dataObj['report_name'] = formValues.reportName;
+    dataObj['report_definition'] = {};
+    dataObj['report_definition']['report_name'] = formValues.reportName;
+    dataObj['report_definition']['transaction_type'] = formValues.frequency.toLowerCase();
+    dataObj['report_definition']['dimensions'] = formValues.dimensions;
+    dataObj['report_definition']['filters'] = formValues.filterList;
+    dataObj['report_definition']['metrics'] = formValues.metrics;
+    dataObj['report_definition']['aggregation'] = formValues.aggregation;
+    dataObj['report_definition']['data_period'] = formValues.period.toLowerCase();
+    dataObj['report_definition']['data_start_date'] = formValues.freqStartDate;
+    dataObj['report_definition']['data_end_date'] = formValues.freqEndDate;
+    dataObj['report_definition'] = JSON.stringify(dataObj['report_definition']);
+    dataObj['alert_definition'] = '';
+    dataObj['is_hidden'] = '0';
+    dataObj['is_alert_dependent'] = '0';
+    dataObj['report_frequency'] = formValues.frequency.toLowerCase();
+    dataObj['report_duration_begin'] = formValues.freqStartDate;
+    dataObj['report_duration_end'] = formValues.freqEndDate;
+    dataObj['report_run_time'] = formValues.runTime;
+    dataObj['report_run_time_zone'] = 'PST';
+    dataObj['report_file_type'] = formValues.fileType;
+    dataObj['report_active'] = formValues.reportActive == 'no' ? '0' : '1';
+    dataObj['is_public'] = formValues.reportPublic == 'no' ? '0' :  '1';
+    dataObj['is_one_time_run'] = formValues.oneTimeRun == 'no' ? '0' :  '1';
+    dataObj['delivery_type'] = 'email';
+    dataObj['email_id'] = formValues.email;
+
+    return this.submitFormData(dataObj).subscribe(
+        response => {
+          console.log('response>>>')
+          console.log(response);
+          if (response) {
+            this.showSpinner = false;
+            this.router.navigate(['/app/reports/reportsSummary']);
+            //this.error = { type : 'success' , message : response.body };
+          }
+          // modalComponent.hide();
+        },
+        err => {
+          if(err.status === 401) {
+            this.widget.tokenManager.refresh('accessToken')
+                .then(function (newToken) {
+                  this.widget.tokenManager.add('accessToken', newToken);
+                  this.showSpinner = false;
+                  this.handleSubmit(null,null);
+                });
+          } else {
+            console.log('err >>>')
+            console.log(err);
+            console.log('message >>> ' + JSON.parse(err._body).errorMessage);
+           // this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
+            this.showSpinner = false;
+          }
+        }
+    );
+
+  }
+
+  submitFormData(dataObj) {
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    const data = JSON.stringify(dataObj);
+
+    console.log('data to submit >>>>')
+    console.log(data);
+
+    var url;
+    if (this.isEditMode) {
+      url = this.api_fs.api + '/api/reports/adhoc/' + this._reportId;
+      return this.http
+          .put(url, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    } else {
+      url = this.api_fs.api + '/api/reports/adhoc';
+      return this.http
+          .post(url, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    }
   }
 
   fetchReportData() {
-    const context = {};
-    this.reportsService.getReportTemplate(context).subscribe(response => {
-      if (response) {
-        const templates = response.docs;
-        if (templates && templates.length > 0) {
-          this.reportTemplate = templates[0];
-          console.log(this.reportTemplate);
-          this.excludePartnerType = this.reportTemplate.excludePartnerType;
-          this.mappingStatusEnabled = this.reportTemplate.mappingStatusEnabled;
+    this.showSpinner = true;
+    this.getReportData().subscribe(response => {
+      console.log(response);
+      if (response && response.body) {
+        this.reportTemplate = response.body;
 
-          if (this.reportTemplate.report.period && this.reportTemplate.report.period.duration
+        if (this.reportTemplate.report.period && this.reportTemplate.report.period.duration
             && this.reportTemplate.report.period.duration.length > 0) {
-            this.periodList = this.reportTemplate.report.period.duration;
-            this.aggregationList = this.reportTemplate.report.period.aggregation;
-          }
-
-          this.fileTypeList = this.reportTemplate.report.delivery.extension;
-          this.frequencyList = this.reportTemplate.report.delivery.frequency;
-          this.transactionStatusList = this.reportTemplate.mappingOptions;
-
-          if (this.reportTemplate.report.filterList && this.reportTemplate.report.filterList.length > 0
-            && this.reportTemplate.report.filterList[0].fieldSets && this.reportTemplate.report.filterList[0].fieldSets.length > 0) {
-            if (this.reportTemplate.report.filterList[0].fieldSets[0].fields) {
-              this.filterList = this.reportTemplate.report.filterList[0].fieldSets[0].fields;
-              this.populateFilterConfig();
-            }
-          }
-
-          if (this.reportTemplate.report.dimensions && this.reportTemplate.report.dimensions.length > 0
-            && this.reportTemplate.report.dimensions[0].fieldSets && this.reportTemplate.report.dimensions[0].fieldSets.length > 0) {
-            if (this.reportTemplate.report.dimensions[0].fieldSets[0].fields) {
-              this.dimensionList = this.reportTemplate.report.dimensions[0].fieldSets[0].fields;
-
-              this.dimensionsPopupData.data
-                = this.dimensionList.map(dimension => {
-                return {id: dimension.f7_name, label: dimension.report_alias};
-              });
-            }
-          }
-
-          if (this.reportTemplate.report.metrics && this.reportTemplate.report.metrics.length > 0
-            && this.reportTemplate.report.metrics[0].fieldSets && this.reportTemplate.report.metrics[0].fieldSets.length > 0) {
-            if (this.reportTemplate.report.metrics[0].fieldSets[0].fields) {
-              this.metricsList = this.reportTemplate.report.metrics[0].fieldSets[0].fields;
-
-              this.metricsPopupData.data = this.metricsList.map(metric => {
-                return {id: metric.f7_name, label: metric.report_alias};
-              });
-            }
-          }
-
-          this.reportsService.getReportById(context, this.reportId).subscribe(reportResponse => {
-            console.log(reportResponse);
-            if (reportResponse ) {
-              this.existingReport = reportResponse;
-              const report = this.existingReport.report;
-              this.reportDeleteAction = this.reportId;
-              if (report) {
-                if (report.period && report.period.duration && report.period.duration.length > 0) {
-                  this.selectedPeriod = report.period.duration;
-                  this.selectedAggregation = report.period.aggregation;
-                }
-                this.selectedFileType = report.delivery.extension;
-                this.selectedFrequency = report.delivery.frequency;
-
-                if (report.filterList && report.filterList.length > 0
-                  && report.filterList[0].fieldSets && report.filterList[0].fieldSets.length > 0) {
-                  if (report.filterList[0].fieldSets[0].fields) {
-                    const existingFilters = report.filterList[0].fieldSets[0].fields;
-                    this.selectedFilter = this.getSelectedFilterList(this.filterList, existingFilters);
-                    console.log(this.selectedFilter);
-                    this.selectedFilter.forEach( selectedFilterObj => {
-                      if (selectedFilterObj.filterConfig) {
-                        const filterValueObj = report.filters.find( e => e.f7_name === selectedFilterObj.f7_name);
-                        console.log(filterValueObj);
-                        if (filterValueObj) {
-                          if (filterValueObj.value && filterValueObj.value.length) {
-                            selectedFilterObj['selectedItems'] = filterValueObj.value.map( e => {
-                              return {id: e, label: e, isChecked: true};
-                            });
-                          }
-                        }
-                      }
-                    });
-                  }
-                }
-
-                if (report.dimensions && report.dimensions.length > 0
-                  && report.dimensions[0].fieldSets && report.dimensions[0].fieldSets.length > 0) {
-                  if (report.dimensions[0].fieldSets[0].fields) {
-                    this.dimensionTagsList = report.dimensions[0].fieldSets[0].fields.map(function(e){
-                      return { id: e.f7_name, label: e.report_alias};
-                    });
-                  }
-                }
-
-                if (report.metrics && report.metrics.length > 0 && report.metrics[0].fieldSets && report.metrics[0].fieldSets.length > 0) {
-                  if (report.metrics[0].fieldSets[0].fields) {
-                    this.metricsTagsList = report.metrics[0].fieldSets[0].fields.map(function(e){
-                      return { id: e.f7_name, label: e.report_alias};
-                    });
-                  }
-                }
-
-                this.populateDataModel(this.existingReport, this.reportTemplate);
-              }
-
-            }
-          }, error => {
-            const message = JSON.parse(error._body).error.errors[0].message;
-            this.toastr.error('ERROR!', message);
-          });
-
+          this.periodList = this.reportTemplate.report.period.duration;
+          this.aggregationList = this.reportTemplate.report.period.aggregation;
         }
+
+        this.fileTypeList = this.reportTemplate.report.delivery.extension;
+        this.frequencyList = this.reportTemplate.report.delivery.frequency;
+
+        this.transactionStatusList = this.reportTemplate.mappingOptions;
+
+        if (this.reportTemplate.report.filterList && this.reportTemplate.report.filterList.length > 0
+            && this.reportTemplate.report.filterList[0].fieldSets && this.reportTemplate.report.filterList[0].fieldSets.length > 0) {
+          if (this.reportTemplate.report.filterList[0].fieldSets[0].fields) {
+            this.filterList = this.reportTemplate.report.filterList[0].fieldSets[0].fields;
+            this.populateFilterConfig();
+          }
+        }
+
+        if (this.reportTemplate.report.dimensions && this.reportTemplate.report.dimensions.length > 0
+            && this.reportTemplate.report.dimensions[0].fieldSets && this.reportTemplate.report.dimensions[0].fieldSets.length > 0) {
+          if (this.reportTemplate.report.dimensions[0].fieldSets[0].fields) {
+            this.dimensionList = this.reportTemplate.report.dimensions[0].fieldSets[0].fields;
+
+            this.dimensionsPopupData.data
+                = this.dimensionList.map(dimension => {
+              return {id: dimension.f7_name, label: dimension.report_alias};
+            });
+          }
+        }
+
+        if (this.reportTemplate.report.metrics && this.reportTemplate.report.metrics.length > 0
+            && this.reportTemplate.report.metrics[0].fieldSets && this.reportTemplate.report.metrics[0].fieldSets.length > 0) {
+          if (this.reportTemplate.report.metrics[0].fieldSets[0].fields) {
+            this.metricsList = this.reportTemplate.report.metrics[0].fieldSets[0].fields;
+
+            this.metricsPopupData.data = this.metricsList.map(metric => {
+              return {id: metric.f7_name, label: metric.report_alias};
+            });
+          }
+        }
+
+       // this.showSpinner = false;
+
+        this.getReportSummaryDataByID().subscribe(
+            response1 => {
+
+              console.log('response1 >>>')
+              console.log(response1);
+
+              if (response1 && response1.body) {
+                var getReportData = response1.body;
+                if (getReportData) {
+                  this._reportId = getReportData._id;
+                  console.log('response report data summary>>>')
+                  console.log(JSON.stringify(getReportData));
+                  this.dataModel.reportName = getReportData.report_name;
+                  var reportDefinition = JSON.parse(getReportData.report_definition);
+
+                  console.log('reportDefinition >>')
+                  console.log(reportDefinition);
+
+                  console.log('getReportData >>')
+                  console.log(getReportData);
+
+                  var selectedPeriod = this.periodList.find( x=> x.option.toLowerCase() === reportDefinition.data_period);
+                  if(selectedPeriod) {
+                    this.selectedPeriod = [selectedPeriod];
+                  }
+
+                  var selectedAggregation = this.aggregationList.find( x=> x.option.toLowerCase() === reportDefinition.transaction_type);
+                  if(selectedAggregation) {
+                    this.selectedAggregation = [selectedAggregation];
+                  }
+
+                  var selectedFileType = this.fileTypeList.find( x=> x.option.toLowerCase() === getReportData.report_file_type);
+                  if(selectedFileType) {
+                    this.selectedFileType = [selectedFileType];
+                  }
+
+                  this.dataModel.formatAndSchedule.active  = getReportData.report_active == 1;
+                  this.dataModel.formatAndSchedule.public = getReportData.is_public == 1;
+                  this.dataModel.formatAndSchedule.oneTimeRun = getReportData.is_one_time_run == 1;
+
+                  var selectedFrequency = this.frequencyList.find( x=> x.option.toLowerCase() === getReportData.report_frequency.toLowerCase());
+                  if(selectedFrequency) {
+                    this.selectedFrequency = [selectedFrequency];
+                  }
+
+                  this.dataModel.formatAndSchedule.startDate = { date: getReportData.report_duration_begin, formatted: getReportData.report_duration_begin };
+                  this.dataModel.formatAndSchedule.endDate = { date: getReportData.report_duration_end, formatted: getReportData.report_duration_end };
+
+                  console.log('filterList >>')
+                  console.log(this.filterList);
+
+                  var selectedRunTime = this.runTimeList.find( x=> x.option === getReportData.report_run_time.split(':')[0] + ':' + getReportData.report_run_time.split(':')[1]);
+                  if(selectedRunTime) {
+                    this.selectedRunTime = [selectedRunTime];
+                  }
+
+                  var selectedEmail = this.emailList.find( x=> x.value == getReportData.adhoc_reports_email.email_id);
+                  if(selectedEmail) {
+                    this.selectedEmail = [selectedEmail];
+                  }
+
+                  var filters = reportDefinition.filters.map(function(x) {
+                    return x.field_name
+                  })
+
+                  console.log('filters >>')
+                  console.log(filters);
+
+                  var selectedFilter = this.filterList.filter(function(x){
+                     return filters.indexOf(x.f7_name) != -1
+                  });
+
+                  console.log('selectedFilter >>')
+                  console.log(selectedFilter);
+
+                  if(selectedFilter.length) {
+                    this.selectedFilter = selectedFilter;
+                  }
+
+                  this.showSpinner = false;
+
+                }
+              }
+            },
+            err => {
+              if(err.status === 401) {
+                this.widget.tokenManager.refresh('accessToken')
+                    .then(function (newToken) {
+                      this.widget.tokenManager.add('accessToken', newToken);
+                      this.showSpinner = false;
+                      this.fetchReportData();
+                    });
+              } else {
+                this.showSpinner = false;
+                console.log('err')
+                console.log(err);
+              }
+            }
+        );
       }
     }, error => {
       const message = JSON.parse(error._body).error.errors[0].message;
       this.toastr.error('ERROR!', message);
     });
+  }
+
+  getReportSummaryDataByID() {
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/reports/adhoc/' + this.reportId;
+    return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   private populateDataModel(reportInstance, reportTemplate) {
@@ -1484,6 +1678,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   }
 
   onActiveChange(event) {
+    console.log(event);
     this.dataModel.formatAndSchedule.active = event;
   }
 

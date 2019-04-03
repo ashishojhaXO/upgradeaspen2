@@ -75,7 +75,6 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
   }
 
   populateReportDataTable() {
-    const spendData = JSON.parse(JSON.stringify(gridData));
     this.gridData = {};
     this.gridData['result'] = [];
     // const keys = Object.keys(spendData.gridData[0]);
@@ -247,38 +246,6 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
           }
         }
     );
-
-    // this.reportsService.reportSummary(this.context).subscribe(response => {
-    //   if (response) {
-    //     _.forEach(response, (v, i) => {
-    //       let period = v.report.period.duration[0]['option'];
-    //       if (period === 'Custom Period') {
-    //         const startDate = __this.datePipe.transform(v.report.period.duration[0].start, 'MMM-dd-yyyy');
-    //         const endDate = __this.datePipe.transform(v.report.period.duration[0].end, 'MMM-dd-yyyy');
-    //         period = startDate + ' - ' + endDate;
-    //       }
-    //       v['period'] = period;
-    //       v['lastruntime'] = _.size(v.reportResult) > 0 ? __this.datePipe.transform(v.reportResult[0]['run_date'], 'yyyy-dd-M h:mm:ss a') : '';
-    //       v['status'] = _.size(v.reportResult) > 0 ? v.reportResult[0]['status'] : '';
-    //       const gridResult = {};
-    //       _.forEach(this.headers, (vv, ii) => {
-    //         gridResult[vv['data']] = v[vv['data']];
-    //       });
-    //       gridResult['id'] = v['_id'];
-    //       gridResult['downloadId'] = _.size(v.reportResult) > 0 ? v.reportResult[0]['_id'] : '';
-    //       gridResult['downloadurl'] = _.size(v.reportResult) > 0 ? v.reportResult[0]['signedUrl'] : '';
-    //       gridResult['toggleOptions'] = _.size(v.reportResult) > 0 ? v.reportResult : [];
-    //       gridResult['alertEnabled'] = _.size(v.report.alert) > 0;
-    //       result.push(gridResult);
-    //     });
-    //
-    //     // result = result.reverse();
-    //     __this.gridData['result'] = result;
-    //     __this.options[0].isPageLength =  10;
-    //     __this.dataObject.gridData = __this.gridData;
-    //     __this.dataObject.isDataAvailable = __this.gridData.result && __this.gridData.result.length ? true : false;
-    //   }
-    // });
   }
 
   getReportData() {
@@ -301,23 +268,37 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
   }
 
   handleEdit(rowObj: any, rowData: any) {
-    console.log(rowObj);
+    console.log('rowData >>>')
     console.log(rowData);
-    this.router.navigate(['/reports/adHocReportBuilder', rowData.id]);
+    this.router.navigate(['/app/reports/adHocReportBuilder', rowData.id]);
   }
 
   handleRun(rowObj: any, rowData: any) {
     console.log(rowData);
     const reportId = rowData.id;
-    const type = 'run?clientCode=btil';
-    this.reportsService.reportRunOrDownload(this.context, reportId, type).subscribe(response => {
+    this.runReport(reportId).subscribe(response => {
       console.log(response);
       this.dataObject.isDataAvailable = false;
       this.populateReportDataTable();
     }, error => {
-      const message = JSON.parse(error._body).message;
-      this.toastr.error('ERROR!', message);
+     // const message = JSON.parse(error._body).message;
+     // this.toastr.error('ERROR!', message);
     });
+  }
+
+  runReport(reportId) {
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    const data = { "adhoc_report_id" : reportId};
+
+    var url = this.api_fs.api + '/api/reports/adhoc/reexecute';
+    return this.http
+        .post(url, data, options);
   }
 
   handleDownload(rowObj: any, rowData: any) {

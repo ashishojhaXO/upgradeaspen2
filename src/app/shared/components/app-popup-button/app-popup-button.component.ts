@@ -169,6 +169,9 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
       }
     ];
 
+    if(!this.gridData) {
+      this.gridData = [];
+    }
     this.gridData.push({
       id : this.customValue,
       label: this.customText,
