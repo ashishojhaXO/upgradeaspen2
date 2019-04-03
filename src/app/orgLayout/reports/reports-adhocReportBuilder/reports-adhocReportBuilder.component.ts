@@ -683,14 +683,14 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
           this.emailList.push({option: ele.email, value: ele.id});
         }, this);
       }
+
+      if(this.isEditMode){
+        this.fetchReportData();
+      } else {
+        this.getReportDetails();
+      }
+
     });
-
-    if(this.isEditMode){
-      this.fetchReportData();
-    } else {
-      this.getReportDetails();
-    }
-
 
   }
 
@@ -945,10 +945,14 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   }
 
   updateDimensionsConfig(event) {
+    console.log(' event >>>> ');
     console.log(event);
     if (event && event.values) {
       this.dimensionTagsList = event.values;
     }
+
+    console.log('this.dimensionTagsList >>')
+    console.log(this.dimensionTagsList);
   }
 
   updateMetricsConfig(event) {
@@ -1404,9 +1408,6 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
                   this.dataModel.formatAndSchedule.startDate = { date: getReportData.report_duration_begin, formatted: getReportData.report_duration_begin };
                   this.dataModel.formatAndSchedule.endDate = { date: getReportData.report_duration_end, formatted: getReportData.report_duration_end };
 
-                  console.log('filterList >>')
-                  console.log(this.filterList);
-
                   var selectedRunTime = this.runTimeList.find( x=> x.option === getReportData.report_run_time.split(':')[0] + ':' + getReportData.report_run_time.split(':')[1]);
                   if(selectedRunTime) {
                     this.selectedRunTime = [selectedRunTime];
@@ -1421,19 +1422,48 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
                     return x.field_name
                   })
 
-                  console.log('filters >>')
-                  console.log(filters);
-
                   var selectedFilter = this.filterList.filter(function(x){
                      return filters.indexOf(x.f7_name) != -1
                   });
 
-                  console.log('selectedFilter >>')
-                  console.log(selectedFilter);
-
                   if(selectedFilter.length) {
                     this.selectedFilter = selectedFilter;
                   }
+
+                  // Populate Dimensions
+                  var selectedDimensions = this.dimensionList.filter(function(x){
+                    return reportDefinition.dimensions.indexOf(x.f7_name) != -1;
+                  });
+
+                  if(selectedDimensions.length) {
+                    this.dimensionTagsList = [];
+                    selectedDimensions.forEach(function (dimension) {
+                      this.dimensionTagsList.push({ id: dimension.f7_name, label: dimension.report_alias});
+                    }, this);
+                  }
+
+                  // Populate Metrics
+
+                  var metricValues = reportDefinition.metrics.map(function(x){
+                    return x.field_name;
+                  });
+
+                  var selectedMetrics = this.metricsList.filter(function(x){
+                    return metricValues.indexOf(x.f7_name) != -1;
+                  });
+
+                  if(selectedMetrics.length) {
+                    this.metricsTagsList = [];
+                    selectedMetrics.forEach(function (metric) {
+                      this.metricsTagsList.push({ id: metric.f7_name, label: metric.report_alias});
+                    }, this);
+                  }
+
+                  console.log('this.dimensionList >>')
+                  console.log(this.metricsList);
+
+                  console.log('selectedDimensions >>')
+                  console.log(selectedDimensions);
 
                   this.showSpinner = false;
 
