@@ -39,7 +39,6 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   clientName: string;
   localData: any;
   reportId: any;
-  _reportId: any;
   adhocReportBuilderForm: FormGroup;
   context: any;
   reportDeleteAction: any = 'no';
@@ -1291,7 +1290,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
 
     var url;
     if (this.isEditMode) {
-      url = this.api_fs.api + '/api/reports/adhoc/' + this._reportId;
+      url = this.api_fs.api + '/api/reports/adhoc/' + this.reportId;
       return this.http
           .put(url, data, options)
           .map(res => {
@@ -1367,7 +1366,6 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
               if (response1 && response1.body) {
                 var getReportData = response1.body;
                 if (getReportData) {
-                  this._reportId = getReportData._id;
                   console.log('response report data summary>>>')
                   console.log(JSON.stringify(getReportData));
                   this.dataModel.reportName = getReportData.report_name;
