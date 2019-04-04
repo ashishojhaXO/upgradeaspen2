@@ -133,12 +133,12 @@
     }
   }
   table.gridtable tr > td{
-    min-height: 40px;
-    height: 45px;
+    min-height: 30px;
+    //height: 45px;
     &:first-of-type{
       min-width: inherit;
     }
-    &:last-of-type .tag-wrap{ 
+    &:last-of-type .tag-wrap{
       display: inline-block;
       width: inherit;
       .form-group{
