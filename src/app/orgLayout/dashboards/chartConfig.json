@@ -1,7 +1,7 @@
 {
   "title": "",
   "type": "column",
-  "isStacked": true,
+  "isStacked": false,
   "toolTipHeader": true,
   "XAxis": {
     "dataPropertyName": "",

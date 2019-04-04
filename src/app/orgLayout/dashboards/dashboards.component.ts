@@ -290,10 +290,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     this.chartConfig = JSON.parse(JSON.stringify(chartConfig));
     if (response.chartData && response.chartData.length) {
 
-      response.chartData.forEach(function (x) {
-        x['date'] = this.getMonthName(x['Month']) + ' ' + x['Year'];
-      }, this);
-
       console.log('response.chartData >>><<')
       console.log(response.chartData);
 
@@ -303,6 +299,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         this.chartConfig.YAxis.data = [];
 
         if (this.selectedView === 'Monthly') {
+
+          response.chartData.forEach(function (x) {
+            x['date'] = this.getMonthName(x['Month']) + ' ' + x['Year'];
+          }, this);
 
           this.chartConfig.XAxis.dataPropertyName = 'date';
           this.chartConfig.XAxis.labelName = '';
@@ -332,8 +332,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           this.chartConfig.XAxis.labelName = '';
           this.chartConfig.XAxis.dataPropertyName = 'Date';
           this.chartConfig.YAxis.data.push({
-            labelName: 'Daily Spend',
-            unitType: ''
+            labelName: '',
+            unitType: '',
+            // tickIntervalType: 'logarithmic'
           });
           this.chartConfig.dataPoints = [
             {
@@ -347,24 +348,23 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               color: 'rgb(56, 199, 224)'
             },
             {
-              propertyName: 'Monthly Budget',
+              propertyName: 'Line Item Monthly Budget',
               type: 'line',
               color: 'rgb(253, 8, 0)'
             }
           ];
         }
 
-        var tempResponse = [response.chartData[1]];
-        this.chartConfig.data = tempResponse ; //response.chartData;
+        this.chartConfig.data = response.chartData;
 
         console.log('this.chartConfig.data >>')
         console.log(this.chartConfig.data);
 
-        this.chartConfig.data.map(function (d) {
-          if (d['Date']) {
-            return d['Date'] = d['Date'].split('-')[2];
-          }
-        });
+        // this.chartConfig.data.map(function (d) {
+        //   if (d['Date']) {
+        //     return d['Date'] = d['Date'].split('-')[2];
+        //   }
+        // });
 
       } else {
 
@@ -372,6 +372,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         this.chartConfig.YAxis.data = [];
 
         if (this.selectedView === 'Monthly') {
+
+          response.chartData.forEach(function (x) {
+            x['date'] = this.getMonthName(x['Month']) + ' ' + x['Year'];
+          }, this);
 
           this.chartConfig.XAxis.labelName = '';
           this.chartConfig.XAxis.dataPropertyName = 'date';
@@ -401,7 +405,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             },
             {
               propertyName: 'Line Item Budget',
-              type: 'column',
+              type: 'line',
               color: 'rgb(153, 204, 51)',
               YaxisAssociation : ''
             }
@@ -413,114 +417,44 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           this.chartConfig.XAxis.dataPropertyName = 'Date';
 
           this.chartConfig.YAxis.data.push({
-            labelName: 'Daily Budget',
+            labelName: '',
             unitType: '',
             // tickIntervalType: 'logarithmic'
           });
-          this.chartConfig.YAxis.data.push({
-            labelName: 'Cost Per Pricing Model',
-            unitType: ''
-          });
+          // this.chartConfig.YAxis.data.push({
+          //   labelName: '',
+          //   unitType: ''
+          // });
 
           this.chartConfig.dataPoints = [
             {
               propertyName: 'Media Cost',
               type: 'column',
-              color: 'rgb(85, 182, 188)',
-              YaxisAssociation : 'Daily Budget'
+              color: 'rgb(80, 130, 186)'
             },
             {
-              propertyName: 'Data Cost',
+              propertyName: 'Technology Cost',
               type: 'column',
-              color: 'rgb(58, 116, 179)',
-              YaxisAssociation : 'Daily Budget'
+              color: 'rgb(56, 199, 224)'
             },
             {
-              propertyName: 'Platform Cost',
-              type: 'column',
-              color: 'rgb(153, 204, 51)',
-              YaxisAssociation : 'Daily Budget'
-            },
-            {
-              propertyName: 'Ad Serving Cost',
-              type: 'column',
-              color: 'rgb(68, 77, 92)',
-              YaxisAssociation : 'Daily Budget'
-            },
-            {
-              propertyName: 'Contextual Cost',
-              type: 'column',
-              color: 'rgb(253, 193, 138)',
-              YaxisAssociation : 'Daily Budget'
-            },
-            {
-              propertyName: 'Privacy Compliance Cost',
-              type: 'column',
-              color: 'rgb(223, 142, 145)',
-              YaxisAssociation : 'Daily Budget'
-            },
-            {
-              propertyName: 'Other Cost',
+              propertyName: 'Line Item Budget',
               type: 'line',
-              color: 'rgb(151, 160, 169)',
-              YaxisAssociation : 'Daily Budget'
-            },
-            {
-              propertyName: 'Average Daily Budget',
-              type: 'line',
-              color: 'rgb(253, 8, 0)',
-              YaxisAssociation : 'Daily Budget'
-            },
-            {
-              propertyName: 'Spend Delta',
-              type: 'column',
-              color: 'rgb(207, 190, 2)',
-              YaxisAssociation : 'Daily Budget'
-            },
-            {
-              propertyName: 'CPM',
-              type: 'line',
-              color: 'rgb(207, 190, 2)',
-              YaxisAssociation : 'Cost Per Pricing Model'
-            },
-            {
-              propertyName: 'CPC',
-              type: 'line',
-              color: 'rgb(140, 198, 255)',
-              YaxisAssociation : 'Cost Per Pricing Model'
-            },
-            {
-              propertyName: 'CPA',
-              type: 'line',
-              color: 'rgb(230, 73, 201)',
-              YaxisAssociation : 'Cost Per Pricing Model'
-            },
-            {
-              propertyName: 'CPCV',
-              type: 'line',
-              color: 'rgb(85, 182, 188)',
-              YaxisAssociation : 'Cost Per Pricing Model'
-            },
-            {
-              propertyName: 'CPE',
-              type: 'line',
-              color: 'rgb(148, 83, 3)',
-              YaxisAssociation : 'Cost Per Pricing Model'
+              color: 'rgb(253, 8, 0)'
             }
           ];
         }
 
-        var tempResponse1 = [response.chartData[1]];
-        this.chartConfig.data = tempResponse1 ; //response.chartData;
+        this.chartConfig.data = response.chartData ; //response.chartData;
 
         console.log('this.chartConfig.data >>')
         console.log(this.chartConfig.data);
 
-        this.chartConfig.data.map(function (d) {
-          if (d['Date']) {
-            return d['Date'] = d['Date'].split('-')[2];
-          }
-        });
+        // this.chartConfig.data.map(function (d) {
+        //   if (d['Date']) {
+        //     return d['Date'] = d['Date'].split('-')[2];
+        //   }
+        // });
       }
     }
   }
@@ -642,7 +576,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }
 
   getSearchDataRequest(dataObj) {
-    return this.getSearchData(dataObj).subscribe(
+    this.showSpinner = true;
+    this.getSearchData(dataObj).subscribe(
         response => {
           if(response) {
 
@@ -651,6 +586,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
             this.populateDataTable(response, false);
             this.populateChart(response);
+
+            this.showSpinner = false;
           }
         },
         err => {
