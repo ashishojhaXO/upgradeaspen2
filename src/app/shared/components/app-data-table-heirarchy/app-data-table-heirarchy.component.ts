@@ -339,6 +339,7 @@ export class AppDataTableHeirarchyComponent implements OnInit, OnChanges {
       }
       if (data['data'] === 'noDataFeed' && !_.isUndefined(data['actionButton'])) {
         def['render'] = (dat, type, full, meta) => {
+          const currentStatus = full.status;
           let actionBtn = '';
           data['actionButton'].forEach((v, i) => {
             // .editLint=k, .runLink, .downloadLink
@@ -356,11 +357,17 @@ export class AppDataTableHeirarchyComponent implements OnInit, OnChanges {
               if (full['downloadurl'] === '') {
                 btn.attr('href', 'javascript:void()');
                 btn.removeAttr('download');
-                btn.addClass('disabled');
+                btn.addClass('disabledLink');
               }
             }
             // btn.attr('data-fuction', v['actionFunc']);
-            btn.attr('style', 'cursor: pointer;margin-right:15px');
+            if (currentStatus && currentStatus.toLowerCase() !== 'completed') {
+              btn.attr('style', 'cursor: not-allowed; margin-right:15px; opacity: 0.5;color: gainsboro;');
+            } else {
+              btn.attr('style', 'cursor: pointer;margin-right:15px');
+            }
+            // disable actions if the report is not completed
+
             actionBtn += $(btn)[0].outerHTML;
           });
           return actionBtn;

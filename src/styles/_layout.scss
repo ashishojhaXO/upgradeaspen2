@@ -3130,3 +3130,7 @@ div.modal-dialog div.dataTables_scrollBody {
 div.modal-dialog div.dataTableWrapper {
   max-height: 300px;
 }
+
+table.dataTable tbody td.selected a {
+  color: #3FA8F4 !important;
+}
