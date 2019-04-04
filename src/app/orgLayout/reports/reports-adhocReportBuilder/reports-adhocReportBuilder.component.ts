@@ -715,10 +715,15 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
 
   getReportDetails() {
     this.showSpinner = true;
-    this.getReportData().subscribe(response => {
+    this.getReportTemplateData().subscribe(response => {
+      console.log('response template');
       console.log(response);
       if (response && response.body) {
         this.reportTemplate = response.body;
+
+        this.partnerTypeList = this.reportTemplate.context.partner.type.map(function (x) {
+          return {option: x, value: x}
+        });
 
         if (this.reportTemplate.report.period && this.reportTemplate.report.period.duration
             && this.reportTemplate.report.period.duration.length > 0) {
@@ -770,7 +775,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     });
   }
 
-  getReportData() {
+  getReportTemplateData() {
     const AccessToken: any = this.widget.tokenManager.get('accessToken');
     let token = '';
     if (AccessToken) {
@@ -1312,7 +1317,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
 
   fetchReportData() {
     this.showSpinner = true;
-    this.getReportData().subscribe(response => {
+    this.getReportTemplateData().subscribe(response => {
       console.log(response);
       if (response && response.body) {
         this.reportTemplate = response.body;
