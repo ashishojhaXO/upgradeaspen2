@@ -169,6 +169,10 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   getPreferenceMenu() {
     this.auth.getPreferenceMenu().subscribe(
       response => {
+
+        console.log('response menu >>>')
+        console.log(response);
+
         const groupArr = [];
         const groups = localStorage.getItem('loggedInUserGroup') || '';
 
