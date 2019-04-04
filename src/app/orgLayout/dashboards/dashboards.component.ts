@@ -112,14 +112,19 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       const options = new RequestOptions({headers: headers});
 
       const dataObj = {
-        filters: applyFilter,
+        filter: applyFilter,
         entity: filterConfig.f7Name,
         page: 1,
         limit: 10
       };
 
+      var obj = JSON.stringify(dataObj);
+
+      console.log('filter dataObj >>')
+      console.log(obj);
+
       return this.http
-        .post(this.api_fs.api + '/api/reports/org/homd/filters', dataObj, options )
+        .post(this.api_fs.api + '/api/reports/org/homd/filters', obj, options )
         .map(res => {
           const result = res.json();
           const ret = [];
@@ -240,7 +245,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
              newFilter.values = [];
              //  newFilter.values = filter.default_value ? [filter.default_value] : [];
              newFilter.isMultiSelect = filter.isMultiSelect;
-             newFilter.dependentOn = filter.checkParent ? [filter.checkParent] : [];
+             newFilter.dependentOn = filter.parent || [];
              newFilter.includeCustom = false;
              newFilter.isMultipleCustomType = false;
              newFilter.isTag = false;
@@ -260,13 +265,37 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     }
   }
 
+  getMonthName(num) {
+    switch (num) {
+      case '1' : return 'Jan';
+      case '2' : return 'Feb';
+      case '3' : return 'Mar';
+      case '4' : return 'Apr';
+      case '5' : return 'May';
+      case '6' : return 'Jun';
+      case '7' : return 'Jul';
+      case '8' : return 'Aug';
+      case '9' : return 'Sep';
+      case '10' : return 'Oct';
+      case '11' : return 'Nov';
+      case '12' : return 'Dec';
+    }
+  }
+
   populateChart(response) {
 
-    console.log('response >>>')
-    console.log(response);
+    console.log('chart response >>>')
+    console.log(response.chartData);
 
     this.chartConfig = JSON.parse(JSON.stringify(chartConfig));
     if (response.chartData && response.chartData.length) {
+
+      response.chartData.forEach(function (x) {
+        x['date'] = this.getMonthName(x['Month']) + ' ' + x['Year'];
+      }, this);
+
+      console.log('response.chartData >>><<')
+      console.log(response.chartData);
 
       if(this.dashboardType === 'pacing') {
 
@@ -274,17 +303,16 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         this.chartConfig.YAxis.data = [];
 
         if (this.selectedView === 'Monthly') {
-          this.chartConfig.XAxis.dataPropertyName = 'Month';
 
+          this.chartConfig.XAxis.dataPropertyName = 'date';
           this.chartConfig.XAxis.labelName = '';
-
           this.chartConfig.YAxis.data.push({
-            labelName: 'Monthly Spend',
+            labelName: '',
             unitType: ''
           });
           this.chartConfig.dataPoints = [
             {
-              propertyName: 'Campaign Cumulative Spend',
+              propertyName: 'Cumulative Spend',
               type: 'column',
               color: 'rgb(80, 130, 186)'
             },
@@ -294,14 +322,14 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               color: 'rgb(56, 199, 224)'
             },
             {
-              propertyName: 'Budget',
+              propertyName: 'Line Item Budget',
               type: 'line',
               color: 'rgb(253, 8, 0)'
             }
           ];
         } else {
 
-          this.chartConfig.XAxis.labelName = 'November 2018';
+          this.chartConfig.XAxis.labelName = '';
           this.chartConfig.XAxis.dataPropertyName = 'Date';
           this.chartConfig.YAxis.data.push({
             labelName: 'Daily Spend',
@@ -326,7 +354,11 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           ];
         }
 
-        this.chartConfig.data = response.chartData;
+        var tempResponse = [response.chartData[1]];
+        this.chartConfig.data = tempResponse ; //response.chartData;
+
+        console.log('this.chartConfig.data >>')
+        console.log(this.chartConfig.data);
 
         this.chartConfig.data.map(function (d) {
           if (d['Date']) {
@@ -342,108 +374,42 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         if (this.selectedView === 'Monthly') {
 
           this.chartConfig.XAxis.labelName = '';
-          this.chartConfig.XAxis.dataPropertyName = 'Month';
+          this.chartConfig.XAxis.dataPropertyName = 'date';
 
           this.chartConfig.YAxis.data.push({
-            labelName: 'Average Monthly Budget',
+            labelName: '',
             unitType: '',
             // tickIntervalType: 'logarithmic'
           });
-          this.chartConfig.YAxis.data.push({
-            labelName: 'Ad Serving Cost:',
-            unitType: ''
-          });
+          // this.chartConfig.YAxis.data.push({
+          //   labelName: '',
+          //   unitType: ''
+          // });
 
           this.chartConfig.dataPoints = [
             {
               propertyName: 'Media Cost',
               type: 'column',
               color: 'rgb(85, 182, 188)',
-              YaxisAssociation : 'Average Monthly Budget'
+              YaxisAssociation : ''
             },
             {
-              propertyName: 'Data Cost',
+              propertyName: 'Technology Cost',
               type: 'column',
               color: 'rgb(58, 116, 179)',
-              YaxisAssociation : 'Average Monthly Budget'
+              YaxisAssociation : ''
             },
             {
-              propertyName: 'Platform Cost',
+              propertyName: 'Line Item Budget',
               type: 'column',
               color: 'rgb(153, 204, 51)',
-              YaxisAssociation : 'Average Monthly Budget'
-            },
-            {
-              propertyName: 'Ad Serving Cost',
-              type: 'column',
-              color: 'rgb(68, 77, 92)',
-              YaxisAssociation : 'Average Monthly Budget'
-            },
-            {
-              propertyName: 'Contextual Cost',
-              type: 'column',
-              color: 'rgb(253, 193, 138)',
-              YaxisAssociation : 'Average Monthly Budget'
-            },
-            {
-              propertyName: 'Privacy Compliance Cost',
-              type: 'column',
-              color: 'rgb(223, 142, 145)',
-              YaxisAssociation : 'Average Monthly Budget'
-            },
-            {
-              propertyName: 'Other Cost',
-              type: 'line',
-              color: 'rgb(151, 160, 169)',
-              YaxisAssociation : 'Average Monthly Budget'
-            },
-            {
-              propertyName: 'Average Daily Budget',
-              type: 'line',
-              color: 'rgb(253, 8, 0)',
-              YaxisAssociation : 'Average Monthly Budget'
-            },
-            {
-              propertyName: 'Spend Delta',
-              type: 'column',
-              color: 'rgb(207, 190, 2)',
-              YaxisAssociation : 'Average Monthly Budget'
-            },
-            {
-              propertyName: 'CPM',
-              type: 'line',
-              color: 'rgb(207, 190, 2)',
-              YaxisAssociation : 'Ad Serving Cost'
-            },
-            {
-              propertyName: 'CPC',
-              type: 'line',
-              color: 'rgb(140, 198, 255)',
-              YaxisAssociation : 'Ad Serving Cost'
-            },
-            {
-              propertyName: 'CPA',
-              type: 'line',
-              color: 'rgb(230, 73, 201)',
-              YaxisAssociation : 'Ad Serving Cost'
-            },
-            {
-              propertyName: 'CPCV',
-              type: 'line',
-              color: 'rgb(85, 182, 188)',
-              YaxisAssociation : 'Ad Serving Cost'
-            },
-            {
-              propertyName: 'CPE',
-              type: 'line',
-              color: 'rgb(148, 83, 3)',
-              YaxisAssociation : 'Ad Serving Cost'
+              YaxisAssociation : ''
             }
           ];
 
         } else {
 
-          this.chartConfig.XAxis.labelName = 'November 2018';
+          this.chartConfig.XAxis.labelName = '';
           this.chartConfig.XAxis.dataPropertyName = 'Date';
 
           this.chartConfig.YAxis.data.push({
@@ -544,7 +510,12 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           ];
         }
 
-        this.chartConfig.data = response.chartData;
+        var tempResponse1 = [response.chartData[1]];
+        this.chartConfig.data = tempResponse1 ; //response.chartData;
+
+        console.log('this.chartConfig.data >>')
+        console.log(this.chartConfig.data);
+
         this.chartConfig.data.map(function (d) {
           if (d['Date']) {
             return d['Date'] = d['Date'].split('-')[2];
@@ -674,6 +645,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     return this.getSearchData(dataObj).subscribe(
         response => {
           if(response) {
+
+            console.log('chart response >>')
+            console.log(response);
+
             this.populateDataTable(response, false);
             this.populateChart(response);
           }
