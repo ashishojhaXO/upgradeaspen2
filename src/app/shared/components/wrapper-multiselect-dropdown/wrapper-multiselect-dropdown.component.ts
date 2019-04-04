@@ -30,6 +30,7 @@ export class WrapperMultiSelectDropdownComponent implements OnInit {
         'itemName' : v
       };
     });
+
     this.settings = {
       singleSelection: !this.filterConfig.isMultiSelect,
       text: 'Select ' + this.filterConfig.label,
@@ -45,7 +46,9 @@ export class WrapperMultiSelectDropdownComponent implements OnInit {
     this.loading = false;
     this.data = this.getData();
 
-    var selectedItem = this.data[0];
+    const selectedItem = this.data[0];
+
+    this.selectedItems = [selectedItem];
 
     this.filterConfig.values.push(selectedItem);
     this.valueUpdate.emit(this.filterConfig);
