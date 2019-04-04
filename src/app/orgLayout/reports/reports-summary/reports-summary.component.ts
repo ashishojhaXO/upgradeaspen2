@@ -232,18 +232,26 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
           }
         },
         err => {
+
           if(err.status === 401) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  this.widget.tokenManager.add('accessToken', newToken);
-                  this.populateReportDataTable();
-                  // this.showSpinner = false;
-                  // this.searchDataRequest();
-                });
+            if(this.widget.tokenManager.get('accessToken')) {
+              this.widget.tokenManager.refresh('accessToken')
+                  .then(function (newToken) {
+                    this.widget.tokenManager.add('accessToken', newToken);
+                    this.populateReportDataTable();
+                  })
+                  .catch(function (err) {
+                    console.log('error >>')
+                    console.log(err);
+                  });
+            } else {
+              this.widget.signOut(() => {
+                this.widget.tokenManager.remove('accessToken');
+                window.location.href = '/login';
+              });
+            }
           } else {
-            // this.showSpinner = false;
-            console.log('err')
-            console.log(err);
+
           }
         }
     );

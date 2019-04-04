@@ -674,7 +674,10 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     const reportsFilterConfigObj = JSON.parse(JSON.stringify(reportsFilterConfig));
     this.dimensionPopupConfig = reportsFilterConfigObj.filterProps.find(e => e.f7Name === 'dimensions');
     this.metricsPopupConfig = reportsFilterConfigObj.filterProps.find(e => e.f7Name === 'metrics');
+    this.getEmailRequest();
+  }
 
+  getEmailRequest() {
     this.getEmails().subscribe(response => {
       console.log('getEmails >>')
       console.log(response)
@@ -690,8 +693,29 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
         this.getReportDetails();
       }
 
+    }, error => {
+      if(error.status === 401) {
+        if(this.widget.tokenManager.get('accessToken')) {
+          this.widget.tokenManager.refresh('accessToken')
+              .then(function (newToken) {
+                this.widget.tokenManager.add('accessToken', newToken);
+                this.showSpinner = false;
+                this.getEmailRequest();
+              })
+              .catch(function (err) {
+                console.log('error >>')
+                console.log(err);
+              });
+        } else {
+          this.widget.signOut(() => {
+            this.widget.tokenManager.remove('accessToken');
+            window.location.href = '/login';
+          });
+        }
+      } else {
+        this.showSpinner = false;
+      }
     });
-
   }
 
   getEmails() {
@@ -769,6 +793,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
       }
       this.showSpinner = false;
     }, error => {
+      alert()
       const message = JSON.parse(error._body).error.errors[0].message;
       this.showSpinner = false;
     });
@@ -1303,18 +1328,26 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
           // modalComponent.hide();
         },
         err => {
+
           if(err.status === 401) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  this.widget.tokenManager.add('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.handleSubmit(null,null);
-                });
+            if(this.widget.tokenManager.get('accessToken')) {
+              this.widget.tokenManager.refresh('accessToken')
+                  .then(function (newToken) {
+                    this.widget.tokenManager.add('accessToken', newToken);
+                    this.showSpinner = false;
+                    this.handleSubmit(null,null);
+                  })
+                  .catch(function (err) {
+                    console.log('error >>')
+                    console.log(err);
+                  });
+            } else {
+              this.widget.signOut(() => {
+                this.widget.tokenManager.remove('accessToken');
+                window.location.href = '/login';
+              });
+            }
           } else {
-            console.log('err >>>')
-            console.log(err);
-            console.log('message >>> ' + JSON.parse(err._body).errorMessage);
-           // this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
             this.showSpinner = false;
           }
         }
@@ -1518,17 +1551,27 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
               }
             },
             err => {
+
               if(err.status === 401) {
-                this.widget.tokenManager.refresh('accessToken')
-                    .then(function (newToken) {
-                      this.widget.tokenManager.add('accessToken', newToken);
-                      this.showSpinner = false;
-                      this.fetchReportData();
-                    });
+                if(this.widget.tokenManager.get('accessToken')) {
+                  this.widget.tokenManager.refresh('accessToken')
+                      .then(function (newToken) {
+                        this.widget.tokenManager.add('accessToken', newToken);
+                        this.showSpinner = false;
+                        this.fetchReportData();
+                      })
+                      .catch(function (err) {
+                        console.log('error >>')
+                        console.log(err);
+                      });
+                } else {
+                  this.widget.signOut(() => {
+                    this.widget.tokenManager.remove('accessToken');
+                    window.location.href = '/login';
+                  });
+                }
               } else {
                 this.showSpinner = false;
-                console.log('err')
-                console.log(err);
               }
             }
         );

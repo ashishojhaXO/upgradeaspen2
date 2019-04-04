@@ -63,13 +63,25 @@ export class TransitionComponent implements OnInit {
         err => {
           console.log('err >>>')
           console.log(err);
+
           if(err.status === 401) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  this.showSpinner = false;
-                  this.widget.tokenManager.add('accessToken', newToken);
-                  this.getCustomerInfoRequest();
-                });
+            if(this.widget.tokenManager.get('accessToken')) {
+              this.widget.tokenManager.refresh('accessToken')
+                  .then(function (newToken) {
+                    this.widget.tokenManager.add('accessToken', newToken);
+                    this.showSpinner = false;
+                    this.getCustomerInfoRequest();
+                  })
+                  .catch(function (err1) {
+                    console.log('error >>')
+                    console.log(err1);
+                  });
+            } else {
+              this.widget.signOut(() => {
+                this.widget.tokenManager.remove('accessToken');
+                window.location.href = '/login';
+              });
+            }
           } else {
             this.showSpinner = false;
             this.error = err;

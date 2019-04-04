@@ -92,27 +92,27 @@ export class LoginComponent implements OnInit {
       },
       err => {
         if(err.status === 401) {
-          this.widget.tokenManager.refresh('accessToken')
-              .then(function (newToken) {
-                this.widget.tokenManager.add('accessToken', newToken);
-                this.performActions();
-              });
+          if(this.widget.tokenManager.get('accessToken')) {
+            this.widget.tokenManager.refresh('accessToken')
+                .then(function (newToken) {
+                  this.widget.tokenManager.add('accessToken', newToken);
+                  this.performActions();
+                })
+                .catch(function (err) {
+                  console.log('error >>')
+                  console.log(err);
+                });
+          } else {
+            this.widget.signOut(() => {
+              this.widget.tokenManager.remove('accessToken');
+              window.location.href = '/login';
+            });
+          }
         } else {
           this.error = err;
         }
       }
     );
-  }
-
-  getOktaAccessToken(): any {
-    const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen'});
-    const options = new RequestOptions({headers: headers});
-    const url = this.api_fs.api + '/authtoken/token';
-    return this.http
-      .get(url, options)
-      .map(res => {
-        return res.json();
-      }).share();
   }
 
   getCustomerInfo(): any {

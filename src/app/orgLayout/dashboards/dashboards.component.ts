@@ -591,16 +591,26 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           }
         },
         err => {
+
           if(err.status === 401) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  this.showSpinner = false;
-                  this.widget.tokenManager.add('accessToken', newToken);
-                  this.getSearchDataRequest(dataObj);
-                });
+            if(this.widget.tokenManager.get('accessToken')) {
+              this.widget.tokenManager.refresh('accessToken')
+                  .then(function (newToken) {
+                    this.widget.tokenManager.add('accessToken', newToken);
+                    this.showSpinner = false;
+                    this.getSearchDataRequest(dataObj);
+                  })
+                  .catch(function (err) {
+                    console.log('error >>')
+                    console.log(err);
+                  });
+            } else {
+              this.widget.signOut(() => {
+                this.widget.tokenManager.remove('accessToken');
+                window.location.href = '/login';
+              });
+            }
           } else {
-            console.log('err')
-            console.log(err);
             this.showSpinner = false;
           }
         }
