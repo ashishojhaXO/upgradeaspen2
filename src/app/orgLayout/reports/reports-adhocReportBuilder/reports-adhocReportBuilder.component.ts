@@ -722,7 +722,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
         this.reportTemplate = response.body;
 
         this.partnerTypeList = this.reportTemplate.context.partner.type.map(function (x) {
-          return {option: x, value: x}
+          return {option: x === 'dtrx' ? 'Daily Transaction' : x, value: x}
         });
 
         if (this.reportTemplate.report.period && this.reportTemplate.report.period.duration
@@ -771,7 +771,6 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     }, error => {
       const message = JSON.parse(error._body).error.errors[0].message;
       this.showSpinner = false;
-      this.toastr.error('ERROR!', message);
     });
   }
 
@@ -969,6 +968,9 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   }
 
   getDependentConfig(dependsOn: any) {
+    return this.filterList.filter(function (x) {
+      return dependsOn.indexOf(x.f7_name) !== -1;
+    });
   }
 
   getFilterConfigData(title: any) {
@@ -1010,11 +1012,11 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   populateFilterConfig() {
     this.filterList.forEach(filterObj => {
       filterObj['filterConfig'] = {
-        f7Name: filterObj.report_alias,
+        f7Name: filterObj.f7_name,
         label: filterObj.report_alias,
         values: [],
         isMultiSelect: false,
-        dependentOn: [],
+        dependentOn: filterObj.parent || [],
         includeCustom: true,
         isMultipleCustomType: true,
         isTag: false,
@@ -1026,34 +1028,70 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     });
   }
 
-  getFilterConfig(filterItem: any) {
-    console.log(filterItem);
-    if (filterItem.hasOwnProperty('filterConfig') && filterItem.filterConfig) {
-      return filterItem.filterConfig;
-    } else {
-      const filterConfObj = {
-        f7Name: filterItem.report_alias,
-        label: filterItem.report_alias,
-        values: [],
-        isMultiSelect: false,
-        dependentOn: [],
-        includeCustom: true,
-        isMultipleCustomType: true,
-        isTag: false,
-        placeHolderText: 'Name',
-        placeHolderValue: 'Text',
-        serverSide: 'false',
-        type: 'popupButton'
-      };
+  getData(filterConfig, dependentConfig) {
 
-      filterItem['filterConfig'] = filterConfObj;
-      return filterConfObj;
+    console.log('filterConfig >>')
+    console.log(filterConfig);
+
+    console.log('dependentConfig >>')
+    console.log(dependentConfig);
+
+    const applyFilter = [];
+    if(dependentConfig.length) {
+      dependentConfig.forEach(function (config) {
+        if (config.selectedItems && config.selectedItems.length) {
+          const values = [];
+          config.selectedItems.forEach(function (val) {
+            values.push(val.id);
+          });
+          applyFilter.push({
+            f7Name : config.f7_name,
+            values : values
+          });
+        }
+      });
     }
-  }
 
-  getData() {
-    const query = [{'type': 'iord', 'parent': [], 'field': 'publisher_name'}];
-    return this.reportsService.searchContractByPartnerType(this.context, query);
+    console.log('applyFilter >>')
+    console.log(applyFilter);
+
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
+    const options = new RequestOptions({headers: headers});
+
+    var dataObj: any = {};
+    dataObj.filterField = filterConfig.f7Name;
+    if (applyFilter.length) {
+      applyFilter.forEach(function (filter) {
+        dataObj[filter.f7Name] = filter.values;
+      });
+    }
+
+    const obj = JSON.stringify(dataObj);
+
+    console.log('obj >>><<')
+    console.log(obj);
+
+    return this.http
+        .post(this.api_fs.api + '/api/reports/adhoc/filters/search', obj, options )
+        .map(res => {
+          const result = res.json();
+
+          console.log('result >>')
+          console.log(result);
+
+          const ret = [];
+          if (result.body && result.body.length) {
+            result.body.forEach(function (item) {
+              ret.push({id: item.id, label: item.text});
+            });
+          }
+          return ret;
+        });
   }
 
   getSelectedFilterList(filterList: any, existingFilterList: any) {
@@ -1322,6 +1360,10 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
       if (response && response.body) {
         this.reportTemplate = response.body;
 
+        this.partnerTypeList = this.reportTemplate.context.partner.type.map(function (x) {
+          return {option: x === 'dtrx' ? 'Daily Transaction' : x, value: x}
+        });
+
         if (this.reportTemplate.report.period && this.reportTemplate.report.period.duration
             && this.reportTemplate.report.period.duration.length > 0) {
           this.periodList = this.reportTemplate.report.period.duration;
@@ -1492,8 +1534,8 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
         );
       }
     }, error => {
+      this.showSpinner = false;
       const message = JSON.parse(error._body).error.errors[0].message;
-      this.toastr.error('ERROR!', message);
     });
   }
 
@@ -1730,8 +1772,8 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     this.reportsService.reportDelete(this.context, reportId, type).subscribe(response => {
       __this.router.navigate(['/reports/reportsSummary']);
     }, error => {
+      this.showSpinner = false;
       const message = JSON.parse(error._body).message;
-      this.toastr.error('ERROR!', message);
     });
   }
 }

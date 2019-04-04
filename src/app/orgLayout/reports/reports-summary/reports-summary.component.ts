@@ -45,6 +45,7 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
     isPagination: true,
     isEmptyTable: 'No Data',
     isSorting: false,
+    isMultiSelect: true
   }];
   dashboard: any;
   serverSide: any;

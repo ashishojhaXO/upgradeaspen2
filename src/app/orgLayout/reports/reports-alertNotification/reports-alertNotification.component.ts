@@ -36,7 +36,7 @@ export class AlertNoticationdashboardsComponent implements OnInit {
     isShowEntries: false,
     isPageLength: 10,
     isPagination: true,
-    isEmptyTable: 'No Data',
+    isEmptyTable: 'No Data'
   }];
   dashboard: any;
   serverSide: any;

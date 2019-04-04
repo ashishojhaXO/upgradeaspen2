@@ -412,7 +412,8 @@
                     [hideSelectedValues]="true"
                     [popupDataAction]="this"
                     (valueUpdate)="updateFilterConfig($event, filterItem)"
-                    [filterConfig]="filterItem.filterConfig">
+                    [filterConfig]="filterItem.filterConfig"
+                    [dependentConfig]="getDependentConfig(filterItem.filterConfig.dependentOn)">
                   </app-popup-button>
                 </div>
               </div>
@@ -437,7 +438,7 @@
                 [externalGridData]="dimensionsPopupData"
                 (valueUpdate)="updateDimensionsConfig($event)"
                 [filterConfig]="dimensionPopupConfig"
-                [dependentConfig]="getDependentConfig(dimensionPopupConfig)">
+                >
               </app-popup-button>
               <div class="errorText" *ngIf="dimensionTagsList?.length <= 0">
                 <div class="warning-icon" style="left: 36px; top: -6px">
@@ -473,7 +474,7 @@
                 [externalGridData]="metricsPopupData"
                 (valueUpdate)="updateMetricsConfig($event)"
                 [filterConfig]="metricsPopupConfig"
-                [dependentConfig]="getDependentConfig(metricsPopupConfig)">
+                >
               </app-popup-button>
               <div class="errorText" *ngIf="metricsTagsList?.length <= 0">
                 <div class="warning-icon" style="left: 36px; top: -6px">

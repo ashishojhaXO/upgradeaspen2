@@ -19,4 +19,5 @@ export class DataTableOptions {
     isEmptyTable?: string;
     isRowTitle?: boolean;
     isSortingColumnType?: string;
+    isMultiSelect?: boolean;
 }

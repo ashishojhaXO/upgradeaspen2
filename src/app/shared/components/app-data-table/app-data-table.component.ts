@@ -90,6 +90,10 @@ export class AppDataTableComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     // only run when property "data" changed
     if (changes['dataObject']) {
+
+      console.log('dataObject >>>')
+      console.log(this.dataObject)
+
       this.displayDataTable();
     }
   }

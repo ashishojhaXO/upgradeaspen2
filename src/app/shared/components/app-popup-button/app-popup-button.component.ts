@@ -48,26 +48,35 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
 
   invokePopUp(modalComponent: PopUpModalComponent) {
 
-    console.log('this.filterConfig >>>' + this.filterConfig.f7Name);
+    console.log('this.filterConfig >>>' + this.filterConfig.isMultiSelect);
     console.log(this.filterConfig);
-    console.log(this.gridData);
+    console.log(this.externalGridData);
 
     this.tableId = 'table' + Math.floor(Math.random() * (1000 - 1 + 1)) + 1;
     this.dataObject.gridData = {};
+
+    const isMultiSelect = this.filterConfig.isMultiSelect;
     this.dataObject.gridData.options = this.externalGridData ? this.externalGridData.options : {
-      'isSearchColumn': true,
-      'isOrdering': true,
-      'isTableInfo': true,
-      'isEditOption': true,
-      'isDeleteOption': true,
-      'isAddRow': true,
-      'isColVisibility': true,
-      'isRowSelection': true,
-      'isShowEntries': false,
-      'isPageLength': 5,
-      'isPagination': true,
-      'isEmptyTable': 'No data found.'
+      isSearchColumn: true,
+      isOrdering: true,
+      isTableInfo: true,
+      isEditOption: true,
+      isDeleteOption: true,
+      isAddRow: true,
+      isColVisibility: true,
+      isRowSelection: true,
+      isShowEntries: false,
+      isPageLength: 5,
+      isPagination: true,
+      isEmptyTable: 'No data found.',
+      isMultiSelect: isMultiSelect != null ? isMultiSelect : true
     };
+
+
+
+    console.log('this.dataObject.gridData.options >>>');
+    console.log(this.dataObject.gridData.options);
+
     this.dataObject.gridData.headers = this.externalGridData ? this.externalGridData.headers : [
       {
         'key': '_id',
@@ -96,11 +105,14 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
         this.showPopUp = true;
         this.dataObject.isDataAvailable = true;
         this.dataObject.gridData.result = this.gridData;
+
       } else {
         this.popupDataAction.getData(this.filterConfig, this.dependentConfig).subscribe(response => {
             this.showPopUp = true;
+
             if(response.length) {
               this.gridData = response;
+              this.gridData.options  = this.dataObject.gridData.options;
               this.dataObject.isDataAvailable = true;
               this.dataObject.gridData.result = this.gridData;
             }
@@ -112,8 +124,7 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
             // }
           },
           err => {
-            const message = JSON.parse(err._body).error.errors[0].message;
-            this.toastr.error('ERROR!', message);
+           // const message = JSON.parse(err._body).error.errors[0].message;
           });
       };
     } else {

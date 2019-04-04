@@ -68,7 +68,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     isShowEntries: false,
     isPagination: true,
     isPageLength: 10,
-    isEmptyTable: 'No Data',
+    isEmptyTable: 'No Data'
   }];
   dashboard: any;
   widget: any;
@@ -244,7 +244,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
              newFilter.label = filter.alias;
              newFilter.values = [];
              //  newFilter.values = filter.default_value ? [filter.default_value] : [];
-             newFilter.isMultiSelect = filter.isMultiSelect;
+             newFilter.isMultiSelect = filter.isMultiSelect || false;
              newFilter.dependentOn = filter.parent || [];
              newFilter.includeCustom = false;
              newFilter.isMultipleCustomType = false;

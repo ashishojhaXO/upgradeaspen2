@@ -19,7 +19,11 @@
       </div>
       <div class="sidebar-form-control" *ngIf="filter.type === 'popupButton'" >
         <p class="title">{{filter.label}}</p>
-        <app-popup-button [popupDataAction]="this" (valueUpdate)="updateFilterConfig($event)" [filterConfig]="filter" [dependentConfig]="getDependentConfig(filter.dependentOn)">
+        <app-popup-button
+                [popupDataAction]="this"
+                (valueUpdate)="updateFilterConfig($event)"
+                [filterConfig]="filter"
+                [dependentConfig]="getDependentConfig(filter.dependentOn)">
         </app-popup-button>
       </div>
       <div class="sidebar-form-control" *ngIf="filter.type === 'text'" >
