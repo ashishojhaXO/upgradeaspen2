@@ -37,6 +37,32 @@
       ]
     },
     {
+      "index": 5,
+      "name": "reports",
+      "title": "Reports",
+      "selected": false,
+      "id": "reports",
+      "url":"app/reports",
+      "submenu": [
+        {
+          "index": 1,
+          "name": "reportsSummary",
+          "title": "Summary",
+          "selected": true,
+          "id": "reportsSummary",
+          "url": "app/reports/reportsSummary"
+        },
+        {
+          "index": 2,
+          "name": "adHocReportBuilder",
+          "title": "AdHoc Report Builder",
+          "selected": false,
+          "id": "adHocReportBuilder",
+          "url": "app/reports/adHocReportBuilder"
+        }
+      ]
+    },
+    {
       "index": 6,
       "name": "orders",
       "title": "Orders",
