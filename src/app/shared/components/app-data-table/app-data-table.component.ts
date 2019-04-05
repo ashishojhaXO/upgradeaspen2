@@ -233,7 +233,7 @@ export class AppDataTableComponent implements OnInit, OnChanges {
     const table: any = $('#' + this.setId);
     table.find('tbody tr').each(function (index) {
       if($(this).find('td').eq(0).find('label input[type=checkbox]').is(":checked")) {
-        arrayPush.push(index);
+        arrayPush.push($($(this).find('td').eq(0).find('label input[type=checkbox]')).attr('value'));
       }
     });
     return arrayPush;
@@ -1554,6 +1554,11 @@ export class AppDataTableComponent implements OnInit, OnChanges {
     });
 
     this.tableId = this.tableId + 1;
+
+    // Sticky Header
+    // $(function(){
+    //   $(this.tableWrapper).floatThead();
+    // });
   }
 
   emitSelecedOptions() {

@@ -262,16 +262,14 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
     console.log('event.rowData >>')
     console.log(event.rowData);
     const selectedItems = [];
-    this.dataObject.gridData.result.forEach(function (item, index) {
-      event.rowData.forEach(function (fieldIndex, index1) {
-        if(index === fieldIndex) {
-          selectedItems.push(item);
-        }
-      });
-    });
+    event.rowData.forEach(function (fieldIndex) {
+      var findEle = this.dataObject.gridData.result.find(x=> x.id == fieldIndex);
+      if(findEle) {
+        selectedItems.push(findEle);
+      }
+    }, this);
     this.selected = selectedItems;
     console.log('this.selected >>')
     console.log(this.selected);
   }
 }
-
