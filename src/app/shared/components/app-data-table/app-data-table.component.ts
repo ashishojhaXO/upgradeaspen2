@@ -1322,7 +1322,7 @@ export class AppDataTableComponent implements OnInit, OnChanges {
               const val = $(e).find('td:eq(0) input').val();
               const undeJs = {};
               let rmvFilter = _.filter(gridData.result, [gridData.headers[0].data, val])[0];
-              if (_.size(rmvFilter) === 0) {
+              if (rmvFilter &&_.size(rmvFilter) === 0) {
                 undeJs[$(e).attr('name').substring(0, $(e).attr('name').length - 1)] = val;
                 undeJs[$(e).attr('id')] = true;
               }
