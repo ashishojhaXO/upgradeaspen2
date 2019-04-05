@@ -53,6 +53,7 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
   serviceMethod: any;
   widget: any;
   api_fs: any;
+  showSpinner: boolean;
 
   constructor(private route: ActivatedRoute, private router: Router,
               public reportsService: TheReportsService, public datePipe: DatePipe,
@@ -76,6 +77,7 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
   }
 
   populateReportDataTable() {
+    this.showSpinner = true;
     this.gridData = {};
     this.gridData['result'] = [];
     // const keys = Object.keys(spendData.gridData[0]);
@@ -193,6 +195,7 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
     const result = [];
     return this.getReportData().subscribe(
         response => {
+          response.body = [];
           if (response && response.body && response.body.length) {
             console.log('response report data>>>')
             console.log(JSON.stringify(response));
@@ -228,9 +231,13 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
             __this.options[0].isPageLength =  10;
             __this.dataObject.gridData = __this.gridData;
             __this.dataObject.isDataAvailable = __this.gridData.result && __this.gridData.result.length ? true : false;
+            this.showSpinner = false;
 
           } else {
+            this.gridData['result'] = [];
             this.dataObject.isDataAvailable = true;
+            this.dataObject.gridData = this.gridData;
+            this.showSpinner = false;
           }
         },
         err => {
@@ -239,6 +246,7 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
             if(this.widget.tokenManager.get('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
+                    this.showSpinner = false;
                     this.widget.tokenManager.add('accessToken', newToken);
                     this.populateReportDataTable();
                   })
@@ -253,7 +261,7 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
               });
             }
           } else {
-
+            this.showSpinner = false;
           }
         }
     );

@@ -11,7 +11,7 @@
                        [serviceMethod]="serviceMethod" [serviceURI]="serviceURI" [dataTableAction]="this"></app-data-table-heirarchy>
     </div>
     <div class="clearfix"></div>
-    <div class="page-header" *ngIf="!dataObject.isDataAvailable">
+    <div class="page-header" *ngIf="showSpinner">
       <app-custom-spinner class="page-spinner"></app-custom-spinner>
     </div>
   </div>
