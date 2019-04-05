@@ -206,7 +206,11 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             this.showSpinner = false;
             if (response && response.data) {
               this.populateFilters(response.data);
-              this.search();
+              var __this = this;
+              setTimeout(function () {
+                __this.search();
+              },3000);
+
             }
           },
           error => {
@@ -243,6 +247,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
              newFilter.f7Name = filter.f7_name;
              newFilter.label = filter.alias;
              newFilter.values = [];
+             newFilter.displayDefault = filter.displayDefault;
              //  newFilter.values = filter.default_value ? [filter.default_value] : [];
              newFilter.isMultiSelect = filter.isMultiSelect || false;
              newFilter.dependentOn = filter.parent || [];

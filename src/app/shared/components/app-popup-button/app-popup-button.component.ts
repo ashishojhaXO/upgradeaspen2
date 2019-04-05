@@ -44,14 +44,23 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
     this.dataObject = {};
     this.dataObject.isDataAvailable = false;
     this.selectedText = this.filterConfig.values.length ? this.filterConfig.values.join( ' , ') : '';
+    if(this.filterConfig.displayDefault != null) {
+      this.popupDataAction.getData(this.filterConfig, this.dependentConfig).subscribe(response => {
+        if(response.length) {
+
+          this.gridData = response;
+          this.filterConfig.values = [response[0]];
+          this.valueUpdate.emit(this.filterConfig);
+          this.selectedText = '';
+          this.filterConfig.values.forEach(function (item, index) {
+            this.selectedText += item.label + (this.filterConfig.values.indexOf(item) !== (this.filterConfig.values.length - 1) ? ',' : '');
+          }, this);
+        }
+      });
+    }
   }
 
   invokePopUp(modalComponent: PopUpModalComponent) {
-
-    console.log('this.filterConfig >>>' + this.filterConfig.isMultiSelect);
-    console.log(this.filterConfig);
-    console.log(this.externalGridData);
-
     this.tableId = 'table' + Math.floor(Math.random() * (1000 - 1 + 1)) + 1;
     this.dataObject.gridData = {};
 
@@ -71,8 +80,6 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
       isEmptyTable: 'No data found.',
       isMultiSelect: isMultiSelect != null ? isMultiSelect : true
     };
-
-
 
     console.log('this.dataObject.gridData.options >>>');
     console.log(this.dataObject.gridData.options);
@@ -220,6 +227,10 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
         }
       });
     }, this);
+
+    console.log('retObj >>>>')
+    console.log(retObj);
+
     this.valueUpdate.emit(retObj);
     this.selectedText = '';
     this.filterConfig.values.forEach(function (item, index) {
