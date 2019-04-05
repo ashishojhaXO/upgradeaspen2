@@ -195,7 +195,6 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
     const result = [];
     return this.getReportData().subscribe(
         response => {
-          response.body = [];
           if (response && response.body && response.body.length) {
             console.log('response report data>>>')
             console.log(JSON.stringify(response));
