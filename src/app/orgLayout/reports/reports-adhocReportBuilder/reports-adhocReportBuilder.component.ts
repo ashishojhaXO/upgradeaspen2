@@ -430,7 +430,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
       },
       {
         'key': 'label',
-        'title': 'Dimensions',
+        'title': 'Metrics',
         'data': 'label',
         'isFilterRequired': true,
         'editButton': false

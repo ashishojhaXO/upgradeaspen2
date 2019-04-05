@@ -504,7 +504,7 @@ export class AppDataTableComponent implements OnInit, OnChanges {
             const childNodeText = thead.childNodes[0].innerText;
             allBtnDisabled = headers[0]['disabled'] ? 'disabled' : allBtnDisabled;
             if (this.checkboxCount) {
-              $(thead).find('th').eq(0).addClass('selectAll').html('').append('<label class="control control--checkbox"><input ' +
+              $(thead).find('th').eq(0).addClass('selectAll').html('').append('<label title="Select All" class="control control--checkbox"><input ' +
                 allBtnDisabled + ' type="checkbox"/> <div class="control__indicator"></div><span>' + childNodeText + '</span</label>');
             }
           },
@@ -586,7 +586,7 @@ export class AppDataTableComponent implements OnInit, OnChanges {
             const childNodeText = thead.childNodes[0].innerText;
             allBtnDisabled = headers[0]['disabled'] ? 'disabled' : allBtnDisabled;
             if (this.checkboxCount) {
-              $(thead).find('th').eq(0).addClass('selectAll').html('').append('<label class="control control--checkbox"><input ' +
+              $(thead).find('th').eq(0).addClass('selectAll').html('').append('<label title="Select All" class="control control--checkbox"><input ' +
                 allBtnDisabled + ' type="checkbox"/> <div class="control__indicator"></div><span>' + childNodeText + '</span</label>');
             }
           },
@@ -649,7 +649,7 @@ export class AppDataTableComponent implements OnInit, OnChanges {
           const childNodeText = thead.childNodes[0].innerText;
           allBtnDisabled = headers[0]['disabled'] ? 'disabled' : allBtnDisabled;
           if (this.checkboxCount) {
-            $(thead).find('th').eq(0).addClass('selectAll').html('').append('<label class="control control--checkbox"><input ' +
+            $(thead).find('th').eq(0).addClass('selectAll').html('').append('<label title="Select All" class="control control--checkbox"><input ' +
               allBtnDisabled + ' type="checkbox"/> <div class="control__indicator"></div><span>' + childNodeText + '</span</label>');
           }
         },

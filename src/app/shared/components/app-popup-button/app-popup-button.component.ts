@@ -63,7 +63,6 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
   invokePopUp(modalComponent: PopUpModalComponent) {
     this.tableId = 'table' + Math.floor(Math.random() * (1000 - 1 + 1)) + 1;
     this.dataObject.gridData = {};
-
     const isMultiSelect = this.filterConfig.isMultiSelect;
     this.dataObject.gridData.options = this.externalGridData ? this.externalGridData.options : {
       isSearchColumn: true,
@@ -95,7 +94,7 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
       },
       {
         'key': 'label',
-        'title': 'label',
+        'title': this.filterConfig.label,
         'data': 'label',
         'isFilterRequired': true,
         'editButton': false
@@ -106,15 +105,14 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
 
     this.selected = this.filterConfig.values;
 
-    if (!this.gridData) {
-      if (this.externalGridData) {
-        this.gridData = this.externalGridData.data;
-        this.showPopUp = true;
-        this.dataObject.isDataAvailable = true;
-        this.dataObject.gridData.result = this.gridData;
+    if (this.externalGridData) {
+      this.gridData = this.externalGridData.data;
+      this.showPopUp = true;
+      this.dataObject.isDataAvailable = true;
+      this.dataObject.gridData.result = this.gridData;
 
-      } else {
-        this.popupDataAction.getData(this.filterConfig, this.dependentConfig).subscribe(response => {
+    } else {
+      this.popupDataAction.getData(this.filterConfig, this.dependentConfig).subscribe(response => {
             this.showPopUp = true;
 
             if(response.length) {
@@ -131,19 +129,41 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
             // }
           },
           err => {
-           // const message = JSON.parse(err._body).error.errors[0].message;
+            // const message = JSON.parse(err._body).error.errors[0].message;
           });
-      };
-    } else {
+    };
 
-      this.gridData.forEach(item => {
-        item.isChecked = this.filterConfig.values.find( e => e.id == item.id) ? true : false;
-      });
-
-      this.showPopUp = true;
-      this.dataObject.isDataAvailable = true;
-      this.dataObject.gridData.result = this.gridData;
-    }
+    // if (!this.gridData) {
+    //
+    // } else {
+    //
+    //   this.popupDataAction.getData(this.filterConfig, this.dependentConfig).subscribe(response => {
+    //         this.showPopUp = true;
+    //
+    //         if(response.length) {
+    //           this.gridData = response;
+    //           this.gridData.options  = this.dataObject.gridData.options;
+    //           this.dataObject.isDataAvailable = true;
+    //           this.dataObject.gridData.result = this.gridData;
+    //         }
+    //         // if (resp && resp.length > 0) {
+    //         //   this.gridData = resp;
+    //         //   this.showPopUp = true;
+    //         //   this.dataObject.isDataAvailable = true;
+    //         //   this.dataObject.gridData.result = this.gridData;
+    //         // }
+    //       },
+    //       err => {
+    //         // const message = JSON.parse(err._body).error.errors[0].message;
+    //       });
+    //   // this.gridData.forEach(item => {
+    //   //   item.isChecked = this.filterConfig.values.find( e => e.id == item.id) ? true : false;
+    //   // });
+    //   //
+    //   // this.showPopUp = true;
+    //   // this.dataObject.isDataAvailable = true;
+    //   // this.dataObject.gridData.result = this.gridData;
+    // }
   }
 
   addItem() {
