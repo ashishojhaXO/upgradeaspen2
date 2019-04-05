@@ -193,7 +193,7 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
     const result = [];
     return this.getReportData().subscribe(
         response => {
-          if (response && response.body) {
+          if (response && response.body && response.body.length) {
             console.log('response report data>>>')
             console.log(JSON.stringify(response));
             _.forEach(response.body, (v, i) => {
@@ -229,6 +229,8 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
             __this.dataObject.gridData = __this.gridData;
             __this.dataObject.isDataAvailable = __this.gridData.result && __this.gridData.result.length ? true : false;
 
+          } else {
+            this.dataObject.isDataAvailable = false;
           }
         },
         err => {
