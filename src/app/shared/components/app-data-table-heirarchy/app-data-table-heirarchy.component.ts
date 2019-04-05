@@ -790,6 +790,7 @@ export class AppDataTableHeirarchyComponent implements OnInit, OnChanges {
             obj.created_by = ele.created_by;
             obj.lastruntime = comThis.datePipe.transform(ele.report_run_end_time, 'yyyy-dd-M h:mm:ss a')
             obj.report_run_status = ele.report_run_status;
+            obj.report_run_file_location = ele.report_run_file_location;
             objArr.push(obj);
           });
 
@@ -802,9 +803,11 @@ export class AppDataTableHeirarchyComponent implements OnInit, OnChanges {
             });
             tr.append('<td class="nocolvis" style="width:96px"></td>');
             for(var prop in objArr[i]) {
-              tr.append('<td class="nocolvis" style="width:100px">' + objArr[i][prop] + '</td>');
+              if(prop != 'report_run_file_location') {
+                tr.append('<td class="nocolvis" style="width:100px">' + objArr[i][prop] + '</td>');
+              }
             }
-            tr.append('<td><a href="javascript:void(0)" style="margin-left: 55px;" class="fa fa-download fa-action-view downloadLink nav-link nav-toggle"></a></td>')
+            tr.append('<td><a href="' + objArr[i].report_run_file_location  + '" style="margin-left: 55px;" class="fa fa-download fa-action-view downloadLink nav-link nav-toggle"></a></td>')
             trMain.after(tr);
           }
         } else {
