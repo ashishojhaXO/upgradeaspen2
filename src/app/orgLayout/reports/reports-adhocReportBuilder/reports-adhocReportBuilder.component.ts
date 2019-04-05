@@ -1174,6 +1174,13 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
       ? this.selectedTransactionStatus[0].value : '';
     formValues.aggregation =  (this.selectedAggregation && this.selectedAggregation.length) ? this.selectedAggregation[0].option : '';
 
+    console.log('this.selectedPartnerType >>')
+    console.log(this.selectedPartnerType);
+
+    formValues.parnerType = this.selectedPartnerType.map(function(x){
+       return x.value;
+    });
+
     formValues.filterList = [];
     if (this.selectedFilter && this.selectedFilter.length) {
 
@@ -1181,9 +1188,10 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
           var obj: any = {};
           obj.field_name = filter.f7_name;
           obj.value = [];
+
           if(filter.selectedItems) {
             filter.selectedItems.forEach(function (selected) {
-              obj.value.push(selected.id);
+              obj.value.push((obj.field_name === 'ctrt_vend_vendor_name' || obj.field_name === 'partner_name') ? selected.label : selected.id);
             });
           }
         formValues.filterList.push(obj);
@@ -1294,6 +1302,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     dataObj['report_definition']['report_name'] = formValues.reportName;
     dataObj['report_definition']['transaction_type'] = formValues.frequency.toLowerCase();
     dataObj['report_definition']['dimensions'] = formValues.dimensions;
+    dataObj['report_definition']['partner_types'] = formValues.parnerType;
     dataObj['report_definition']['filters'] = formValues.filterList;
     dataObj['report_definition']['metrics'] = formValues.metrics;
     dataObj['report_definition']['aggregation'] = formValues.aggregation;
@@ -1323,7 +1332,6 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
           if (response) {
             this.showSpinner = false;
             this.router.navigate(['/app/reports/reportsSummary']);
-            //this.error = { type : 'success' , message : response.body };
           }
           // modalComponent.hide();
         },
