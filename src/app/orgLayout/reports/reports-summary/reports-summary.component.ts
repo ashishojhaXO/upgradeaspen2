@@ -230,7 +230,7 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
             __this.dataObject.isDataAvailable = __this.gridData.result && __this.gridData.result.length ? true : false;
 
           } else {
-            this.dataObject.isDataAvailable = false;
+            this.dataObject.isDataAvailable = true;
           }
         },
         err => {
