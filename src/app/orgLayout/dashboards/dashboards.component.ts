@@ -317,14 +317,14 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           });
           this.chartConfig.dataPoints = [
             {
-              propertyName: 'Cumulative Spend',
-              type: 'column',
-              color: 'rgb(80, 130, 186)'
-            },
-            {
               propertyName: 'Monthly Spend',
               type: 'column',
               color: 'rgb(56, 199, 224)'
+            },
+            {
+              propertyName: 'Cumulative Spend',
+              type: 'column',
+              color: 'rgb(80, 130, 186)'
             },
             {
               propertyName: 'Line Item Budget',
@@ -343,14 +343,14 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           });
           this.chartConfig.dataPoints = [
             {
-              propertyName: 'Monthly Cumulative Spend',
-              type: 'column',
-              color: 'rgb(80, 130, 186)'
-            },
-            {
               propertyName: 'Daily Spend',
               type: 'column',
               color: 'rgb(56, 199, 224)'
+            },
+            {
+              propertyName: 'Monthly Cumulative Spend',
+              type: 'column',
+              color: 'rgb(80, 130, 186)'
             },
             {
               propertyName: 'Line Item Monthly Budget',
