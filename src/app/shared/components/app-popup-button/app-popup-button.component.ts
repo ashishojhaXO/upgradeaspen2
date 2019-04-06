@@ -119,8 +119,15 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
               this.gridData = response;
               this.gridData.options  = this.dataObject.gridData.options;
               this.dataObject.isDataAvailable = true;
+
+              this.gridData.forEach(item => {
+                item.isChecked = this.filterConfig.values.find( e => e.id == item.id) ? true : false;
+              });
+              
               this.dataObject.gridData.result = this.gridData;
             }
+
+
             // if (resp && resp.length > 0) {
             //   this.gridData = resp;
             //   this.showPopUp = true;
