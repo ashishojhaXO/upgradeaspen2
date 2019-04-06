@@ -180,10 +180,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     {option: '05:00'}, {option: '06:00'},{option: '07:00'}, {option: '08:00'}, {option: '09:00'}, {option: '10:00'},
     {option: '11:00'}, {option: '12:00'}, {option: '13:00'}, {option: '14:00'}, {option: '15:00'}, {option: '16:00'},
     {option: '17:00'}, {option: '18:00'}, {option: '19:00'}, {option: '20:00'}, {option: '21:00'}, {option: '22:00'}, {option: '23:00'}];
-  partnerTypeList = [
-    {option: 'Provider', value: 'PROV'},
-    {option: '3rd Part Ad Server', value: 'TPAS'},
-    {option: 'Verification', value: 'VERI'}];
+  partnerTypeList = [];
   transactionStatusList = [];
   filterList = [];
 
