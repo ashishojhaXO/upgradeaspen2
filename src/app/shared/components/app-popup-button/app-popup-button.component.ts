@@ -106,7 +106,13 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
     this.selected = this.filterConfig.values;
 
     if (this.externalGridData) {
+
       this.gridData = this.externalGridData.data;
+
+      this.gridData.forEach(item => {
+        item.isChecked = this.filterConfig.values.find( e => e.id == item.id) ? true : false;
+      });
+
       this.showPopUp = true;
       this.dataObject.isDataAvailable = true;
       this.dataObject.gridData.result = this.gridData;
@@ -120,20 +126,19 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
               this.gridData.options  = this.dataObject.gridData.options;
               this.dataObject.isDataAvailable = true;
 
+              console.log('this.filterConfig.values >>>')
+              console.log(this.filterConfig.values)
+
+              console.log('this.gridData >>>')
+              console.log(this.gridData)
+
+
               this.gridData.forEach(item => {
                 item.isChecked = this.filterConfig.values.find( e => e.id == item.id) ? true : false;
               });
-              
+
               this.dataObject.gridData.result = this.gridData;
             }
-
-
-            // if (resp && resp.length > 0) {
-            //   this.gridData = resp;
-            //   this.showPopUp = true;
-            //   this.dataObject.isDataAvailable = true;
-            //   this.dataObject.gridData.result = this.gridData;
-            // }
           },
           err => {
             // const message = JSON.parse(err._body).error.errors[0].message;
