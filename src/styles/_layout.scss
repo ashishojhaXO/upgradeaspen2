@@ -3001,9 +3001,10 @@ div.modal-dialog {
 // App Container Styles
 
 .app-container {
-  float: right;
-  width: 79%;
+  //float: right;
+  width: auto;
   margin: 0px 30px;
+  padding-left: 225px;
   // Filters selection view on dashboard
   div.filters-applied {
     display: inline-block;
@@ -3054,9 +3055,10 @@ div.modal-dialog {
 }
 
 .app-container.expanded {
-  float: right;
-  width: 95%;
+  //float: right;
+  width: auto;
   margin: 0px 30px;
+  padding-left: 0px;
 }
 
 
@@ -3134,3 +3136,4 @@ div.modal-dialog div.dataTableWrapper {
 table.dataTable tbody td.selected a {
   color: #3FA8F4 !important;
 }
+

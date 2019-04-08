@@ -20,19 +20,19 @@ export class AppSidebarComponent implements OnInit {
 
     ngOnInit() {
 
-      $(window ).resize(function() {
-        if ($(window).width() < 1500) {
-          $('.sidebar').addClass('closed');
-          $('.sidebar-toggle').addClass('collapsed');
-          $('.app-container').addClass('expanded');
-          $('.sidebar-form').addClass('hide');
-          if ($(window).width() < 1358) {
-            $('.sidebar').addClass('hide');
-          } else {
-            $('.sidebar').removeClass('hide');
-          }
-        }
-      });
+      // $(window ).resize(function() {
+      //   if ($(window).width() < 1500) {
+      //     $('.sidebar').addClass('closed');
+      //     $('.sidebar-toggle').addClass('collapsed');
+      //     $('.app-container').addClass('expanded');
+      //     $('.sidebar-form').addClass('hide');
+      //     if ($(window).width() < 1358) {
+      //       $('.sidebar').addClass('hide');
+      //     } else {
+      //       $('.sidebar').removeClass('hide');
+      //     }
+      //   }
+      // });
     }
 
   toggleSideBar() {
