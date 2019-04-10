@@ -2,7 +2,7 @@
  * Copyright 2018. FusionSeven Inc. All rights reserved.
  *
  * Author: Dinesh Yadav
- * Date: 2019-02-27 14:54:37
+ * Date: 2019-03-26 12:54:37
  */
 
 import { Component, OnInit } from '@angular/core';
@@ -15,11 +15,11 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
 
 @Component({
-  selector: 'app-orders',
-  templateUrl: './orders.component.html',
-  styleUrls: ['./orders.component.scss']
+  selector: 'app-reconciliation',
+  templateUrl: './reconciliation.component.html',
+  styleUrls: ['./reconciliation.component.scss']
 })
-export class OrdersComponent implements OnInit  {
+export class ReconciliationComponent implements OnInit  {
 
   headers: any = [];
   gridData: any;
@@ -45,6 +45,23 @@ export class OrdersComponent implements OnInit  {
   externalAuth: any;
   showSpinner: boolean;
   widget: any;
+  periodData: any;
+  selectedPeriod: any;
+  channelData: any;
+  selectedChannel: any;
+
+  settings: any = {
+        singleSelection: true,
+        text: 'Select ' ,
+        selectAllText: 'Select All',
+        unSelectAllText: 'UnSelect All',
+        labelKey: 'itemName',
+        searchBy: ['itemName'],
+        enableCheckAll: true,
+        enableSearchFilter: true,
+        showTooltip: true,
+        tooltipElementsSize: 10
+    };
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
   }
@@ -58,11 +75,23 @@ export class OrdersComponent implements OnInit  {
 
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
+    this.periodData = this.getPeriod();
+    this.selectedPeriod = [this.periodData[0]];
+    this.channelData = this.getChannel();
+    this.selectedChannel = [this.channelData[0]];
     this.searchDataRequest();
   }
 
-  searchDataRequest() {
-    return this.searchData().subscribe(
+    handleSelect(selectedItem, type) {
+       this[type] = [selectedItem];
+    }
+
+    handleDeSelect(selectedItem, type) {
+
+    }
+
+   searchDataRequest() {
+      return this.searchData().subscribe(
         response => {
           if (response) {
             if (response) {
@@ -72,27 +101,17 @@ export class OrdersComponent implements OnInit  {
           }
         },
         err => {
-
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchDataRequest();
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            this.widget.tokenManager.refresh('accessToken')
+                .then(function (newToken) {
+                  this.widget.tokenManager.add('accessToken', newToken);
+                  this.showSpinner = false;
+                  this.searchDataRequest();
+                });
           } else {
             this.showSpinner = false;
+            console.log('err')
+            console.log(err);
           }
         }
     );
@@ -104,11 +123,24 @@ export class OrdersComponent implements OnInit  {
     if (AccessToken) {
       token = AccessToken.accessToken;
     }
+
+    const dataObj = {
+        clientCode: 'homd',
+        year: this.selectedPeriod[0].id.split('-')[0],
+        month: this.selectedPeriod[0].id.split('-')[1],
+        siteName: this.selectedChannel[0].id
+    }
+
+    const obj = JSON.stringify(dataObj);
+
+    console.log('obj >>')
+    console.log(obj)
+
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/orders/line-items';
+    const url = this.api_fs.api + '/api/reports/reconciliation';
     return this.http
-      .get(url, options)
+      .post(url, obj, options)
       .map(res => {
         return res.json();
       }).share();
@@ -140,11 +172,7 @@ export class OrdersComponent implements OnInit  {
     this.gridData['headers'] = this.headers;
     this.gridData['options'] = this.options[0];
     this.gridData.columnsToColor = [
-      { name: 'MERCHANT PROCESSING FEE', color: 'rgb(47,132,234,0.2)'},
-      { name: 'LINE ITEM MEDIA BUDGET', color: 'rgb(47,132,234,0.2)'},
-      { name: 'KENSHOO FEE', color: 'rgb(47,132,234,0.2)'},
-      { name: 'THD FEE', color: 'rgb(47,132,234,0.2)'},
-      { name: 'LINE ITEM TOTAL BUDGET', color: 'rgb(47,132,234,0.4)'}
+        { name: 'CALCULATED AMOUNT', color: 'rgb(47,132,234,0.2)'}
     ];
     this.dashboard = 'paymentGrid';
     this.dataObject.gridData = this.gridData;
@@ -152,4 +180,27 @@ export class OrdersComponent implements OnInit  {
     this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
     // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
   }
+
+  getPeriod() {
+        const months = [];
+        const monthName = new Array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+        const d = new Date();
+        for (var i=0; i<=12; i++) {
+            var monthVal = (d.getMonth() + 1).toString().length === 1 ? ('0' + (d.getMonth() + 1)) : (d.getMonth() + 1);
+            months.push({
+                id : d.getFullYear() + '-' + monthVal + '-' + '01',
+                itemName : monthName[d.getMonth()] + ' ' + d.getFullYear()
+            })
+            d.setMonth(d.getMonth() - 1);
+        }
+        return months;
+    }
+
+    getChannel() {
+        const channel = [];
+        channel.push({ id: 'facebook', itemName: 'Facebook'});
+        channel.push({ id: 'google', itemName: 'Google'});
+        channel.push({ id: 'pinterest', itemName: 'Pinterest'});
+        return channel;
+    }
 }

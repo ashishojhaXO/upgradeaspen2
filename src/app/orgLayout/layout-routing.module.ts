@@ -35,6 +35,15 @@ const routes: Routes = [
           breadcrumbs: true,
           text: 'Spend'
         }
+      },
+      {
+        path: 'reconciliation',
+        loadChildren: './reconciliation/reconciliation.module#ReconciliationModule',
+        canActivate: [AuthGuard],
+        data: {
+          breadcrumbs: true,
+          text: 'Reconciliation'
+        }
       }
     ]
   },
@@ -68,6 +77,15 @@ const routes: Routes = [
         data: {
           breadcrumbs: true,
           text: 'Spend'
+        }
+      },
+      {
+        path: 'reconciliation',
+        loadChildren: './reconciliation/reconciliation.module#ReconciliationModule',
+        canActivate: [AuthGuard],
+        data: {
+          breadcrumbs: true,
+          text: 'Reconciliation'
         }
       }
     ]

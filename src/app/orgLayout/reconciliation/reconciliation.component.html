@@ -1,0 +1,54 @@
+<app-sidebar1>
+  <div class="sidebar-title">
+    <h3>FILTERS</h3>
+  </div>
+  <div class="sidebar-form-control">
+    <div>
+      <div class="sidebar-form-control">
+        <p class="title">Period</p>
+        <div class="sidebar-container">
+          <app-multiselect-drop-down [data]="periodData"
+                                     [selectedItems]="selectedPeriod"
+                                     [loading]="loading"
+                                     [settings]="settings"
+                                     [dropDownAction]="this"
+                                     (onSelect)="handleSelect($event, 'selectedPeriod')"
+                                     (onDeSelect)="handleDeSelect($event, 'selectedPeriod')"
+          ></app-multiselect-drop-down>
+        </div>
+      </div>
+      <div class="sidebar-form-control">
+        <p class="title">Channel</p>
+        <div class="sidebar-container">
+          <app-multiselect-drop-down [data]="channelData"
+                                     [selectedItems]="selectedChannel"
+                                     [loading]="loading"
+                                     [settings]="settings"
+                                     [dropDownAction]="this"
+                                     (onSelect)="handleSelect($event, 'selectedChannel')"
+                                     (onDeSelect)="handleDeSelect($event, 'selectedChannel')"
+          ></app-multiselect-drop-down>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sidebar-form-control">
+    <button style="text-align: center;background-color: #666;color: #fff;border: 1px solid #666;width: 98%;height: 30px;border-radius: 4px;position: relative;
+    top: 20px;" (click)="search()">SEARCH</button>
+  </div>
+</app-sidebar1>
+<div class="app-container">
+  <div class="col-lg-12 col-md-12" style="margin: 0px 0px 20px">
+    <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;margin-left: 5px;">RECONCILIATION</p>
+  </div>
+  <div style="padding-top: 35px">
+    <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject.isDataAvailable">
+      <app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height"></app-data-table1>
+    </div>
+    <div class="page-header" *ngIf="!dataObject.isDataAvailable">
+      <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
+      <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to display.</div>
+    </div>
+  </div>
+</div>
+

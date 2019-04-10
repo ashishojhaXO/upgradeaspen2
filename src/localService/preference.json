@@ -33,6 +33,14 @@
           "selected": false,
           "id": "spend",
           "url": "app/dashboards/spend"
+        },
+        {
+          "index": 3,
+          "name": "Reconcialition",
+          "title": "Reconcialition",
+          "selected": false,
+          "id": "reconciliation",
+          "url": "app/dashboards/reconciliation"
         }
       ]
     },

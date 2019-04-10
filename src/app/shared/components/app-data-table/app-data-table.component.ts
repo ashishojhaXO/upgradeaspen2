@@ -99,6 +99,12 @@ export class AppDataTableComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+
+    var __this = this;
+    $(document).on('click', '.paginate_button a', function () {
+      __this.setColumnColors();
+    });
+
     // this.setId = this.id ? this.id : 'gridtable1';
     // this.displayDataTable();
   }
@@ -1555,10 +1561,42 @@ export class AppDataTableComponent implements OnInit, OnChanges {
 
     this.tableId = this.tableId + 1;
 
+    this.setColumnColors();
     // Sticky Header
     // $(function(){
     //   $(this.tableWrapper).floatThead();
     // });
+  }
+
+  setColumnColors() {
+    // Color Fields
+    const colorFields = this.dataObject.gridData.columnsToColor;
+    if(colorFields) {
+      const __this = this;
+      const indexes = [];
+      $('#' + __this.setId).find('thead tr').each(function () {
+        $(this).find('th').each(function (index) {
+          colorFields.forEach(function (obj) {
+            if(obj.name == $(this).text()) {
+              indexes.push({
+                index : index, color: obj.color
+              });
+              $(this).css('background-color', obj.color);
+            }
+          }, this);
+        });
+      });
+
+      $('#' + __this.setId).find('tbody tr').each(function () {
+        $(this).find('td').each(function (index) {
+          indexes.forEach(function (obj) {
+            if(obj.index == index) {
+              $(this).css('background-color', obj.color);
+            }
+          }, this);
+        });
+      });
+    }
   }
 
   emitSelecedOptions() {
