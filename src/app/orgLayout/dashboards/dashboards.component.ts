@@ -302,6 +302,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
         this.chartConfig.title = '';
         this.chartConfig.YAxis.data = [];
+        this.chartConfig.isStacked = true;
 
         if (this.selectedView === 'Monthly') {
 

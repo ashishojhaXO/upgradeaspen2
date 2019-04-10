@@ -3042,9 +3042,10 @@ div.modal-dialog {
           text-decoration: none;
           text-transform: uppercase;
           border-right: 1px solid #888;
+          font-weight: bold;
           .breadcrumbValue {
             color: #656565;
-            font-weight: bold;
+            font-weight: 200;
             padding: 0 0 0 3px;
             text-transform: uppercase;
           }
@@ -3104,6 +3105,7 @@ div.modal-dialog {
       line-height: 30px;
       border-radius: 4px;
       cursor: pointer;
+      font-weight: 200;
     }
     label.active {
       margin: 5px;
@@ -3135,5 +3137,9 @@ div.modal-dialog div.dataTableWrapper {
 
 table.dataTable tbody td.selected a {
   color: #3FA8F4 !important;
+}
+
+.selector.selectorarrow.selectorarrowleft {
+  width: 200px !important;
 }
 

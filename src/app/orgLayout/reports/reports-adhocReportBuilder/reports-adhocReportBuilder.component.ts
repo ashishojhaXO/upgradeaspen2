@@ -45,7 +45,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
 
   periodDropDownSettings = {
     singleSelection: true,
-    text: 'Select Period',
+    text: 'Select',
     primaryKey: 'value',
     labelKey: 'option',
     searchBy: ['option'],
@@ -68,7 +68,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
 
   fileTypeDropDownSettings = {
     singleSelection: true,
-    text: 'Select File Type',
+    text: 'Select',
     primaryKey: 'option',
     labelKey: 'option',
     searchBy: ['option'],
@@ -78,7 +78,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
 
   frequencyDropDownSettings = {
     singleSelection: true,
-    text: 'Select Frequency',
+    text: 'Select',
     primaryKey: 'option',
     labelKey: 'option',
     searchBy: ['option'],
@@ -88,7 +88,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
 
   emailDropDownSettings = {
     singleSelection: true,
-    text: 'Select email',
+    text: 'Select',
     primaryKey: 'option',
     labelKey: 'option',
     searchBy: ['option'],
@@ -118,7 +118,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
 
   runTimeDropDownSettings = {
     singleSelection: true,
-    text: 'Run Time(PST)',
+    text: 'Select',
     primaryKey: 'option',
     labelKey: 'option',
     searchBy: ['option'],

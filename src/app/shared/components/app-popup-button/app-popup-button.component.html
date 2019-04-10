@@ -1,5 +1,5 @@
 <div *ngIf="filterConfig" class="sidebar-container">
-  <label (click)="invokePopUp(displayPopUp)" class="displayLabel" [title]="filterConfig.values.length ? 'Selected ' + filterConfig.label + ' : ' +  selectedText : 'Click to select values'">{{filterConfig.values.length ? (hideSelectedValues ? ('Select ' + filterConfig.label) : selectedText ): 'Select ' + filterConfig.label}}</label>
+  <label (click)="invokePopUp(displayPopUp)" class="displayLabel" [title]="filterConfig.values.length ? 'Selected ' + filterConfig.label + ' : ' +  selectedText : 'Click to select values'">{{filterConfig.values.length ? (hideSelectedValues ? ('Select ' + filterConfig.label) : selectedText ): 'Select'}}</label>
   <div style="width:100%">
     <app-pop-up-modal #displayPopUp>
       <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
