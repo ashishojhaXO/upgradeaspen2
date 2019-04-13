@@ -76,7 +76,7 @@ export class ReconciliationComponent implements OnInit  {
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
     this.periodData = this.getPeriod();
-    this.selectedPeriod = [this.periodData[0]];
+    this.selectedPeriod = [this.periodData[1]];
     this.channelData = this.getChannel();
     this.selectedChannel = [this.channelData[0]];
     this.searchDataRequest();
@@ -203,9 +203,9 @@ export class ReconciliationComponent implements OnInit  {
 
     getChannel() {
         const channel = [];
+        channel.push({ id: 'pinterest', itemName: 'Pinterest'});
         channel.push({ id: 'facebook', itemName: 'Facebook'});
         channel.push({ id: 'google', itemName: 'Google'});
-        channel.push({ id: 'pinterest', itemName: 'Pinterest'});
         return channel;
     }
 }

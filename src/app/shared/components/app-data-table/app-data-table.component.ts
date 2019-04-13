@@ -92,9 +92,10 @@ export class AppDataTableComponent implements OnInit, OnChanges {
     if (changes['dataObject']) {
       console.log('dataObject >>>')
       console.log(this.dataObject)
-      var table = $('#' + this.setId).DataTable();
-      if (table) {
-        table.destroy();
+      if(this.setId) {
+        $('#' + this.setId).DataTable().clear().destroy();
+        $('#' + this.setId).find('thead').empty();
+        $('#' + this.setId).find('tbody').empty();
       }
       this.displayDataTable();
     }
@@ -105,6 +106,7 @@ export class AppDataTableComponent implements OnInit, OnChanges {
     var __this = this;
     $(document).on('click', '.paginate_button a', function () {
       __this.setColumnColors();
+      __this.appendColumnWith$();
     });
 
     // this.setId = this.id ? this.id : 'gridtable1';
@@ -271,6 +273,7 @@ export class AppDataTableComponent implements OnInit, OnChanges {
     headers.forEach((data, index) => {
       const def = {};
       const opt = option;
+      def['defaultContent'] = "";
       def['targets'] = index;
       def['orderable'] = data.isFilterRequired;
       def['searchable'] = true;
@@ -433,6 +436,7 @@ export class AppDataTableComponent implements OnInit, OnChanges {
     }
 
     const pageLength = option.isPageLength === undefined ? 1 : option.isPageLength;
+
     if (this.serverSide && this.serviceURI) {
       if (this.serviceMethod && (this.serviceMethod == 'post' || this.serviceMethod == 'POST')) {
         this.tableWidget[this.tableId] = table.DataTable({
@@ -601,6 +605,13 @@ export class AppDataTableComponent implements OnInit, OnChanges {
         });
       }
     } else {
+
+      console.log('this.tableId >>>')
+      console.log(this.tableId);
+
+      console.log('table >>>')
+      console.log(table);
+
       this.tableWidget[this.tableId] = table.DataTable({
         columns: headers,
         columnDefs: defs,
@@ -1564,10 +1575,49 @@ export class AppDataTableComponent implements OnInit, OnChanges {
     this.tableId = this.tableId + 1;
 
     this.setColumnColors();
+
+    this.appendColumnWith$();
     // Sticky Header
     // $(function(){
     //   $(this.tableWrapper).floatThead();
     // });
+  }
+
+  appendColumnWith$() {
+    // Append Fields with $ sign
+    const appendFields = this.dataObject.gridData.columnsToAppend$;
+
+    console.log('appendFields >>')
+    console.log(appendFields);
+
+    if(appendFields) {
+      const __this = this;
+      const indexes = [];
+      $('#' + __this.setId).find('thead tr').each(function () {
+        $(this).find('th').each(function (index) {
+          appendFields.forEach(function (obj) {
+            if(obj == $(this).text()) {
+              console.log('index head >>>')
+              console.log(index);
+              indexes.push(index);
+            }
+          }, this);
+        });
+      });
+
+      console.log('indexes >>>')
+      console.log(indexes);
+
+      $('#' + __this.setId).find('tbody tr').each(function () {
+        $(this).find('td').each(function (index) {
+          indexes.forEach(function (obj) {
+            if(obj == index) {
+              $(this).text('$ ' + $(this).text());
+            }
+          }, this);
+        });
+      });
+    }
   }
 
   setColumnColors() {

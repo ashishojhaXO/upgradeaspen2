@@ -51,7 +51,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         }
   ];
 
-  headers: any = [];
   gridData: any;
   dataObject: any = {};
   isDataAvailable: boolean;
@@ -470,6 +469,23 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     this.dataObject = {};
     this.gridData = {};
     this.gridData['result'] = [];
+    this.gridData.columnsToAppend$ = [
+      'Line Item Budget',
+      'Line Item Monthly Media Spend',
+      'Line Item Media Spend',
+      'Line Item Budget Remaining',
+      'Line Item Monthly Budget',
+      'Line Item Daily Budget',
+      'Line Item Daily Spend',
+      'Line Item Monthly Cumulative Spend',
+      'Line Item Monthly Budget Remaining',
+      'Line Item Daily Budget Remaining',
+      'Average Line Item Monthly Budget',
+      'Media Cost',
+      'Technology Cost',
+      'Average Line Item Daily Budget'
+    ]
+    const headers = [];
 
     if(responseData.gridData && responseData.gridData.length) {
 
@@ -478,20 +494,21 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
       const keys = Object.keys(responseData.gridData[0]);
       for (let i = 0; i < keys.length; i++) {
-        let header = {
-          key: keys[i],
-          title: keys[i],
-          data: keys[i],
-          isFilterRequired: true,
-          isCheckbox: false,
-          class: 'nocolvis',
-          editButton: false,
-          width: '150'
-        }
-        this.headers.push(header);
+          let header = {
+            key: keys[i],
+            title: keys[i],
+            mData: keys[i],
+            data: keys[i],
+            isFilterRequired: true,
+            isCheckbox: false,
+            class: 'nocolvis',
+            editButton: false,
+            width: '150'
+          }
+          headers.push(header);
       }
 
-      this.gridData['headers'] = this.headers;
+      this.gridData['headers'] = headers;
       this.gridData['options'] = this.options[0];
       this.dashboard = 'schemaGrid';
       let result = [];
