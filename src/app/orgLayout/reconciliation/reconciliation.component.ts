@@ -90,6 +90,11 @@ export class ReconciliationComponent implements OnInit  {
 
     }
 
+    search() {
+        this.showSpinner = true;
+        this.searchDataRequest();
+    }
+
    searchDataRequest() {
       return this.searchData().subscribe(
         response => {
