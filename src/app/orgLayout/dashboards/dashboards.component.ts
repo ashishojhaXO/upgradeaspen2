@@ -466,16 +466,17 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }
 
   populateDataTable(response, initialLoad) {
-    const pacingData = response;
+    const responseData = response;
+    this.dataObject = {};
     this.gridData = {};
     this.gridData['result'] = [];
 
-    if(pacingData.gridData && pacingData.gridData.length) {
+    if(responseData.gridData && responseData.gridData.length) {
 
-      console.log('pacingData.gridData[0] >>')
-      console.log(pacingData.gridData[0]);
+      console.log('responseData.gridData[0] >>')
+      console.log(responseData.gridData[0]);
 
-      const keys = Object.keys(pacingData.gridData[0]);
+      const keys = Object.keys(responseData.gridData[0]);
       for (let i = 0; i < keys.length; i++) {
         let header = {
           key: keys[i],
@@ -494,11 +495,12 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       this.gridData['options'] = this.options[0];
       this.dashboard = 'schemaGrid';
       let result = [];
-      for (let i = 0; i < pacingData.gridData.length; i++) {
-        result.push(pacingData.gridData[i]);
+      for (let i = 0; i < responseData.gridData.length; i++) {
+        result.push(responseData.gridData[i]);
       }
       this.gridData['result'] = result;
       this.dataObject.gridData = this.gridData;
+      console.log('this.gridData <<<<<');
       console.log(this.gridData);
       this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
     }
