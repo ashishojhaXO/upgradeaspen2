@@ -36,8 +36,8 @@
         },
         {
           "index": 3,
-          "name": "Reconcialition",
-          "title": "Reconcialition",
+          "name": "Reconciliation",
+          "title": "Reconciliation",
           "selected": false,
           "id": "reconciliation",
           "url": "app/dashboards/reconciliation"
