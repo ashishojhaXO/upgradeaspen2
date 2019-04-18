@@ -1586,10 +1586,6 @@ export class AppDataTableComponent implements OnInit, OnChanges {
   appendColumnWith$() {
     // Append Fields with $ sign
     const appendFields = this.dataObject.gridData.columnsToAppend$;
-
-    console.log('appendFields >>')
-    console.log(appendFields);
-
     if(appendFields) {
       const __this = this;
       const indexes = [];
@@ -1597,21 +1593,16 @@ export class AppDataTableComponent implements OnInit, OnChanges {
         $(this).find('th').each(function (index) {
           appendFields.forEach(function (obj) {
             if(obj == $(this).text()) {
-              console.log('index head >>>')
-              console.log(index);
               indexes.push(index);
             }
           }, this);
         });
       });
 
-      console.log('indexes >>>')
-      console.log(indexes);
-
       $('#' + __this.setId).find('tbody tr').each(function () {
         $(this).find('td').each(function (index) {
           indexes.forEach(function (obj) {
-            if(obj == index) {
+            if(obj == index && $(this).text().indexOf('$') == -1) {
               $(this).text('$ ' + $(this).text());
             }
           }, this);
