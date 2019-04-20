@@ -44,7 +44,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             value : 'Monthly'
           },
           {
-            name: 'Daily',
+            name: 'MTD',
             value: 'Daily'
           }]
         },
