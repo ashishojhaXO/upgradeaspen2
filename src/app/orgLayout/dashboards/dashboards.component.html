@@ -7,12 +7,12 @@
       <div class="sidebar-form-control" *ngIf="filter.type === 'toggle'" >
         <p class="title">{{filter.label}}</p>
         <div class="sidebar-container">
-          <label (click)="setActive(filter,toggleOption)" *ngFor="let toggleOption of filter.toggleOptions; let j = index;" [class]="filter.values === toggleOption ? 'active' : ''">
-            {{toggleOption}}
+          <label (click)="setActive(filter,toggleOption)" *ngFor="let toggleOption of filter.toggleOptions; let j = index;" [class]="filter.values === toggleOption.value ? 'active' : ''">
+            {{toggleOption.name}}
           </label>
         </div>
       </div>
-      <div class="sidebar-form-control" *ngIf="filter.type === 'dropdown'" >
+      <div class="sidebar-form-control" *ngIf="filter.type === 'dropdown' && selectedView != 'Monthly'" >
         <p class="title">{{filter.label}}</p>
         <app-wrapper-multiselect-drop-down (valueUpdate)="updateFilterConfig($event)" [filterConfig]="filter" [dependentConfig]="getDependentConfig(filter.dependentOn)"
         ></app-wrapper-multiselect-drop-down>

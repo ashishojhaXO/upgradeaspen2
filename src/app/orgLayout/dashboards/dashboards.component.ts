@@ -33,21 +33,28 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
   defaultFilters = [
         {
-          'f7Name' : 'type',
-          'label' : 'View',
-          'values' : 'Monthly',
-          'isMultiSelect' : false,
-          'dependentOn' : [],
-          'type' : 'toggle',
-          'toggleOptions' : ['Monthly','Daily']
+          f7Name : 'type',
+          label : 'View',
+          values : 'Monthly',
+          isMultiSelect : false,
+          dependentOn : [],
+          type : 'toggle',
+          toggleOptions : [{
+            name : 'CTD',
+            value : 'Monthly'
+          },
+          {
+            name: 'Daily',
+            value: 'Daily'
+          }]
         },
         {
-          'f7Name' : 'period',
-          'label' : 'Period',
-          'values' : [],
-          'isMultiSelect' : false,
-          'dependentOn' : [],
-          'type' : 'dropdown'
+          f7Name : 'period',
+          label : 'Period',
+          values : [],
+          isMultiSelect : false,
+          dependentOn : [],
+          type : 'dropdown'
         }
   ];
 
@@ -165,18 +172,15 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     });
   }
 
-  setActive(filter, value) {
+  setActive(filter, Obj) {
 
     this.dashboardConfig = {};
     this.dashboardConfig.filterProps = JSON.parse(JSON.stringify(this.defaultFilters));
 
     const corrFilter = this.dashboardConfig.filterProps.find( x=> x.type === filter.type);
     if (corrFilter) {
-      corrFilter.values = value;
+      corrFilter.values = Obj.value;
     }
-
-    console.log('this.defaultFilters >>>')
-    console.log(this.defaultFilters);
 
     var dataSource = JSON.parse(localStorage.getItem('dashboardConfig_' + this.dashboardType)) || '';
     if (dataSource) {
@@ -233,7 +237,18 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     });
 
     if (selectedType.length) {
+
+      console.log('dashboardConfig >>')
+      console.log(dashboardConfig);
+
+      console.log('selectedType >>')
+      console.log(selectedType);
+
        var getSelectedTypeConfig = dashboardConfig.views.find(x => x.name === selectedType[0].values);
+
+       console.log('getSelectedTypeConfig >>')
+       console.log(getSelectedTypeConfig);
+
        this.selectedView = getSelectedTypeConfig.name;
        if (getSelectedTypeConfig) {
 
@@ -679,5 +694,3 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     return ret.join('<br/>');
   }
 }
-
-
