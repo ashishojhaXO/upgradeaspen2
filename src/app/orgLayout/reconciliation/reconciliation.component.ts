@@ -155,6 +155,7 @@ export class ReconciliationComponent implements OnInit  {
     const tableData = response;
     this.gridData = {};
     this.gridData['result'] = [];
+    this.headers = [];
 
     if (tableData.length) {
       const keys = Object.keys(tableData[0]);
