@@ -552,9 +552,26 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       .catch();
   }
 
-  search() {
+  formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
 
-    var dateField = this.dashboardConfig.filterProps.find(x=> x.f7Name === 'period').values[0].id;
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, '01'].join('-');
+  }
+
+  search() {
+    var dateField;
+    if(this.dashboardConfig.filterProps.find(x=> x.f7Name === 'period').values) {
+      dateField = this.dashboardConfig.filterProps.find(x=> x.f7Name === 'period').values[0].id;
+    } else {
+      dateField = this.formatDate(new Date());
+    }
+
     var startDate = dateField + 'T00:00:00Z';
     var endDate = '';
     var endDateOftheMonth = 0;
