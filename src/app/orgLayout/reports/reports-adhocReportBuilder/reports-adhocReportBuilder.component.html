@@ -501,113 +501,113 @@
           </ul>
         </div>
 
-        <!--<div class="step-main-div sidebar-form-control ">-->
-          <!--<div class="step-sub-div">-->
-            <!--<label class="step-no">ALERTS </label>-->
-            <!--<div class="step-name">-->
-              <!--<input #alertCheckBoxSwitch-->
-                     <!--id="alertCheckBoxSwitch"-->
-                     <!--type="checkbox"-->
-                     <!--[checked]="isAlertRequired"-->
-                     <!--(change)="handleAlertRequiredOnChange(alertCheckBoxSwitch.checked)"/>-->
-            <!--</div>-->
-            <!--<div class="step-drop-down">-->
-            <!--</div>-->
-          <!--</div>-->
-        <!--</div>-->
+        <div class="step-main-div sidebar-form-control ">
+          <div class="step-sub-div">
+            <label class="step-no">ALERTS </label>
+            <div class="step-name">
+              <input #alertCheckBoxSwitch
+                     id="alertCheckBoxSwitch"
+                     type="checkbox"
+                     [checked]="isAlertRequired"
+                     (change)="handleAlertRequiredOnChange(alertCheckBoxSwitch.checked)"/>
+            </div>
+            <div class="step-drop-down">
+            </div>
+          </div>
+        </div>
 
-        <!--<div class="alerts-main-div sidebar-form-control " *ngIf="isAlertRequired">-->
+        <div class="alerts-main-div sidebar-form-control " *ngIf="isAlertRequired">
 
-          <!--<div class="rendered-alerts-div">-->
+          <div class="rendered-alerts-div">
 
-            <!--<div class="rendered-alerts-generate-report-check-div">-->
-              <!--<input #generateReportCheckBoxSwitch-->
-                     <!--id="generateReportCheckBoxSwitch"-->
-                     <!--type="checkbox"-->
-                     <!--[checked]="generateReport"-->
-                     <!--(change)="handleGenerateReportOnChange(generateReportCheckBoxSwitch.checked)"/>-->
-            <!--</div>-->
+            <div class="rendered-alerts-generate-report-check-div">
+              <input #generateReportCheckBoxSwitch
+                     id="generateReportCheckBoxSwitch"
+                     type="checkbox"
+                     [checked]="generateReport"
+                     (change)="handleGenerateReportOnChange(generateReportCheckBoxSwitch.checked)"/>
+            </div>
 
-            <!--<div class="rendered-alerts-generate-report-label-div">-->
-               <!--Generate Report even If alert is not triggered-->
-            <!--</div>-->
-          <!--</div>-->
+            <div class="rendered-alerts-generate-report-label-div">
+               Generate Report even If alert is not triggered
+            </div>
+          </div>
 
-          <!--<div class="rendered-alerts-div">-->
-            <!--<div class="rendered-alerts-label-div">-->
-              <!--Type-->
-            <!--</div>-->
-            <!--<div class="rendered-sub-fields-div">-->
-              <!--<app-multiselect-drop-down [data]="alertTypeList"-->
-                                         <!--[settings]="alertTypeDropDownSettings"-->
-                                         <!--[selectedItems]="selectedAlertType"-->
-                                         <!--(onSelect)="onFilterSelect($event)"-->
-                                         <!--(onDeSelect)="onFilterDeSelect($event)"-->
-                                         <!--(onSelectAll)="onFilterSelectAll($event)"-->
-                                         <!--(onDeSelectAll)="onFilterDeSelectAll($event)">-->
-              <!--</app-multiselect-drop-down>-->
-            <!--</div>-->
-          <!--</div>-->
+          <div class="rendered-alerts-div">
+            <div class="rendered-alerts-label-div">
+              Type
+            </div>
+            <div class="rendered-sub-fields-div">
+              <app-multiselect-drop-down [data]="alertTypeList"
+                                         [settings]="alertTypeDropDownSettings"
+                                         [selectedItems]="selectedAlertType"
+                                         (onSelect)="onFilterSelect($event)"
+                                         (onDeSelect)="onFilterDeSelect($event)"
+                                         (onSelectAll)="onFilterSelectAll($event)"
+                                         (onDeSelectAll)="onFilterDeSelectAll($event)">
+              </app-multiselect-drop-down>
+            </div>
+          </div>
 
-          <!--<div class="rendered-alerts-div" *ngIf="movingThresholdEnable">-->
-            <!--<div class="rendered-alerts-label-div">-->
-              <!--Moving Average Period-->
-            <!--</div>-->
-            <!--<div class="rendered-sub-fields-div">-->
-              <!--<app-multiselect-drop-down [data]="alertMovingAvgPeriod"-->
-                                         <!--[settings]="alertTypeDropDownSettings"-->
-                                         <!--[selectedItems]="selectedMovingAvgPeriodType"-->
-                                         <!--(onSelect)="onFilterSelectMoving($event)"-->
-                                         <!--(onDeSelect)="onFilterDeSelect($event)"-->
-                                         <!--(onSelectAll)="onFilterSelectAll($event)"-->
-                                         <!--(onDeSelectAll)="onFilterDeSelectAll($event)">-->
-              <!--</app-multiselect-drop-down>-->
-            <!--</div>-->
-          <!--</div>-->
-          <!--<div class="clearfix" style="background-color: #f7f7f7;"></div>-->
-          <!--<div class="rendered-alerts-div">-->
-            <!--<div class="rendered-alerts-label-div">-->
-              <!--Metric-->
-            <!--</div>-->
-            <!--<div class="rendered-sub-fields-div">-->
-              <!--<app-multiselect-drop-down [data]="alertMetricList"-->
-                                         <!--[settings]="alertMetricDropDownSettings"-->
-                                         <!--[selectedItems]="selectedAlertMetric"-->
-                                         <!--(onSelect)="onFilterSelectMetric($event)"-->
-                                         <!--(onDeSelect)="onFilterDeSelect($event)"-->
-                                         <!--(onSelectAll)="onFilterSelectAll($event)"-->
-                                         <!--(onDeSelectAll)="onFilterDeSelectAll($event)">-->
-              <!--</app-multiselect-drop-down>-->
-            <!--</div>-->
-          <!--</div>-->
+          <div class="rendered-alerts-div" *ngIf="movingThresholdEnable">
+            <div class="rendered-alerts-label-div">
+              Moving Average Period
+            </div>
+            <div class="rendered-sub-fields-div">
+              <app-multiselect-drop-down [data]="alertMovingAvgPeriod"
+                                         [settings]="alertTypeDropDownSettings"
+                                         [selectedItems]="selectedMovingAvgPeriodType"
+                                         (onSelect)="onFilterSelectMoving($event)"
+                                         (onDeSelect)="onFilterDeSelect($event)"
+                                         (onSelectAll)="onFilterSelectAll($event)"
+                                         (onDeSelectAll)="onFilterDeSelectAll($event)">
+              </app-multiselect-drop-down>
+            </div>
+          </div>
+          <div class="clearfix" style="background-color: #f7f7f7;"></div>
+          <div class="rendered-alerts-div">
+            <div class="rendered-alerts-label-div">
+              Metric
+            </div>
+            <div class="rendered-sub-fields-div">
+              <app-multiselect-drop-down [data]="alertMetricList"
+                                         [settings]="alertMetricDropDownSettings"
+                                         [selectedItems]="selectedAlertMetric"
+                                         (onSelect)="onFilterSelectMetric($event)"
+                                         (onDeSelect)="onFilterDeSelect($event)"
+                                         (onSelectAll)="onFilterSelectAll($event)"
+                                         (onDeSelectAll)="onFilterDeSelectAll($event)">
+              </app-multiselect-drop-down>
+            </div>
+          </div>
 
-          <!--<div class="rendered-alerts-div">-->
-            <!--<div class="rendered-alerts-label-div">-->
-              <!--Threshold-->
-            <!--</div>-->
-            <!--<div class="rendered-sub-fields-div">-->
-              <!--<app-multiselect-drop-down [data]="alertThresholdData"-->
-                                         <!--[settings]="alertThresholdDropDownSettings"-->
-                                         <!--[selectedItems]="selectedAlertThreshold"-->
-                                         <!--(onSelect)="onFilterSelectThreshold($event)"-->
-                                         <!--(onDeSelect)="onFilterDeSelect($event)"-->
-                                         <!--(onSelectAll)="onFilterSelectAll($event)"-->
-                                         <!--(onDeSelectAll)="onFilterDeSelectAll($event)">-->
-              <!--</app-multiselect-drop-down>-->
-            <!--</div>-->
-          <!--</div>-->
+          <div class="rendered-alerts-div">
+            <div class="rendered-alerts-label-div">
+              Threshold
+            </div>
+            <div class="rendered-sub-fields-div">
+              <app-multiselect-drop-down [data]="alertThresholdData"
+                                         [settings]="alertThresholdDropDownSettings"
+                                         [selectedItems]="selectedAlertThreshold"
+                                         (onSelect)="onFilterSelectThreshold($event)"
+                                         (onDeSelect)="onFilterDeSelect($event)"
+                                         (onSelectAll)="onFilterSelectAll($event)"
+                                         (onDeSelectAll)="onFilterDeSelectAll($event)">
+              </app-multiselect-drop-down>
+            </div>
+          </div>
 
-          <!--<div class="rendered-alerts-div" *ngIf="thresholdValueField">-->
-            <!--<div class="rendered-alerts-label-div">-->
+          <div class="rendered-alerts-div" *ngIf="thresholdValueField">
+            <div class="rendered-alerts-label-div">
 
-            <!--</div>-->
-            <!--<div class="rendered-sub-fields-div">-->
-              <!--<input type="text" Placeholder="Threshold Value" class="form-fields adhoc-report-input-box"-->
-                     <!--[(ngModel)]="alertThresholdValue" maxlength="250" [ngModelOptions]="{standalone: true}">-->
-            <!--</div>-->
-          <!--</div>-->
+            </div>
+            <div class="rendered-sub-fields-div">
+              <input type="text" Placeholder="Threshold Value" class="form-fields adhoc-report-input-box"
+                     [(ngModel)]="alertThresholdValue" maxlength="250" [ngModelOptions]="{standalone: true}">
+            </div>
+          </div>
 
-        <!--</div>-->
+        </div>
 
         <div class="sidebar-form-control">
           <button type="button" class="btn data-btn btn-default btn-width-100" id="saveRun" (click)="handleSubmit('saveRun', reportform)">Save & Run</button>

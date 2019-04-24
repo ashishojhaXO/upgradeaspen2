@@ -35,7 +35,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         {
           f7Name : 'type',
           label : 'View',
-          values : 'Monthly',
+          values : 'Daily',
           isMultiSelect : false,
           dependentOn : [],
           type : 'toggle',

@@ -2522,6 +2522,7 @@ button.disabled {
 .dataTables_wrapper button.dt-button {
   margin-right: 0;
   margin-left: 0.333em;
+  font-size: 8px;
 }
 
 .multiselect-dropdown {
@@ -3143,3 +3144,26 @@ table.dataTable tbody td.selected a {
   width: 200px !important;
 }
 
+.app-modal-body-div div.dataTables_wrapper {
+  width: 70% !important;
+}
+
+.app-modal-body-div div.dataTables_paginate {
+  font-size: 12px;
+  position: relative;
+  left: 125px
+}
+
+.app-modal-body-div div.dt-buttons {
+  position: relative;
+  top: 40px;
+  float: right;
+}
+
+.paginate_button:hover  {
+  background-color: red;
+}
+
+.modal-content {
+  font-size: 70%;
+}
