@@ -67,6 +67,14 @@
           "selected": false,
           "id": "adHocReportBuilder",
           "url": "app/reports/adHocReportBuilder"
+        },
+        {
+          "index": 3,
+          "name": "alertNotification",
+          "title": "Alert Notification",
+          "selected": false,
+          "id": "alertNotification",
+          "url": "app/reports/alertNotification"
         }
       ]
     },
