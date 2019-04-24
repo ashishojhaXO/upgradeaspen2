@@ -502,7 +502,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   selectedMovingAvgPeriodType = [];
   selectedAlertMetric = [];
   selectedAlertThreshold = [];
-  movingThresholdEnable = false;
+  movingAverageEnable = false;
   thresholdValueField = true;
   alertMovingAvgPeriod = [
     {
@@ -896,12 +896,12 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   }
 
   onFilterSelect(item: any) {
-    this.movingThresholdEnable = false;
+    this.movingAverageEnable = false;
     this.thresholdValueField = true;
     this.alertThresholdData = this.alertThresholdList;
     this.selectedAlertType = [item];
     if (item.value === 'Moving Average') {
-      this.movingThresholdEnable = true;
+      this.movingAverageEnable = true;
       this.thresholdValueField = false;
       this.alertThresholdData = this.movingThresholdList;
     }
@@ -1260,15 +1260,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     formValues['alertThreshold1'] = this.alertThresholdValue;
     formValues['alertMovingAvgPeriod'] = _.size(this.alertMovingPeriodThresholdValue) > 0 ? this.alertMovingPeriodThresholdValue[0]['value'] : [];
     formValues['generateReport'] = this.generateReport;
-    // formValues['alertThreshold2']
-    // formValues['alertMovingAvgPeriod']
-    // formValues['alertThreshold1']
-    // formValues['alertThreshold2']
-    // formValues['alertMovingAvgPeriod']
-    // formValues['isSummary']
-    // formValues['isSummaryRowCheck-' + index]
-    // formValues['summaryAggregation-' + index]
-  return formValues;
+    return formValues;
   }
 
   handleSubmit(saveType: any, reportform: any) {
@@ -1308,6 +1300,14 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     dataObj['report_definition']['data_end_date'] = formValues.freqEndDate;
     dataObj['report_definition'] = JSON.stringify(dataObj['report_definition']);
     dataObj['alert_definition'] = '';
+    if (formValues.isAlert) {
+      dataObj['alert_definition'] = {};
+      dataObj['alert_definition']['alert_type'] = formValues.alertType;
+      dataObj['alert_definition']['metric'] = formValues.alertMetric;
+      dataObj['alert_definition']['operator'] = formValues.alertopr;
+      dataObj['alert_definition']['value'] = formValues.alertThreshold1;
+      dataObj['alert_definition'] = JSON.stringify(dataObj['alert_definition']);
+    }
     dataObj['is_hidden'] = '0';
     dataObj['is_alert_dependent'] = '0';
     dataObj['report_frequency'] = formValues.frequency.toLowerCase();

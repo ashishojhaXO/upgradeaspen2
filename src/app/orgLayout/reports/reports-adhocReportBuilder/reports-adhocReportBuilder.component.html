@@ -518,20 +518,20 @@
 
         <div class="alerts-main-div sidebar-form-control " *ngIf="isAlertRequired">
 
-          <div class="rendered-alerts-div">
+          <!--<div class="rendered-alerts-div">-->
 
-            <div class="rendered-alerts-generate-report-check-div">
-              <input #generateReportCheckBoxSwitch
-                     id="generateReportCheckBoxSwitch"
-                     type="checkbox"
-                     [checked]="generateReport"
-                     (change)="handleGenerateReportOnChange(generateReportCheckBoxSwitch.checked)"/>
-            </div>
+            <!--<div class="rendered-alerts-generate-report-check-div">-->
+              <!--<input #generateReportCheckBoxSwitch-->
+                     <!--id="generateReportCheckBoxSwitch"-->
+                     <!--type="checkbox"-->
+                     <!--[checked]="generateReport"-->
+                     <!--(change)="handleGenerateReportOnChange(generateReportCheckBoxSwitch.checked)"/>-->
+            <!--</div>-->
 
-            <div class="rendered-alerts-generate-report-label-div">
-               Generate Report even If alert is not triggered
-            </div>
-          </div>
+            <!--<div class="rendered-alerts-generate-report-label-div">-->
+               <!--Generate Report even If alert is not triggered-->
+            <!--</div>-->
+          <!--</div>-->
 
           <div class="rendered-alerts-div">
             <div class="rendered-alerts-label-div">
@@ -549,7 +549,7 @@
             </div>
           </div>
 
-          <div class="rendered-alerts-div" *ngIf="movingThresholdEnable">
+          <div class="rendered-alerts-div" *ngIf="movingAverageEnable">
             <div class="rendered-alerts-label-div">
               Moving Average Period
             </div>
@@ -564,13 +564,12 @@
               </app-multiselect-drop-down>
             </div>
           </div>
-          <div class="clearfix" style="background-color: #f7f7f7;"></div>
           <div class="rendered-alerts-div">
             <div class="rendered-alerts-label-div">
               Metric
             </div>
             <div class="rendered-sub-fields-div">
-              <app-multiselect-drop-down [data]="alertMetricList"
+              <app-multiselect-drop-down [data]="metricsPopupData.data"
                                          [settings]="alertMetricDropDownSettings"
                                          [selectedItems]="selectedAlertMetric"
                                          (onSelect)="onFilterSelectMetric($event)"
