@@ -743,7 +743,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
         this.reportTemplate = response.body;
 
         this.partnerTypeList = this.reportTemplate.context.partner.type.map(function (x) {
-          return {option: x === 'dtrx' ? 'Daily Transaction' : x, value: x}
+          return {option: x === 'dtrx' ? 'Transaction' : x, value: x}
         });
 
         if (this.reportTemplate.report.period && this.reportTemplate.report.period.duration
@@ -790,7 +790,6 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
       }
       this.showSpinner = false;
     }, error => {
-      alert()
       const message = JSON.parse(error._body).error.errors[0].message;
       this.showSpinner = false;
     });
@@ -1399,7 +1398,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
         this.reportTemplate = response.body;
 
         this.partnerTypeList = this.reportTemplate.context.partner.type.map(function (x) {
-          return {option: x === 'dtrx' ? 'Daily Transaction' : x, value: x}
+          return {option: x === 'dtrx' ? 'Transaction' : x, value: x}
         });
 
         if (this.reportTemplate.report.period && this.reportTemplate.report.period.duration
