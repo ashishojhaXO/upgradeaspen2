@@ -1309,7 +1309,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
       dataObj['alert_definition'] = JSON.stringify(dataObj['alert_definition']);
     }
     dataObj['is_hidden'] = '0';
-    dataObj['is_alert_dependent'] = '0';
+    dataObj['is_alert_dependent'] = formValues.isAlert ? '1' : '0';
     dataObj['report_frequency'] = formValues.frequency.toLowerCase();
     dataObj['report_duration_begin'] = formValues.freqStartDate;
     dataObj['report_duration_end'] = formValues.freqEndDate;
