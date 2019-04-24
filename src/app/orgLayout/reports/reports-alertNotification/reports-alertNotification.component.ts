@@ -24,7 +24,6 @@ export class AlertNoticationdashboardsComponent implements OnInit {
   headers: any = [];
   gridData: any;
   dataObject: any = {};
-  isDataAvailable: boolean;
   height: any;
   options: Array<DataTableOptions> = [{
     isSearchColumn: true,
@@ -64,11 +63,9 @@ export class AlertNoticationdashboardsComponent implements OnInit {
   searchDataRequest() {
     return this.searchData().subscribe(
         response => {
-          if (response) {
-            if (response) {
-              this.populateDataTable(response, true);
-              this.showSpinner = false;
-            }
+          if (response && response.body) {
+            this.populateDataTable(response.body, true);
+            this.showSpinner = false;
           }
         },
         err => {
@@ -118,6 +115,7 @@ export class AlertNoticationdashboardsComponent implements OnInit {
     const tableData = response;
     this.gridData = {};
     this.gridData['result'] = [];
+    this.headers = [];
 
     if (tableData.length) {
       const keys = Object.keys(tableData[0]);
@@ -141,7 +139,6 @@ export class AlertNoticationdashboardsComponent implements OnInit {
     this.gridData['options'] = this.options[0];
     this.dashboard = 'alertGrid';
     this.dataObject.gridData = this.gridData;
-    console.log(this.gridData);
     this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
     // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
   }

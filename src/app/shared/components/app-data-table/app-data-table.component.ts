@@ -253,6 +253,7 @@ export class AppDataTableComponent implements OnInit, OnChanges {
    * Renders DataTable with Populated data
    */
   displayDataTable(): void {
+
     this.setId = this.id !== undefined ? this.id : 'gridtable';
     const noData = this.dataObject.gridData.result && this.dataObject.gridData.result.length ? '' : 'no-data-available';
     $(this.tableWrapper).append('<table id="' + this.setId + '" class="table order-column admin-user gridtable ' +

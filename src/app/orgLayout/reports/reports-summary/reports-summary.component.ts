@@ -4,7 +4,6 @@ import 'jquery';
 import 'bootstrap';
 import {Router, ActivatedRoute} from '@angular/router';
 import {DataTableOptions} from '../../../../models/dataTableOptions';
-import * as gridData from './gridData.json';
 import {AuthService, ReportsService} from '../../../../services';
 import {DataTableAction } from '../../../shared/components/app-data-table/data-table-action';
 import {DataTableActionType } from '../../../shared/components/app-data-table/data-table-action-type';
