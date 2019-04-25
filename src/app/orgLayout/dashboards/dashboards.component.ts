@@ -424,6 +424,24 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               YaxisAssociation : ''
             },
             {
+              propertyName: 'Client Fee',
+              type: 'column',
+              color: 'rgb(151, 160, 169)',
+              YaxisAssociation : ''
+            },
+            {
+              propertyName: 'Merchant Processing Fee',
+              type: 'column',
+              color: 'rgb(253, 193, 138)',
+              YaxisAssociation : ''
+            },
+            {
+              propertyName: 'Platform Fee',
+              type: 'column',
+              color: 'rgb(223, 142, 145)',
+              YaxisAssociation : ''
+            },
+            {
               propertyName: 'Line Item Budget',
               type: 'line',
               color: 'rgb(153, 204, 51)',
@@ -456,6 +474,24 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               propertyName: 'Technology Cost',
               type: 'column',
               color: 'rgb(56, 199, 224)'
+            },
+            {
+              propertyName: 'Client Fee',
+              type: 'column',
+              color: 'rgb(85, 182, 188)',
+              YaxisAssociation : ''
+            },
+            {
+              propertyName: 'Merchant Processing Fee',
+              type: 'column',
+              color: 'rgb(253, 193, 138)',
+              YaxisAssociation : ''
+            },
+            {
+              propertyName: 'Platform Fee',
+              type: 'column',
+              color: 'rgb(223, 142, 145)',
+              YaxisAssociation : ''
             },
             {
               propertyName: 'Line Item Budget',
@@ -498,7 +534,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       'Average Line Item Monthly Budget',
       'Media Cost',
       'Technology Cost',
-      'Average Line Item Daily Budget'
+      'Average Line Item Daily Budget',
+      'Client Fee',
+      'Merchant Processing Fee',
+      'Platform Fee'
     ]
     const headers = [];
 
@@ -566,7 +605,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
   search() {
     var dateField;
-    if(this.dashboardConfig.filterProps.find(x=> x.f7Name === 'period').values) {
+    const obj = this.dashboardConfig.filterProps.find(x=> x.f7Name === 'period').values;
+    if(obj && obj.length) {
       dateField = this.dashboardConfig.filterProps.find(x=> x.f7Name === 'period').values[0].id;
     } else {
       dateField = this.formatDate(new Date());
