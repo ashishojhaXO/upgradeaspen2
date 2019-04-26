@@ -1295,8 +1295,12 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     dataObj['report_definition']['metrics'] = formValues.metrics;
     dataObj['report_definition']['aggregation'] = formValues.aggregation;
     dataObj['report_definition']['data_period'] = formValues.period.toLowerCase();
-    dataObj['report_definition']['data_start_date'] = formValues.freqStartDate;
-    dataObj['report_definition']['data_end_date'] = formValues.freqEndDate;
+    if(formValues.period.toLowerCase() === 'last n days') {
+      dataObj['report_definition']['data_period_days'] = formValues.noOfDays;
+    } else if(formValues.period.toLowerCase() === 'custom period') {
+      dataObj['report_definition']['data_start_date'] = formValues.startDate;
+      dataObj['report_definition']['data_end_date'] = formValues.endDate;
+    }
     dataObj['report_definition'] = JSON.stringify(dataObj['report_definition']);
     dataObj['alert_definition'] = '';
     if (formValues.isAlert) {
@@ -1321,41 +1325,41 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     dataObj['delivery_type'] = 'email';
     dataObj['email_id'] = formValues.email;
 
-    return this.submitFormData(dataObj).subscribe(
-        response => {
-          console.log('response>>>')
-          console.log(response);
-          if (response) {
-            this.showSpinner = false;
-            this.router.navigate(['/app/reports/reportsSummary']);
-          }
-          // modalComponent.hide();
-        },
-        err => {
-
-          if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.handleSubmit(null,null);
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
-                window.location.href = '/login';
-              });
-            }
-          } else {
-            this.showSpinner = false;
-          }
-        }
-    );
+    // return this.submitFormData(dataObj).subscribe(
+    //     response => {
+    //       console.log('response>>>')
+    //       console.log(response);
+    //       if (response) {
+    //         this.showSpinner = false;
+    //         this.router.navigate(['/app/reports/reportsSummary']);
+    //       }
+    //       // modalComponent.hide();
+    //     },
+    //     err => {
+    //
+    //       if(err.status === 401) {
+    //         if(this.widget.tokenManager.get('accessToken')) {
+    //           this.widget.tokenManager.refresh('accessToken')
+    //               .then(function (newToken) {
+    //                 this.widget.tokenManager.add('accessToken', newToken);
+    //                 this.showSpinner = false;
+    //                 this.handleSubmit(null,null);
+    //               })
+    //               .catch(function (err) {
+    //                 console.log('error >>')
+    //                 console.log(err);
+    //               });
+    //         } else {
+    //           this.widget.signOut(() => {
+    //             this.widget.tokenManager.remove('accessToken');
+    //             window.location.href = '/login';
+    //           });
+    //         }
+    //       } else {
+    //         this.showSpinner = false;
+    //       }
+    //     }
+    // );
 
   }
 
