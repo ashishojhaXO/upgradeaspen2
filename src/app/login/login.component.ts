@@ -83,7 +83,8 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('customerStatus', responseDetails.body[0].external_status);
           localStorage.setItem('loggedInUserName', responseDetails.body[0].user.first_name + ' ' + responseDetails.body[0].user.last_name);
           localStorage.setItem('loggedInUserEmail', responseDetails.body[0].user.email_id);
-          this.router.navigate(['./app/dashboards']);
+          window.location.href = '/app/dashboards';
+          // this.router.navigate(['./app/dashboards']);
         } else {
           this.changeDetectorRef.detectChanges();
           this.error = 'No User details found. Please contact administrator';
