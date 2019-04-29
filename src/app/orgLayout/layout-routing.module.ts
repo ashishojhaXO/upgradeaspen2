@@ -6,7 +6,6 @@ import {AuthGuard} from '../shared/guard/auth.guard';
 const routes: Routes = [
   {
     path: '',
-    canActivate: [AuthGuard],
     data: {
       breadcrumbs: true,
       text: 'Dashboards'
@@ -14,14 +13,12 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        canActivate: [AuthGuard],
         redirectTo: 'pacing',
         pathMatch: 'full'
       },
       {
         path: 'pacing',
         loadChildren: './dashboards/dashboards.module#DashboardsModule',
-        canActivate: [AuthGuard],
         data: {
           breadcrumbs: true,
           text: 'Pacing'
@@ -30,7 +27,6 @@ const routes: Routes = [
       {
         path: 'spend',
         loadChildren: './dashboards/dashboards.module#DashboardsModule',
-        canActivate: [AuthGuard],
         data: {
           breadcrumbs: true,
           text: 'Spend'
@@ -39,7 +35,6 @@ const routes: Routes = [
       {
         path: 'reconciliation',
         loadChildren: './reconciliation/reconciliation.module#ReconciliationModule',
-        canActivate: [AuthGuard],
         data: {
           breadcrumbs: true,
           text: 'Reconciliation'
@@ -49,7 +44,6 @@ const routes: Routes = [
   },
   {
     path: 'dashboards',
-    canActivate: [AuthGuard],
     data: {
       breadcrumbs: true,
       text: 'Dashboards'
@@ -57,14 +51,12 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        canActivate: [AuthGuard],
         redirectTo: 'pacing',
         pathMatch: 'full'
       },
       {
         path: 'pacing',
         loadChildren: './dashboards/dashboards.module#DashboardsModule',
-        canActivate: [AuthGuard],
         data: {
           breadcrumbs: true,
           text: 'Pacing'
@@ -73,7 +65,6 @@ const routes: Routes = [
       {
         path: 'spend',
         loadChildren: './dashboards/dashboards.module#DashboardsModule',
-        canActivate: [AuthGuard],
         data: {
           breadcrumbs: true,
           text: 'Spend'
@@ -82,7 +73,6 @@ const routes: Routes = [
       {
         path: 'reconciliation',
         loadChildren: './reconciliation/reconciliation.module#ReconciliationModule',
-        canActivate: [AuthGuard],
         data: {
           breadcrumbs: true,
           text: 'Reconciliation'
@@ -93,7 +83,6 @@ const routes: Routes = [
   {
     path: 'reports',
     loadChildren: './reports/reports.module#ReportsModule',
-    canActivate: [AuthGuard],
     data: {
       breadcrumbs: true,
       text: 'Reports'
@@ -102,19 +91,16 @@ const routes: Routes = [
   {
     path: 'orders',
     component: LayoutComponent,
-    canActivate: [AuthGuard],
     loadChildren: './orders/orders.module#OrdersModule'
   },
   {
     path: 'payments',
     component: LayoutComponent,
-    canActivate: [AuthGuard],
     loadChildren: './payments/payments.module#PaymentsModule'
   },
   {
 
     path: 'admin',
-    canActivate: [AuthGuard],
     data: {
       breadcrumbs: true,
       text: 'Admin'
@@ -122,14 +108,12 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        canActivate: [AuthGuard],
         redirectTo: 'usermanagement',
         pathMatch: 'full'
       },
       {
         path: 'usermanagement',
         loadChildren: './usermanagement/usermanagement.module#UserManagementModule',
-        canActivate: [AuthGuard],
         data: {
           breadcrumbs: true,
           text: 'User Management'
