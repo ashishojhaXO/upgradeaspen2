@@ -60,12 +60,18 @@ export class WrapperMultiSelectDropdownComponent implements OnInit {
     var d = new Date();
     for (var i=0; i<=12; i++) {
       var monthVal = (d.getMonth() + 1).toString().length === 1 ? ('0' + (d.getMonth() + 1)) : (d.getMonth() + 1);
-      months.push({
-        'id' : d.getFullYear() + '-' + monthVal + '-' + '01',
-        'itemName' : monthName[d.getMonth()] + ' ' + d.getFullYear()
-      })
+      const corrMonth = months.find(x=> x.id === (d.getFullYear() + '-' + monthVal + '-' + '01'));
+      if(!corrMonth) {
+        months.push({
+          'id': d.getFullYear() + '-' + monthVal + '-' + '01',
+          'itemName': monthName[d.getMonth()] + ' ' + d.getFullYear()
+        })
+      }
       d.setMonth(d.getMonth() - 1);
     }
+
+    console.log('months >')
+    console.log(months);
     return months;
   }
 
