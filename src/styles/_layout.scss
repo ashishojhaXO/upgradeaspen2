@@ -3150,9 +3150,18 @@ table.dataTable tbody td.selected a {
 }
 
 .app-modal-body-div div.dataTables_paginate {
-  font-size: 12px;
+  font-size: 8px;
   position: relative;
   left: 125px
+}
+
+.app-modal-body-div .pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
+  font-size: 8px;
+}
+
+.app-modal-body-div table.dataTable tbody th, table.dataTable tbody td {
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 
 .app-modal-body-div div.dt-buttons {
