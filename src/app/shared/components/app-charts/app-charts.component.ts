@@ -141,6 +141,9 @@ export class AppChartsComponent implements OnInit, OnChanges {
         useHTML: true
       },
       plotOptions: {
+        series: {
+          pointWidth: 15
+        },
         column: {
           stacking: this.config.isStacked ? 'normal' : ''
         },
