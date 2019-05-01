@@ -863,8 +863,20 @@ export class AppDataTableComponent implements OnInit, OnChanges {
         $(event.currentTarget).removeClass('active');
       }
     });
+
     $('body').on('click', '.dt-button-background', (event: any) => {
       $('.fa-Ivisible').removeClass('active');
+    });
+
+    $(document).on('click','.buttons-colvisRestore, .buttons-collection,.buttons-columnVisibility', function () {
+      $('.buttons-columnVisibility').each(function () {
+        if($(this).hasClass('active')) {
+          if($(this).find('.check-tick').length === 0)
+            $('<span class="check-tick" style="font-family: wingdings; font-size: 200%; position: relative; top: 3px; left: -5px">&#252;</span>').insertBefore($(this).find('span'));
+        } else {
+          $(this).find('.check-tick').remove();
+        }
+      });
     });
 
     // Table Header Sorting action
