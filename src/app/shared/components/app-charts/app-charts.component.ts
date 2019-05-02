@@ -142,7 +142,7 @@ export class AppChartsComponent implements OnInit, OnChanges {
       },
       plotOptions: {
         series: {
-          pointWidth: 15
+          pointWidth: (700 / (20 * this.config.data.length))
         },
         column: {
           stacking: this.config.isStacked ? 'normal' : ''
