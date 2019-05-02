@@ -70,6 +70,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
+    isDownload: true,
     isRowSelection: true,
     isShowEntries: false,
     isPagination: true,
