@@ -174,18 +174,19 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
   setActive(filter, Obj) {
 
-    this.dashboardConfig = {};
-    this.dashboardConfig.filterProps = JSON.parse(JSON.stringify(this.defaultFilters));
+    // this.dashboardConfig = {};
+    // this.dashboardConfig.filterProps = JSON.parse(JSON.stringify(this.defaultFilters));
 
     const corrFilter = this.dashboardConfig.filterProps.find( x=> x.type === filter.type);
     if (corrFilter) {
       corrFilter.values = Obj.value;
+      this.selectedView = Obj.value;
     }
 
-    var dataSource = JSON.parse(localStorage.getItem('dashboardConfig_' + this.dashboardType)) || '';
-    if (dataSource) {
-      this.populateFilters(dataSource);
-    }
+    // var dataSource = JSON.parse(localStorage.getItem('dashboardConfig_' + this.dashboardType)) || '';
+    // if (dataSource) {
+    //   this.populateFilters(dataSource);
+    // }
   }
 
   ngOnInit() {

@@ -53,13 +53,21 @@
     <div class="breadcrumbsection">
       <div class="breadcrumbinner">
         <h4>Filters selected :</h4>
-
         <div style="display: inline-block" *ngFor="let filter of dashboardConfig.filterProps; let i = index;">
-          <div class="breadcrumbList" *ngIf="filter.values.length">
+          <div *ngIf="filter.label.toLowerCase() != 'period'; else period">
+            <div class="breadcrumbList" *ngIf="filter.values.length">
               <span class="breadcrumblabel">{{filter.label}}
                 <span class="breadcrumbValue" [innerHTML]="filter.f7Name === 'period' ? (filter.values.length ? filter.values[0].itemName : '') : ( isArray(filter.values) ? ( filter.values.length ? getSelectedValues(filter.values) : 'ALL' ) : ( filter.values ? filter.values : 'ALL' ))"></span>
               </span>
+            </div>
           </div>
+          <ng-template #period>
+            <div class="breadcrumbList" *ngIf="selectedView && selectedView.toLowerCase() != 'monthly'">
+              <span class="breadcrumblabel">{{filter.label}}
+                <span class="breadcrumbValue" [innerHTML]="filter.f7Name === 'period' ? (filter.values.length ? filter.values[0].itemName : '') : ( isArray(filter.values) ? ( filter.values.length ? getSelectedValues(filter.values) : 'ALL' ) : ( filter.values ? filter.values : 'ALL' ))"></span>
+              </span>
+            </div>
+          </ng-template>
         </div>
       </div>
     </div>
