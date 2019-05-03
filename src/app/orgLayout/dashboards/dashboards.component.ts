@@ -108,15 +108,15 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       });
     }
 
-    if (applyFilter.length) {
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
+    const options = new RequestOptions({headers: headers});
 
-      const AccessToken: any = this.widget.tokenManager.get('accessToken');
-      let token = '';
-      if (AccessToken) {
-        token = AccessToken.accessToken;
-      }
-      const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
-      const options = new RequestOptions({headers: headers});
+    if (applyFilter.length) {
 
       const dataObj = {
         filter: applyFilter,
@@ -143,6 +143,35 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           return ret;
         });
     } else {
+
+      // const obj1 = {
+      //   "dashboard": "pacing",
+      //   "type": "daily",
+      //   "clientCode": "homd",
+      //   "period": {
+      //     "f7Name": "date",
+      //     "values": {
+      //       "startDate": "2019-02-01T00:00:00Z",
+      //       "endDate": "2019-02-28T23:59:59Z"
+      //     }
+      //   }
+      // };
+      //
+      // const obj2 = JSON.stringify(obj1);
+      //
+      // return this.http
+      //     .post(this.api_fs.api + '/api/reports/org/homd/seed-dashboard', obj2, options )
+      //     .map(res => {
+      //       const result = res.json();
+      //       const ret = [];
+      //       if (result.length) {
+      //         result.forEach(function (item) {
+      //           ret.push({id: item, label: item});
+      //         });
+      //       }
+      //       return ret;
+      //     });
+
       return this.http
           .get(this.api_fs.api + '/api/reports/org/homd/seed-filters')
           .map(res => {
@@ -158,6 +187,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               return ret;
             }
           });
+
     }
   }
 
@@ -206,16 +236,21 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         .getFilter(this.dashboardType)
         .then(
           response => {
-            console.log('response filter >>>')
-            console.log(JSON.stringify(response));
-            this.showSpinner = false;
             if (response && response.data) {
-              this.populateFilters(response.data);
-              var __this = this;
-              setTimeout(function () {
-                __this.search();
-              },3000);
+              this.getSeedData()
+                  .then(
+                      response1 => {
+                        this.populateFilters(response.data, response1);
+                        //this.search();
+                      });
 
+              this.getSeedDashboard()
+                  .then(
+                      response2 => {
+                        this.showSpinner = false;
+                        this.populateChart(response2);
+                        this.populateDataTable(response2, false);
+                      });
             }
           },
           error => {
@@ -230,41 +265,92 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     }
   }
 
-  populateFilters(response) {
+  getSeedData() {
 
-    localStorage.setItem('dashboardConfig_' + this.dashboardType, JSON.stringify(response));
-    var dashboardConfig = response;
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
+    const options = new RequestOptions({headers: headers});
+
+    return this.http
+        .get(this.api_fs.api + '/api/reports/org/homd/seed-filters', options).toPromise()
+        .then(data => data.json())
+        .catch();
+  }
+
+  getSeedDashboard() {
+
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
+    const options = new RequestOptions({headers: headers});
+
+    const obj = {
+      dashboard: this.dashboardType,
+      type: 'daily',
+      clientCode: 'homd'
+    };
+
+    const dataObj = JSON.stringify(obj);
+    return this.http.post(this.api_fs.api + '/api/reports/org/homd/seed-dashboard', dataObj, options).toPromise()
+        .then(data => data.json())
+        .catch();
+  }
+
+  populateFilters(filterResponse, seedResponse) {
+
+    localStorage.setItem('dashboardConfig_' + this.dashboardType, JSON.stringify(filterResponse));
+    var dashboardConfig = filterResponse;
     var selectedType = this.dashboardConfig.filterProps.filter(function (filter) {
        return filter.f7Name === 'type';
     });
 
     if (selectedType.length) {
 
-      console.log('dashboardConfig >>')
-      console.log(dashboardConfig);
-
-      console.log('selectedType >>')
-      console.log(selectedType);
+      // console.log('dashboardConfig >>')
+      // console.log(dashboardConfig);
+      //
+      // console.log('selectedType >>')
+      // console.log(selectedType);
 
        var getSelectedTypeConfig = dashboardConfig.views.find(x => x.name === selectedType[0].values);
 
-       console.log('getSelectedTypeConfig >>')
-       console.log(getSelectedTypeConfig);
+       // console.log('getSelectedTypeConfig >>')
+       // console.log(getSelectedTypeConfig);
 
        this.selectedView = getSelectedTypeConfig.name;
        if (getSelectedTypeConfig) {
 
-         console.log('getSelectedTypeConfig.filters.source >>>')
-         console.log(getSelectedTypeConfig.filters.source);
+         // console.log('getSelectedTypeConfig.filters.source >>>')
+         // console.log(getSelectedTypeConfig.filters.source);
 
          getSelectedTypeConfig.filters.source.forEach(function (filter, index) {
-           if(filter.f7_name != 'month') {
+           if (filter.f7_name != 'month') {
+
              var newFilter: any = {};
              newFilter.f7Name = filter.f7_name;
              newFilter.label = filter.alias;
              newFilter.values = [];
-             newFilter.displayDefault = filter.displayDefault;
+             newFilter.displayDefault = null; // filter.displayDefault;
+
+             if (!newFilter.displayDefault) {
+               if (seedResponse[newFilter.f7Name] && seedResponse[newFilter.f7Name].length) {
+                 if (seedResponse[newFilter.f7Name] !== 'period') {
+                   newFilter.values = [{
+                     id: seedResponse[newFilter.f7Name][0],
+                     label: seedResponse[newFilter.f7Name][0]
+                   }];
+                 }
+               }
+             }
              //  newFilter.values = filter.default_value ? [filter.default_value] : [];
+
              newFilter.isMultiSelect = filter.isMultiSelect || false;
              newFilter.dependentOn = filter.parent || [];
              newFilter.includeCustom = false;
@@ -281,8 +367,13 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
          }, this);
        }
 
-      console.log('this.dashboardConfig.filterProps >>>')
-      console.log(this.dashboardConfig.filterProps);
+       const periodFilter = this.dashboardConfig.filterProps.find( x=> x.f7Name === 'period');
+       if (periodFilter && seedResponse['period'] && seedResponse['period'].values && seedResponse['period'].values.startDate) {
+         periodFilter.values = [{
+           id: seedResponse['period'].values.startDate,
+           itemName: this.getMonthName(seedResponse['period'].values.startDate.split('-')[1].replace('0','')) + ' ' + seedResponse['period'].values.startDate.split('-')[0]
+         }];
+       }
     }
   }
 
@@ -586,6 +677,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     if (AccessToken) {
       token = AccessToken.accessToken;
     }
+
+    console.log('token >>>>')
+    console.log(token);
+
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
     return this.http.get(this.api_fs.api + '/api/reports/org/Home%20Depot/template/dashboard', options).toPromise()
@@ -609,10 +704,12 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     var dateField;
     const obj = this.dashboardConfig.filterProps.find(x=> x.f7Name === 'period').values;
     if(obj && obj.length) {
-      dateField = this.dashboardConfig.filterProps.find(x=> x.f7Name === 'period').values[0].id;
+      dateField = obj[0].id;
     } else {
       dateField = this.formatDate(new Date());
     }
+
+   // dateField = '2019-04-01';
 
     var startDate = dateField + 'T00:00:00Z';
     var endDate = '';

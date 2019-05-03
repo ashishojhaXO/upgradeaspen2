@@ -44,10 +44,9 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
     this.dataObject = {};
     this.dataObject.isDataAvailable = false;
     this.selectedText = this.filterConfig.values.length ? this.filterConfig.values.join( ' , ') : '';
-    if(this.filterConfig.displayDefault != null) {
+    if (this.filterConfig.displayDefault != null) {
       this.popupDataAction.getData(this.filterConfig, this.dependentConfig).subscribe(response => {
         if(response.length) {
-
           this.gridData = response;
           this.filterConfig.values = [response[0]];
           this.valueUpdate.emit(this.filterConfig);
@@ -57,6 +56,13 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
           }, this);
         }
       });
+    } else {
+      if (this.filterConfig.values) {
+        this.selectedText = '';
+        this.filterConfig.values.forEach(function (item, index) {
+          this.selectedText += item.label + (this.filterConfig.values.indexOf(item) !== (this.filterConfig.values.length - 1) ? ',' : '');
+        }, this);
+      }
     }
   }
 

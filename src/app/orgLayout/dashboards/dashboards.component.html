@@ -14,7 +14,7 @@
       </div>
       <div class="sidebar-form-control" *ngIf="filter.type === 'dropdown' && selectedView != 'Monthly'" >
         <p class="title">{{filter.label}}</p>
-        <app-wrapper-multiselect-drop-down (valueUpdate)="updateFilterConfig($event)" [filterConfig]="filter" [dependentConfig]="getDependentConfig(filter.dependentOn)"
+        <app-wrapper-multiselect-drop-down [updatedValue]="filter.values" (valueUpdate)="updateFilterConfig($event)" [filterConfig]="filter" [dependentConfig]="getDependentConfig(filter.dependentOn)"
         ></app-wrapper-multiselect-drop-down>
       </div>
       <div class="sidebar-form-control" *ngIf="filter.type === 'popupButton'" >

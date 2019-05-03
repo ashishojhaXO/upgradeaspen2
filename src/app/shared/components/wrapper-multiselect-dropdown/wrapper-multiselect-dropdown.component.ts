@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import {Component, OnInit, Input, Output, EventEmitter, SimpleChanges, OnChanges} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
 import {formatDate} from 'ngx-bootstrap/chronos';
 
@@ -8,7 +8,7 @@ import {formatDate} from 'ngx-bootstrap/chronos';
   styleUrls: ['./wrapper-multiselect-dropdown.component.scss']
 })
 
-export class WrapperMultiSelectDropdownComponent implements OnInit {
+export class WrapperMultiSelectDropdownComponent implements OnInit, OnChanges {
 
   constructor(public router: Router) {
   }
@@ -16,6 +16,7 @@ export class WrapperMultiSelectDropdownComponent implements OnInit {
   @Output() valueUpdate: EventEmitter<{filterConfig: any }> = new EventEmitter<{filterConfig: any}>();
   @Input() filterConfig: any;
   @Input() dependentConfig: any;
+  @Input() updatedValue: any;
 
   selectedItems: any;
   settings: any;
@@ -47,11 +48,19 @@ export class WrapperMultiSelectDropdownComponent implements OnInit {
     this.data = this.getData();
 
     const selectedItem = this.data[0];
-
     this.selectedItems = [selectedItem];
-
     this.filterConfig.values.push(selectedItem);
+
     this.valueUpdate.emit(this.filterConfig);
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['updatedValue']) {
+      if (this.updatedValue) {
+          this.selectedItems = this.updatedValue;
+          this.filterConfig.values = this.updatedValue;
+      }
+    }
   }
 
   getData() {
