@@ -214,6 +214,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       this.selectedView = Obj.value;
     }
 
+    this.search();
+
     // var dataSource = JSON.parse(localStorage.getItem('dashboardConfig_' + this.dashboardType)) || '';
     // if (dataSource) {
     //   this.populateFilters(dataSource);
@@ -423,6 +425,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             labelName: '',
             unitType: ''
           });
+
+          this.chartConfig.barWidth = (700 / (20 * response.chartData.length));
+
           this.chartConfig.dataPoints = [
             {
               propertyName: 'Monthly Spend',
@@ -492,6 +497,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
           this.chartConfig.XAxis.labelName = '';
           this.chartConfig.XAxis.dataPropertyName = 'date';
+
+          this.chartConfig.barWidth = (700 / (20 * response.chartData.length));
 
           this.chartConfig.YAxis.data.push({
             labelName: '',
@@ -593,6 +600,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             }
           ];
         }
+
+        this.chartConfig.barWidth = (700 / (20 * response.chartData.length));
 
         this.chartConfig.data = response.chartData ; //response.chartData;
 
