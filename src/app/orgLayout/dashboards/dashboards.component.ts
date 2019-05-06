@@ -116,21 +116,48 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
 
-    if (applyFilter.length) {
+    console.log('applyFilter >>>')
+    console.log(applyFilter);
 
-      const dataObj = {
-        filter: applyFilter,
-        entity: filterConfig.f7Name,
-        page: 1,
-        limit: 10
-      };
+    var dateField;
+    const objDate = this.dashboardConfig.filterProps.find(x=> x.f7Name === 'period').values;
+    if(objDate && objDate.length) {
+      dateField = objDate[0].id;
+    } else {
+      dateField = this.formatDate(new Date());
+    }
 
-      var obj = JSON.stringify(dataObj);
+    var startDate = dateField + 'T00:00:00Z';
+    var endDate = '';
+    var endDateOftheMonth = 0;
+    if (dateField.split('-')[1] == 12) {
+      endDateOftheMonth = new Date(dateField.split('-')[0], dateField.split('-')[1], 0).getDate();
+      endDate = dateField.split('-')[0] + '-' + dateField.split('-')[1] + '-' + endDateOftheMonth  + 'T23:59:59Z';
+    } else {
+      endDateOftheMonth = new Date(dateField.split('-')[0], dateField.split('-')[1], 0).getDate();
+      endDate = dateField.split('-')[0] + '-' + dateField.split('-')[1] + '-' + endDateOftheMonth  + 'T23:59:59Z';
+    }
 
-      console.log('filter dataObj >>')
-      console.log(obj);
+    const dataObj = {
+      filter: applyFilter,
+      entity: filterConfig.f7Name,
+      page: 1,
+      limit: 10,
+      period: {
+        f7Name: 'date',
+        values: {
+          startDate: startDate,
+          endDate: endDate
+        }
+      }
+    };
 
-      return this.http
+    var obj = JSON.stringify(dataObj);
+
+    console.log('filter dataObj >>')
+    console.log(obj);
+
+    return this.http
         .post(this.api_fs.api + '/api/reports/org/homd/filters', obj, options )
         .map(res => {
           const result = res.json();
@@ -142,53 +169,106 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           }
           return ret;
         });
-    } else {
 
-      // const obj1 = {
-      //   "dashboard": "pacing",
-      //   "type": "daily",
-      //   "clientCode": "homd",
-      //   "period": {
-      //     "f7Name": "date",
-      //     "values": {
-      //       "startDate": "2019-02-01T00:00:00Z",
-      //       "endDate": "2019-02-28T23:59:59Z"
-      //     }
-      //   }
-      // };
-      //
-      // const obj2 = JSON.stringify(obj1);
-      //
-      // return this.http
-      //     .post(this.api_fs.api + '/api/reports/org/homd/seed-dashboard', obj2, options )
-      //     .map(res => {
-      //       const result = res.json();
-      //       const ret = [];
-      //       if (result.length) {
-      //         result.forEach(function (item) {
-      //           ret.push({id: item, label: item});
-      //         });
-      //       }
-      //       return ret;
-      //     });
-
-      return this.http
-          .get(this.api_fs.api + '/api/reports/org/homd/seed-filters')
-          .map(res => {
-            if (res['_body']) {
-              const result = JSON.parse(res['_body']);
-              const data = result[filterConfig.f7Name];
-              const ret = [];
-              if (data && data.length) {
-                data.forEach(function (item) {
-                  ret.push({id: item, label: item});
-                });
-              }
-              return ret;
-            }
-          });
-
-    }
+    // if (applyFilter.length) {
+    //
+    //   var dateField;
+    //   const objDate = this.dashboardConfig.filterProps.find(x=> x.f7Name === 'period').values;
+    //   if(objDate && objDate.length) {
+    //     dateField = objDate[0].id;
+    //   } else {
+    //     dateField = this.formatDate(new Date());
+    //   }
+    //
+    //   var startDate = dateField + 'T00:00:00Z';
+    //   var endDate = '';
+    //   var endDateOftheMonth = 0;
+    //   if (dateField.split('-')[1] == 12) {
+    //     endDateOftheMonth = new Date(dateField.split('-')[0], dateField.split('-')[1], 0).getDate();
+    //     endDate = dateField.split('-')[0] + '-' + dateField.split('-')[1] + '-' + endDateOftheMonth  + 'T23:59:59Z';
+    //   } else {
+    //     endDateOftheMonth = new Date(dateField.split('-')[0], dateField.split('-')[1], 0).getDate();
+    //     endDate = dateField.split('-')[0] + '-' + dateField.split('-')[1] + '-' + endDateOftheMonth  + 'T23:59:59Z';
+    //   }
+    //
+    //   const dataObj = {
+    //     filter: applyFilter,
+    //     entity: filterConfig.f7Name,
+    //     page: 1,
+    //     limit: 10,
+    //     period: {
+    //       f7Name: 'date',
+    //       values: {
+    //         startDate: startDate,
+    //         endDate: endDate
+    //       }
+    //     }
+    //   };
+    //
+    //   var obj = JSON.stringify(dataObj);
+    //
+    //   console.log('filter dataObj >>')
+    //   console.log(obj);
+    //
+    //   return this.http
+    //     .post(this.api_fs.api + '/api/reports/org/homd/filters', obj, options )
+    //     .map(res => {
+    //       const result = res.json();
+    //       const ret = [];
+    //       if (result.length) {
+    //         result.forEach(function (item) {
+    //           ret.push({id: item, label: item});
+    //         });
+    //       }
+    //       return ret;
+    //     });
+    // } else {
+    //
+    //   // const obj1 = {
+    //   //   "dashboard": "pacing",
+    //   //   "type": "daily",
+    //   //   "clientCode": "homd",
+    //   //   "period": {
+    //   //     "f7Name": "date",
+    //   //     "values": {
+    //   //       "startDate": "2019-02-01T00:00:00Z",
+    //   //       "endDate": "2019-02-28T23:59:59Z"
+    //   //     }
+    //   //   }
+    //   // };
+    //   //
+    //   // const obj2 = JSON.stringify(obj1);
+    //   //
+    //   // return this.http
+    //   //     .post(this.api_fs.api + '/api/reports/org/homd/seed-dashboard', obj2, options )
+    //   //     .map(res => {
+    //   //       const result = res.json();
+    //   //       const ret = [];
+    //   //       if (result.length) {
+    //   //         result.forEach(function (item) {
+    //   //           ret.push({id: item, label: item});
+    //   //         });
+    //   //       }
+    //   //       return ret;
+    //   //     });
+    //
+    //   return this.http
+    //       .get(this.api_fs.api + '/api/reports/org/homd/seed-filters')
+    //       .map(res => {
+    //         if (res['_body']) {
+    //           const result = JSON.parse(res['_body']);
+    //           const data = result[filterConfig.f7Name];
+    //           const ret = [];
+    //           if (data && data.length) {
+    //             data.forEach(function (item) {
+    //               ret.push({id: item, label: item});
+    //             });
+    //           }
+    //           return ret;
+    //         }
+    //       });
+    //
+    // }
   }
 
   updateFilterConfig(data) {
