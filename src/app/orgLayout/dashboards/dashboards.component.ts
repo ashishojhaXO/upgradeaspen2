@@ -624,7 +624,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             {
               propertyName: 'Line Item Budget',
               type: 'line',
-              color: 'rgb(153, 204, 51)',
+              color: 'rgb(253, 8, 0)',
               YaxisAssociation : ''
             }
           ];
