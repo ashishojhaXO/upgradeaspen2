@@ -108,6 +108,13 @@
           "title": "User Management",
           "id": "usermanagement",
           "url": "app/admin/usermanagement"
+        },
+        {
+          "index": 2,
+          "name": "tasks",
+          "title": "Tasks",
+          "id": "tasks",
+          "url": "app/admin/tasks"
         }
       ]
     }

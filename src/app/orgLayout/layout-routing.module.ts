@@ -118,6 +118,14 @@ const routes: Routes = [
           breadcrumbs: true,
           text: 'User Management'
         }
+      },
+      {
+        path: 'tasks',
+        loadChildren: './tasks/tasks.module#TasksModule',
+        data: {
+          breadcrumbs: true,
+          text: 'Admin Tasks'
+        }
       }
     ]
   }

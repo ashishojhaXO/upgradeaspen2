@@ -1,0 +1,25 @@
+<div>
+  <div class="col-lg-12 col-md-12" style="margin: 0px 0px 20px">
+    <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">ADMIN TASKS</p>
+  </div>
+  <div class="">
+    <div class="gridOverflow pull-left" style="padding: 20px">
+      <span>Reconciliation</span>
+      <div class="form-group-fields" style="margin-top: 25px">
+        <label class="col-lg-4 col-md-4">Period : </label>
+        <select2 width="50%"
+                placeholder="Select"
+                class="col-lg-4 col-md-4"
+                style="padding: 0px; line-height: 1.42857143"
+                [value]="selectedPeriod"
+                (valueChanged)="OnPeriodChange($event);"
+                [data]="periods"></select2>
+        <div class="col-lg-4 col-md-4" style="display: inline-block">
+          <button class="btn">Trigger</button>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+</div>
+
