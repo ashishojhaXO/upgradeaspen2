@@ -97,6 +97,7 @@ export class AppDataTableComponent implements OnInit, OnChanges {
         $('#' + this.setId).find('thead').empty();
         $('#' + this.setId).find('tbody').empty();
       }
+
       this.displayDataTable();
     }
   }
@@ -105,6 +106,12 @@ export class AppDataTableComponent implements OnInit, OnChanges {
 
     var __this = this;
     $(document).on('click', '.paginate_button a', function () {
+      // if(__this.setId) {
+      //   $('#' + __this.setId).DataTable().clear().destroy();
+      //   $('#' + __this.setId).find('thead').empty();
+      //   $('#' + __this.setId).find('tbody').empty();
+      // }
+      // __this.displayDataTable();
       __this.setColumnColors();
       __this.appendColumnWith$();
     });
@@ -468,9 +475,9 @@ export class AppDataTableComponent implements OnInit, OnChanges {
           paging: option.isPagination === undefined ? result.length > pageLength ? true : false : option.isPagination,
           ordering: option.isOrdering === undefined ? true : option.isOrdering,
           info: option.isTableInfo === undefined ? true : option.isTableInfo,
-          autoWidth: false,
+          autoWidth: true,
           colReorder: false,
-          fixedHeader: true,
+          fixedHeader: false,
           order: sortingColumn,
           buttons: buttons,
           pageLength: pageLength,
@@ -550,9 +557,9 @@ export class AppDataTableComponent implements OnInit, OnChanges {
           paging: option.isPagination === undefined ? result.length > pageLength ? true : false : option.isPagination,
           ordering: option.isOrdering === undefined ? true : option.isOrdering,
           info: option.isTableInfo === undefined ? true : option.isTableInfo,
-          autoWidth: false,
+          autoWidth: true,
           colReorder: false,
-          fixedHeader: true,
+          fixedHeader: false,
           order: sortingColumn,
           buttons: buttons,
           pageLength: pageLength,
@@ -622,7 +629,7 @@ export class AppDataTableComponent implements OnInit, OnChanges {
         info: option.isTableInfo === undefined ? true : option.isTableInfo,
         autoWidth: true,
         colReorder: false,
-        fixedHeader: true,
+        fixedHeader: false,
         order: sortingColumn,
         buttons: buttons,
         pageLength: pageLength,
@@ -1557,6 +1564,13 @@ export class AppDataTableComponent implements OnInit, OnChanges {
     table.on('mousedown.edit', '.sorting_desc,.sorting_asc,.sorting', ( event: any ) => {
       const cls = table.find('button.btn-cancel');
       $(cls).trigger('mousedown.cancel');
+
+      const __this = this;
+      setTimeout(function () {
+        __this.setColumnColors();
+        __this.appendColumnWith$();
+      }, 500);
+
     });
 
     // $(document).on('click', '.editLink', function() {

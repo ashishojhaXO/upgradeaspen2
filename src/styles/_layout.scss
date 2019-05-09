@@ -3178,3 +3178,9 @@ table.dataTable tbody td.selected a {
 .modal-content {
   font-size: 70%;
 }
+
+.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
+  font-size: 14px;
+}
+
+
