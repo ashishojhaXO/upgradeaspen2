@@ -92,6 +92,7 @@ export class ReconciliationComponent implements OnInit  {
     }
 
     search() {
+        this.dataObject.isDataAvailable = false;
         this.showSpinner = true;
         this.searchDataRequest();
     }
