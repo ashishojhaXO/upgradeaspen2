@@ -1397,9 +1397,10 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   fetchReportData() {
     this.showSpinner = true;
     this.getReportTemplateData().subscribe(response => {
-      console.log(response);
       if (response && response.body) {
         this.reportTemplate = response.body;
+
+        this.isAlertRequired = this.reportTemplate.alertEnabled;
 
         this.partnerTypeList = this.reportTemplate.context.partner.type.map(function (x) {
           return {option: x === 'dtrx' ? 'Transaction' : x, value: x}
