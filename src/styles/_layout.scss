@@ -3183,4 +3183,11 @@ table.dataTable tbody td.selected a {
   font-size: 14px;
 }
 
+table td {
+  white-space: nowrap;
+}
+
+table tbody tr {
+  height: 50px;
+}
 
