@@ -10,6 +10,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import { OktaAuthService } from '../../../src/services/okta.service';
 import { Common } from '../shared/util/common';
 import {Http, Headers, RequestOptions} from '@angular/http';
+import * as OktaSignIn from '@okta/okta-signin-widget/dist/js/okta-sign-in-no-jquery';
 
 @Component({
   selector: 'app-login',
@@ -29,16 +30,20 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
 
-    this.widget = this.okta.getWidget();
+    const widgetConfig = this.okta.getWidgetConfig();
 
     this.error = '';
     this.route.queryParams.subscribe(params => {
       if (params) {
         if(params.error == 401 ) {
           this.error = 'You are not authorized to access this application';
+        } else if (params['Welcome']) {
+          widgetConfig.i18n.en['primaryauth.title'] = 'Your account has been activated. You may login now with your credentials';
         }
       }
     });
+
+    this.widget = new OktaSignIn(widgetConfig);
 
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
@@ -84,7 +89,6 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('loggedInUserName', responseDetails.body[0].user.first_name + ' ' + responseDetails.body[0].user.last_name);
           localStorage.setItem('loggedInUserEmail', responseDetails.body[0].user.email_id);
           window.location.href = '/app/dashboards';
-          // this.router.navigate(['./app/dashboards']);
         } else {
           this.changeDetectorRef.detectChanges();
           this.error = 'No User details found. Please contact administrator';
