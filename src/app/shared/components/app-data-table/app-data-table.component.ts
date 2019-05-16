@@ -116,8 +116,16 @@ export class AppDataTableComponent implements OnInit, OnChanges {
       __this.appendColumnWith$();
     });
 
+    this.appendHeaders();
+
     // this.setId = this.id ? this.id : 'gridtable1';
     // this.displayDataTable();
+  }
+
+  appendHeaders() {
+    const thead = $('#' + this.setId).find('thead');
+    $(thead).find('.sorting_asc').removeClass('sorting_asc');
+    $('#' + this.setId).append(thead[0].outerHTML);
   }
 
   buttonEvent(event: any, index: any, modalComponent: PopUpModalComponent) {
