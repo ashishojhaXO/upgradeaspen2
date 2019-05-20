@@ -451,7 +451,7 @@ export class AppDataTableComponent implements OnInit, OnChanges {
       sortingColumn = [[option.isSortingColumn, sortinType]];
     }
 
-    const pageLength = option.isPageLength === undefined ? 1 : option.isPageLength;
+    const pageLength = 50 ; //option.isPageLength === undefined ? 1 : option.isPageLength;
 
     if (this.serverSide && this.serviceURI) {
       if (this.serviceMethod && (this.serviceMethod == 'post' || this.serviceMethod == 'POST')) {

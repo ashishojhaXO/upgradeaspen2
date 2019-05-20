@@ -302,7 +302,7 @@ export class AppDataTableHeirarchyComponent implements OnInit, OnChanges {
           const toogleAction = !_.isUndefined(data.toggle) && data.toggle;
           const toogleData = !_.isUndefined(full['toggleOptions']) ? full['toggleOptions'].length > 0 ? true : false : false ;
           const toogleArow =  toogleAction && toogleData ? '<div class="arrow-right toogleFunctionSummary" style="margin:0 10px;"></div>' : '';
-          const toogleAlert = toogleAction && full['alertEnabled'] ? (full.heirarchyData && full.heirarchyData.length ? '<div style="width: 45px;background: #0777bc;color: #fff;padding: 3px 5px 2px;font-family: Asap Bold;font-size: 10px;float:right"><div style="cursor: pointer;position: absolute;left: 20px;color: black;font-size: 18px;" class="fa fa-plus-square-o heirarchy"></div><div>ALERT</div>' : '<div style="width: 45px;background: #0777bc;color: #fff;padding: 3px 5px 2px;font-family: Asap Bold;font-size: 10px;float:right">ALERT</div>' ) : ( full.heirarchyData && full.heirarchyData.length ? '<div style="width: 45px;position:relative;left: 10px;cursor: pointer;color: black;font-size: 18px;" class="fa fa-plus-square-o heirarchy"></div>' : '<div style="width: 45px;float:right">&nbsp;</div>');
+          const toogleAlert = toogleAction && full['alertEnabled'] ? (full.heirarchyData && full.heirarchyData.length ? '<div style="width: 45px;background: #0777bc;color: #fff;padding: 3px 5px 2px;font-family: Asap Bold;font-size: 10px;float:right; margin-left: 40px"><div style="cursor: pointer;position: absolute;left: 20px;color: black;font-size: 18px;" class="fa fa-plus-square-o heirarchy"></div><div>ALERT</div>' : '<div style="width: 45px;background: #0777bc;color: #fff;padding: 3px 5px 2px;font-family: Asap Bold;font-size: 10px;float:right">ALERT</div>' ) : ( full.heirarchyData && full.heirarchyData.length ? '<div style="width: 45px;position:relative;left: 10px;cursor: pointer;color: black;font-size: 18px;" class="fa fa-plus-square-o heirarchy"></div>' : '<div style="width: 45px;float:right">&nbsp;</div>');
           // let checkbox = toogleArow;
           return toogleAlert + toogleArow ;
         };
@@ -437,7 +437,7 @@ export class AppDataTableHeirarchyComponent implements OnInit, OnChanges {
       sortingColumn = [[option.isSortingColumn, sortinType]];
     }
 
-    const pageLength = option.isPageLength === undefined ? 1 : option.isPageLength;
+    const pageLength = 50 ; //option.isPageLength === undefined ? 1 : option.isPageLength;
     if (this.serverSide && this.serviceURI) {
       if (this.serviceMethod && (this.serviceMethod == 'post' || this.serviceMethod == 'POST')) {
         this.tableWidget[this.tableId] = table.DataTable({
