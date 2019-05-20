@@ -99,8 +99,8 @@ export class AppDataTableHeirarchyComponent implements OnInit, OnChanges {
   ngOnInit() {
     // this.setId = this.id ? this.id : 'gridtable1';
     // this.displayDataTable();
-    
-    this.appendHeaders();
+
+   // this.appendHeaders();
   }
 
   appendHeaders() {

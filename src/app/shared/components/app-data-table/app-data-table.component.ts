@@ -116,7 +116,7 @@ export class AppDataTableComponent implements OnInit, OnChanges {
       __this.appendColumnWith$();
     });
 
-    this.appendHeaders();
+   // this.appendHeaders();
 
     // this.setId = this.id ? this.id : 'gridtable1';
     // this.displayDataTable();
