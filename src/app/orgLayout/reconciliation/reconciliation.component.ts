@@ -195,10 +195,14 @@ export class ReconciliationComponent implements OnInit  {
         const d = new Date();
         for (var i=0; i<=12; i++) {
             var monthVal = (d.getMonth() + 1).toString().length === 1 ? ('0' + (d.getMonth() + 1)) : (d.getMonth() + 1);
-            months.push({
-                id : d.getFullYear() + '-' + monthVal + '-' + '01',
-                itemName : monthName[d.getMonth()] + ' ' + d.getFullYear()
-            })
+
+            const existingMonth = months.find(x=> x.id === d.getFullYear() + '-' + monthVal + '-' + '01');
+            if(!existingMonth) {
+                months.push({
+                    id: d.getFullYear() + '-' + monthVal + '-' + '01',
+                    itemName: monthName[d.getMonth()] + ' ' + d.getFullYear()
+                });
+            }
             d.setMonth(d.getMonth() - 1);
         }
         return months;
