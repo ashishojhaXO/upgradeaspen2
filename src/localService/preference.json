@@ -108,6 +108,13 @@
           "title": "User Management",
           "id": "usermanagement",
           "url": "app/admin/usermanagement"
+        },
+        {
+          "index": 1,
+          "name": "vendormanagement",
+          "title": "Vendor Management",
+          "id": "vendormanagement",
+          "url": "app/admin/vendormanagement"
         }
       ]
     }

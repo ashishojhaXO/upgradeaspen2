@@ -120,6 +120,14 @@ const routes: Routes = [
         }
       },
       {
+        path: 'vendormanagement',
+        loadChildren: './vendorManagement/vendorManagement.module#VendorManagementModule',
+        data: {
+          breadcrumbs: true,
+          text: 'Vendor Management'
+        }
+      },
+      {
         path: 'tasks',
         loadChildren: './tasks/tasks.module#TasksModule',
         data: {
