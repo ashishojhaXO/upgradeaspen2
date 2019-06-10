@@ -116,7 +116,7 @@ export class UserManagementComponent implements OnInit  {
                       response1.body.forEach(function (item) {
                         vendorOptions.push({
                           id: item.id,
-                          text: item.client_id + ' - ' + item.company_name
+                          text: item.external_vendor_id + ' - ' + item.company_name
                         });
                       });
                       this.vendorOptions = vendorOptions;
