@@ -47,42 +47,38 @@ export class VendorManagementComponent implements OnInit  {
   api_fs: any;
   externalAuth: any;
   @ViewChild('AddUser') addUser: PopUpModalComponent;
-  userForm: FormGroup;
-  userModel: any;
-  selectedSource: any;
-  selectedVendor: any;
+  vendorForm: FormGroup;
+  vendorModel: any;
   error: any;
   showSpinner: boolean;
-
-  sourceOptions = [
-    {
-      id: 'f7',
-      text: 'FusionSeven'
-    },
-    {
-      id: 'thd',
-      text: 'Home Depot'
-    },
-    {
-      id: 'vendor',
-      text: 'Vendor'
-    }];
-
-  vendorOptions = [];
   widget: any;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
 
-    this.userForm = new FormGroup({
+    this.vendorForm = new FormGroup({
+      external_vendor_id: new FormControl('', Validators.required),
+      first_name: new FormControl('', Validators.required),
+      last_name: new FormControl('', Validators.required),
+      company_name: new FormControl('', Validators.required),
       email: new FormControl('', Validators.required),
-      first: new FormControl('', Validators.required),
-      last: new FormControl('', Validators.required)
+      address_1: new FormControl('', Validators.required),
+      address_2: new FormControl('', Validators.required),
+      city: new FormControl('', Validators.required),
+      state: new FormControl('', Validators.required),
+      country: new FormControl('', Validators.required)
     });
 
-    this.userModel = {
+    this.vendorModel = {
+      external_vendor_id: '',
+      first_name: '',
+      last_name: '',
+      company_name: '',
       email: '',
-      first: '',
-      last: ''
+      address_1: '',
+      address_2: '',
+      city: '',
+      state: '',
+      country: ''
     };
 
   }
@@ -91,7 +87,6 @@ export class VendorManagementComponent implements OnInit  {
 
     this.widget = this.okta.getWidget();
     this.showSpinner = true;
-    this.selectedSource = 'f7';
     this.height = '50vh';
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
@@ -107,72 +102,6 @@ export class VendorManagementComponent implements OnInit  {
             if (response.body) {
               this.showSpinner = false;
               this.populateDataTable(response.body, true);
-              return this.getVendors().subscribe(
-                  response1 => {
-                    console.log('response1');
-                    console.log(JSON.stringify(response1));
-                    if (response1 && response1.body) {
-                      const vendorOptions = [];
-                      response1.body.forEach(function (item) {
-                        vendorOptions.push({
-                          id: item.id,
-                          text: item.client_id + ' - ' + item.company_name
-                        });
-                      });
-                      this.vendorOptions = vendorOptions;
-                      if(response1.body.length) {
-                        this.selectedVendor = response1.body[0].id;
-                      }
-                    }
-                  },
-                  err1 => {
-
-                    if(err1.status === 401) {
-                      if(this.widget.tokenManager.get('accessToken')) {
-                        this.widget.tokenManager.refresh('accessToken')
-                            .then(function (newToken) {
-                              this.widget.tokenManager.add('accessToken', newToken);
-                              this.showSpinner = false;
-                              return this.getVendors().subscribe(
-                                  response2 => {
-                                    console.log('response1');
-                                    console.log(JSON.stringify(response2));
-                                    if (response2 && response2.body) {
-                                      const vendorOptions = [];
-                                      response2.body.forEach(function (item) {
-                                        vendorOptions.push({
-                                          id: item.id,
-                                          text: item.client_id + ' - ' + item.company_name
-                                        });
-                                      });
-                                      this.vendorOptions = vendorOptions;
-                                      if(response2.body.length) {
-                                        this.selectedVendor = response2.body[0].id;
-                                      }
-                                    }
-                                  },
-                                  err2 => {
-                                    this.showSpinner = false;
-                                    console.log('err')
-                                    console.log(err2);
-                                  }
-                              )
-                            })
-                            .catch(function (err) {
-                              console.log('error >>')
-                              console.log(err);
-                            });
-                      } else {
-                        this.widget.signOut(() => {
-                          this.widget.tokenManager.remove('accessToken');
-                          window.location.href = '/login';
-                        });
-                      }
-                    } else {
-                      this.showSpinner = false;
-                    }
-                  }
-              )
             }
           }
         },
@@ -203,40 +132,17 @@ export class VendorManagementComponent implements OnInit  {
     );
   }
 
-  OnSourceChanged(e: any): void {
-    if (!this.selectedSource || this.selectedSource !== e.value ) {
-      this.selectedSource = e.value;
-    }
-  }
-
-  OnVendorChanged(e: any): void {
-    if (this.selectedVendor !== e.value ) {
-      this.selectedVendor = e.value;
-    }
-  }
-
-  getVendors() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
-    let token = '';
-    if (AccessToken) {
-      token = AccessToken.accessToken;
-    }
-    const headers = new Headers({'Content-Type': 'application/json', 'token' : token , 'callingapp' : 'aspen'});
-    const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/vendors';
-    return this.http
-      .get(url, options)
-      .map(res => {
-        return res.json();
-      }).share();
-  }
-
   searchData() {
     const AccessToken: any = this.widget.tokenManager.get('accessToken');
     let token = '';
     if (AccessToken) {
       token = AccessToken.accessToken;
     }
+
+    console.log('AccessToken >>>')
+    console.log(AccessToken.accessToken);
+
+
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/vendors';
@@ -283,37 +189,38 @@ export class VendorManagementComponent implements OnInit  {
     this.showSpinner = true;
     this.error = '';
     const dataObj: any = {};
-    dataObj.email_id = this.userForm.controls['email'].value;
-    dataObj.first_name = this.userForm.controls['first'].value;
-    dataObj.last_name = this.userForm.controls['last'].value;
-    dataObj.source = this.selectedSource;
-    if (this.selectedSource === 'vendor') {
-      dataObj.vendor_id = this.selectedVendor;
-    }
+    dataObj.external_vendor_id = this.vendorForm.controls['external_vendor_id'].value;
+    dataObj.first_name = this.vendorForm.controls['first_name'].value;
+    dataObj.last_name = this.vendorForm.controls['last_name'].value;
+    dataObj.company_name = this.vendorForm.controls['company_name'].value;
+    dataObj.email = this.vendorForm.controls['email'].value;
+    dataObj.address_1 = this.vendorForm.controls['address_1'].value;
+    dataObj.address_2 = this.vendorForm.controls['address_2'].value;
+    dataObj.city = this.vendorForm.controls['city'].value;
+    dataObj.state = this.vendorForm.controls['state'].value;
+    dataObj.country = this.vendorForm.controls['country'].value;
 
-    this.performUserAdditionRequest(dataObj);
+    this.performVendorAdditionRequest(dataObj);
   }
 
-  performUserAdditionRequest(dataObj) {
-    return this.performUserAddition(dataObj).subscribe(
+  performVendorAdditionRequest(dataObj) {
+    return this.performVendorAddition(dataObj).subscribe(
         response => {
-          console.log('response from user creation >>>')
+          console.log('response from vendor creation >>>')
           console.log(response);
           if (response) {
             this.showSpinner = false;
-            this.error = { type : 'success' , message : response.body };
+            this.error = { type : response.body ? 'success' : 'fail' , message : response.body ? 'Vendor successfully created' : 'Vendor creation failed' };
           }
-          // modalComponent.hide();
         },
         err => {
-
           if(err.status === 401) {
             if(this.widget.tokenManager.get('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
                     this.widget.tokenManager.add('accessToken', newToken);
                     this.showSpinner = false;
-                    this.performUserAdditionRequest(dataObj);
+                    this.performVendorAdditionRequest(dataObj);
                   })
                   .catch(function (err1) {
                     console.log('error >>')
@@ -333,7 +240,7 @@ export class VendorManagementComponent implements OnInit  {
     );
   }
 
-  performUserAddition(dataObj) {
+  performVendorAddition(dataObj) {
     const AccessToken: any = this.widget.tokenManager.get('accessToken');
     let token = '';
     if (AccessToken) {
@@ -342,7 +249,7 @@ export class VendorManagementComponent implements OnInit  {
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     const data = JSON.stringify(dataObj);
-    const url = this.api_fs.api + '/api/users';
+    const url = this.api_fs.api + '/api/vendors';
     return this.http
       .post(url, data, options)
       .map(res => {
@@ -352,20 +259,46 @@ export class VendorManagementComponent implements OnInit  {
 
   handleCloseModal(modalComponent: PopUpModalComponent) {
     this.error = '';
-    this.userModel.email = '';
-    this.userForm.patchValue({
+    this.vendorForm.patchValue({
+      external_vendor_id : ''
+    });
+    this.vendorModel.first_name = '';
+    this.vendorForm.patchValue({
+      first_name : ''
+    });
+    this.vendorModel.last_name = '';
+    this.vendorForm.patchValue({
+      last_name : ''
+    });
+    this.vendorModel.company_name = '';
+    this.vendorForm.patchValue({
+      company_name : ''
+    });
+    this.vendorModel.email = '';
+    this.vendorForm.patchValue({
       email : ''
     });
-    this.userModel.first = '';
-    this.userForm.patchValue({
-      first : ''
+    this.vendorModel.address_1 = '';
+    this.vendorForm.patchValue({
+      address_1 : ''
     });
-    this.userModel.last = '';
-    this.userForm.patchValue({
-      last : ''
+    this.vendorModel.address_2 = '';
+    this.vendorForm.patchValue({
+      address_2 : ''
     });
-    this.selectedSource = 'f7';
-    this.selectedVendor = '';
+    this.vendorModel.city = '';
+    this.vendorForm.patchValue({
+      city : ''
+    });
+    this.vendorModel.state = '';
+    this.vendorForm.patchValue({
+      state : ''
+    });
+    this.vendorModel.country = '';
+    this.vendorForm.patchValue({
+      country : ''
+    });
+
     modalComponent.hide();
     this.dataObject.isDataAvailable = false;
     this.searchDataRequest();

@@ -23,35 +23,51 @@
     </div>
     <div class="app-modal-body">
       <div class="content">
-        <form [formGroup]="userForm" novalidate (keydown.enter)="$event.preventDefault()">
+        <form [formGroup]="vendorForm" novalidate (keydown.enter)="$event.preventDefault()">
           <div class="form">
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Email : </label>
-              <input formControlName="email" [(ngModel)]="userModel.email" type="text" class="col-lg-8 col-md-8 form-field"
+              <label class="col-lg-4 col-md-4">External Vendor ID : </label>
+              <input formControlName="external_vendor_id" [(ngModel)]="vendorModel.external_vendor_id" type="text" class="col-lg-8 col-md-8 form-field"
               />
             </div>
             <div class="form-group-fields">
               <label class="col-lg-4 col-md-4">First Name : </label>
-              <input formControlName="first" [(ngModel)]="userModel.first" type="text" class="col-lg-8 col-md-8 form-field"/>
+              <input formControlName="first_name" [(ngModel)]="vendorModel.first_name" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="form-group-fields">
               <label class="col-lg-4 col-md-4">Last Name : </label>
-              <input formControlName="last" [(ngModel)]="userModel.last" type="text" class="col-lg-8 col-md-8 form-field"/>
+              <input formControlName="last_name" [(ngModel)]="vendorModel.last_name" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">Company Name : </label>
+              <input formControlName="company_name" [(ngModel)]="vendorModel.company_name" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Type : </label>
-              <select2 width="100%" placeholder="Select" class="col-lg-8 col-md-8" style="padding: 0px; line-height: 1.42857143"
-                       [value]="selectedSource"
-                       (valueChanged)="OnSourceChanged($event);"
-                       [data]="sourceOptions"></select2>
+              <label class="col-lg-4 col-md-4">Email : </label>
+              <input formControlName="email" [(ngModel)]="vendorModel.email" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
-            <div class="form-group-fields" *ngIf="selectedSource === 'vendor'">
-              <label class="col-lg-4 col-md-4">Vendor ID : </label>
-              <select2 width="100%" placeholder="Select" class="col-lg-8 col-md-8" style="padding: 0px; line-height: 1.42857143"
-                       [value]="selectedVendor"
-                       (valueChanged)="OnVendorChanged($event);"
-                       [data]="vendorOptions"></select2>
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">Address 1 : </label>
+              <input formControlName="address_1" [(ngModel)]="vendorModel.address_1" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">Address 2 : </label>
+              <input formControlName="address_2" [(ngModel)]="vendorModel.address_2" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">City : </label>
+              <input formControlName="city" [(ngModel)]="vendorModel.city" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">State : </label>
+              <input formControlName="state" [(ngModel)]="vendorModel.state" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">Country : </label>
+              <input formControlName="country" [(ngModel)]="vendorModel.country" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+
             <div *ngIf="error && error.message" style="text-align: center">
               <span [class]="error.type === 'success' ? 'success' : 'fail'">{{error.message}}</span>
             </div>
@@ -60,7 +76,7 @@
       </div>
     </div>
     <div class="app-modal-footer">
-      <button type="button" [disabled]="!userForm.valid" class="action-btn" (click)="OnSubmit(AddVendor)">
+      <button type="button" [disabled]="!vendorForm.valid" [style.cursor]="!vendorForm.valid ? 'not-allowed' : 'pointer'" class="action-btn" (click)="OnSubmit(AddVendor)">
         Add
       </button>
       <button type="button" class="inaction-btn" (click)="handleCloseModal(AddVendor)">
