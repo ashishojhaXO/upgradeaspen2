@@ -15,13 +15,15 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-modal.component';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { OktaAuthService } from '../../../services/okta.service';
+import {DataTableAction } from '../../shared/components/app-data-table/data-table-action';
+import {DataTableActionType } from '../../shared/components/app-data-table/data-table-action-type';
 
 @Component({
   selector: 'app-vendormanagement',
   templateUrl: './vendorManagement.component.html',
   styleUrls: ['./vendorManagement.component.scss']
 })
-export class VendorManagementComponent implements OnInit  {
+export class VendorManagementComponent implements OnInit, DataTableAction  {
 
   headers: any = [];
   gridData: any;
@@ -46,12 +48,13 @@ export class VendorManagementComponent implements OnInit  {
   dashboard: any;
   api_fs: any;
   externalAuth: any;
-  @ViewChild('AddUser') addUser: PopUpModalComponent;
+  @ViewChild('AddVendor') addVendor: PopUpModalComponent;
   vendorForm: FormGroup;
   vendorModel: any;
   error: any;
   showSpinner: boolean;
   widget: any;
+  editID: any;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
 
@@ -62,7 +65,7 @@ export class VendorManagementComponent implements OnInit  {
       company_name: new FormControl('', Validators.required),
       email: new FormControl('', Validators.required),
       address_1: new FormControl('', Validators.required),
-      address_2: new FormControl('', Validators.required),
+      address_2: new FormControl(''),
       city: new FormControl('', Validators.required),
       state: new FormControl('', Validators.required),
       country: new FormControl('', Validators.required)
@@ -98,7 +101,7 @@ export class VendorManagementComponent implements OnInit  {
         response => {
           if (response) {
             console.log('response >>')
-            console.log(JSON.stringify(response));
+            console.log(response);
             if (response.body) {
               this.showSpinner = false;
               this.populateDataTable(response.body, true);
@@ -173,6 +176,33 @@ export class VendorManagementComponent implements OnInit  {
         }
         this.headers.push(header);
       }
+
+      this.headers.push({
+        key: 'Action',
+        title: 'ACTION',
+        data: 'noDataFeed',
+        isFilterRequired: false,
+        isCheckbox: false,
+        class: 'nocolvis',
+        editButton: false,
+        width: '250',
+        actionButton: [
+          {
+            actionName : 'Edit',
+            actionType : DataTableActionType.EDIT,
+            actionUrl : 'reportid',
+            actionIcon : 'fa-pencil',
+            actionFunc: 'handleEdit'
+          },
+          {
+            actionName : 'Delete',
+            actionType : DataTableActionType.DELETE,
+            actionUrl : 'reportid',
+            actionIcon : 'fa-trash',
+            actionFunc: 'handleDelete'
+          }
+        ]
+      });
     }
 
     this.gridData['result'] = tableData;
@@ -183,6 +213,74 @@ export class VendorManagementComponent implements OnInit  {
     console.log(this.gridData);
     this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
     // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
+  }
+
+  handleEdit(rowObj: any, rowData: any) {
+    console.log('rowData >>>')
+    console.log(rowData);
+    this.editID = rowData.id;
+
+    this.vendorModel.external_vendor_id = rowData.external_vendor_id;
+    this.vendorForm.patchValue({
+      external_vendor_id : rowData.external_vendor_id
+    });
+    this.vendorModel.first_name = rowData.first_name;
+    this.vendorForm.patchValue({
+      first_name : rowData.first_name
+    });
+    this.vendorModel.last_name = rowData.last_name;
+    this.vendorForm.patchValue({
+      last_name : rowData.last_name
+    });
+    this.vendorModel.company_name = rowData.company_name;
+    this.vendorForm.patchValue({
+      company_name : rowData.company_name
+    });
+    this.vendorModel.email = rowData.email;
+    this.vendorForm.patchValue({
+      email : rowData.email
+    });
+    this.vendorModel.address_1 = rowData.address_1;
+    this.vendorForm.patchValue({
+      address_1 : rowData.address_1
+    });
+    this.vendorModel.address_2 = rowData.address_2;
+    this.vendorForm.patchValue({
+      address_2 : rowData.address_2
+    });
+    this.vendorModel.city = rowData.city;
+    this.vendorForm.patchValue({
+      city : rowData.city
+    });
+    this.vendorModel.state = rowData.state;
+    this.vendorForm.patchValue({
+      state : rowData.state
+    });
+    this.vendorModel.country = rowData.country;
+    this.vendorForm.patchValue({
+      country : rowData.country
+    });
+
+    this.addVendor.show();
+
+  //  this.router.navigate(['/app/reports/adHocReportBuilder', rowData.id]);
+  }
+
+  handleRun(rowObj: any, rowData: any) {
+  }
+
+  handleDelete(rowObj: any, rowData: any) {
+    console.log('rowData >>>!!!!')
+    console.log(rowData);
+    if(rowData.id) {
+      this.performVendorDeletionRequest(rowData.id);
+    }
+  }
+
+  handleDownload(rowObj: any, rowData: any) {
+  }
+
+  handleEmail(rowObj: any, rowData: any) {
   }
 
   OnSubmit(modalComponent: PopUpModalComponent) {
@@ -210,7 +308,8 @@ export class VendorManagementComponent implements OnInit  {
           console.log(response);
           if (response) {
             this.showSpinner = false;
-            this.error = { type : response.body ? 'success' : 'fail' , message : response.body ? 'Vendor successfully created' : 'Vendor creation failed' };
+            this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Vendor successfully ' + ( this.editID ? 'edited' : 'created' ) : 'Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
+            this.editID = '';
           }
         },
         err => {
@@ -249,16 +348,82 @@ export class VendorManagementComponent implements OnInit  {
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     const data = JSON.stringify(dataObj);
-    const url = this.api_fs.api + '/api/vendors';
+    const url = this.editID ? this.api_fs.api + '/api/vendors/' + this.editID : this.api_fs.api + '/api/vendors';
+    if (this.editID) {
+      return this.http
+          .put(url, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    } else {
+      return this.http
+          .post(url, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    }
+  }
+
+  performVendorDeletionRequest(id) {
+    return this.performVendorDeletion(id).subscribe(
+        response => {
+          console.log('response from vendor deletion >>>')
+          console.log(response);
+          if (response) {
+            this.showSpinner = false;
+            this.searchDataRequest();
+           // this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Vendor successfully deleted ' : 'Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
+           // this.editID = '';
+          }
+        },
+        err => {
+          if(err.status === 401) {
+            if(this.widget.tokenManager.get('accessToken')) {
+              this.widget.tokenManager.refresh('accessToken')
+                  .then(function (newToken) {
+                    this.widget.tokenManager.add('accessToken', newToken);
+                    this.showSpinner = false;
+                    this.performVendorDeletionRequest(id);
+                  })
+                  .catch(function (err1) {
+                    console.log('error >>')
+                    console.log(err1);
+                  });
+            } else {
+              this.widget.signOut(() => {
+                this.widget.tokenManager.remove('accessToken');
+                window.location.href = '/login';
+              });
+            }
+          } else {
+            this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+
+  performVendorDeletion(id) {
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    const url = this.api_fs.api + '/api/vendors/' + id;
     return this.http
-      .post(url, data, options)
-      .map(res => {
-        return res.json();
-      }).share();
+        .delete(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   handleCloseModal(modalComponent: PopUpModalComponent) {
     this.error = '';
+    this.editID = '';
+
+    this.vendorModel.external_vendor_id = '';
     this.vendorForm.patchValue({
       external_vendor_id : ''
     });

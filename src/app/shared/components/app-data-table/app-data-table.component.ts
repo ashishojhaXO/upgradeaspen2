@@ -1599,8 +1599,11 @@ export class AppDataTableComponent implements OnInit, OnChanges {
               comThis.handleRun(JSON.parse($(this)[0].attributes['data-rowData'].value),
                 JSON.parse($(this)[0].attributes['data-full'].value));
             } else if (actionType === DataTableActionType.DOWNLOAD) {
-              // comThis.handleDownload(JSON.parse($(this)[0].attributes['data-rowData'].value),
-                // JSON.parse($(this)[0].attributes['data-full'].value));
+              comThis.handleDownload(JSON.parse($(this)[0].attributes['data-rowData'].value),
+                JSON.parse($(this)[0].attributes['data-full'].value));
+            } else if (actionType === DataTableActionType.DELETE) {
+              comThis.handleDelete(JSON.parse($(this)[0].attributes['data-rowData'].value),
+                  JSON.parse($(this)[0].attributes['data-full'].value));
             }
           });
         });

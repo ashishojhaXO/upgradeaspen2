@@ -7,7 +7,7 @@
   </div>
   <div class="">
     <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject.isDataAvailable">
-      <app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height"></app-data-table1>
+      <app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height" [dataTableAction]="this"></app-data-table1>
     </div>
     <div class="clearfix"></div>
     <div class="page-header" *ngIf="!dataObject.isDataAvailable">
@@ -19,7 +19,7 @@
 <div style="width:100%">
   <app-pop-up-modal #AddVendor>
     <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
-      Add Vendor
+      {{ editID ? ' Edit' : ' Add ' }} Vendor
     </div>
     <div class="app-modal-body">
       <div class="content">
