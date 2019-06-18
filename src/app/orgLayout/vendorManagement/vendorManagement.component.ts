@@ -17,6 +17,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { OktaAuthService } from '../../../services/okta.service';
 import {DataTableAction } from '../../shared/components/app-data-table/data-table-action';
 import {DataTableActionType } from '../../shared/components/app-data-table/data-table-action-type';
+import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
 @Component({
   selector: 'app-vendormanagement',
@@ -30,6 +31,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   dataObject: any = {};
   isDataAvailable: boolean;
   height: any;
+  showError: boolean;
   options: Array<DataTableOptions> = [{
     isSearchColumn: true,
     isOrdering: true,
@@ -56,7 +58,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   widget: any;
   editID: any;
 
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
+  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager) {
 
     this.vendorForm = new FormGroup({
       external_vendor_id: new FormControl('', Validators.required),
@@ -166,7 +168,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
       for (let i = 0; i < keys.length; i++) {
         let header = {
           key: keys[i],
-          title: keys[i].replace('_',' ').toUpperCase(),
+          title: keys[i].replace(/_/g,' ').toUpperCase(),
           data: keys[i],
           isFilterRequired: true,
           isCheckbox: false,
@@ -272,8 +274,16 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   handleDelete(rowObj: any, rowData: any) {
     console.log('rowData >>>!!!!')
     console.log(rowData);
-    if(rowData.id) {
-      this.performVendorDeletionRequest(rowData.id);
+    if (rowData.id) {
+      if (rowData.no_of_orders > 0 && rowData.no_of_users) {
+        if (!this.showError) {
+          this.showError = true;
+          this.toastr.error('ERROR!', 'Vendor cannot be deleted since it has existing order(s) or user(s) associated with it');
+          this.showError = false;
+        }
+      } else {
+        this.performVendorDeletionRequest(rowData.id);
+      }
     }
   }
 

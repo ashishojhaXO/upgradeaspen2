@@ -17,11 +17,11 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { OktaAuthService } from '../../../services/okta.service';
 
 @Component({
-  selector: 'app-usermanagement',
-  templateUrl: './usermanagement.component.html',
-  styleUrls: ['./usermanagement.component.scss']
+  selector: 'app-test',
+  templateUrl: './test.component.html',
+  styleUrls: ['./test.component.scss']
 })
-export class UserManagementComponent implements OnInit  {
+export class TestComponent implements OnInit  {
 
   headers: any = [];
   gridData: any;

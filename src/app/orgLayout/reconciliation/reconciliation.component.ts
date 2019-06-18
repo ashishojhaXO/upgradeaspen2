@@ -164,7 +164,7 @@ export class ReconciliationComponent implements OnInit  {
       for (let i = 0; i < keys.length; i++) {
         let header = {
           key: keys[i],
-          title: keys[i].replace('_',' ').toUpperCase(),
+          title: keys[i].replace(/_/g,' ').toUpperCase(),
           data: keys[i],
           isFilterRequired: true,
           isCheckbox: false,

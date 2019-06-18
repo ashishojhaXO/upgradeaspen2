@@ -99,7 +99,11 @@ const routes: Routes = [
     loadChildren: './payments/payments.module#PaymentsModule'
   },
   {
-
+    path: 'test',
+    component: LayoutComponent,
+    loadChildren: './test/test.module#TestModule'
+  },
+  {
     path: 'admin',
     data: {
       breadcrumbs: true,
