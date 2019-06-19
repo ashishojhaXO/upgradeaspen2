@@ -102,15 +102,11 @@ export class TestComponent implements OnInit  {
     return this.searchData().subscribe(
         response => {
           if (response) {
-            console.log('response >>')
-            console.log(JSON.stringify(response));
             if (response.body) {
               this.showSpinner = false;
               this.populateDataTable(response.body, true);
               return this.getVendors().subscribe(
                   response1 => {
-                    console.log('response1');
-                    console.log(JSON.stringify(response1));
                     if (response1 && response1.body) {
                       const vendorOptions = [];
                       response1.body.forEach(function (item) {
@@ -239,7 +235,7 @@ export class TestComponent implements OnInit  {
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/users';
+    var url = this.api_fs.api + '/api/vendors';
     return this.http
       .get(url, options)
       .map(res => {
@@ -373,5 +369,9 @@ export class TestComponent implements OnInit  {
 
   handleShowModal(modalComponent: PopUpModalComponent) {
     modalComponent.show();
+  }
+
+  handleDataTableEvents() {
+
   }
 }

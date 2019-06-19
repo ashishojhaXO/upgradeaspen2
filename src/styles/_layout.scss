@@ -3175,21 +3175,77 @@ table tbody tr {
   height: 50px;
 }
 
+//New Data Table starts here
+
 table.dataContainer {
   table-layout:fixed;
 }
+
+table.dataContainer thead th {
+  padding: 8px 10px;
+  font-family: "lucidagrande-bold", sans-serif;
+  font-size: 14px;
+  vertical-align: baseline !important;
+}
+
+table.dataContainer tbody td {
+  padding: 8px 10px;
+  font-size: 12px;
+  vertical-align: baseline !important;
+  white-space: pre-wrap;
+}
+
+.dataTables_scrollBody {
+  height: 320px !important;
+}
+
+table.dataContainer tbody tr.selected {
+  background: #0085c7 !important;
+}
+
+.dataTables_filter {
+  float: left !important;
+}
+
+.dataTables_length {
+  margin-left: 50px;
+}
+
+.dataTables_paginate {
+  float: right !important;
+}
+
+div.dt-buttons {
+  top: 0px !important;
+}
+
+table.dataContainer tbody tr.odd, table.dataContainer tbody tr.odd {
+  background-color: #f3fAff;
+}
+
+table.dataTable.display tbody tr.odd>.sorting_1, table.dataTable.order-column.stripe tbody tr.odd>.sorting_1 {
+  background-color: transparent !important;
+}
+
+table.dataTable.display tbody tr.even>.sorting_1, table.dataTable.order-column.stripe tbody tr.even>.sorting_1 {
+  background-color: transparent !important;
+}
+
+// New Data Table ends here
 
 .dataTables_length select {
   padding: 0px 0px 0px 10px !important;
 }
 
 div.dataTables_wrapper div.dataTables_info {
-  padding-top: 14px !important;
+  padding-top: 11px !important;
 }
 
 div.dataTables_wrapper div.dataTables_paginate {
   float: left;
 }
+
+
 
 //Fixed Headers starts here
 
