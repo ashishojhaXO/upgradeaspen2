@@ -57,13 +57,14 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
     if (this.dataObject) {
 
-      var rows_selected = [];
-      const columnsDef = this.dataObject.gridData.headers.map(function (x) {
+      const columns = this.dataObject.gridData.headers.map(function (x) {
         return { title : x.title };
       });
 
       // Add additional item for checkboxes
-      columnsDef.unshift({title: ''});
+      if (this.dataObject.gridData.options.isRowSelection) {
+        // columns.unshift({title: ''});
+      }
 
       const dataSet = [];
       this.dataObject.gridData.result.forEach(function (result) {
@@ -77,47 +78,88 @@ export class AppDataTable2Component implements OnInit, OnChanges {
           dataSet.push(rowData);
       }, this);
 
+      const columnDefs = [];
+      const gridButtons = [];
+
+      let domConfig = '';
+      if (this.dataObject.gridData.options) {
+
+        let columnButtonDefs = '';
+        if (this.dataObject.gridData.options.isEditOption) {
+          columnButtonDefs += '<a class="fa fa-pencil fa-action-view editLink" style="margin-right: 15px; cursor: pointer">';
+        }
+        if (this.dataObject.gridData.options.isDeleteOption) {
+          columnButtonDefs += '<a class="fa fa-trash fa-action-view deleteLink" style="cursor: pointer"></a>';
+        }
+
+        if (columnButtonDefs) {
+          columnDefs.push({
+            targets: -1,
+            defaultContent : columnButtonDefs
+          });
+        }
+
+        if (this.dataObject.gridData.options.isRowSelection) {
+          // columnDefs.push({
+          //   targets: 0,
+          //   searchable: false,
+          //   orderable: false,
+          //   width: '30px',
+          //   className: 'dt-body-center',
+          //   render: function (data, type, full, meta){
+          //     return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+          //   }
+          // });
+        }
+
+        if (this.dataObject.gridData.options.isDownload) {
+          gridButtons.push({ extend: 'csv',
+            text: '<span><i class="fa fa-download fa-Idown" aria-hidden="true"></i></span>',
+          });
+        }
+
+        if (this.dataObject.gridData.options.isSearchColumn) {
+          domConfig += 'f';
+        }
+
+        domConfig += 'Bt';
+
+        if (this.dataObject.gridData.options.isTableInfo) {
+          domConfig += 'i';
+        }
+
+        if (this.dataObject.gridData.options.isPageLength) {
+          domConfig += 'l';
+        }
+
+        if (this.dataObject.gridData.options.isPagination) {
+          domConfig += 'p';
+        }
+      }
+
+      if(!domConfig) {
+        domConfig = 'fBtilp';
+      }
+
       const dataTableOptions = {
         scrollY: 200,
         scrollX: true,
-        columns: columnsDef,
+        columns: columns,
         data: dataSet,
-        dom: 'fBtilp', // l - length changing input control ,f - filtering input ,t - The table!,i - Table information summary,p - pagination control
-        buttons: [
-          { extend: 'csv',
-            text: '<span><i class="fa fa-download fa-Idown" aria-hidden="true"></i></span>',
-          },
-          { extend: 'colvis',
-            text: '<span><i class="fa fa-cog fa-Ivisible" aria-hidden="true"></i></span>',
-          }
-        ],
-        columnDefs: [{
-          targets: -1,
-          data: null,
-          defaultContent: '<a class="fa fa-pencil fa-action-view editLink" style="margin-right: 15px; cursor: pointer"></a><a class="fa fa-trash fa-action-view deleteLink" style="cursor: pointer"></a>'
-         },
-         {
-           targets: 0,
-           searchable: false,
-           orderable: false,
-           width: '30px',
-           className: 'dt-body-center',
-           render: function (data, type, full, meta){
-             return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
-           }
-         }
-         ],
+        dom: domConfig, // l - length changing input control ,f - filtering input ,t - The table!,i - Table information summary,p - pagination control
+        buttons: gridButtons,
+        columnDefs: columnDefs,
           select: {
-            style: 'multi' // 'os',
+            style: this.dataObject.gridData.options.isRowSelection ? 'multi' : 'os',
             // selector: 'td:first-child'
           },
           order: [[ 1, 'asc' ]],
           rowCallback: function(row, data, dataIndex){
             // Get row ID
 
-            console.log('ROW SELECTED >>')
-            console.log('header column length : ' + $('#example thead tr').eq(0).find('th').length);
-            console.log('body column length : ' + $('#example tbody tr').eq(0).find('td').length);
+            // console.log('ROW SELECTED >>')
+            // console.log('header column length : ' + $('#example thead tr').eq(0).find('th').length);
+            // console.log('body column length : ' + $('#example tbody tr').eq(0).find('td').length);
 
              var rowId = data[0];
             // // If row ID is in the list of selected row IDs
@@ -127,6 +169,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             // }
           }
       };
+
+      console.log('dataTableOptions >>>')
+      console.log(dataTableOptions);
 
       if (clearContents) {
         $('#example').DataTable().destroy();
@@ -146,17 +191,13 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
         console.log('header column length : ' + $('#example thead tr').eq(0).find('th').length);
         console.log('body column length : ' + $('#example tbody tr').eq(0).find('td').length);
-
-        // $('#example tbody tr').each(function() {
-        //    if ($(this).find('td input[type="checkbox"]').is(':checked')) {
-        //      $(this).find('td.sorting_1').removeClass('sorting_1');
-        //    }
-        // });
       });
 
       // Add header checkbox
-      if (!$('.dataTables_scrollHeadInner table.dataContainer thead tr').find('#example-select-all').length) {
-        $('.dataTables_scrollHeadInner table.dataContainer thead tr').prepend('<th style="position: relative;left: 7px;"><input name="select_all" value="1" id="example-select-all" type="checkbox" /></th>');
+      if (this.dataObject.gridData.options.isRowSelection) {
+       // if (!$('.dataTables_scrollHeadInner table.dataContainer thead tr').find('#example-select-all').length) {
+        //  $('.dataTables_scrollHeadInner table.dataContainer thead tr').prepend('<th style="position: relative;left: 7px;"><input name="select_all" value="1" id="example-select-all" type="checkbox" /></th>');
+       // }
       }
 
       // Edit Click

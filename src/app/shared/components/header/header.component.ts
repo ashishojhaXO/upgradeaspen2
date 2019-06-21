@@ -170,14 +170,8 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
     this.auth.getPreferenceMenu().subscribe(
       response => {
 
-        console.log('response menu >>>')
-        console.log(response);
-
         const groupArr = [];
         const groups = localStorage.getItem('loggedInUserGroup') || '';
-
-        console.log('groups >>')
-        console.log(groups);
 
         if (groups) {
           const grp = JSON.parse(groups);
@@ -206,16 +200,8 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
           this.mainmenu = reducedMenu;
         }
 
-        console.log('response[\'admin\'] >>')
-        console.log(response['admin']);
-
-        console.log('window.location.pathname >>')
-        console.log(window.location.pathname);
-
         if (window.location.pathname) {
           const urlParts = window.location.pathname.indexOf('/') != -1 ? window.location.pathname.split('/') : window.location.pathname;
-          console.log('urlParts >>')
-          console.log(urlParts);
           const corr = this.mainmenu.find( x=> x.url === (urlParts[1] + '/' + urlParts[2]));
           if (corr) {
             this.mainmenu[this.mainmenu.indexOf(corr)].selected = true;
