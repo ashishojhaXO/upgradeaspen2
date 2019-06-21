@@ -61,14 +61,17 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         return { title : x.title };
       });
 
-      // Add additional item for checkboxes
+      // Add additional column in the row for checkboxes
       if (this.dataObject.gridData.options.isRowSelection) {
-        // columns.unshift({title: ''});
+         columns.unshift({title: ''});
       }
 
       const dataSet = [];
       this.dataObject.gridData.result.forEach(function (result) {
           const rowData = [];
+          if (this.dataObject.gridData.options.isRowSelection) {
+            rowData.push('');
+          }
           for (const prop in result) {
             const findProp = this.dataObject.gridData.headers.find(x => x.key === prop);
             if (findProp) {
@@ -100,16 +103,16 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         }
 
         if (this.dataObject.gridData.options.isRowSelection) {
-          // columnDefs.push({
-          //   targets: 0,
-          //   searchable: false,
-          //   orderable: false,
-          //   width: '30px',
-          //   className: 'dt-body-center',
-          //   render: function (data, type, full, meta){
-          //     return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
-          //   }
-          // });
+          columnDefs.push({
+            targets: 0,
+            searchable: false,
+            orderable: false,
+            width: '30px',
+            className: 'dt-body-center',
+            render: function (data, type, full, meta){
+              return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+            }
+          });
         }
 
         if (this.dataObject.gridData.options.isDownload) {
@@ -195,9 +198,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
       // Add header checkbox
       if (this.dataObject.gridData.options.isRowSelection) {
-       // if (!$('.dataTables_scrollHeadInner table.dataContainer thead tr').find('#example-select-all').length) {
-        //  $('.dataTables_scrollHeadInner table.dataContainer thead tr').prepend('<th style="position: relative;left: 7px;"><input name="select_all" value="1" id="example-select-all" type="checkbox" /></th>');
-       // }
+       if (!$('.dataTables_scrollHeadInner table.dataContainer thead tr').find('#example-select-all').length) {
+         $('.dataTables_scrollHeadInner table.dataContainer thead tr th').eq(0).html('<input name="select_all" value="1" id="example-select-all" type="checkbox" />');
+         $('.dataTables_scrollHeadInner table.dataContainer thead tr th').eq(0).css('position', 'relative');
+         $('.dataTables_scrollHeadInner table.dataContainer thead tr th').eq(0).css('left', '7px');
+       }
       }
 
       // Edit Click
