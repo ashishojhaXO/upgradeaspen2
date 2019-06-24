@@ -21,25 +21,21 @@ import { OktaAuthService } from '../../../services/okta.service';
 })
 export class OrdersComponent implements OnInit  {
 
-  headers: any = [];
   gridData: any;
   dataObject: any = {};
   isDataAvailable: boolean;
   height: any;
-  options: Array<DataTableOptions> = [{
+  options: Array<any> = [{
     isSearchColumn: true,
-    isOrdering: true,
     isTableInfo: true,
     isEditOption: false,
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
     isDownload: true,
-    isRowSelection: true,
-    isShowEntries: false,
-    isPagination: true,
-    isPageLength: 10,
-    isEmptyTable: 'No Data',
+    isRowSelection: null,
+    isPageLength: true,
+    isPagination: true
   }];
   dashboard: any;
   api_fs: any;
@@ -119,11 +115,12 @@ export class OrdersComponent implements OnInit  {
     const tableData = response;
     this.gridData = {};
     this.gridData['result'] = [];
+    const headers = [];
 
     if (tableData.length) {
       const keys = Object.keys(tableData[0]);
       for (let i = 0; i < keys.length; i++) {
-        let header = {
+        headers.push({
           key: keys[i],
           title: keys[i].replace(/_/g,' ').toUpperCase(),
           data: keys[i],
@@ -132,20 +129,19 @@ export class OrdersComponent implements OnInit  {
           class: 'nocolvis',
           editButton: false,
           width: '150'
-        }
-        this.headers.push(header);
+        });
       }
     }
 
     this.gridData['result'] = tableData;
-    this.gridData['headers'] = this.headers;
+    this.gridData['headers'] = headers;
     this.gridData['options'] = this.options[0];
     this.gridData.columnsToColor = [
-      { name: 'MERCHANT PROCESSING FEE', color: 'rgb(47,132,234,0.2)'},
-      { name: 'LINE ITEM MEDIA BUDGET', color: 'rgb(47,132,234,0.2)'},
-      { name: 'KENSHOO FEE', color: 'rgb(47,132,234,0.2)'},
-      { name: 'THD FEE', color: 'rgb(47,132,234,0.2)'},
-      { name: 'LINE ITEM TOTAL BUDGET', color: 'rgb(47,132,234,0.4)'}
+      { index: 11, name: 'MERCHANT PROCESSING FEE', color: 'rgb(47,132,234,0.2)'},
+      { index: 15, name: 'LINE ITEM MEDIA BUDGET', color: 'rgb(47,132,234,0.2)'},
+      { index: 16, name: 'KENSHOO FEE', color: 'rgb(47,132,234,0.2)'},
+      { index: 17, name: 'THD FEE', color: 'rgb(47,132,234,0.2)'},
+      { index: 10, name: 'LINE ITEM TOTAL BUDGET', color: 'rgb(47,132,234,0.4)'}
     ];
     this.dashboard = 'paymentGrid';
     this.dataObject.gridData = this.gridData;

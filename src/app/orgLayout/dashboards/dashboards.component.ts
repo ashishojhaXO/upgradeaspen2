@@ -62,20 +62,17 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   dataObject: any = {};
   isDataAvailable: boolean;
   height: any;
-  options: Array<DataTableOptions> = [{
+  options: Array<any> = [{
     isSearchColumn: true,
-    isOrdering: true,
     isTableInfo: true,
     isEditOption: false,
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
     isDownload: true,
-    isRowSelection: true,
-    isShowEntries: false,
-    isPagination: true,
-    isPageLength: 10,
-    isEmptyTable: 'No Data'
+    isRowSelection: null,
+    isPageLength: true,
+    isPagination: true
   }];
   dashboard: any;
   widget: any;
@@ -730,7 +727,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
       const keys = Object.keys(responseData.gridData[0]);
       for (let i = 0; i < keys.length; i++) {
-          let header = {
+          headers.push({
             key: keys[i],
             title: keys[i],
             mData: keys[i],
@@ -740,8 +737,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             class: 'nocolvis',
             editButton: false,
             width: '150'
-          }
-          headers.push(header);
+          });
       }
 
       this.gridData['headers'] = headers;

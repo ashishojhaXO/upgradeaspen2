@@ -26,26 +26,22 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 })
 export class VendorManagementComponent implements OnInit, DataTableAction  {
 
-  headers: any = [];
   gridData: any;
   dataObject: any = {};
   isDataAvailable: boolean;
   height: any;
   showError: boolean;
-  options: Array<DataTableOptions> = [{
+  options: Array<any> = [{
     isSearchColumn: true,
-    isOrdering: true,
     isTableInfo: true,
-    isEditOption: false,
-    isDeleteOption: false,
+    isEditOption: true,
+    isDeleteOption: true,
     isAddRow: false,
     isColVisibility: true,
     isDownload: true,
-    isRowSelection: true,
-    isShowEntries: false,
-    isPagination: true,
-    isPageLength: 10,
-    isEmptyTable: 'No Data',
+    isRowSelection: null,
+    isPageLength: true,
+    isPagination: true
   }];
   dashboard: any;
   api_fs: any;
@@ -162,11 +158,12 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     const tableData = response;
     this.gridData = {};
     this.gridData['result'] = [];
+    const headers = [];
 
     if (tableData && tableData.length) {
       const keys = Object.keys(tableData[0]);
       for (let i = 0; i < keys.length; i++) {
-        let header = {
+        headers.push({
           key: keys[i],
           title: keys[i].replace(/_/g,' ').toUpperCase(),
           data: keys[i],
@@ -175,40 +172,39 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
           class: 'nocolvis',
           editButton: false,
           width: '150'
-        }
-        this.headers.push(header);
+        });
       }
 
-      this.headers.push({
-        key: 'Action',
-        title: 'ACTION',
-        data: 'noDataFeed',
-        isFilterRequired: false,
-        isCheckbox: false,
-        class: 'nocolvis',
-        editButton: false,
-        width: '250',
-        actionButton: [
-          {
-            actionName : 'Edit',
-            actionType : DataTableActionType.EDIT,
-            actionUrl : 'reportid',
-            actionIcon : 'fa-pencil',
-            actionFunc: 'handleEdit'
-          },
-          {
-            actionName : 'Delete',
-            actionType : DataTableActionType.DELETE,
-            actionUrl : 'reportid',
-            actionIcon : 'fa-trash',
-            actionFunc: 'handleDelete'
-          }
-        ]
-      });
+      // this.headers.push({
+      //   key: 'Action',
+      //   title: 'ACTION',
+      //   data: 'noDataFeed',
+      //   isFilterRequired: false,
+      //   isCheckbox: false,
+      //   class: 'nocolvis',
+      //   editButton: false,
+      //   width: '250',
+      //   actionButton: [
+      //     {
+      //       actionName : 'Edit',
+      //       actionType : DataTableActionType.EDIT,
+      //       actionUrl : 'reportid',
+      //       actionIcon : 'fa-pencil',
+      //       actionFunc: 'handleEdit'
+      //     },
+      //     {
+      //       actionName : 'Delete',
+      //       actionType : DataTableActionType.DELETE,
+      //       actionUrl : 'reportid',
+      //       actionIcon : 'fa-trash',
+      //       actionFunc: 'handleDelete'
+      //     }
+      //   ]
+      // });
     }
 
     this.gridData['result'] = tableData;
-    this.gridData['headers'] = this.headers;
+    this.gridData['headers'] = headers;
     this.gridData['options'] = this.options[0];
     this.dashboard = 'paymentGrid';
     this.dataObject.gridData = this.gridData;
@@ -217,50 +213,50 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
   }
 
-  handleEdit(rowObj: any, rowData: any) {
+  handleEdit(dataObj: any) {
     console.log('rowData >>>')
-    console.log(rowData);
-    this.editID = rowData.id;
+    console.log(dataObj.data);
+    this.editID = dataObj.data.id;
 
-    this.vendorModel.external_vendor_id = rowData.external_vendor_id;
+    this.vendorModel.external_vendor_id = dataObj.data.external_vendor_id;
     this.vendorForm.patchValue({
-      external_vendor_id : rowData.external_vendor_id
+      external_vendor_id : dataObj.data.external_vendor_id
     });
-    this.vendorModel.first_name = rowData.first_name;
+    this.vendorModel.first_name = dataObj.data.first_name;
     this.vendorForm.patchValue({
-      first_name : rowData.first_name
+      first_name : dataObj.data.first_name
     });
-    this.vendorModel.last_name = rowData.last_name;
+    this.vendorModel.last_name = dataObj.data.last_name;
     this.vendorForm.patchValue({
-      last_name : rowData.last_name
+      last_name : dataObj.data.last_name
     });
-    this.vendorModel.company_name = rowData.company_name;
+    this.vendorModel.company_name = dataObj.data.company_name;
     this.vendorForm.patchValue({
-      company_name : rowData.company_name
+      company_name : dataObj.data.company_name
     });
-    this.vendorModel.email = rowData.email;
+    this.vendorModel.email = dataObj.data.email;
     this.vendorForm.patchValue({
-      email : rowData.email
+      email : dataObj.data.email
     });
-    this.vendorModel.address_1 = rowData.address_1;
+    this.vendorModel.address_1 = dataObj.data.address_1;
     this.vendorForm.patchValue({
-      address_1 : rowData.address_1
+      address_1 : dataObj.data.address_1
     });
-    this.vendorModel.address_2 = rowData.address_2;
+    this.vendorModel.address_2 = dataObj.data.address_2;
     this.vendorForm.patchValue({
-      address_2 : rowData.address_2
+      address_2 : dataObj.data.address_2
     });
-    this.vendorModel.city = rowData.city;
+    this.vendorModel.city = dataObj.data.city;
     this.vendorForm.patchValue({
-      city : rowData.city
+      city : dataObj.data.city
     });
-    this.vendorModel.state = rowData.state;
+    this.vendorModel.state = dataObj.data.state;
     this.vendorForm.patchValue({
-      state : rowData.state
+      state : dataObj.data.state
     });
-    this.vendorModel.country = rowData.country;
+    this.vendorModel.country = dataObj.data.country;
     this.vendorForm.patchValue({
-      country : rowData.country
+      country : dataObj.data.country
     });
 
     this.addVendor.show();
@@ -271,18 +267,18 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   handleRun(rowObj: any, rowData: any) {
   }
 
-  handleDelete(rowObj: any, rowData: any) {
-    console.log('rowData >>>!!!!')
-    console.log(rowData);
-    if (rowData.id) {
-      if (rowData.no_of_orders > 0 && rowData.no_of_users) {
+  handleDelete(dataObj: any) {
+    // console.log('rowData >>>!!!!')
+    // console.log(rowData);
+    if (dataObj.data.id) {
+      if (dataObj.data.id.no_of_orders > 0 && dataObj.data.id.no_of_users) {
         if (!this.showError) {
           this.showError = true;
           this.toastr.error('ERROR!', 'Vendor cannot be deleted since it has existing order(s) or user(s) associated with it');
           this.showError = false;
         }
       } else {
-        this.performVendorDeletionRequest(rowData.id);
+        this.performVendorDeletionRequest(dataObj.data.id.id);
       }
     }
   }

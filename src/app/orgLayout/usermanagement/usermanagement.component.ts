@@ -23,25 +23,21 @@ import { OktaAuthService } from '../../../services/okta.service';
 })
 export class UserManagementComponent implements OnInit  {
 
-  headers: any = [];
   gridData: any;
   dataObject: any = {};
   isDataAvailable: boolean;
   height: any;
-  options: Array<DataTableOptions> = [{
+  options: Array<any> = [{
     isSearchColumn: true,
-    isOrdering: true,
     isTableInfo: true,
     isEditOption: false,
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
     isDownload: true,
-    isRowSelection: true,
-    isShowEntries: false,
-    isPagination: true,
-    isPageLength: 10,
-    isEmptyTable: 'No Data',
+    isRowSelection: null,
+    isPageLength: true,
+    isPagination: true
   }];
   dashboard: any;
   api_fs: any;
@@ -251,11 +247,12 @@ export class UserManagementComponent implements OnInit  {
     const tableData = response;
     this.gridData = {};
     this.gridData['result'] = [];
+    const headers = [];
 
     if (tableData && tableData.length) {
       const keys = Object.keys(tableData[0]);
       for (let i = 0; i < keys.length; i++) {
-        let header = {
+        headers.push({
           key: keys[i],
           title: keys[i].replace(/_/g,' ').toUpperCase(),
           data: keys[i],
@@ -264,13 +261,12 @@ export class UserManagementComponent implements OnInit  {
           class: 'nocolvis',
           editButton: false,
           width: '150'
-        }
-        this.headers.push(header);
+        });
       }
     }
 
     this.gridData['result'] = tableData;
-    this.gridData['headers'] = this.headers;
+    this.gridData['headers'] = headers;
     this.gridData['options'] = this.options[0];
     this.dashboard = 'paymentGrid';
     this.dataObject.gridData = this.gridData;

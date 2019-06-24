@@ -7,7 +7,7 @@ import { AppChartsModule } from '../../shared/components/app-charts/app-charts.m
 import {AppSidebarModule} from '../../shared/components/app-sidebar/app-sidebar.module';
 import {WrapperMultiSelectDropdownModule} from '../../shared/components/wrapper-multiselect-dropdown/wrapper-multiselect-dropdown.module';
 import { AppPopupButtonModule} from '../../shared/components/app-popup-button/app-popup-button.module';
-import {AppDataTableModule, AppSpinnerModule, DataTableModule} from '../../shared/components';
+import {AppDataTableModule, AppSpinnerModule, DataTableModule, AppDataTable2Module} from '../../shared/components';
 import { Select2Module } from 'ng2-select2';
 import { PopUpModalModule } from '../../shared/components/pop-up-modal/pop-up-modal.module';
 import { OktaAuthService } from '../../../services/okta.service';
@@ -26,7 +26,8 @@ import { OktaAuthService } from '../../../services/okta.service';
     AppDataTableModule,
     AppSpinnerModule,
     Select2Module,
-    PopUpModalModule
+    PopUpModalModule,
+    AppDataTable2Module
   ],
   declarations: [VendorManagementComponent],
   providers: [OktaAuthService]
