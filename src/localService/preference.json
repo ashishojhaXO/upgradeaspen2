@@ -97,7 +97,7 @@
     {
       "index": 8,
       "name": "vendormanagement",
-      "title": "Vendor Management",
+      "title": "Vendor",
       "selected": false,
       "id": "vendormanagement",
       "url": "app/vendormanagement"
