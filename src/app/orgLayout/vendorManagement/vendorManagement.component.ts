@@ -53,6 +53,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   showSpinner: boolean;
   widget: any;
   editID: any;
+  resultStatus: any;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager) {
 
@@ -91,6 +92,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.height = '50vh';
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
+    this.resultStatus = 'Fetching results';
     this.searchDataRequest();
   }
 
@@ -100,9 +102,12 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
           if (response) {
             console.log('response >>')
             console.log(response);
-            if (response.body) {
+            if (response.body && response.body.length) {
               this.showSpinner = false;
               this.populateDataTable(response.body, true);
+            } else {
+              this.resultStatus = 'No data found'
+              this.showSpinner = false;
             }
           }
         },
@@ -144,9 +149,11 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     console.log(AccessToken.accessToken);
 
 
+
+    const custInfo = JSON.parse(localStorage.getItem('customerInfo'));
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/vendors';
+    var url = this.api_fs.api + '/api/vendors?org_id=' + custInfo.org_id;
     return this.http
       .get(url, options)
       .map(res => {
@@ -174,33 +181,6 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
           width: '150'
         });
       }
-
-      // this.headers.push({
-      //   key: 'Action',
-      //   title: 'ACTION',
-      //   data: 'noDataFeed',
-      //   isFilterRequired: false,
-      //   isCheckbox: false,
-      //   class: 'nocolvis',
-      //   editButton: false,
-      //   width: '250',
-      //   actionButton: [
-      //     {
-      //       actionName : 'Edit',
-      //       actionType : DataTableActionType.EDIT,
-      //       actionUrl : 'reportid',
-      //       actionIcon : 'fa-pencil',
-      //       actionFunc: 'handleEdit'
-      //     },
-      //     {
-      //       actionName : 'Delete',
-      //       actionType : DataTableActionType.DELETE,
-      //       actionUrl : 'reportid',
-      //       actionIcon : 'fa-trash',
-      //       actionFunc: 'handleDelete'
-      //     }
-      //   ]
-      // });
     }
 
     this.gridData['result'] = tableData;

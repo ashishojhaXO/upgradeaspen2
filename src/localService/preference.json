@@ -96,6 +96,14 @@
     },
     {
       "index": 8,
+      "name": "vendormanagement",
+      "title": "Vendor Management",
+      "selected": false,
+      "id": "vendormanagement",
+      "url": "app/vendormanagement"
+    },
+    {
+      "index": 9,
       "name": "admin",
       "title": "Admin",
       "selected": false,
@@ -108,13 +116,6 @@
           "title": "User Management",
           "id": "usermanagement",
           "url": "app/admin/usermanagement"
-        },
-        {
-          "index": 1,
-          "name": "vendormanagement",
-          "title": "Vendor Management",
-          "id": "vendormanagement",
-          "url": "app/admin/vendormanagement"
         }
       ]
     }

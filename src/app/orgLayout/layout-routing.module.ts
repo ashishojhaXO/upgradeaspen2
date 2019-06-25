@@ -99,6 +99,11 @@ const routes: Routes = [
     loadChildren: './payments/payments.module#PaymentsModule'
   },
   {
+    path: 'vendormanagement',
+    component: LayoutComponent,
+    loadChildren: './vendorManagement/vendorManagement.module#VendorManagementModule'
+  },
+  {
     path: 'admin',
     data: {
       breadcrumbs: true,
@@ -116,14 +121,6 @@ const routes: Routes = [
         data: {
           breadcrumbs: true,
           text: 'User Management'
-        }
-      },
-      {
-        path: 'vendormanagement',
-        loadChildren: './vendorManagement/vendorManagement.module#VendorManagementModule',
-        data: {
-          breadcrumbs: true,
-          text: 'Vendor Management'
         }
       },
       {
