@@ -33,6 +33,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
   Object = Object;
   @Output() triggerActions: EventEmitter<any> = new EventEmitter<any>();
   loaded = false;
+  @Input() sendResponseOnCheckboxClick?: any;
 
   constructor(
     public toastr: ToastsManager,
@@ -61,7 +62,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     if (this.dataObject) {
 
       const columns = this.dataObject.gridData.headers.map(function (x) {
-        return { title : x.title };
+        return { title : x.title};
       });
 
       // Add additional column in the row for checkboxes
@@ -70,7 +71,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
       }
 
       const dataSet = [];
-      this.dataObject.gridData.result.forEach(function (result) {
+      if (this.dataObject.gridData.result) {
+        this.dataObject.gridData.result.forEach(function (result) {
           const rowData = [];
           if (this.dataObject.gridData.options.isRowSelection) {
             rowData.push('');
@@ -82,7 +84,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             }
           }
           dataSet.push(rowData);
-      }, this);
+        }, this);
+      }
 
       const columnDefs = [];
       const gridButtons = [];
@@ -115,8 +118,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             orderable: false,
             width: '30px',
             className: 'dt-body-center',
-            render: function (data, type, full, meta){
-              return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+            render: function (data, type, row, meta){
+              return '<input class="check-row-selection" type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
             }
           });
         }
@@ -166,7 +169,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         columnDefs: columnDefs,
           select: {
             style: this.dataObject.gridData.options.isRowSelection && this.dataObject.gridData.options.isRowSelection.isMultiple ? 'multi' : 'os',
-            // selector: 'td:first-child'
           },
           order: [[ 1, 'asc' ]],
           rowCallback: function(nRow, aData, iDisplayIndex, iDisplayIndexFull){
@@ -175,7 +177,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             // console.log('header column length : ' + $('#example thead tr').eq(0).find('th').length);
             // console.log('body column length : ' + $('#example tbody tr').eq(0).find('td').length);
 
-             // var rowId = aData[0];
+            //  var rowId = aData[0];
             // // If row ID is in the list of selected row IDs
             // if($.inArray(rowId, rows_selected) !== -1){
             //   $(row).find('input[type="checkbox"]').prop('checked', true);
@@ -183,30 +185,26 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             // }
           },
           createdRow : function ( row, data, index ) {
+
+            console.log('created ....')
+
             if (__this.dataObject.gridData.columnsToColor) {
               __this.dataObject.gridData.columnsToColor.forEach(function (column) {
                    $('td', row).eq(column.index).css('background-color', column.color);
               });
             }
+
+            if (__this.dataObject.gridData.result[index].isChecked) {
+              $('td', row).find('input.check-row-selection').prop('checked', true);
+              // $(row).addClass('selected');
+            }
           }
       };
 
-
-      // console.log('clearContents >>> ' + loaded);
-
-      // if (loaded) {
-      //   $('#example').DataTable().clear().destroy();
-      //   $('#example').find('thead').empty();
-      //   $('#example').find('tbody').empty();
-      // }
-
-      // if (!loaded) {
-      //   this.loaded = true;
-      // }
-
       console.log('dataTableOptions >>>')
-      console.log(dataTableOptions);
+      console.log(JSON.stringify(dataTableOptions));
 
+      // Initialize Data Table
       const table = $('#example').DataTable(dataTableOptions);
 
       // Set column display box location
@@ -240,9 +238,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
       // Handle sort column event
       $('#example').on( 'order.dt', function () {
         // Remove sorting_1 class if a row is selected
-
-        console.log('header column length : ' + $('#example thead tr').eq(0).find('th').length);
-        console.log('body column length : ' + $('#example tbody tr').eq(0).find('td').length);
       });
 
       // Add header checkbox
@@ -256,7 +251,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
       // Edit Click
       $('#example tbody').on('click', '.editLink', function () {
-        const data = table.row($(this).parents('tr')).data();
+       // const data = table.row($(this).parents('tr')).data();
         __this.triggerActions.emit({
           action: 'handleEdit',
           data: __this.dataObject.gridData.result[table.row($(this).parents('tr')).index()],
@@ -266,7 +261,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
       // Delete Click
       $('#example tbody').on('click', '.deleteLink', function () {
-        const data = table.row($(this).parents('tr')).data();
+       // const data = table.row($(this).parents('tr')).data();
         __this.triggerActions.emit({
           action: 'handleDelete',
           data: __this.dataObject.gridData.result[table.row($(this).parents('tr')).index()],
@@ -275,24 +270,25 @@ export class AppDataTable2Component implements OnInit, OnChanges {
       });
 
       // Handle click on "Select all" control
-      $('#example-select-all').on('click', function(){
+      $('#example-select-all').on('click', function() {
+
         // Check/uncheck all checkboxes in the table
-        var rows = table.rows({ 'search': 'applied' }).nodes();
-        $('input[type="checkbox"]', rows).prop('checked', this.checked);
-        if (this.checked) {
-          $('input[type="checkbox"]', rows).closest('tr').addClass('selected');
-          // if (!$('input[type="checkbox"]', rows).closest('tr').hasClass('selected')) {
-          //   $('input[type="checkbox"]', rows).closest('tr').addClass('selected');
-          // }
-        } else {
-            $('input[type="checkbox"]', rows).closest('tr').removeClass('selected');
-          }
+        const rows = table.rows({ 'search': 'applied' }).nodes();
+        $('input.check-row-selection', rows).prop('checked', this.checked);
+        this.checked ? table.rows().select() : table.rows().deselect();
+
+        if(__this.sendResponseOnCheckboxClick) {
+          __this.triggerActions.emit({
+            action: 'handleHeaderCheckboxSelection',
+            data : this.checked ? __this.dataObject.gridData.result : []
+          });
+        }
       });
 
       // Handle click on checkbox to set state of "Select all" control
-      $('#example tbody').on('change', 'input[type="checkbox"]', function(){
+      $('#example tbody').on('change', 'input.check-row-selection', function(){
         // If checkbox is not checked
-        if(!this.checked){
+        if(!this.checked) {
           var el = $('#example-select-all').get(0);
           // If "Select all" control is checked and has 'indeterminate' property
           if(el && el.checked && ('indeterminate' in el)){
@@ -303,63 +299,77 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         }
 
         // Highlight selected rows
-        if ($(this).is(':checked')) {
-          if (!$(this).closest('tr').hasClass('selected')) {
-            $(this).closest('tr').addClass('selected');
-          }
-        } else {
-          $(this).closest('tr').removeClass('selected');
-        }
+        // if ($(this).is(':checked')) {
+        //   if (!$(this).closest('tr').hasClass('selected')) {
+        //     $(this).closest('tr').addClass('selected');
+        //   }
+        // } else {
+        //   $(this).closest('tr').removeClass('selected');
+        // }
       });
 
-
-      // Handle table draw event
+      // Handle table draw event ( like pagination, sorting )
       table.on('draw', function(){
         // Update state of "Select all" control
         console.log('drawn ....')
       });
 
-      // Handle table row select event
-      table.on( 'select', function ( e, dt, type, indexes ) {
-         table[ type ]( indexes ).nodes().to$().find('td input[type="checkbox"]').prop('checked', true);
-      });
-
-      // Handle table row deselect event
-      table.on( 'deselect', function ( e, dt, type, indexes ) {
-        table[ type ]( indexes ).nodes().to$().find('td input[type="checkbox"]').prop('checked', false);
-      });
-
-
-      // FORM SUBMIT
-      $('#frm-example').on('submit', function(e){
-        var form = this;
-        // Iterate over all checkboxes in the table
-        table.$('input[type="checkbox"]').each(function(){
-          // If checkbox doesn't exist in DOM
-          if(!$.contains(document, this)){
-            // If checkbox is checked
-            if(this.checked){
-              // Create a hidden element
-              $(form).append(
-                  $('<input>')
-                      .attr('type', 'hidden')
-                      .attr('name', this.name)
-                      .val(this.value)
-              );
-            }
+      // Highlight pre checked rows
+      if(__this.dataObject.gridData && __this.dataObject.gridData.result) {
+        __this.dataObject.gridData.result.forEach(function (data, index) {
+          if (data.isChecked) {
+            table.row(':eq(' + index + ')').select();
           }
         });
+      }
 
-        // FOR TESTING ONLY
-
-        // Output form data to a console
-        $('#example-console').text($(form).serialize());
-        console.log("Form submission", $(form).serialize());
-
-        // Prevent actual form submission
-        e.preventDefault();
-      });
+     __this.registerCheckboxSelection(table, __this);
+     __this.registerUnCheckboxSelection(table, __this);
 
     }
+  }
+
+  registerCheckboxSelection(table, __this) {
+
+    console.log('checkbox checked .....')
+
+    // Handle table row select event
+    table.on( 'select', function ( e, dt, type, indexes ) {
+
+      console.log('indexes >>>')
+      console.log(indexes);
+
+      // if(__this.dataObject.gridData.options.isRowSelection && !__this.dataObject.gridData.options.isRowSelection.isMultiple) {
+      //   $('input.check-row-selection').prop('checked', false);
+      //   $('#example tbody tr').removeClass('selected');
+      // }
+      table[ type ]( indexes ).nodes().to$().find('td input.check-row-selection').prop('checked', true);
+      table[ type ]( indexes ).nodes().to$().addClass('selected');
+      if (__this.sendResponseOnCheckboxClick) {
+        __this.triggerActions.emit({
+          action: 'handleCheckboxSelection',
+          data: __this.dataObject.gridData.result[indexes[0]],
+          rowIndex: indexes[0]
+        });
+      }
+    });
+  }
+
+  registerUnCheckboxSelection(table, __this) {
+    // Handle table row deselect event
+    table.on( 'deselect', function ( e, dt, type, indexes ) {
+
+      console.log('indexes >>>')
+      console.log(indexes);
+
+      table[ type ]( indexes ).nodes().to$().find('td input.check-row-selection').prop('checked', false);
+      if (__this.sendResponseOnCheckboxClick) {
+        __this.triggerActions.emit({
+          action: 'handleUnCheckboxSelection',
+          data: __this.dataObject.gridData.result[indexes[0]],
+          rowIndex: indexes[0]
+        });
+      }
+    });
   }
 }

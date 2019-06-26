@@ -283,14 +283,6 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
 
   headers: any = [
     {
-      key: '_id',
-      title: '',
-      data: 'id',
-      isFilterRequired: false,
-      isCheckbox: true,
-      class: 'nocolvis'
-    },
-    {
       key: 'contractPublisherName',
       title: 'Contract Publisher name',
       data: 'contractPublisherName',
@@ -299,43 +291,45 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
       width: 'auto',
     },
   ];
-  options: Array<DataTableOptions> = [{
+  options: Array<any> = [{
     isSearchColumn: true,
-    isOrdering: true,
     isTableInfo: true,
-    isEditOption: true,
-    isDeleteOption: true,
-    isAddRow: true,
-    isColVisibility: true,
-    isRowSelection: true,
-    isShowEntries: false,
-    isPageLength: 10,
-    isEmptyTable: 'You have no Bulk Import Log',
+    isEditOption: false,
+    isDeleteOption: false,
+    isAddRow: false,
+    isColVisibility: false,
+    isDownload: false,
+    isRowSelection: {
+      isMultiple : true
+    },
+    isPageLength: true,
+    isPagination: true
   }];
 
   filterPopupData: any = {
     options: {
-      'isSearchColumn': true,
-      'isOrdering': true,
-      'isTableInfo': true,
-      'isEditOption': true,
-      'isDeleteOption': true,
-      'isAddRow': true,
-      'isColVisibility': true,
-      'isRowSelection': true,
-      'isShowEntries': false,
-      'isPageLength': 5,
-      'isEmptyTable': 'No records found.'
+      isSearchColumn: true,
+      isTableInfo: true,
+      isEditOption: false,
+      isDeleteOption: false,
+      isAddRow: false,
+      isColVisibility: false,
+      isDownload: false,
+      isRowSelection: {
+        isMultiple : true
+      },
+      isPageLength: true,
+      isPagination: true
     },
     headers: [
-      {
-        'key': '_id',
-        'title': '',
-        'data': 'id',
-        'isFilterRequired': false,
-        'isCheckbox': true,
-        'class': 'nocolvis'
-      },
+      // {
+      //   'key': '_id',
+      //   'title': '',
+      //   'data': 'id',
+      //   'isFilterRequired': false,
+      //   'isCheckbox': true,
+      //   'class': 'nocolvis'
+      // },
       {
         'key': 'label',
         'title': '',
@@ -358,28 +352,28 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
 
   dimensionsPopupData: any = {
     options: {
-      'isSearchColumn': true,
-      'isOrdering': true,
-      'isTableInfo': true,
-      'isEditOption': true,
-      'isDeleteOption': true,
-      'isAddRow': true,
-      'isColVisibility': true,
-      'isRowSelection': true,
-      'isShowEntries': false,
-      'isPageLength': 5,
-      'isPagination': true,
-      'isEmptyTable': 'No records found.'
+      isSearchColumn: true,
+      isTableInfo: true,
+      isEditOption: false,
+      isDeleteOption: false,
+      isAddRow: false,
+      isColVisibility: false,
+      isDownload: false,
+      isRowSelection: {
+        isMultiple : true
+      },
+      isPageLength: true,
+      isPagination: true
     },
     headers: [
-      {
-        'key': '_id',
-        'title': '',
-        'data': 'id',
-        'isFilterRequired': false,
-        'isCheckbox': true,
-        'class': 'nocolvis'
-      },
+      // {
+      //   'key': '_id',
+      //   'title': '',
+      //   'data': 'id',
+      //   'isFilterRequired': false,
+      //   'isCheckbox': true,
+      //   'class': 'nocolvis'
+      // },
       {
         'key': 'label',
         'title': 'Dimensions',
@@ -403,28 +397,28 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
 
   metricsPopupData: any = {
     options: {
-      'isSearchColumn': true,
-      'isOrdering': true,
-      'isTableInfo': true,
-      'isEditOption': true,
-      'isDeleteOption': true,
-      'isAddRow': true,
-      'isColVisibility': true,
-      'isRowSelection': true,
-      'isShowEntries': false,
-      'isPageLength': 5,
-      'isPagination': true,
-      'isEmptyTable': 'No records found.'
+      isSearchColumn: true,
+      isTableInfo: true,
+      isEditOption: false,
+      isDeleteOption: false,
+      isAddRow: false,
+      isColVisibility: false,
+      isDownload: false,
+      isRowSelection: {
+        isMultiple : true
+      },
+      isPageLength: true,
+      isPagination: true
     },
     headers: [
-      {
-        'key': '_id',
-        'title': '',
-        'data': 'id',
-        'isFilterRequired': false,
-        'isCheckbox': true,
-        'class': 'nocolvis'
-      },
+      // {
+      //   'key': '_id',
+      //   'title': '',
+      //   'data': 'id',
+      //   'isFilterRequired': false,
+      //   'isCheckbox': true,
+      //   'class': 'nocolvis'
+      // },
       {
         'key': 'label',
         'title': 'Metrics',
@@ -997,27 +991,20 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   getFilterConfigData(title: any) {
     return {
       options: {
-        'isSearchColumn': true,
-        'isOrdering': true,
-        'isTableInfo': true,
-        'isEditOption': true,
-        'isDeleteOption': true,
-        'isAddRow': true,
-        'isColVisibility': true,
-        'isRowSelection': true,
-        'isShowEntries': false,
-        'isPageLength': 10,
-        'isEmptyTable': 'No records found.'
+        isSearchColumn: true,
+        isTableInfo: true,
+        isEditOption: false,
+        isDeleteOption: false,
+        isAddRow: false,
+        isColVisibility: false,
+        isDownload: false,
+        isRowSelection: {
+          isMultiple : true
+        },
+        isPageLength: true,
+        isPagination: true
       },
       headers: [
-        {
-          'key': '_id',
-          'title': '',
-          'data': 'id',
-          'isFilterRequired': false,
-          'isCheckbox': true,
-          'class': 'nocolvis'
-        },
         {
           'key': 'label',
           'title': title,

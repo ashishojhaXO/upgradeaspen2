@@ -4,8 +4,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AppPopupButtonComponent } from './app-popup-button.component';
 import { FormsModule } from '@angular/forms';
 import {PopUpModalModule} from '../../../shared/components/pop-up-modal/pop-up-modal.module';
-import {AppDataTableModule} from '../../../shared/components/app-data-table/app-data-table.module';
-import {AppSpinnerModule} from '../index';
+import {AppDataTableModule, AppSpinnerModule, AppDataTable2Module} from '../../../shared/components';
 
 @NgModule({
     imports: [
@@ -14,6 +13,7 @@ import {AppSpinnerModule} from '../index';
         FormsModule,
         PopUpModalModule,
         AppDataTableModule,
+        AppDataTable2Module,
         AppSpinnerModule
     ],
     declarations: [

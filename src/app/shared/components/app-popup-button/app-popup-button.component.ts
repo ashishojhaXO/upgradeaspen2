@@ -28,8 +28,10 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
   customText: any;
   customValue: any;
   gridData: any;
-  selected: any;
+  selected = [];
   selectedText: any;
+  originalResult: any;
+  originalSelection: any;
 
   constructor(public toastr: ToastsManager,
               public router: Router,
@@ -69,35 +71,37 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
   invokePopUp(modalComponent: PopUpModalComponent) {
     this.tableId = 'table' + Math.floor(Math.random() * (1000 - 1 + 1)) + 1;
     this.dataObject.gridData = {};
-    const isMultiSelect = this.filterConfig.isMultiSelect;
+
+    console.log('this.externalGridData >>>')
+    console.log(this.externalGridData);
+
     this.dataObject.gridData.options = this.externalGridData ? this.externalGridData.options : {
       isSearchColumn: true,
-      isOrdering: true,
       isTableInfo: true,
-      isEditOption: true,
-      isDeleteOption: true,
-      isAddRow: true,
-      isColVisibility: true,
-      isRowSelection: true,
-      isShowEntries: false,
-      isPageLength: 5,
-      isPagination: true,
-      isEmptyTable: 'No data found.',
-      isMultiSelect: isMultiSelect != null ? isMultiSelect : true
+      isEditOption: false,
+      isDeleteOption: false,
+      isAddRow: false,
+      isColVisibility: false,
+      isDownload: false,
+      isRowSelection: {
+        isMultiple : true
+      },
+      isPageLength: true,
+      isPagination: true
     };
 
-    console.log('this.dataObject.gridData.options >>>');
-    console.log(this.dataObject.gridData.options);
+    console.log('this.externalGridData >>>');
+    console.log(this.externalGridData);
 
     this.dataObject.gridData.headers = this.externalGridData ? this.externalGridData.headers : [
-      {
-        'key': '_id',
-        'title': '',
-        'data': 'id',
-        'isFilterRequired': false,
-        'isCheckbox': true,
-        'class': 'nocolvis'
-      },
+      // {
+      //   'key': 'id',
+      //   'title': '',
+      //   'data': 'id',
+      //   'isFilterRequired': false,
+      //   'isCheckbox': true,
+      //   'class': 'nocolvis'
+      // },
       {
         'key': 'label',
         'title': this.filterConfig.label,
@@ -110,10 +114,11 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
     modalComponent.show();
 
     this.selected = this.filterConfig.values;
+    this.originalSelection = JSON.parse(JSON.stringify(this.filterConfig.values));
 
     if (this.externalGridData) {
-
       this.gridData = this.externalGridData.data;
+      this.originalResult = JSON.parse(JSON.stringify(this.gridData));
 
       this.gridData.forEach(item => {
         item.isChecked = this.filterConfig.values.find( e => e.id == item.id) ? true : false;
@@ -125,23 +130,33 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
 
     } else {
       this.popupDataAction.getData(this.filterConfig, this.dependentConfig).subscribe(response => {
+
             this.showPopUp = true;
 
             if(response.length) {
+
+              console.log('response >>!!!')
+              console.log(response);
+
               this.gridData = response;
+              this.originalResult = JSON.parse(JSON.stringify(this.gridData));
               this.gridData.options  = this.dataObject.gridData.options;
               this.dataObject.isDataAvailable = true;
 
               console.log('this.filterConfig.values >>>')
               console.log(this.filterConfig.values)
 
-              console.log('this.gridData >>>')
-              console.log(this.gridData)
-
-
               this.gridData.forEach(item => {
                 item.isChecked = this.filterConfig.values.find( e => e.id == item.id) ? true : false;
               });
+
+              this.gridData = response.filter(function (x) {
+                delete x.id
+                return x;
+              });
+
+              console.log('this.gridData >>>')
+              console.log(this.gridData)
 
               this.dataObject.gridData.result = this.gridData;
             }
@@ -195,27 +210,28 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
     this.dataObject.gridData = {};
     this.dataObject.isDataAvailable = true;
     this.dataObject.gridData.options = this.externalGridData ? this.externalGridData.options : {
-      'isSearchColumn': true,
-      'isOrdering': true,
-      'isTableInfo': true,
-      'isEditOption': true,
-      'isDeleteOption': true,
-      'isAddRow': true,
-      'isColVisibility': true,
-      'isRowSelection': true,
-      'isShowEntries': false,
-      'isPageLength': 5,
-      'isEmptyTable': 'No data found'
+      isSearchColumn: true,
+      isTableInfo: true,
+      isEditOption: false,
+      isDeleteOption: false,
+      isAddRow: false,
+      isColVisibility: true,
+      isDownload: true,
+      isRowSelection: {
+        isMultiple : this.filterConfig.isMultiSelect
+      },
+      isPageLength: true,
+      isPagination: true
     };
     this.dataObject.gridData.headers = this.externalGridData ? this.externalGridData.headers : [
-      {
-        'key': '_id',
-        'title': '',
-        'data': 'id',
-        'isFilterRequired': false,
-        'isCheckbox': true,
-        'class': 'nocolvis'
-      },
+      // {
+      //   'key': 'id',
+      //   'title': '',
+      //   'data': 'id',
+      //   'isFilterRequired': false,
+      //   'isCheckbox': true,
+      //   'class': 'nocolvis'
+      // },
       {
         'key': 'label',
         'title': 'label',
@@ -229,7 +245,7 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
       this.gridData = [];
     }
     this.gridData.push({
-      id : this.customValue,
+      // id : this.customValue,
       label: this.customText,
       isChecked: false
     });
@@ -241,72 +257,113 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
   }
 
   handleCloseModal(modalComponent: PopUpModalComponent) {
-    var table = $('#' + this.tableId).DataTable();
-    if (table) {
-      table.destroy();
-    }
     this.showPopUp = false;
     modalComponent.hide();
+    const retObj: any = this.filterConfig;
+
+    console.log('this.originalResult >>')
+    console.log(this.originalResult);
+
+    console.log('this.originalSelection >>')
+    console.log(this.originalSelection);
+
+    if (this.originalResult) {
+      retObj.values = [];
+
+      this.originalResult.forEach(function (gridItem, index) {
+        this.originalSelection.forEach(function (selectedItem) {
+          if (gridItem.id === selectedItem['id']) {
+            retObj.values.push(gridItem);
+          }
+        });
+      }, this);
+
+      console.log('this.originalSelection >>')
+      console.log(retObj.values);
+
+      this.valueUpdate.emit(retObj);
+    }
+
   }
 
   onValueUpdate(modalComponent: PopUpModalComponent) {
-    console.log(this.selected);
     this.filterConfig.values = [];
-    var table = $('#' + this.tableId).DataTable();
-    if (table) {
-      table.destroy();
-    }
     modalComponent.hide();
     const retObj: any = this.filterConfig;
-    this.dataObject.gridData.result.forEach(function (gridItem, index) {
-      this.selected.forEach(function (selectedItem) {
-        if (gridItem.id === selectedItem['id']) {
-          retObj.values.push(gridItem);
-        }
-      });
-    }, this);
 
-    console.log('retObj >>>>')
-    console.log(retObj);
+    console.log('this.originalResult >>>>')
+    console.log(this.originalResult);
 
-    this.valueUpdate.emit(retObj);
-    this.selectedText = '';
-    this.filterConfig.values.forEach(function (item, index) {
-      this.selectedText += item.label + (this.filterConfig.values.indexOf(item) !== (this.filterConfig.values.length - 1) ? ',' : '');
-    }, this);
+    console.log('this.selected >>>>')
+    console.log(this.selected);
+
+    if (this.originalResult) {
+
+      retObj.values = [];
+      this.originalResult.forEach(function (gridItem, index) {
+        this.selected.forEach(function (selectedItem) {
+          if (gridItem.id === selectedItem['id']) {
+            retObj.values.push(gridItem);
+          }
+        });
+      }, this);
+
+      console.log('retObj >>>>')
+      console.log(retObj);
+
+      this.valueUpdate.emit(retObj);
+      this.selectedText = '';
+      this.filterConfig.values.forEach(function (item, index) {
+        this.selectedText += item.label + (this.filterConfig.values.indexOf(item) !== (this.filterConfig.values.length - 1) ? ',' : '');
+      }, this);
+    }
 
     this.showPopUp = false;
   }
 
-  refreshData(event) {
-    // console.log('this.selected before >>>')
-    // console.log(this.selected);
-    // console.log(event);
-    // if (event.functionRef === 'rowSelected' && event.selected && event.selected.length > 0) {
-    //   this.selected = event.selected;
-    // } else if (event.functionRef === 'selectRow' && event.select && event.select.length && this.selected && this.selected.length) {
-    //   alert();
-    //   var newlySelectedItems = this.selected.filter(function (item) {
-    //     return item.id != event.select[0].id;
-    //   });
-    //   this.selected = newlySelectedItems;
-    // }
-    //
-    // console.log('this.selected >>>')
-    // console.log(this.selected);
+  handleCheckboxSelection(obj) {
+
+    if (this.dataObject.gridData.options.isRowSelection && !this.dataObject.gridData.options.isRowSelection.isMultiple) {
+      this.selected = [];
+    }
+
+    const selectedValue = {
+      id: obj.data[Object.keys(obj.data)[0]],
+      label: obj.data[Object.keys(obj.data)[0]]
+    }
+
+    this.selected.push(selectedValue);
+
+    console.log('this.selected >>')
+    console.log(this.selected);
+
   }
 
-  interceptActions(event) {
-    console.log('event.rowData >>')
-    console.log(event.rowData);
-    const selectedItems = [];
-    event.rowData.forEach(function (fieldIndex) {
-      var findEle = this.dataObject.gridData.result.find(x=> x.id == fieldIndex);
-      if(findEle) {
-        selectedItems.push(findEle);
-      }
-    }, this);
-    this.selected = selectedItems;
+  handleUnCheckboxSelection(obj) {
+
+    console.log('obj >>>')
+    console.log(obj);
+
+    const unSelectedItem = this.selected.find(x=> x.id === obj.data.id);
+    if(unSelectedItem) {
+      this.selected.splice(this.selected.indexOf(unSelectedItem), 1);
+    }
+
+    console.log('this.selected >>')
+    console.log(this.selected);
+  }
+
+  handleHeaderCheckboxSelection(obj) {
+    this.selected = [];
+    if (obj.data.length) {
+      this.originalResult.forEach(function(dat) {
+        this.selected.push({
+          id: dat.id,
+          label: dat.label
+        });
+      }, this);
+    }
+
     console.log('this.selected >>')
     console.log(this.selected);
   }

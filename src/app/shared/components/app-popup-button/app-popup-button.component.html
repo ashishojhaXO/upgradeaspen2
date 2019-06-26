@@ -6,20 +6,21 @@
         Select {{ filterConfig.label }}
       </div>
       <div class="app-modal-body">
-        <div *ngIf="filterConfig.includeCustom">
-          <label style="display: inline">Custom Fields</label>
-          <div style="margin-top: 5px;display: inline-block;">
-            <input type="text" [(ngModel)]="customText" [placeholder]="filterConfig.placeHolderText" style="border-radius: 4px;"/>
-            <input *ngIf="!filterConfig.isTag" type="text" [(ngModel)]="customValue" [placeholder]="filterConfig.placeHolderValue" style="border-radius: 4px;"/>
+        <!--<div *ngIf="filterConfig.includeCustom">-->
+          <!--<label style="display: inline">Custom Fields</label>-->
+          <!--<div style="margin-top: 5px;display: inline-block;">-->
+            <!--<input type="text" [(ngModel)]="customText" [placeholder]="filterConfig.placeHolderText" style="border-radius: 4px;"/>-->
+            <!--<input *ngIf="!filterConfig.isTag" type="text" [(ngModel)]="customValue" [placeholder]="filterConfig.placeHolderValue" style="border-radius: 4px;"/>-->
 
-            <button (click)="addItem()" type="button" class="action-btn">Add</button>
-          </div>
-        </div>
+            <!--<button (click)="addItem()" type="button" class="action-btn">Add</button>-->
+          <!--</div>-->
+        <!--</div>-->
         <div class="app-modal-body-div" *ngIf="showPopUp">
-          <app-data-table1 (filterValues)="refreshData($event)"
-                           [sendResponseOnCheckboxClick]="true"
-                           (triggerActions)="interceptActions($event)"
-                           [dataObject]="dataObject" [id]="tableId"></app-data-table1>
+          <app-data-table2 [dataObject]="dataObject" [sendResponseOnCheckboxClick]="true" (triggerActions)="this[$event.action]($event)"></app-data-table2>
+          <!--<app-data-table1 (filterValues)="refreshData($event)"-->
+                           <!--[sendResponseOnCheckboxClick]="true"-->
+                           <!--(triggerActions)="interceptActions($event)"-->
+                           <!--[dataObject]="dataObject" [id]="tableId"></app-data-table1>-->
         </div>
         <div class="page-header" *ngIf="!showPopUp">
           <app-custom-spinner class="page-spinner"></app-custom-spinner>
