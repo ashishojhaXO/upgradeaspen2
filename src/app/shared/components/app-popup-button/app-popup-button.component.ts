@@ -84,7 +84,7 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
       isColVisibility: false,
       isDownload: false,
       isRowSelection: {
-        isMultiple : true
+        isMultiple : this.filterConfig.isMultiSelect
       },
       isPageLength: true,
       isPagination: true
