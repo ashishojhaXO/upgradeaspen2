@@ -323,6 +323,13 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         });
       }
 
+
+      // FIX *** FOR PROBLEM WHERE THE COLUMN WIDTH IS RENDERED INCORRECTLY
+      setTimeout(function () {
+        table.columns.adjust().draw();
+      }, 0)
+
+
      __this.registerCheckboxSelection(table, __this);
      __this.registerUnCheckboxSelection(table, __this);
 
