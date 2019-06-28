@@ -305,10 +305,10 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
       console.log(retObj);
 
       this.valueUpdate.emit(retObj);
-      this.selectedText = '';
-      this.filterConfig.values.forEach(function (item, index) {
-        this.selectedText += item.label + (this.filterConfig.values.indexOf(item) !== (this.filterConfig.values.length - 1) ? ',' : '');
-      }, this);
+      this.selectedText = this.filterConfig.values.length > 1 ? 'Multiple' : this.filterConfig.values[0].label;
+      // this.filterConfig.values.forEach(function (item, index) {
+      //   this.selectedText += item.label + (this.filterConfig.values.indexOf(item) !== (this.filterConfig.values.length - 1) ? ',' : '');
+      // }, this);
     }
 
     this.showPopUp = false;
@@ -337,13 +337,10 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
     console.log('obj >>>')
     console.log(obj);
 
-    const unSelectedItem = this.selected.find(x=> x.id === obj.data.id);
+    const unSelectedItem = this.selected.find(x=> x.id === obj.data.label);
     if(unSelectedItem) {
       this.selected.splice(this.selected.indexOf(unSelectedItem), 1);
     }
-
-    console.log('this.selected >>')
-    console.log(this.selected);
   }
 
   handleHeaderCheckboxSelection(obj) {
