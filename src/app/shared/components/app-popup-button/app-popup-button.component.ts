@@ -71,10 +71,6 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
   invokePopUp(modalComponent: PopUpModalComponent) {
     this.tableId = 'table' + Math.floor(Math.random() * (1000 - 1 + 1)) + 1;
     this.dataObject.gridData = {};
-
-    console.log('this.externalGridData >>>')
-    console.log(this.externalGridData);
-
     this.dataObject.gridData.options = this.externalGridData ? this.externalGridData.options : {
       isSearchColumn: true,
       isTableInfo: true,
@@ -89,9 +85,6 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
       isPageLength: true,
       isPagination: true
     };
-
-    console.log('this.externalGridData >>>');
-    console.log(this.externalGridData);
 
     this.dataObject.gridData.headers = this.externalGridData ? this.externalGridData.headers : [
       // {

@@ -411,7 +411,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
          getSelectedTypeConfig.filters.source.forEach(function (filter, index) {
            if (filter.f7_name != 'month') {
-
              var newFilter: any = {};
              newFilter.f7Name = filter.f7_name;
              newFilter.label = filter.alias;
@@ -430,7 +429,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
              }
              //  newFilter.values = filter.default_value ? [filter.default_value] : [];
 
-             newFilter.isMultiSelect = filter.isMultiSelect || false;
+             newFilter.isMultiSelect = filter.hasAllOption || false;
              newFilter.dependentOn = filter.parent || [];
              newFilter.includeCustom = false;
              newFilter.isMultipleCustomType = false;
@@ -768,7 +767,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(this.api_fs.api + '/api/reports/org/Home%20Depot/template/dashboard', options).toPromise()
+    return this.http.get(this.api_fs.api + '/api/reports/org/Home%20Depot/template/dashboard?templatename=' + dashboardType, options).toPromise()
       .then(data => data.json())
       .catch();
   }
