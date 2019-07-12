@@ -17,7 +17,7 @@ import {PopUpModalModule} from '../../shared/components/pop-up-modal/pop-up-moda
 import {AppPopupButtonModule} from '../../shared/components/app-popup-button/app-popup-button.module';
 import {TagModule} from '../../shared/components/app-tag/tag.module';
 import { AppChartsModule } from '../../shared/components/app-charts/app-charts.module';
-import {AppDataTableHeirarchyModule, AppSpinnerModule, AppDataTableModule} from '../../shared/components';
+import {AppDataTableModule, AppSpinnerModule, DataTableModule, AppDataTable2Module} from '../../shared/components';
 import {ReportsUtil} from '../../shared/util/reports-util';
 import { OktaAuthService } from '../../../services/okta.service';
 
@@ -34,7 +34,7 @@ import { OktaAuthService } from '../../../services/okta.service';
     CheckboxSwitchModule,
     PopUpModalModule,
     AppDataTableModule,
-    AppDataTableHeirarchyModule,
+    AppDataTable2Module,
     TagModule,
     AppPopupButtonModule,
     AppChartsModule,

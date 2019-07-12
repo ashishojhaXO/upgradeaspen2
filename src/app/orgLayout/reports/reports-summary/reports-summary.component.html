@@ -6,9 +6,10 @@
         </div>
       </div>
   <div class="">
-    <div class="gridOverflow pull-left" *ngIf="dataObject.isDataAvailable">
-      <app-data-table-heirarchy [dataObject]="dataObject" [id]="dashboard" [height]="height" [serverSide]="serverSide"
-                       [serviceMethod]="serviceMethod" [serviceURI]="serviceURI" [dataTableAction]="this"></app-data-table-heirarchy>
+    <div class="gridOverflow pull-left" *ngIf="dataObject.isDataAvailable" style="padding: 10px">
+        <app-data-table2 [dataObject]="dataObject" (triggerActions)="this[$event.action]($event)"></app-data-table2>
+      <!--<app-data-table-heirarchy [dataObject]="dataObject" [id]="dashboard" [height]="height" [serverSide]="serverSide"-->
+                       <!--[serviceMethod]="serviceMethod" [serviceURI]="serviceURI" [dataTableAction]="this"></app-data-table-heirarchy>-->
     </div>
     <div class="clearfix"></div>
     <div class="page-header" *ngIf="showSpinner">

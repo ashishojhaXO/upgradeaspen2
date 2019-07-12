@@ -30,22 +30,21 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
   dataObject: any = {};
   isDataAvailable: boolean;
   height: any;
-  options: Array<DataTableOptions> = [{
+  options: Array<any> = [{
     isSearchColumn: true,
-    isOrdering: true,
-    isTableInfo: false,
-    isEditOption: false,
+    isTableInfo: true,
+    isEditOption: true,
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
     isDownload: true,
-    isRowSelection: true,
-    isShowEntries: false,
-    isPageLength: 10,
+    isRowSelection: null,
+    isPageLength: true,
     isPagination: true,
-    isEmptyTable: 'No Data',
-    isSorting: false,
-    isMultiSelect: true
+    isTree: true,
+    inheritHeadersForTree: true,
+    isPlayOption: true,
+    isDownloadOption: true,
   }];
   dashboard: any;
   serverSide: any;
@@ -82,18 +81,18 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
     this.gridData['result'] = [];
     // const keys = Object.keys(spendData.gridData[0]);
     this.headers = [
-      {
-        key: '',
-        title: '',
-        data: 'noDataFeed',
-        isFilterRequired: true,
-        isCheckbox: false,
-        class: 'nocolvis',
-        editButton: false,
-        width: '80',
-        toggle: true,
-        searchcolumn: true
-      },
+      // {
+      //   key: '',
+      //   title: '',
+      //   data: 'noDataFeed',
+      //   isFilterRequired: true,
+      //   isCheckbox: false,
+      //   class: 'nocolvis',
+      //   editButton: false,
+      //   width: '80',
+      //   toggle: true,
+      //   searchcolumn: true
+      // },
       {
         key: 'Report Name',
         title: 'REPORT NAME',
@@ -153,39 +152,6 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
         class: 'nocolvis',
         editButton: false,
         width: '75'
-      },
-      {
-        key: 'Action',
-        title: 'ACTION',
-        data: 'noDataFeed',
-        isFilterRequired: false,
-        isCheckbox: false,
-        class: 'nocolvis',
-        editButton: false,
-        width: '250',
-        actionButton: [
-          {
-            actionName : 'Edit',
-            actionType : DataTableActionType.EDIT,
-            actionUrl : 'reportid',
-            actionIcon : 'fa-pencil',
-            actionFunc: 'handleEdit'
-          },
-          {
-            actionName : 'Play',
-            actionType : DataTableActionType.RUN,
-            actionUrl : 'reportid',
-            actionIcon : 'fa-play',
-            actionFunc: 'handleRun'
-          },
-          {
-            actionName : 'Download',
-            actionType : DataTableActionType.DOWNLOAD,
-            actionUrl : 'reportid',
-            actionIcon : 'fa-download',
-            actionFunc: 'handleDownload'
-          }
-        ]
       }
     ];
     this.gridData['headers'] = this.headers;
@@ -229,6 +195,10 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
             __this.gridData['result'] = result;
             __this.options[0].isPageLength =  10;
             __this.dataObject.gridData = __this.gridData;
+
+            console.log('dataObject >>@@')
+            console.log(__this.dataObject);
+
             __this.dataObject.isDataAvailable = __this.gridData.result && __this.gridData.result.length ? true : false;
             this.showSpinner = false;
 
@@ -285,15 +255,12 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
         }).share();
   }
 
-  handleEdit(rowObj: any, rowData: any) {
-    console.log('rowData >>>')
-    console.log(rowData);
-    this.router.navigate(['/app/reports/adHocReportBuilder', rowData.id]);
+  handleEdit(dataObj: any) {
+    this.router.navigate(['/app/reports/adHocReportBuilder', dataObj.data.id]);
   }
 
-  handleRun(rowObj: any, rowData: any) {
-    console.log(rowData);
-    const reportId = rowData.id;
+  handleRun(dataObj: any) {
+    const reportId = dataObj.data.id;
     this.runReport(reportId).subscribe(response => {
       console.log(response);
       this.dataObject.isDataAvailable = false;
@@ -319,40 +286,11 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
         .post(url, data, options);
   }
 
-  handleDownload(rowObj: any, rowData: any) {
-    const reportId = rowData.downloadId;
-    const reportName = rowData.name;
-    const lastruntime = rowData.lastruntime;
-    const type = 'download';
-    // this.reportsService.reportDownload(this.context, reportId, type).subscribe(response => {
-    //   if (response.ok && response._body){
-    //     // console.log(response._body);
-    //     const fileName = reportName + '_' + lastruntime.replace(/-|\s|:|PM|AM/g,'');
-    //     const data = new Array();
-    //     const JsonData = response._body;
-    //     const respSplit = JsonData.split('\n');
-    //     // const headerSplit = respSplit[0].split(',');
-    //     // let csvHeade = [];
-    //         let csvContent = '';
-    //         let dataString;
-    //         respSplit.forEach((column, index) => {
-    //           dataString = column ;
-    //           csvContent += index < data.length ? dataString : dataString + '\n';
-    //         });
-    //         var blob = new Blob(["\ufeff", csvContent]);
-    //         var url = URL.createObjectURL(blob);
-    //         // var url = "https://f7-dev.s3.amazonaws.com/btil/reports/Test_Monthly_001_20190203010006_T1549184407006.csv?AWSAccessKeyId=AKIAJXQRDTGXZ3GXA62Q&Expires=1549948373&Signature=W5xIn4v9EOcjEX%2B%2Bg7MIys%2FsQj0%3D"
-    //         const encodedUri = encodeURI(csvContent);
-    //         const link = document.createElement('a');
-    //         link.setAttribute('href', url);
-    //         link.setAttribute('download', fileName + '.csv');
-    //         document.body.appendChild(link);
-    //         link.click();
-    //   }
-    // }, error => {
-    //   const message = JSON.parse(error._body).message;
-    //   this.toastr.error('ERROR!', message);
-    // });
+  handleDownload(dataObj: any) {
+    const link = document.createElement('a');
+    link.setAttribute('href', dataObj.data.downloadurl);
+    document.body.appendChild(link);
+    link.click();
   }
 
   handleEmail(rowObj: any, rowData: any) {

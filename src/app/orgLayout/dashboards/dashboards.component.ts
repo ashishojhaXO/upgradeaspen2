@@ -377,7 +377,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     };
 
     const dataObj = JSON.stringify(obj);
-    return this.http.post(this.api_fs.api + '/api/reports/org/homd/seed-dashboard', dataObj, options).toPromise()
+    return this.http.post(this.api_fs.api + '/api/reports/org/homd/seed-dashboard/v1', dataObj, options).toPromise()
         .then(data => data.json())
         .catch();
   }
@@ -912,9 +912,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
     var url;
     if(dataObj.dashboard === 'pacing') {
-      url = this.api_fs.api + '/api/reports/pacing';
+      url = this.api_fs.api + '/api/reports/pacing/v1';
     } else if(dataObj.dashboard === 'spend') {
-      url = this.api_fs.api + '/api/reports/spend';
+      url = this.api_fs.api + '/api/reports/spend/v1';
     }
     return this.http
       .post(url, data, options)
