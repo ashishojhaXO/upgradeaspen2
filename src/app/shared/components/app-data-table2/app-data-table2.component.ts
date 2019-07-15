@@ -53,6 +53,10 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         if (changes['dataObject']) {
             console.log('dataObject >>>');
             console.log(this.dataObject);
+            if ( $.fn.DataTable.isDataTable('#example') ) {
+                $('#example').DataTable().clear().destroy();
+                $('#example').empty();
+            }
             this.initializeTable();
         }
     }
@@ -198,6 +202,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             const dataTableOptions = {
                 scrollY: 200,
                 scrollX: true,
+                retrieve: true,
                 columns: columns,
                 data: dataSet,
                 dom: domConfig, // l - length changing input control ,f - filtering input ,t - The table!,i - Table information summary,p - pagination control
