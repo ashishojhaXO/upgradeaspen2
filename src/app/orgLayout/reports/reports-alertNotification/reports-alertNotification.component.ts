@@ -25,20 +25,17 @@ export class AlertNoticationdashboardsComponent implements OnInit {
   gridData: any;
   dataObject: any = {};
   height: any;
-  options: Array<DataTableOptions> = [{
+  options: Array<any> = [{
     isSearchColumn: true,
-    isOrdering: true,
     isTableInfo: true,
     isEditOption: false,
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
     isDownload: true,
-    isRowSelection: true,
-    isShowEntries: false,
-    isPagination: true,
-    isPageLength: 10,
-    isEmptyTable: 'No Data',
+    isRowSelection: null,
+    isPageLength: true,
+    isPagination: true
   }];
   dashboard: any;
   api_fs: any;
