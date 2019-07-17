@@ -1,4 +1,4 @@
-import { Component, OnInit, Directive, DoCheck, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Directive, DoCheck, ViewChild, ChangeDetectorRef, HostListener } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Location } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
@@ -446,8 +446,10 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
     document.getElementById('myProfileNavbar').classList.remove('show');
   }
 
-  toggleMenu() {
-    this.isMenuOpened = this.isMenuOpened ? false : true;
+  toggleMenu($event: Event) {
+    $event.preventDefault();
+    $event.stopPropagation();
+    this.isMenuOpened = !this.isMenuOpened;
   }
 
   logout() {
@@ -502,6 +504,12 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
       .map(res => {
         return res.json();
       }).share();
+  }
+
+  @HostListener('document:click', ['$event']) clickedOutside($event){
+    if (this.isMenuOpened) {
+      this.isMenuOpened = false;
+    }
   }
 
 }
