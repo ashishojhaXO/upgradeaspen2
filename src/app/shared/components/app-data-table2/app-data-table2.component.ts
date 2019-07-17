@@ -124,7 +124,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                 if (columnButtonDefs) {
                     columns.push({
-                        title: 'Action'
+                        title: 'ACTIONS'
                     });
                     columnDefs.push({
                         targets: -1,
@@ -140,11 +140,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         width: '30px',
                         className: 'dt-body-center',
                         render: function (data, type, row, meta) {
-                            if(__this.dataObject.gridData.result[meta.row].heirarchyData && __this.dataObject.gridData.result[meta.row].heirarchyData.length) {
-                                return '<img class="details-control collapsed" style="width: 15px; cursor: pointer" src="./../../../../assets/images/expand.png"/>';
-                            } else {
-                                return '';
-                            }
+                            return '<img class="details-control collapsed" style="width: 15px; cursor: pointer" src="./../../../../assets/images/expand.png"/>';
                         }
                     });
                 }
@@ -407,66 +403,80 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     $(this).attr('src', './../../../../assets/images/collapse.png');
                     $(this).removeClass('collapsed');
 
-                    if (!tr.hasClass('details')) {
-                        let ret = '';
-                        const data = __this.dataObject.gridData.result[row[0][0]].heirarchyData;
-                        const rowData = __this.dataObject.gridData.result[row[0][0]];
-                        data.forEach(function (d) {
-                            console.log('d >>>')
-                            console.log(d);
-                            ret += '<tr class="heirarchy" role="row">';
-                            ret += '<td class=" dt-body-center"><img style="width: 15px; position: relative; top: -2px" src="./../../../../assets/images/details_arrow.png">' + ( rowData.alertEnabled && rowData.heirarchyData && rowData.heirarchyData.length ? '<div><b>ALERT</b></div>' : '') + '</td>';
-                            for (const prop in rowData) {
-                                let applyHeirarChyData;
-                                if (prop === 'name') {
-                                    applyHeirarChyData = d['name'];
-                                } else if(prop === 'frequency') {
-                                    applyHeirarChyData = d['frequency'];
-                                } else if (prop === 'period') {
-                                    applyHeirarChyData = __this.datePipe.transform(d['report_run_start_time'],'MMM-dd-yyyy') + ' - ' +  __this.datePipe.transform(d['report_run_end_time'], 'MMM-dd-yyyy');
-                                } else if (prop === 'created_by') {
-                                    applyHeirarChyData = d['created_by'];
-                                } else if (prop === 'lastruntime') {
-                                    applyHeirarChyData = __this.datePipe.transform(d['report_run_end_time'], 'yyyy-dd-M h:mm:ss a');
-                                } else if(prop === 'status') {
-                                    applyHeirarChyData = d['report_run_status'];
+                    if(__this.dataObject.gridData.options.inheritHeadersForTree) {
+                        if (!tr.hasClass('details')) {
+                            let ret = '';
+                            const data = __this.dataObject.gridData.result[row[0][0]].heirarchyData;
+                            const rowData = __this.dataObject.gridData.result[row[0][0]];
+                            data.forEach(function (d) {
+                                console.log('d >>>')
+                                console.log(d);
+                                ret += '<tr class="heirarchy" role="row">';
+                                ret += '<td class=" dt-body-center"><img style="width: 15px; position: relative; top: -2px" src="./../../../../assets/images/details_arrow.png">' + (rowData.alertEnabled && rowData.heirarchyData && rowData.heirarchyData.length ? '<div><b>ALERT</b></div>' : '') + '</td>';
+                                for (const prop in rowData) {
+                                    let applyHeirarChyData;
+                                    if (prop === 'name') {
+                                        applyHeirarChyData = d['name'];
+                                    } else if (prop === 'frequency') {
+                                        applyHeirarChyData = d['frequency'];
+                                    } else if (prop === 'period') {
+                                        applyHeirarChyData = __this.datePipe.transform(d['report_run_start_time'], 'MMM-dd-yyyy') + ' - ' + __this.datePipe.transform(d['report_run_end_time'], 'MMM-dd-yyyy');
+                                    } else if (prop === 'created_by') {
+                                        applyHeirarChyData = d['created_by'];
+                                    } else if (prop === 'lastruntime') {
+                                        applyHeirarChyData = __this.datePipe.transform(d['report_run_end_time'], 'yyyy-dd-M h:mm:ss a');
+                                    } else if (prop === 'status') {
+                                        applyHeirarChyData = d['report_run_status'];
+                                    }
+                                    const field = __this.dataObject.gridData.headers.find(x => x.data === prop);
+                                    if (field || applyHeirarChyData) {
+                                        ret += '<td class="sorting_disabled" style="width: 30px;" aria-label="">' + (applyHeirarChyData ? applyHeirarChyData : rowData[prop]) + '</td>';
+                                    }
                                 }
-                                const field  = __this.dataObject.gridData.headers.find(x=> x.data === prop);
-                                if (field || applyHeirarChyData) {
-                                    ret += '<td class="sorting_disabled" style="width: 30px;" aria-label="">' + ( applyHeirarChyData ? applyHeirarChyData : rowData[prop] ) + '</td>';
-                                }
-                            }
 
-                            ret += '<td class="sorting_disabled" style="width: 30px;"><a class="fa fa-pencil fa-action-view" style="margin-right: 15px; visibility: hidden; cursor: pointer"></a><a class="fa fa-play fa-action-view" style="margin-right: 15px; visibility: hidden; cursor: pointer"></a><a class="fa fa-download fa-action-view" href="' + d.report_run_file_location + '" style="margin-right: 15px; cursor: pointer"></a></td>';
+                                ret += '<td class="sorting_disabled" style="width: 30px;"><a class="fa fa-pencil fa-action-view" style="margin-right: 15px; visibility: hidden; cursor: pointer"></a><a class="fa fa-play fa-action-view" style="margin-right: 15px; visibility: hidden; cursor: pointer"></a><a class="fa fa-download fa-action-view" href="' + d.report_run_file_location + '" style="margin-right: 15px; cursor: pointer"></a></td>';
 
-                            ret += '</tr>';
-                        });
-                        tr.after(ret);
-                        tr.addClass('details');
+                                ret += '</tr>';
+                            });
+                            tr.after(ret);
+                            tr.addClass('details');
+                        } else {
+                            tr.nextUntil('tr:not(".heirarchy")').show();
+                        }
                     } else {
-                        tr.nextUntil('tr:not(".heirarchy")').show();
+                        if (row.child.isShown()) {
+                            // This row is already open - close it
+                            row.child.hide();
+                            tr.removeClass('shown');
+                        } else {
+                            // Open this row
+                            row.child(__this.format(__this.dataObject.gridData.result[row[0][0]].heirarchyData, __this, __this.dataObject.gridData.result[row[0][0]])).show();
+                            tr.addClass('shown');
+                        }
                     }
                 } else {
                     $(this).attr('src', './../../../../assets/images/expand.png');
                     $(this).addClass('collapsed');
-                    tr.nextUntil('tr:not(".heirarchy")').hide();
+                    if (__this.dataObject.gridData.options.inheritHeadersForTree) {
+                        tr.nextUntil('tr:not(".heirarchy")').hide();
+                    } else {
+                        if (row.child.isShown()) {
+                            // This row is already open - close it
+                            row.child.hide();
+                            tr.removeClass('shown');
+                        } else {
+                            // Open this row
+                            row.child(__this.format(__this.dataObject.gridData.result[row[0][0]].heirarchyData, __this, __this.dataObject.gridData.result[row[0][0]])).show();
+                            tr.addClass('shown');
+                        }
+                    }
                 }
-
-                // if (row.child.isShown()) {
-                //     // This row is already open - close it
-                //     row.child.hide();
-                //     tr.removeClass('shown');
-                // } else {
-                //     // Open this row
-                //     row.child(__this.format(__this.dataObject.gridData.result[row[0][0]].heirarchyData, __this, __this.dataObject.gridData.result[row[0][0]])).show();
-                //     tr.addClass('shown');
-                // }
             });
         }
     }
 
     format(data, __this, row) {
-        let ret = '';
+        return '<div>Details</div>';
     }
 
     registerCheckboxSelection(table, __this) {
