@@ -42,7 +42,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     isRowSelection: null,
     isPageLength: true,
     isPagination: true,
-    isTree: true
+    isTree: false
   }];
   dashboard: any;
   api_fs: any;
