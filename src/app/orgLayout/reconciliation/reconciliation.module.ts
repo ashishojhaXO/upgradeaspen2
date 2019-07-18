@@ -7,7 +7,7 @@ import { AppChartsModule } from '../../shared/components/app-charts/app-charts.m
 import {AppSidebarModule} from '../../shared/components/app-sidebar/app-sidebar.module';
 import {WrapperMultiSelectDropdownModule} from '../../shared/components/wrapper-multiselect-dropdown/wrapper-multiselect-dropdown.module';
 import { AppPopupButtonModule} from '../../shared/components/app-popup-button/app-popup-button.module';
-import {AppDataTableModule, AppSpinnerModule, DataTableModule} from '../../shared/components';
+import {AppDataTableModule, AppSpinnerModule, DataTableModule, AppDataTable2Module} from '../../shared/components';
 import { OktaAuthService } from '../../../services/okta.service';
 import {MultiSelectDropdownModule} from '../../shared/components/multiselect-dropdown/multiselect-dropdown.module';
 
@@ -23,6 +23,7 @@ import {MultiSelectDropdownModule} from '../../shared/components/multiselect-dro
     AppPopupButtonModule,
     DataTableModule,
     AppDataTableModule,
+    AppDataTable2Module,
     AppSpinnerModule,
     MultiSelectDropdownModule
   ],

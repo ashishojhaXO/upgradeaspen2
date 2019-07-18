@@ -26,20 +26,17 @@ export class ReconciliationComponent implements OnInit  {
   dataObject: any = {};
   isDataAvailable: boolean;
   height: any;
-  options: Array<DataTableOptions> = [{
-    isSearchColumn: true,
-    isOrdering: true,
-    isTableInfo: true,
-    isEditOption: false,
-    isDeleteOption: false,
-    isAddRow: false,
-    isColVisibility: true,
-    isDownload: true,
-    isRowSelection: true,
-    isShowEntries: false,
-    isPagination: true,
-    isPageLength: 10,
-    isEmptyTable: 'No Data',
+  options: any = [{
+      isSearchColumn: true,
+      isTableInfo: true,
+      isEditOption: false,
+      isDeleteOption: false,
+      isAddRow: false,
+      isColVisibility: true,
+      isDownload: true,
+      isRowSelection: null,
+      isPageLength: true,
+      isPagination: true
   }];
   dashboard: any;
   api_fs: any;
