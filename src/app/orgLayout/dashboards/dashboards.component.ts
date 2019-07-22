@@ -834,7 +834,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
     console.log('dataObj @@@@@>>>>>')
     console.log(JSON.stringify(dataObj));
-
     this.getSearchDataRequest(dataObj);
 
   }
@@ -848,9 +847,14 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             console.log('chart response >>')
             console.log(response);
 
-            this.populateDataTable(response);
-            this.populateChart(response);
+            // FIX : Duplicate headers creation during dataSource changes ( being called by scrollX on the datatable )
+            this.dataObject.isDataAvailable = false;
+            const __this = this;
+            setTimeout(function () {
+                __this.populateDataTable(response);
+            }, 0);
 
+            this.populateChart(response);
             this.showSpinner = false;
           }
         },
