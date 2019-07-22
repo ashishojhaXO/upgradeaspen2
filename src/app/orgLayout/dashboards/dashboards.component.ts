@@ -281,22 +281,12 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }
 
   setActive(filter, Obj) {
-
-    // this.dashboardConfig = {};
-    // this.dashboardConfig.filterProps = JSON.parse(JSON.stringify(this.defaultFilters));
-
     const corrFilter = this.dashboardConfig.filterProps.find( x=> x.type === filter.type);
     if (corrFilter) {
       corrFilter.values = Obj.value;
       this.selectedView = Obj.value;
     }
-
     this.search();
-
-    // var dataSource = JSON.parse(localStorage.getItem('dashboardConfig_' + this.dashboardType)) || '';
-    // if (dataSource) {
-    //   this.populateFilters(dataSource);
-    // }
   }
 
   ngOnInit() {
@@ -328,7 +318,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
                       response2 => {
                         this.showSpinner = false;
                         this.populateChart(response2);
-                        this.populateDataTable(response2, false);
+                        this.populateDataTable(response2);
                       });
             }
           },
@@ -340,7 +330,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       defaultObj.gridData = [];
       defaultObj.chartData = [];
       this.populateChart(defaultObj);
-      this.populateDataTable(defaultObj, true);
+      this.populateDataTable(defaultObj);
     }
   }
 
@@ -490,7 +480,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         this.chartConfig.isStacked = true;
 
         if (this.selectedView === 'Monthly') {
-
           response.chartData.forEach(function (x) {
             x['date'] = this.getMonthName(x['Month']) + ' ' + x['Year'];
           }, this);
@@ -594,13 +583,13 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               YaxisAssociation : ''
             },
             {
-              propertyName: 'Technology Cost',
+              propertyName: 'Kenshoo Fee',
               type: 'column',
               color: 'rgb(58, 116, 179)',
               YaxisAssociation : ''
             },
             {
-              propertyName: 'Client Fee',
+              propertyName: 'THD Fee',
               type: 'column',
               color: 'rgb(151, 160, 169)',
               YaxisAssociation : ''
@@ -612,7 +601,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               YaxisAssociation : ''
             },
             {
-              propertyName: 'Platform Fee',
+              propertyName: 'Total Platform Cost',
               type: 'column',
               color: 'rgb(223, 142, 145)',
               YaxisAssociation : ''
@@ -647,12 +636,12 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               color: 'rgb(80, 130, 186)'
             },
             {
-              propertyName: 'Technology Cost',
+              propertyName: 'Kenshoo Fee',
               type: 'column',
               color: 'rgb(56, 199, 224)'
             },
             {
-              propertyName: 'Client Fee',
+              propertyName: 'THD Fee',
               type: 'column',
               color: 'rgb(85, 182, 188)',
               YaxisAssociation : ''
@@ -664,7 +653,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               YaxisAssociation : ''
             },
             {
-              propertyName: 'Platform Fee',
+              propertyName: 'Total Platform Cost',
               type: 'column',
               color: 'rgb(223, 142, 145)',
               YaxisAssociation : ''
@@ -693,7 +682,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     }
   }
 
-  populateDataTable(response, initialLoad) {
+  populateDataTable(response) {
     const responseData = response;
     this.dataObject = {};
     this.gridData = {};
@@ -748,9 +737,13 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       }
       this.gridData['result'] = result;
       this.dataObject.gridData = this.gridData;
+
+
       console.log('this.gridData <<<<<');
       console.log(this.gridData);
-      this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
+
+
+      this.dataObject.isDataAvailable = true; // this.gridData.result && this.gridData.result.length ? true : false;
     }
    // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
   }
@@ -785,6 +778,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }
 
   search() {
+
     var dateField;
     const obj = this.dashboardConfig.filterProps.find(x=> x.f7Name === 'period').values;
     if(obj && obj.length) {
@@ -795,12 +789,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
    // dateField = '2019-04-01';
 
-    var startDate = dateField + 'T00:00:00Z';
-    var endDate = '';
-    var endDateOftheMonth = 0;
+    const startDate = dateField + 'T00:00:00Z';
+    let endDate = '';
+    let endDateOftheMonth = 0;
     if (dateField.split('-')[1] == 12) {
-      console.log('endDate >>')
-      console.log(new Date(dateField.split('-')[0], dateField.split('-')[1], 0).getDate());
       endDateOftheMonth = new Date(dateField.split('-')[0], dateField.split('-')[1], 0).getDate();
       endDate = dateField.split('-')[0] + '-' + dateField.split('-')[1] + '-' + endDateOftheMonth  + 'T23:59:59Z';
     } else {
@@ -811,14 +803,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     const dataObj: any = {};
     dataObj.clientCode = 'homd';
     dataObj.dashboard = this.dashboardType;
-
-    if(dataObj.dashboard === 'pacing') {
-      // dataObj.dimensions = [''];
-      // dataObj.metrics = ['fs_total_cost'];
-    } else if (dataObj.dashboard === 'spend') {
-      // dataObj.isMultiCampaign = false;
-    }
-    var filters = [];
+    const filters = [];
     this.dashboardConfig.filterProps.forEach(function (filter) {
       if(filter.f7Name !== 'type' && filter.f7Name !== 'period') {
         var newFilter: any = {};
@@ -838,7 +823,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       }
     }, this);
     dataObj.filter = filters;
-   // dataObj.partnerType = ['prov'];
     dataObj.period = {
       f7Name: 'date',
       values: {
@@ -848,7 +832,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     };
     dataObj.type = this.dashboardConfig.filterProps.find(x=> x.f7Name === 'type').values.toLowerCase();
 
-    console.log('dataObj >>>>>')
+    console.log('dataObj @@@@@>>>>>')
     console.log(JSON.stringify(dataObj));
 
     this.getSearchDataRequest(dataObj);
@@ -864,7 +848,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             console.log('chart response >>')
             console.log(response);
 
-            this.populateDataTable(response, false);
+            this.populateDataTable(response);
             this.populateChart(response);
 
             this.showSpinner = false;

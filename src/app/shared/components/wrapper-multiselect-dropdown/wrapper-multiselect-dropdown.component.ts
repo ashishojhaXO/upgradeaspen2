@@ -78,9 +78,6 @@ export class WrapperMultiSelectDropdownComponent implements OnInit, OnChanges {
       }
       d.setMonth(d.getMonth() - 1);
     }
-
-    console.log('months >')
-    console.log(months);
     return months;
   }
 
