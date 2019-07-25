@@ -17,8 +17,9 @@ import {DropDownComponent} from '../dropdown/dropdown.component';
 import {TagComponent} from '../tag/tag.component';
 import * as common from '../../../../constants/common';
 // import {ModalDirective} from 'ngx-bootstrap/modal';
-import {Http} from '@angular/http';
+import {Headers, Http, RequestOptions} from '@angular/http';
 import { DatePipe } from '@angular/common';
+import { OktaAuthService } from '../../../../services/okta.service';
 
 declare var $: any;
 
@@ -35,6 +36,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     @Output() triggerActions: EventEmitter<any> = new EventEmitter<any>();
     loaded = false;
     @Input() sendResponseOnCheckboxClick?: any;
+    widget: any;
+    api_fs: any;
 
     constructor(
         public toastr: ToastsManager,
@@ -42,10 +45,13 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         private domService: DomService,
         private dataTableService: DataTableService,
         private http: Http,
-        private datePipe: DatePipe) {
+        private datePipe: DatePipe,
+        private okta: OktaAuthService) {
     }
 
     ngOnInit(): void {
+        this.widget = this.okta.getWidget();
+        this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
         // this.initializeTable();
     }
 
@@ -397,6 +403,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                 const tr = $(this).closest('tr');
                 const row = table.row(tr);
+                const rowData = __this.dataObject.gridData.result[row[0][0]];
 
                 if ($(this).hasClass('collapsed')) {
 
@@ -450,8 +457,28 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                             tr.removeClass('shown');
                         } else {
                             // Open this row
-                            row.child(__this.format(__this.dataObject.gridData.result[row[0][0]].heirarchyData, __this, __this.dataObject.gridData.result[row[0][0]])).show();
-                            tr.addClass('shown');
+
+                            __this.getSearchData(rowData.external_vendor_id, rowData.org_id).subscribe(
+                                response => {
+                                    let retHtml = '';
+                                    if (response && response.body && response.body.length) {
+                                        response.body.forEach(function (ele) {
+                                            retHtml += '<div style="margin-left: 10px; margin-bottom: 10px"><label>Payment Method:</label><span style="margin-left: 10px">' + ele.payment_method  + '</span><br><label>Last 4 digits:</label><span style="margin-left: 10px">' + ele.last_four_digits +  '</span><br><label>Payment Status:</label><span style="margin-left: 10px">' + ele.status + '</span><br><label>Default:</label><span style="margin-left: 10px">' + (ele.is_default == 1 ? 'Yes' : 'No') + '</span></div>';
+                                        });
+                                    } else {
+                                        retHtml += ' No details found';
+                                    }
+
+                                    row.child(retHtml).show();
+                                    tr.addClass('shown');
+                                },
+                                err => {
+                                }
+                            );
+
+
+                           // row.child(__this.format(rowData)).show();
+                           // tr.addClass('shown');
                         }
                     }
                 } else {
@@ -466,8 +493,26 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                             tr.removeClass('shown');
                         } else {
                             // Open this row
-                            row.child(__this.format(__this.dataObject.gridData.result[row[0][0]].heirarchyData, __this, __this.dataObject.gridData.result[row[0][0]])).show();
-                            tr.addClass('shown');
+                            __this.getSearchData(rowData.external_vendor_id, rowData.org_id).subscribe(
+                                response => {
+                                    let retHtml = '';
+                                    if (response && response.body && response.body.length) {
+                                        response.body.forEach(function (ele) {
+                                            retHtml += '<div style="margin-left: 10px; margin-bottom: 10px"><label>Payment Method:</label><span style="margin-left: 10px">' + ele.payment_method  + '</span><br><label>Last 4 digits:</label><span style="margin-left: 10px">' + ele.last_four_digits +  '</span><br><label>Payment Status:</label><span style="margin-left: 10px">' + ele.status + '</span><br><label>Default:</label><span style="margin-left: 10px">' + (ele.is_default == 1 ? 'Yes' : 'No') + '</span></div>';
+                                        });
+                                    } else {
+                                        retHtml += ' No details found';
+                                    }
+                                    row.child(retHtml).show();
+                                    tr.addClass('shown');
+                                },
+                                err => {
+                                }
+                            );
+
+
+                            // row.child(__this.format(rowData)).show();
+                            // tr.addClass('shown');
                         }
                     }
                 }
@@ -475,8 +520,58 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         }
     }
 
-    format(data, __this, row) {
-        return '<div>Details</div>';
+    format(row) {
+
+        console.log('row >>>')
+        console.log(row);
+
+        let retHtml = '';
+
+       // retHtml += '<div style="margin-left: 10px; margin-bottom: 10px"><label>Payment Method</label><span>ACH</span><br><label>Last 4 digits</label><span>7827</span><br><label>Payment Status</label><span>Completed</span><label>Default</label><span>true</span></div>';
+
+        this.getSearchData(row.external_vendor_id, row.org_id).subscribe(
+            response => {
+                if (response && response.body) {
+                    response.body.forEach(function (ele) {
+                        retHtml += '<div style="margin-left: 10px; margin-bottom: 10px"><label>Payment Method</label><span>' + ele.payment_method  + '</span><br><label>Last 4 digits</label><span>' + ele.last_four_digits +  '</span><br><label>Payment Status</label><span>' + ele.status + '</span><label>Default</label><span>' + (ele.is_default == 1 ? 'Yes' : 'No') + '</span></div>';
+                    });
+
+                    console.log('retHtml >>')
+                    console.log(retHtml);
+
+                    return retHtml;
+                }
+            },
+            err => {
+            }
+        );
+
+      //  retHtml = '<div>Fetching Details ... </div>';
+        return retHtml;
+    }
+
+    getSearchData(vendorID, orgID ) {
+
+        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        let token = '';
+        if (AccessToken) {
+            token = AccessToken.accessToken;
+        }
+
+        const dataObj = JSON.stringify({
+            vendor_id : vendorID.toString(),
+            org_id: orgID.toString()
+        });
+
+        const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'pine', 'token' : token});
+        const options = new RequestOptions({headers: headers});
+        const url = this.api_fs.api + '/api/payments/vendor-payment-methods';
+
+        return this.http
+            .post(url, dataObj, options)
+            .map(res => {
+                return res.json();
+            }).share();
     }
 
     registerCheckboxSelection(table, __this) {

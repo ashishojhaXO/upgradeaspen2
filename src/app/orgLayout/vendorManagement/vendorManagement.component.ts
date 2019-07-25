@@ -42,7 +42,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     isRowSelection: null,
     isPageLength: true,
     isPagination: true,
-    isTree: false
+    isTree: true
   }];
   dashboard: any;
   api_fs: any;
@@ -146,15 +146,9 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
       token = AccessToken.accessToken;
     }
 
-    console.log('AccessToken >>>')
-    console.log(AccessToken.accessToken);
-
-
-
-    const custInfo = JSON.parse(localStorage.getItem('customerInfo'));
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/vendors?org_id=' + custInfo.org_id;
+    var url = this.api_fs.api + '/api/vendors';
     return this.http
       .get(url, options)
       .map(res => {
