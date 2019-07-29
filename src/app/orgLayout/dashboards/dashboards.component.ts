@@ -607,7 +607,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               YaxisAssociation : ''
             },
             {
-              propertyName: 'Line Item Budget',
+              propertyName: 'Line Item Total Budget',
               type: 'line',
               color: 'rgb(253, 8, 0)',
               YaxisAssociation : ''
@@ -659,7 +659,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               YaxisAssociation : ''
             },
             {
-              propertyName: 'Line Item Budget',
+              propertyName: 'Line Item Total Budget',
               type: 'line',
               color: 'rgb(253, 8, 0)'
             }
