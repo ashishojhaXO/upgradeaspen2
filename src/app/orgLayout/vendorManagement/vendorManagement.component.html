@@ -20,7 +20,7 @@
 <div style="width:100%">
   <app-pop-up-modal #AddVendor>
     <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
-      {{ editID ? ' Edit' : ' Add ' }} Vendor
+      {{ editID ? ' Update' : ' Add ' }} Vendor
     </div>
     <div class="app-modal-body">
       <div class="content">
@@ -78,7 +78,7 @@
     </div>
     <div class="app-modal-footer">
       <button type="button" [disabled]="!vendorForm.valid" [style.cursor]="!vendorForm.valid ? 'not-allowed' : 'pointer'" class="action-btn" (click)="OnSubmit(AddVendor)">
-        Add
+        {{ editID ? ' Update' : ' Add ' }}
       </button>
       <button type="button" class="inaction-btn" (click)="handleCloseModal(AddVendor)">
         Close

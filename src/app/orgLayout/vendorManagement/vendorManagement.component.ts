@@ -289,8 +289,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
           console.log(response);
           if (response) {
             this.showSpinner = false;
-            this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Vendor successfully ' + ( this.editID ? 'edited' : 'created' ) : 'Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
-            this.editID = '';
+            this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Vendor successfully ' + ( this.editID ? 'updated' : 'created' ) : 'Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
           }
         },
         err => {
@@ -348,8 +347,6 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   performVendorDeletionRequest(id) {
     return this.performVendorDeletion(id).subscribe(
         response => {
-          console.log('response from vendor deletion >>>')
-          console.log(response);
           if (response) {
             this.showSpinner = false;
             this.searchDataRequest();
