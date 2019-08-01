@@ -241,6 +241,10 @@ export class OrganizationService {
     return this.service.Call('get', this.base.IDENTITIES_URL + '/?type=org');
   }
 
+  getOrganizations(){
+    return this.service.Call('get', this.base.REPORT_SERVICE_API_GATEWAY_URL  + '/api/silver/orgs');
+  }
+
   /**
    * Fetch  Organization by code
    * @param context
