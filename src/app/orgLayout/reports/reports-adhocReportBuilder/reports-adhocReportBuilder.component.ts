@@ -1451,11 +1451,21 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
                   this.dataModel.reportName = getReportData.report_name;
                   var reportDefinition = JSON.parse(getReportData.report_definition);
 
-                  console.log('reportDefinition >>')
-                  console.log(reportDefinition);
 
-                  console.log('getReportData >>')
-                  console.log(getReportData);
+                  if (getReportData.alert_definition) {
+                    var alertDefination = JSON.parse(getReportData.alert_definition);
+                    this.selectedAlertType = this.alertTypeList.filter(function (x) {
+                      return x.value === alertDefination.alert_type;
+                    });
+                    this.selectedAlertMetric = this.metricsPopupData.data.filter(function (x) {
+                      return x.id === alertDefination.metric;
+                    });
+                    this.selectedAlertThreshold = this.alertThresholdData.filter(function (x) {
+                      return x.value === alertDefination.operator;
+                    });
+                    this.alertThresholdValue = alertDefination.value;
+                  }
+
 
                   var selectedPeriod = this.periodList.find( x=> x.option.toLowerCase() === reportDefinition.data_period);
                   if(selectedPeriod) {
