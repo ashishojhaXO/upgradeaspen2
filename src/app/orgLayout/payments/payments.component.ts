@@ -256,7 +256,7 @@ export class PaymentsComponent implements OnInit  {
           {
             const organizations = [];
                                     
-            _.forEach(response.body, organization => {
+            _.forEach(response.body.data, organization => {
 
               organizations.push({
                 id : organization.id,
