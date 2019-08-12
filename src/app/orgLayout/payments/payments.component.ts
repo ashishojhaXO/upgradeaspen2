@@ -252,7 +252,7 @@ export class PaymentsComponent implements OnInit  {
       response => {
         if(response)
         {
-          if(response.body.length > 0)
+          if(response.body.data.length > 0)
           {
             const organizations = [];
                                     
