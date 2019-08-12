@@ -459,9 +459,9 @@
               <div class="rendered-sub-dimension-fields-div">
                 <app-tag2 [data]="dimensionTagsList"
                           [settings]="dimensionTagSettings"
-                          (onAdd)="onTagAdd($event)"
-                          (onRemove)="onTagRemove($event)"
-                          (onEdit)="onTagEdit($event)"></app-tag2>
+                          (onAdd)="onTagAdd($event, dimensionTagsList)"
+                          (onRemove)="onTagRemoveFromList($event, 'dimensionTagsList', 'dimensionPopupConfig')"
+                          (onEdit)="onTagEdit($event, dimensionTagsList)"></app-tag2>
 
               </div>
             </li>
@@ -496,9 +496,9 @@
             <li class="renderedFilter-li">
               <div class="rendered-sub-dimension-fields-div">
                 <app-tag2 [data]="metricsTagsList" [settings]="metricsTagSettings"
-                          (onAdd)="onTagAdd($event)"
-                          (onRemove)="onTagRemove($event)"
-                          (onEdit)="onTagEdit($event)"></app-tag2>
+                          (onAdd)="onTagAdd($event, metricsTagsList)"
+                          (onRemove)="onTagRemoveFromList($event, 'metricsTagsList', 'metricsPopupConfig')"
+                          (onEdit)="onTagEdit($event, metricsTagsList)"></app-tag2>
 
               </div>
             </li>
@@ -573,7 +573,7 @@
               Metric
             </div>
             <div class="rendered-sub-fields-div">
-              <app-multiselect-drop-down [data]="metricsPopupData.data"
+              <app-multiselect-drop-down [data]="metricsTagsList"
                                          [settings]="alertMetricDropDownSettings"
                                          [selectedItems]="selectedAlertMetric"
                                          (onSelect)="onFilterSelectMetric($event)"

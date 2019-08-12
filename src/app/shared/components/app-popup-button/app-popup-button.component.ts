@@ -340,11 +340,7 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
   }
 
   handleUnCheckboxSelection(obj) {
-
-    console.log('obj >>>')
-    console.log(obj);
-
-    const unSelectedItem = this.selected.find(x=> x.id === obj.data.label);
+    const unSelectedItem = this.selected.find(x=> x.id === obj.data.label || x.label === obj.data.label);
     if(unSelectedItem) {
       this.selected.splice(this.selected.indexOf(unSelectedItem), 1);
     }

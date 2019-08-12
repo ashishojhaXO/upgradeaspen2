@@ -901,13 +901,6 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   }
 
   _OnDelete(obj, filterItem) {
-
-      console.log('obj >>')
-      console.log(this[obj])
-
-      console.log('filterItem >>')
-      console.log(filterItem)
-
     filterItem.selectedItems = [];
     const index = this[obj].indexOf(filterItem);
     this[obj].splice(index, 1);
@@ -945,8 +938,23 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   }
 
   onTagRemove(item: any, filterItem: any) {
-    console.log(item);
+
+    console.log('filterItem >>')
+      console.log(filterItem);
+
     filterItem.filterConfig.values = filterItem.filterConfig.values.filter(e => e._id !== item._id);
+  }
+
+  onTagRemoveFromList(item: any, prop , popObj) {
+    this[prop] = this[prop].filter( e=> e.id !== item.id);
+    this[popObj].values = this[popObj].values.filter( e=> e.id !== item.id);
+
+    if (prop === 'metricsTagsList' && this.selectedAlertMetric.length) {
+      const findSelectedValue = this[prop].find(x=> x.id === this.selectedAlertMetric[0].id);
+      if ( !findSelectedValue) {
+          this.selectedAlertMetric = [];
+      }
+    }
   }
 
   onTagEdit(item: any, filterItem: any) {
@@ -988,10 +996,17 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   }
 
   updateMetricsConfig(event) {
+    console.log('event');
     console.log(event);
     if (event && event.values) {
       this.metricsTagsList = event.values;
       this.alertMetricList = event.values;
+      if(this.selectedAlertMetric.length) {
+          const findSelectedValue = this.metricsTagsList.find(x => x.id === this.selectedAlertMetric[0].id);
+          if (!findSelectedValue) {
+              this.selectedAlertMetric = [];
+          }
+      }
     }
   }
 
