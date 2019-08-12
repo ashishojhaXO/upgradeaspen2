@@ -1,5 +1,6 @@
 <div *ngIf="filterConfig" class="sidebar-container">
-  <label (click)="invokePopUp(displayPopUp)" class="displayLabel" [title]="filterConfig.values.length ? 'Selected ' + filterConfig.label + ' : ' +  selectedText : 'Click to select values'">{{filterConfig.values.length ? (hideSelectedValues ? ('Select ' + filterConfig.label) : selectedText ): 'Select'}}</label>
+  <i class="fa fa-remove fa-2x" aria-hidden="true" *ngIf="displayClearOption" style="position: absolute; display: inline-block; left: 250px; font-size: 20px; top: 10px; cursor: pointer" (click)="_OnDelete()"></i>
+  <label (click)="invokePopUp(displayPopUp)" class="displayLabel" [title]="filterConfig.values.length ? 'Selected ' + filterConfig.label + ' : ' +  selectedText : 'Click to select values'">{{filterConfig.values.length ? (hideSelectedValues ? ( displayLabel ? filterConfig.label : 'Select ' + filterConfig.label ) : selectedText ): ( displayLabel ? filterConfig.label : 'Select' ) }}</label>
   <div style="width:100%">
     <app-pop-up-modal #displayPopUp>
       <div class="app-modal-header" style="margin: 15px 0px 0px 10px">

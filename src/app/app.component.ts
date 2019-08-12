@@ -19,6 +19,24 @@ export class AppComponent {
     translate.setDefaultLang('en');
     this.toastr.setRootViewContainerRef(vRef);
 
+    // var apis_fs = {
+    //   api: "https://plazo-dev.fusionseven.net",
+    //   redirectUrl: "http://localhost:4300",
+    //   staticBaseUrl: "https://static.fusionseven.net",
+    //   termsFile: "DynamicMediaTermsAndConditions.pdf"
+    // };
+    // var externalAuth = {
+    //   api: "https://dev-256587.oktapreview.com",
+    //   clientId: '0oaiu5g5o2Bj0Cg3Z0h7'
+    // };
+    // var externalPaymentGateway = {
+    //   api: "https://not-needed",
+    // };
+    //
+    // localStorage.setItem("apis_fs", JSON.stringify(apis_fs));
+    // localStorage.setItem("externalAuth", JSON.stringify(externalAuth));
+    // localStorage.setItem("externalPaymentGateway", JSON.stringify(externalPaymentGateway));
+
     const browserLang = translate.getBrowserLang();
     translate.use(browserLang.match(/en|fr|ur/) ? browserLang : 'en');
   }

@@ -22,6 +22,9 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
   @Input() dependentConfig: any;
   @Input() hideSelectedValues: boolean;
   @Input() popupDataAction: PopupDataAction;
+  @Input() displayLabel: boolean;
+  @Input() displayClearOption: boolean;
+  @Output() OnDelete = new EventEmitter();
   dataObject: any;
   showPopUp: boolean;
   tableId: any;
@@ -66,6 +69,10 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
         }, this);
       }
     }
+  }
+
+  _OnDelete() {
+    this.OnDelete.emit();
   }
 
   invokePopUp(modalComponent: PopUpModalComponent) {
@@ -333,11 +340,7 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
   }
 
   handleUnCheckboxSelection(obj) {
-
-    console.log('obj >>>')
-    console.log(obj);
-
-    const unSelectedItem = this.selected.find(x=> x.id === obj.data.label);
+    const unSelectedItem = this.selected.find(x=> x.id === obj.data.label || x.label === obj.data.label);
     if(unSelectedItem) {
       this.selected.splice(this.selected.indexOf(unSelectedItem), 1);
     }
