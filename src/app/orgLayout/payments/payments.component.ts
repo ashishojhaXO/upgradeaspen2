@@ -248,7 +248,7 @@ export class PaymentsComponent implements OnInit  {
     
   }
   getOrganizations(){
-    this.organizationService.getOrganizations().subscribe(
+    this.getAllOrganizations().subscribe(
       response => {
         if(response)
         {
@@ -361,6 +361,26 @@ export class PaymentsComponent implements OnInit  {
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/vendors/vendor-by-orgid?orgid=' + orgid;
+    return this.http
+      .get(url, options)
+      .map(res => {
+        return res.json();
+      }).share();
+  }
+
+  getAllOrganizations(){
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+
+    console.log('AccessToken >>>')
+    console.log(AccessToken.accessToken);
+    
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/vendors/orgs';
     return this.http
       .get(url, options)
       .map(res => {
