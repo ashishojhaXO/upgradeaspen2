@@ -900,6 +900,19 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     }
   }
 
+  _OnDelete(obj, filterItem) {
+
+      console.log('obj >>')
+      console.log(this[obj])
+
+      console.log('filterItem >>')
+      console.log(filterItem)
+
+    filterItem.selectedItems = [];
+    const index = this[obj].indexOf(filterItem);
+    this[obj].splice(index, 1);
+  }
+
   onFilterDeSelect(item: any) {
     console.log(item);
   }

@@ -22,6 +22,9 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
   @Input() dependentConfig: any;
   @Input() hideSelectedValues: boolean;
   @Input() popupDataAction: PopupDataAction;
+  @Input() displayLabel: boolean;
+  @Input() displayClearOption: boolean;
+  @Output() OnDelete = new EventEmitter();
   dataObject: any;
   showPopUp: boolean;
   tableId: any;
@@ -66,6 +69,10 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
         }, this);
       }
     }
+  }
+
+  _OnDelete() {
+    this.OnDelete.emit();
   }
 
   invokePopUp(modalComponent: PopUpModalComponent) {

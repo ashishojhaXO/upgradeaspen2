@@ -409,10 +409,13 @@
               <div class="rendered-sub-filter-button-div">
                 <div class="rendered-sub-filter-button">
                   <app-popup-button
-                    [hideSelectedValues]="true"
                     [popupDataAction]="this"
                     (valueUpdate)="updateFilterConfig($event, filterItem)"
                     [filterConfig]="filterItem.filterConfig"
+                    (OnDelete)="_OnDelete('selectedFilter', filterItem)"
+                    [hideSelectedValues]="true"
+                    [displayClearOption]="true"
+                    [displayLabel]="true"
                     [dependentConfig]="getDependentConfig(filterItem.filterConfig.dependentOn)">
                   </app-popup-button>
                 </div>
@@ -438,6 +441,7 @@
                 [externalGridData]="dimensionsPopupData"
                 (valueUpdate)="updateDimensionsConfig($event)"
                 [filterConfig]="dimensionPopupConfig"
+                [displayLabel]="false"
                 >
               </app-popup-button>
               <div class="errorText" *ngIf="dimensionTagsList?.length <= 0">
