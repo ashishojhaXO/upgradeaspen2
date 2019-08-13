@@ -24,6 +24,7 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
   @Input() popupDataAction: PopupDataAction;
   @Input() displayLabel: boolean;
   @Input() displayClearOption: boolean;
+  @Input() displayDropDownIcon: boolean;
   @Output() OnDelete = new EventEmitter();
   dataObject: any;
   showPopUp: boolean;
