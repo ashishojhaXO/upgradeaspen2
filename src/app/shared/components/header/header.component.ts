@@ -95,7 +95,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
 
     this.localData = this.auth.getIdentityInfo('org-context');
     this.loggedInUser = this.auth.getIdentityInfo('loggedInUserName');
-    this.loggedInOrg = localStorage.getItem('loggedInOrg') || 'org';
+    this.loggedInOrg = localStorage.getItem('loggedInOrg');
     this.popoverOpen = false;
     if (!_.isNull(this.loggedInUser) || !_.isUndefined(this.loggedInUser)) {
       // this.getCountries();

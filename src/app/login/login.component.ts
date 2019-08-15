@@ -88,7 +88,7 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('customerStatus', responseDetails.body[0].external_status);
           localStorage.setItem('loggedInUserName', responseDetails.body[0].user.first_name + ' ' + responseDetails.body[0].user.last_name);
           localStorage.setItem('loggedInUserEmail', responseDetails.body[0].user.email_id);
-          localStorage.setItem('loggedInOrg', responseDetails.body[0].org_name);
+          localStorage.setItem('loggedInOrg', responseDetails.body[0].org_name ? responseDetails.body[0].org_name : 'Org Name');
           window.location.href = '/app/dashboards';
         } else {
           this.changeDetectorRef.detectChanges();
