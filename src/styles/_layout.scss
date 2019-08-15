@@ -2276,7 +2276,7 @@ table.select-partner-table:last-child th {
   .fa-caret-down {
     color: $quinary-color;
     position: absolute;
-    top: -2px;
+    top: 5px;
     right: -8px;
     font-size: $font-normal;
   }
@@ -3254,24 +3254,3 @@ div.dataTables_wrapper div.dataTables_paginate {
   float: left !important;
 }
 
-
-
-//Fixed Headers starts here
-
-//table thead tr{
-//  display:block;
-//}
-
-//table th,table td{
-//  width:100px;//fixed width
-//}
-
-
-//table  tbody{
-//  display:block;
-//  height:200px;
-//  overflow:auto;//set tbody to auto
-//}
-
-
-//Fixed Headers ends here

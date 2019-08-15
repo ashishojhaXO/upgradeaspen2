@@ -28,6 +28,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   @ViewChild('ResetPassword') modalReset: PopUpModalComponent;
 
   loggedInUser: string;
+  loggedInOrg: string;
   mainmenu: any;
   urlMatching: string;
   isDataAvailable: boolean;
@@ -94,6 +95,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
 
     this.localData = this.auth.getIdentityInfo('org-context');
     this.loggedInUser = this.auth.getIdentityInfo('loggedInUserName');
+    this.loggedInOrg = localStorage.getItem('loggedInOrg') || 'org';
     this.popoverOpen = false;
     if (!_.isNull(this.loggedInUser) || !_.isUndefined(this.loggedInUser)) {
       // this.getCountries();

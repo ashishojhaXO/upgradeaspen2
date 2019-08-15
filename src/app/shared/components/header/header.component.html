@@ -24,18 +24,24 @@
       <div style="float: right; margin-top: 8px">
         <div style="float: right">
           <button style="background-color: #242424; border: none" (click)="toggleMenu($event)">
-            <span class="prof-img">
+            <span class="prof-img" style="position: relative;top: -4px;">
                 <i class="fa fa-user-circle" style="font-size: 2.7em"></i>
               </span>
             <span class="welcome-user-text-wrap" style="color: #ffffff !important;" [title]=loggedInUser>
               <span class="welcome-txt">Welcome </span>
               <span class="welcome-user-text">{{loggedInUser}}</span>
+              <!---->
               <i aria-hidden="true" class="fa fa-caret-down"></i></span>
           </button>
           <div class="dropdown-content" [hidden]="!isMenuOpened">
             <a href="javascript:void(0)" (click)="resetPassword()">Change Password</a>
             <a href="javascript:void(0)" (click)="logout()">Log Out</a>
           </div>
+        </div>
+        <div style="float: right; margin-right: 10px" class="org-dropdown">
+          <select style="width: 150px; height: 29px; padding-left: 10px; background-color: #333333; color: #fff; border: none">
+            <option>{{loggedInOrg}}</option>
+          </select>
         </div>
       </div>
     </div>
