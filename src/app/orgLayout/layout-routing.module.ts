@@ -81,6 +81,14 @@ const routes: Routes = [
     ]
   },
   {
+    path: 'visDashboard',
+    loadChildren: './visDashboard/visDashboard.module#VisDashboardModule',
+    data: {
+      breadcrumbs: true,
+      text: 'Visual Dashboard'
+    },
+  },
+  {
     path: 'reports',
     loadChildren: './reports/reports.module#ReportsModule',
     data: {
@@ -130,7 +138,15 @@ const routes: Routes = [
           breadcrumbs: true,
           text: 'Admin Tasks'
         }
-      }
+      },
+      {
+        path: 'support',
+        loadChildren: './support/support.module#SupportModule',
+        data: {
+          breadcrumbs: true,
+          text: 'Support'
+        }
+      },
     ]
   }
 ];

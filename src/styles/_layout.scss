@@ -3254,3 +3254,11 @@ div.dataTables_wrapper div.dataTables_paginate {
   float: left !important;
 }
 
+.matching-results {
+  cursor: pointer;
+  margin: 5px;
+  :hover {
+    background: #0085c7;
+    color: #fff;
+  }
+}
