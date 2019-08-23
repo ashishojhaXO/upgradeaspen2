@@ -38,6 +38,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     @Input() sendResponseOnCheckboxClick?: any;
     widget: any;
     api_fs: any;
+    tableId = 'example';
 
     constructor(
         public toastr: ToastsManager,
@@ -52,6 +53,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     ngOnInit(): void {
         this.widget = this.okta.getWidget();
         this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
+        // console.log('this.externalTableId >>>@@@')
+        // console.log(this.externalTableId);
+        // if(this.externalTableId) {
+        //     this.tableId = this.externalTableId;
+        // }
         // this.initializeTable();
     }
 
@@ -59,11 +65,24 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         if (changes['dataObject']) {
             console.log('dataObject >>>');
             console.log(this.dataObject);
-            if ( $.fn.DataTable.isDataTable('#example') ) {
-                $('#example').DataTable().clear().destroy();
-                $('#example').empty();
+
+            console.log('this.dataObject.gridId >>>@@@##');
+            console.log(this.dataObject.gridId);
+
+            if(this.dataObject.gridId) {
+                this.tableId = this.dataObject.gridId;
             }
-            this.initializeTable();
+
+            if ( $.fn.DataTable.isDataTable('#' + this.tableId) ) {
+                $('#' + this.tableId).DataTable().clear().destroy();
+                $('#' + this.tableId).empty();
+            }
+
+            const __this = this;
+            setTimeout(function () {
+                __this.initializeTable();
+            }, 0);
+           // this.initializeTable();
         }
     }
 
@@ -248,7 +267,10 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             console.log(dataTableOptions);
 
             // Initialize Data Table
-            const table = $('#example').DataTable(dataTableOptions);
+            const table = $('#' + this.tableId).DataTable(dataTableOptions);
+
+            console.log('table >>>');
+            console.log(table);
 
             // Set column display box location
             $('.dt-button.buttons-collection.buttons-colvis').on('click', function () {
@@ -274,26 +296,26 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             });
 
             // Apply selected class when a row is clicked
-            $('#example tbody').on('click', 'tr', function () {
+            $('#' + this.tableId + ' tbody').on('click', 'tr', function () {
                 $(this).toggleClass('selected');
             });
 
             // Handle sort column event
-            $('#example').on('order.dt', function () {
+            $('#' + this.tableId).on('order.dt', function () {
                 // Remove sorting_1 class if a row is selected
             });
 
             // Add header checkbox
             if (this.dataObject.gridData.options.isRowSelection && this.dataObject.gridData.options.isRowSelection.isMultiple) {
-                if (!$('.dataTables_scrollHeadInner table.dataContainer thead tr').find('#example-select-all').length) {
-                    $('.dataTables_scrollHeadInner table.dataContainer thead tr th').eq(0).html('<input name="select_all" value="1" id="example-select-all" type="checkbox" />');
+                if (!$('.dataTables_scrollHeadInner table.dataContainer thead tr').find('#' + this.tableId + '-select-all').length) {
+                    $('.dataTables_scrollHeadInner table.dataContainer thead tr th').eq(0).html('<input name="select_all" value="1" id="' + this.tableId + '-select-all" type="checkbox" />');
                     $('.dataTables_scrollHeadInner table.dataContainer thead tr th').eq(0).css('position', 'relative');
                     $('.dataTables_scrollHeadInner table.dataContainer thead tr th').eq(0).css('left', '7px');
                 }
             }
 
             // Edit Click
-            $('#example tbody').on('click', '.editLink', function () {
+            $('#' + this.tableId + ' tbody').on('click', '.editLink', function () {
                 // const data = table.row($(this).parents('tr')).data();
                 __this.triggerActions.emit({
                     action: 'handleEdit',
@@ -303,7 +325,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             });
 
             // Run/Play Click
-            $('#example tbody').on('click', '.playLink', function () {
+            $('#' + this.tableId + ' tbody').on('click', '.playLink', function () {
                 // const data = table.row($(this).parents('tr')).data();
                 __this.triggerActions.emit({
                     action: 'handleRun',
@@ -313,7 +335,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             });
 
             // Download Click
-            $('#example tbody').on('click', '.downloadLink', function () {
+            $('#' + this.tableId + ' tbody').on('click', '.downloadLink', function () {
                 // const data = table.row($(this).parents('tr')).data();
                 __this.triggerActions.emit({
                     action: 'handleDownload',
@@ -323,7 +345,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             });
 
             // Delete Click
-            $('#example tbody').on('click', '.deleteLink', function () {
+            $('#' + this.tableId + ' tbody').on('click', '.deleteLink', function () {
                 // const data = table.row($(this).parents('tr')).data();
                 __this.triggerActions.emit({
                     action: 'handleDelete',
@@ -333,7 +355,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             });
 
             // Handle click on "Select all" control
-            $('#example-select-all').on('click', function () {
+            $('#' + this.tableId + '-select-all').on('click', function () {
 
                 // Check/uncheck all checkboxes in the table
                 const rows = table.rows({'search': 'applied'}).nodes();
@@ -349,10 +371,10 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             });
 
             // Handle click on checkbox to set state of "Select all" control
-            $('#example tbody').on('change', 'input.check-row-selection', function () {
+            $('#' + this.tableId + ' tbody').on('change', 'input.check-row-selection', function () {
                 // If checkbox is not checked
                 if (!this.checked) {
-                    var el = $('#example-select-all').get(0);
+                    const el = $('#' + this.tableId + '-select-all').get(0);
                     // If "Select all" control is checked and has 'indeterminate' property
                     if (el && el.checked && ('indeterminate' in el)) {
                         // Set visual state of "Select all" control
@@ -395,7 +417,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             __this.registerUnCheckboxSelection(table, __this);
 
             // Event for tree grid
-            $('#example tbody').on('click', 'img.details-control', function () {
+            $('#' + this.tableId + ' tbody').on('click', 'img.details-control', function () {
 
 
                 console.log('__this.dataObject.gridData >>');

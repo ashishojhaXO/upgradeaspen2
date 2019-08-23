@@ -25,7 +25,8 @@ import {OktaAuthService} from '../../../services/okta.service';
 export class SupportComponent implements OnInit {
 
     gridData: any;
-    dataObject: any = {};
+    dataObjectOrders: any = {};
+    dataObjectPayments: any = {};
     isDataAvailable: boolean;
     height: any;
     options: Array<any> = [{
@@ -40,7 +41,6 @@ export class SupportComponent implements OnInit {
         isPageLength: true,
         isPagination: true
     }];
-    dashboard: any;
     api_fs: any;
     externalAuth: any;
     error: any;
@@ -70,9 +70,6 @@ export class SupportComponent implements OnInit {
                 return;
             }
 
-            console.log('case >>')
-            console.log(this.caseSensitive);
-
             this.matchingResults = this.vendorOptions.filter(function (vendor) {
                 if (this.caseSensitive) {
                     return vendor.id.indexOf(this.searchcontent) !== -1 || vendor.text.indexOf(this.searchcontent) !== -1;
@@ -101,38 +98,11 @@ export class SupportComponent implements OnInit {
                 }
             }
         );
-
-        this.dataObject = {};
-        this.gridData = {};
-        this.gridData['result'] = [];
-        this.gridData.columnsToAppend$ = [
-            'Line Item Budget',
-            'Line Item Monthly Media Spend',
-            'Line Item Media Spend',
-            'Line Item Budget Remaining',
-            'Line Item Monthly Budget',
-            'Line Item Daily Budget',
-            'Line Item Daily Spend',
-            'Line Item Monthly Cumulative Spend',
-            'Line Item Monthly Budget Remaining',
-            'Line Item Daily Budget Remaining',
-            'Average Line Item Monthly Budget',
-            'Media Cost',
-            'Technology Cost',
-            'Average Line Item Daily Budget',
-            'Client Fee',
-            'Merchant Processing Fee',
-            'Platform Fee'
-        ];
-        this.gridData['headers'] = [];
-        this.gridData['options'] = this.options[0];
-        this.dashboard = 'schemaGrid';
-        this.gridData['result'] = [];
-        this.dataObject.gridData = this.gridData;
     }
 
     OnVendorSelect(e: any): void {
-        this.selectedVendor = e;
+        this.selectedVendor = e.id;
+        this.selectedVendorName = e.text;
         this.matchingResults = [];
         this.getVendorName();
         this.paymentMethods = [];
@@ -140,15 +110,130 @@ export class SupportComponent implements OnInit {
             response => {
                 if (response && response.body) {
                     this.paymentMethods = response.body;
-                    // response.body.forEach(function (ele) {
-                    //
-                    //   this.retPaymentMethodsHTML += '<div style="margin-bottom: 10px"><label>Payment Method</label><span style="margin-left: 5px">' + ele.payment_method  + '</span><br><label>Last 4 digits</label><span>' + ele.last_four_digits +  '</span><br><label>Payment Status</label><span>' + ele.status + '</span><br><label>Default</label><span>' + (ele.is_default == 1 ? 'Yes' : 'No') + '</span></div>';
-                    // }, this);
                 }
             },
             err => {
             }
         );
+        this.getOrdersData().subscribe(
+            response => {
+                if (response) {
+                    const data = response.filter(function (x) {
+                        return x.Vendor === this.selectedVendorName;
+                    }, this)
+
+                    this.populateOrders(data);
+                }
+            },
+            err => {
+            }
+        );
+        this.getPaymentsData().subscribe(
+            response => {
+                if (response && response.body && response.body.transactions) {
+                    const data = response.body.transactions.filter(function (x) {
+                        return x.vendor_name === this.selectedVendorName;
+                    }, this)
+
+                    console.log('data >>')
+                    console.log(data);
+
+                    this.populatePayments(data);
+                }
+            },
+            err => {
+            }
+        );
+    }
+
+    populateOrders(data) {
+
+        this.dataObjectOrders = {};
+        this.gridData = {};
+        this.gridData['result'] = [];
+        const headers = [];
+        if (data.length) {
+            const keys = Object.keys(data[0]);
+            for (let i = 0; i < keys.length; i++) {
+                headers.push({
+                    key: keys[i],
+                    title: keys[i].replace(/_/g,' ').toUpperCase(),
+                    data: keys[i],
+                    isFilterRequired: true,
+                    isCheckbox: false,
+                    class: 'nocolvis',
+                    editButton: false,
+                    width: '150'
+                });
+            }
+        }
+        this.gridData['headers'] = headers;
+        this.gridData['options'] = this.options[0];
+        this.gridData['result'] = data;
+        this.dataObjectOrders.gridData = this.gridData;
+        this.dataObjectOrders.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
+        this.dataObjectPayments.gridId = 'order';
+    }
+
+    populatePayments(data) {
+
+        this.dataObjectPayments = {};
+        this.gridData = {};
+        this.gridData['result'] = [];
+        const headers = [];
+        if (data.length) {
+            const keys = Object.keys(data[0]);
+            for (let i = 0; i < keys.length; i++) {
+                headers.push({
+                    key: keys[i],
+                    title: keys[i].replace(/_/g,' ').toUpperCase(),
+                    data: keys[i],
+                    isFilterRequired: true,
+                    isCheckbox: false,
+                    class: 'nocolvis',
+                    editButton: false,
+                    width: '150'
+                });
+            }
+        }
+        this.gridData['headers'] = headers;
+        this.gridData['options'] = this.options[0];
+        this.gridData['result'] = data;
+        this.dataObjectPayments.gridData = this.gridData;
+        this.dataObjectPayments.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
+        this.dataObjectPayments.gridId = 'payment';
+    }
+
+    getOrdersData() {
+        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        let token = '';
+        if (AccessToken) {
+            token = AccessToken.accessToken;
+        }
+        const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+        const options = new RequestOptions({headers: headers});
+        var url = this.api_fs.api + '/api/orders/line-items';
+        return this.http
+            .get(url, options)
+            .map(res => {
+                return res.json();
+            }).share();
+    }
+
+    getPaymentsData() {
+        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        let token = '';
+        if (AccessToken) {
+            token = AccessToken.accessToken;
+        }
+        const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+        const options = new RequestOptions({headers: headers});
+        var url = this.api_fs.api + '/api/payments/transactions';
+        return this.http
+            .get(url, options)
+            .map(res => {
+                return res.json();
+            }).share();
     }
 
     getVendorName() {

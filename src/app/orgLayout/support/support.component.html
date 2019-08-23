@@ -23,7 +23,7 @@
             <div *ngIf="matchingResults.length" style="position: absolute; height: 200px; overflow: scroll; background-color: white; width: 57.6%; z-index: 1000; margin-left: 49px; border: 1px solid">
                         <ul style="list-style: none; padding-left: 5px">
                           <li class="matching-results" *ngFor="let ele of matchingResults; let i = index;">
-                              <span style="display: block" (click)="OnVendorSelect(ele.id)">{{ele.id + ' - ' + ele.text}}</span>
+                              <span style="display: block" (click)="OnVendorSelect(ele)">{{ele.id + ' - ' + ele.text}}</span>
                           </li>
                         </ul>
             </div>
@@ -52,22 +52,22 @@
         </div>
         <p style="clear: both"></p>
         <div style="padding-left: 0px" class="col-lg-6 col-md-6">
-            <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject.isDataAvailable">
-                <app-data-table2 [dataObject]="dataObject"
+            <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectOrders.isDataAvailable">
+                <app-data-table2 [dataObject]="dataObjectOrders"
                                  (triggerActions)="this[$event.action]($event)"></app-data-table2>
             </div>
-            <div class="page-header" *ngIf="!dataObject.isDataAvailable">
+            <div class="page-header" *ngIf="!dataObjectOrders.isDataAvailable">
                 <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to
                     display.
                 </div>
             </div>
         </div>
         <div style="padding-left: 0px" class="col-lg-6 col-md-6">
-            <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject.isDataAvailable">
-                <app-data-table2 [dataObject]="dataObject"
+            <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectPayments.isDataAvailable">
+                <app-data-table2 [dataObject]="dataObjectPayments"
                                  (triggerActions)="this[$event.action]($event)"></app-data-table2>
             </div>
-            <div class="page-header" *ngIf="!dataObject.isDataAvailable">
+            <div class="page-header" *ngIf="!dataObjectPayments.isDataAvailable">
                 <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to
                     display.
                 </div>

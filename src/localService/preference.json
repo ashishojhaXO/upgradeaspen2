@@ -116,6 +116,13 @@
           "title": "User Management",
           "id": "usermanagement",
           "url": "app/admin/usermanagement"
+        },
+        {
+          "index": 2,
+          "name": "support",
+          "title": "Support",
+          "id": "support",
+          "url": "app/admin/support"
         }
       ]
     }
