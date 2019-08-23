@@ -1,0 +1,10 @@
+{
+  "title": "",
+  "type": "pie",
+  "showLegend": true,
+  "toolTipHeader": true,
+  "showSliced" : false,
+  "data": [],
+  "size" : 80,
+  "height": "200px"
+}
