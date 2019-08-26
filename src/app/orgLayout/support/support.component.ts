@@ -51,6 +51,15 @@ export class SupportComponent implements OnInit {
     selectedVendorName: string;
     widget: any;
     vendorOptions = [];
+    orderOptions = [];
+    searchOptions = [{
+        id: 'vendor',
+        text: 'Vendor'
+    },{
+        id: 'order',
+        text: 'Order ID'
+    }];
+    searchType = '';
     paymentMethods = [];
     matchingResults = [];
     @ViewChild('searchField') searchField: ElementRef;
@@ -70,13 +79,23 @@ export class SupportComponent implements OnInit {
                 return;
             }
 
-            this.matchingResults = this.vendorOptions.filter(function (vendor) {
-                if (this.caseSensitive) {
-                    return vendor.id.indexOf(this.searchcontent) !== -1 || vendor.text.indexOf(this.searchcontent) !== -1;
-                } else {
-                    return vendor.id.toLowerCase().indexOf(this.searchcontent.toLowerCase()) !== -1 || vendor.text.toLowerCase().indexOf(this.searchcontent.toLowerCase()) !== -1;
-                }
-            }, this);
+            if (this.searchType === 'vendor') {
+                this.matchingResults = this.vendorOptions.filter(function (vendor) {
+                    if (this.caseSensitive) {
+                        return vendor.id.indexOf(this.searchcontent) !== -1 || vendor.text.indexOf(this.searchcontent) !== -1;
+                    } else {
+                        return vendor.id.toLowerCase().indexOf(this.searchcontent.toLowerCase()) !== -1 || vendor.text.toLowerCase().indexOf(this.searchcontent.toLowerCase()) !== -1;
+                    }
+                }, this);
+            } else if (this.searchType === 'order') {
+                this.matchingResults = this.orderOptions.filter(function (order) {
+                    if (this.caseSensitive) {
+                        return order.id.toString().indexOf(this.searchcontent) !== -1 || order.text.toString().indexOf(this.searchcontent) !== -1;
+                    } else {
+                        return order.id.toString().toLowerCase().indexOf(this.searchcontent.toLowerCase()) !== -1 || order.text.toString().toLowerCase().indexOf(this.searchcontent.toLowerCase()) !== -1;
+                    }
+                }, this);
+            }
         });
 
         this.selectedVendor = '';
@@ -98,52 +117,70 @@ export class SupportComponent implements OnInit {
                 }
             }
         );
-    }
-
-    OnVendorSelect(e: any): void {
-        this.selectedVendor = e.id;
-        this.selectedVendorName = e.text;
-        this.matchingResults = [];
-        this.getVendorName();
-        this.paymentMethods = [];
-        this.getVendorPaymentMethods().subscribe(
-            response => {
-                if (response && response.body) {
-                    this.paymentMethods = response.body;
-                }
-            },
-            err => {
-            }
-        );
         this.getOrdersData().subscribe(
             response => {
-                if (response) {
-                    const data = response.filter(function (x) {
-                        return x.Vendor === this.selectedVendorName;
-                    }, this)
-
-                    this.populateOrders(data);
+                if (response && response.length) {
+                    response.forEach(function (x) {
+                        this.orderOptions.push({id: x['Order ID'], text: x['Order ID']});
+                    }, this);
+                    this.showSpinner = false;
                 }
             },
             err => {
-            }
-        );
-        this.getPaymentsData().subscribe(
-            response => {
-                if (response && response.body && response.body.transactions) {
-                    const data = response.body.transactions.filter(function (x) {
-                        return x.vendor_name === this.selectedVendorName;
-                    }, this)
-
-                    console.log('data >>')
-                    console.log(data);
-
-                    this.populatePayments(data);
+                if (err.status === 401) {
+                } else {
+                    this.showSpinner = false;
                 }
-            },
-            err => {
             }
         );
+    }
+
+    OnSearchSelect(e: any): void {
+        if (this.searchType === 'vendor') {
+            this.selectedVendor = e.id;
+            this.selectedVendorName = e.text;
+            this.matchingResults = [];
+            this.getVendorName();
+            this.paymentMethods = [];
+            this.getVendorPaymentMethods().subscribe(
+                response => {
+                    if (response && response.body) {
+                        this.paymentMethods = response.body;
+                    }
+                },
+                err => {
+                }
+            );
+            this.getOrdersData().subscribe(
+                response => {
+                    if (response) {
+                        const data = response.filter(function (x) {
+                            return x.Vendor === this.selectedVendorName;
+                        }, this)
+
+                        this.populateOrders(data);
+                    }
+                },
+                err => {
+                }
+            );
+            this.getPaymentsData().subscribe(
+                response => {
+                    if (response && response.body && response.body.transactions) {
+                        const data = response.body.transactions.filter(function (x) {
+                            return x.vendor_name === this.selectedVendorName;
+                        }, this)
+
+                        console.log('data >>')
+                        console.log(data);
+
+                        this.populatePayments(data);
+                    }
+                },
+                err => {
+                }
+            );
+        }
     }
 
     populateOrders(data) {
@@ -283,5 +320,11 @@ export class SupportComponent implements OnInit {
             .map(res => {
                 return res.json();
             }).share();
+    }
+
+    OnSearchChange(e) {
+        if(!this.searchType || this.searchType != e.value) {
+            this.searchType = e.value;
+        }
     }
 }
