@@ -58,7 +58,7 @@ export class PaymentsComponent implements OnInit  {
   error: any;
   paymentModel : any;
   statusOptions = [
-    
+
     {
       id: 'FUNDED',
       text: 'FUNDED'
@@ -73,7 +73,7 @@ export class PaymentsComponent implements OnInit  {
     }];
 
     paymentMethodOptions = [
-    
+
       {
         id: 'BILL PAY',
         text: 'BILL PAY'
@@ -86,9 +86,9 @@ export class PaymentsComponent implements OnInit  {
         id: 'WIRE',
         text: 'WIRE'
       }];
-  
 
-    
+
+
 
 
   constructor(private okta: OktaAuthService, private organizationService: OrganizationService, private route: ActivatedRoute, private router: Router, private http: Http) {
@@ -116,7 +116,7 @@ export class PaymentsComponent implements OnInit  {
     this.searchDataRequest();
     this.getOrganizations();
     console.log(this.selectedStatus);
-    
+
   }
 
   searchDataRequest() {
@@ -217,7 +217,7 @@ export class PaymentsComponent implements OnInit  {
   }
   handleCloseModal(modalComponent: PopUpModalComponent) {
     this.error = '';
-    
+
     this.selectedOrg = this.organizations[0].id;
     this.getVendors(this.selectedOrg);
     this.selectedStatus = this.statusOptions[0].id;
@@ -245,7 +245,7 @@ export class PaymentsComponent implements OnInit  {
     modalComponent.hide();
     this.dataObject.isDataAvailable = false;
     this.searchDataRequest();
-    
+
   }
   getOrganizations(){
     this.getAllOrganizations().subscribe(
@@ -255,7 +255,7 @@ export class PaymentsComponent implements OnInit  {
           if(response.body.data.length > 0)
           {
             const organizations = [];
-                                    
+
             _.forEach(response.body.data, organization => {
 
               organizations.push({
@@ -263,7 +263,7 @@ export class PaymentsComponent implements OnInit  {
                 text: organization.name
               }
               );
-              
+
             });
 
             this.organizations = _.sortBy(organizations,'text');
@@ -271,7 +271,7 @@ export class PaymentsComponent implements OnInit  {
         }
       },
       err => {
-        
+
         if(err.status === 401) {
           if(this.widget.tokenManager.get('accessToken')) {
             this.widget.tokenManager.refresh('accessToken')
@@ -306,7 +306,7 @@ export class PaymentsComponent implements OnInit  {
           if(response.body.data.length > 0)
           {
             const vendors = [];
-            
+
             _.forEach(response.body.data, vendor => {
 
               vendors.push({
@@ -314,7 +314,7 @@ export class PaymentsComponent implements OnInit  {
                 text: vendor.name
               }
               );
-              
+
             });
 
             this.vendors = _.sortBy(vendors,'text');
@@ -357,7 +357,7 @@ export class PaymentsComponent implements OnInit  {
 
     console.log('AccessToken >>>')
     console.log(AccessToken.accessToken);
-    
+
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/vendors/vendor-by-orgid?orgid=' + orgid;
@@ -377,7 +377,7 @@ export class PaymentsComponent implements OnInit  {
 
     console.log('AccessToken >>>')
     console.log(AccessToken.accessToken);
-    
+
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/vendors/orgs';
@@ -397,20 +397,20 @@ export class PaymentsComponent implements OnInit  {
   OnVendorChanged(e: any): void {
     if (this.selectedVendor !== e.value ) {
       this.selectedVendor = e.value;
-      
+
     }
   }
   OnStatusChanged(e: any): void {
     if (this.selectedStatus !== e.value ) {
       this.selectedStatus = e.value;
-      
+
     }
   }
 
   OnPaymentMethodChanged(e: any): void {
     if (this.selectedPaymentMethod !== e.value ) {
       this.selectedPaymentMethod = e.value;
-      
+
     }
   }
 
@@ -419,7 +419,7 @@ export class PaymentsComponent implements OnInit  {
     this.showSpinner = true;
     this.error = '';
     const dataObj: any = {};
-  
+
     dataObj.type = this.paymentForm.controls['type'].value;
     dataObj.vendor_id = this.selectedVendor;
     dataObj.customer_id = this.selectedOrg;
@@ -430,7 +430,7 @@ export class PaymentsComponent implements OnInit  {
     if(this.paymentForm.controls['type'].value == 'ap'){
     dataObj.payment_method = this.selectedPaymentMethod;
     }
-    
+
     console.log("dataobj:" + dataObj);
     this.createTransactionRequest(dataObj);
   }
@@ -442,11 +442,11 @@ export class PaymentsComponent implements OnInit  {
           console.log(response);
           if (response) {
             this.showSpinner = false;
-      
+
             this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Transaction successfully created' : 'Transaction creation failed' };
-            
+
           }
-          
+
         },
         err => {
 
@@ -491,6 +491,10 @@ export class PaymentsComponent implements OnInit  {
       .map(res => {
         return res.json();
       }).share();
+  }
+
+  handleRowSelection(rowObj: any, rowData: any) {
+
   }
 
 }

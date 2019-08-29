@@ -88,6 +88,10 @@ export class ReconciliationComponent implements OnInit  {
 
     }
 
+    handleRowSelection(rowObj: any, rowData: any) {
+
+    }
+
     search() {
         this.dataObject.isDataAvailable = false;
         this.showSpinner = true;

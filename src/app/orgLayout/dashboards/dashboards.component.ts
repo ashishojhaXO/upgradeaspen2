@@ -838,6 +838,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
   }
 
+  handleRowSelection(rowObj: any, rowData: any) {
+
+  }
+
   getSearchDataRequest(dataObj) {
     this.showSpinner = true;
     this.getSearchData(dataObj).subscribe(

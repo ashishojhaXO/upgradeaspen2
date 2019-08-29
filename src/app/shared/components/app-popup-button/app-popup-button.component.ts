@@ -76,6 +76,10 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
     this.OnDelete.emit();
   }
 
+  handleRowSelection(rowObj: any, rowData: any) {
+
+  }
+
   invokePopUp(modalComponent: PopUpModalComponent) {
     this.tableId = 'table' + Math.floor(Math.random() * (1000 - 1 + 1)) + 1;
     this.dataObject.gridData = {};

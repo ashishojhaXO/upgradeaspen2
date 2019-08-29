@@ -264,6 +264,10 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   handleEmail(rowObj: any, rowData: any) {
   }
 
+  handleRowSelection(rowObj: any, rowData: any) {
+
+  }
+
   OnSubmit(modalComponent: PopUpModalComponent) {
     this.showSpinner = true;
     this.error = '';

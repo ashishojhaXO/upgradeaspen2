@@ -140,4 +140,8 @@ export class AlertNoticationdashboardsComponent implements OnInit {
     this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
     // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
   }
+
+  handleRowSelection(rowObj: any, rowData: any) {
+
+  }
 }

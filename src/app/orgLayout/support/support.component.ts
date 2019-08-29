@@ -50,8 +50,6 @@ export class SupportComponent implements OnInit {
     selectedVendor: string;
     selectedVendorName: string;
     widget: any;
-    vendorOptions = [];
-    orderOptions = [];
     searchOptions = [{
         id: 'vendor',
         text: 'Vendor'
@@ -74,72 +72,45 @@ export class SupportComponent implements OnInit {
         this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
         this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
         Observable.fromEvent(this.searchField.nativeElement, 'keyup').debounceTime(500).subscribe(value => {
+            this.matchingResults = [];
             if (!this.searchcontent) {
-                this.matchingResults = [];
                 return;
             }
 
             if (this.searchType === 'vendor') {
-                this.matchingResults = this.vendorOptions.filter(function (vendor) {
-                    if (this.caseSensitive) {
-                        return vendor.id.indexOf(this.searchcontent) !== -1 || vendor.text.indexOf(this.searchcontent) !== -1;
-                    } else {
-                        return vendor.id.toLowerCase().indexOf(this.searchcontent.toLowerCase()) !== -1 || vendor.text.toLowerCase().indexOf(this.searchcontent.toLowerCase()) !== -1;
+                this.getFilteredVendors(this.searchcontent).subscribe(
+                    response => {
+                        if (response && response.body && response.body.length) {
+                            this.matchingResults = response.body;
+                        }
+                    },
+                    err => {
                     }
-                }, this);
-            } else if (this.searchType === 'order') {
-                this.matchingResults = this.orderOptions.filter(function (order) {
-                    if (this.caseSensitive) {
-                        return order.id.toString().indexOf(this.searchcontent) !== -1 || order.text.toString().indexOf(this.searchcontent) !== -1;
-                    } else {
-                        return order.id.toString().toLowerCase().indexOf(this.searchcontent.toLowerCase()) !== -1 || order.text.toString().toLowerCase().indexOf(this.searchcontent.toLowerCase()) !== -1;
+                );
+            } else  if (this.searchType === 'order') {
+                this.getFilteredOrders(this.searchcontent).subscribe(
+                    response => {
+                        if (response && response.data && response.data.length) {
+                            this.matchingResults = response.data.map(function (x) {
+                                return { id: x.id , name :  ( x.id + ' - ' + x.order_id + ' - ' + x.channels_id )};
+                            });
+                        }
+                    },
+                    err => {
                     }
-                }, this);
+                );
             }
         });
 
         this.selectedVendor = '';
-        this.searchVendorData().subscribe(
-            response => {
-                if (response) {
-                    if (response.body && response.body.length) {
-                        response.body.forEach(function (x) {
-                            this.vendorOptions.push({id: x.external_vendor_id, text: x.first_name + ' ' + x.last_name});
-                        }, this);
-                        this.showSpinner = false;
-                    }
-                }
-            },
-            err => {
-                if (err.status === 401) {
-                } else {
-                    this.showSpinner = false;
-                }
-            }
-        );
-        this.getOrdersData().subscribe(
-            response => {
-                if (response && response.length) {
-                    response.forEach(function (x) {
-                        this.orderOptions.push({id: x['Order ID'], text: x['Order ID']});
-                    }, this);
-                    this.showSpinner = false;
-                }
-            },
-            err => {
-                if (err.status === 401) {
-                } else {
-                    this.showSpinner = false;
-                }
-            }
-        );
+        this.showSpinner = false;
     }
 
     OnSearchSelect(e: any): void {
         if (this.searchType === 'vendor') {
             this.selectedVendor = e.id;
-            this.selectedVendorName = e.text;
-            this.matchingResults = [];
+            this.selectedVendorName = e.name;
+            this.searchcontent = '';
             this.getVendorName();
             this.paymentMethods = [];
             this.getVendorPaymentMethods().subscribe(
@@ -151,14 +122,10 @@ export class SupportComponent implements OnInit {
                 err => {
                 }
             );
-            this.getOrdersData().subscribe(
+            this.getOrdersDataByVendorID(this.selectedVendor).subscribe(
                 response => {
-                    if (response) {
-                        const data = response.filter(function (x) {
-                            return x.Vendor === this.selectedVendorName;
-                        }, this)
-
-                        this.populateOrders(data);
+                    if (response && response.data) {
+                        this.populateOrders(response.data);
                     }
                 },
                 err => {
@@ -180,6 +147,7 @@ export class SupportComponent implements OnInit {
                 err => {
                 }
             );
+            this.matchingResults = [];
         }
     }
 
@@ -241,7 +209,7 @@ export class SupportComponent implements OnInit {
         this.dataObjectPayments.gridId = 'payment';
     }
 
-    getOrdersData() {
+    getOrdersDataByVendorID(vendorID) {
         const AccessToken: any = this.widget.tokenManager.get('accessToken');
         let token = '';
         if (AccessToken) {
@@ -249,7 +217,39 @@ export class SupportComponent implements OnInit {
         }
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
         const options = new RequestOptions({headers: headers});
-        var url = this.api_fs.api + '/api/orders/line-items';
+        var url = this.api_fs.api + '/api/orders/vendor?vendor_id=' + vendorID;
+        return this.http
+            .get(url, options)
+            .map(res => {
+                return res.json();
+            }).share();
+    }
+
+    getFilteredVendors(match) {
+        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        let token = '';
+        if (AccessToken) {
+            token = AccessToken.accessToken;
+        }
+        const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+        const options = new RequestOptions({headers: headers});
+        var url = this.api_fs.api + '/api/vendors/search?search=' + match;
+        return this.http
+            .get(url, options)
+            .map(res => {
+                return res.json();
+            }).share();
+    }
+
+    getFilteredOrders(match) {
+        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        let token = '';
+        if (AccessToken) {
+            token = AccessToken.accessToken;
+        }
+        const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+        const options = new RequestOptions({headers: headers});
+        var url = this.api_fs.api + '/api/orders/search?search=' + match;
         return this.http
             .get(url, options)
             .map(res => {
@@ -274,7 +274,7 @@ export class SupportComponent implements OnInit {
     }
 
     getVendorName() {
-        this.selectedVendorName = this.vendorOptions.find(x => x.id === this.selectedVendor).text;
+        this.selectedVendorName = this.matchingResults.find(x => x.id === this.selectedVendor).name;
     }
 
     searchVendorData() {
@@ -325,6 +325,18 @@ export class SupportComponent implements OnInit {
     OnSearchChange(e) {
         if(!this.searchType || this.searchType != e.value) {
             this.searchType = e.value;
+            this.searchcontent = '';
+            this.matchingResults = [];
         }
+    }
+
+    handleRowSelection(rowObj: any) {
+        console.log('rowObj >>')
+        console.log(rowObj);
+    }
+
+    clearSearch() {
+        this.searchcontent = '';
+        this.matchingResults = [];
     }
 }

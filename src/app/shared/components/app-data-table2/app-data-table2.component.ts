@@ -314,6 +314,16 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 }
             }
 
+            // On row selection
+            $('#' + this.tableId + ' tbody').on('click', 'tr', function () {
+                __this.triggerActions.emit({
+                    action: 'handleRowSelection',
+                    data: table.row( this ).data(),
+                    tableId: __this.tableId,
+                    rowIndex: table.row(this).index()
+                });
+            });
+
             // Edit Click
             $('#' + this.tableId + ' tbody').on('click', '.editLink', function () {
                 // const data = table.row($(this).parents('tr')).data();
@@ -602,10 +612,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
         // Handle table row select event
         table.on('select', function (e, dt, type, indexes) {
-
-            console.log('indexes >>>');
-            console.log(indexes);
-
             // if(__this.dataObject.gridData.options.isRowSelection && !__this.dataObject.gridData.options.isRowSelection.isMultiple) {
             //   $('input.check-row-selection').prop('checked', false);
             //   $('#example tbody tr').removeClass('selected');
@@ -625,10 +631,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     registerUnCheckboxSelection(table, __this) {
         // Handle table row deselect event
         table.on('deselect', function (e, dt, type, indexes) {
-
-            console.log('indexes >>>');
-            console.log(indexes);
-
             table[type](indexes).nodes().to$().find('td input.check-row-selection').prop('checked', false);
             if (__this.sendResponseOnCheckboxClick) {
                 __this.triggerActions.emit({

@@ -211,6 +211,10 @@ export class UserManagementComponent implements OnInit  {
     }
   }
 
+  handleRowSelection(rowObj: any, rowData: any) {
+
+  }
+
   getVendors() {
     const AccessToken: any = this.widget.tokenManager.get('accessToken');
     let token = '';

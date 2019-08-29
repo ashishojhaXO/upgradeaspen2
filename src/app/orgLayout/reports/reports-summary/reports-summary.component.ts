@@ -293,6 +293,10 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
     link.click();
   }
 
+  handleRowSelection(rowObj: any, rowData: any) {
+
+  }
+
   handleEmail(rowObj: any, rowData: any) {
     console.log(rowData);
   }
