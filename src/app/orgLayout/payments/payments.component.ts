@@ -58,14 +58,21 @@ export class PaymentsComponent implements OnInit  {
   error: any;
   paymentModel : any;
   statusOptions = [
-
+    {
+      id: 'FAILED',
+      text: 'FAILED'
+    },
     {
       id: 'FUNDED',
       text: 'FUNDED'
     },
     {
-      id: 'INVOICESUBMITTED',
+      id: 'INVOICE SUBMITTED',
       text: 'INVOICE SUBMITTED'
+    },
+    {
+      id: 'PAYMENT_SENT',
+      text: 'PAYMENT SENT'
     },
     {
       id: 'PENDING',
