@@ -187,10 +187,18 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
         //   });
         // }
 
+        if (groups) {
+          const grp = JSON.parse(groups);
+          grp.forEach(function (item) {
+            groupArr.push(item);
+          });
+        }
+
         let removeMenuItems = true;
         if (groupArr.length) {
           groupArr.forEach(function (grp) {
             if (grp === 'ADMIN') {
+
               removeMenuItems = false;
             }
           });
