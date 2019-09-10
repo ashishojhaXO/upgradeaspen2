@@ -46,14 +46,23 @@ export class TransitionComponent implements OnInit {
     return this.getCustomerInfo().subscribe(
         responseDetails => {
           this.showSpinner = false;
-          if (responseDetails.body && responseDetails.body.length) {
-            console.log('responseDetails.body[0] >>')
-            console.log(responseDetails)
-            localStorage.setItem('loggedInUserGroup', JSON.stringify(responseDetails.body[0].groups));
-            localStorage.setItem('customerInfo', JSON.stringify(responseDetails.body[0]));
-            localStorage.setItem('customerStatus', responseDetails.body[0].external_status);
-            localStorage.setItem('loggedInUserName', responseDetails.body[0].user.first_name + ' ' + responseDetails.body[0].user.last_name);
-            localStorage.setItem('loggedInUserEmail', responseDetails.body[0].user.email_id);
+
+          if (responseDetails.body && responseDetails.body) {
+            // if( responseDetails.body[0].groups && responseDetails.body[0].groups.length) {
+            localStorage.setItem('loggedInUserGroup', JSON.stringify([responseDetails.body.user.user_role]));
+            // }
+            // if (responseDetails.body.user.email_id.indexOf('fusionseven') !== -1) {
+            //   localStorage.setItem('loggedInUserGroup', JSON.stringify([{
+            //     profile : {
+            //       name : 'fs-employee'
+            //     }
+            //   }]));
+            // }
+            localStorage.setItem('customerInfo', JSON.stringify(responseDetails.body));
+            localStorage.setItem('customerStatus', responseDetails.body.user.status);
+            localStorage.setItem('loggedInUserName', responseDetails.body.user.first_name + ' ' + responseDetails.body.user.last_name);
+            localStorage.setItem('loggedInUserEmail', responseDetails.body.user.email_id);
+            localStorage.setItem('loggedInOrg', responseDetails.body.org && responseDetails.body.org.org_name ? responseDetails.body.org.org_name : 'Org Name');
             this.checkForAppAccess();
           } else {
             this.error = 'No User details found. Please contact administrator';

@@ -175,19 +175,22 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
         const groupArr = [];
         const groups = localStorage.getItem('loggedInUserGroup') || '';
 
-        if (groups) {
-          const grp = JSON.parse(groups);
-          grp.forEach(function (item) {
-            if (item.profile && item.profile.name) {
-              groupArr.push(item.profile.name);
-            }
-          });
-        }
+        console.log('groups >>')
+        console.log(groups);
+
+        // if (groups) {
+        //   const grp = JSON.parse(groups);
+        //   grp.forEach(function (item) {
+        //     if (item.profile && item.profile.name) {
+        //       groupArr.push(item.profile.name);
+        //     }
+        //   });
+        // }
 
         let removeMenuItems = true;
         if (groupArr.length) {
           groupArr.forEach(function (grp) {
-            if (grp === 'fs-employee') {
+            if (grp === 'ADMIN') {
               removeMenuItems = false;
             }
           });

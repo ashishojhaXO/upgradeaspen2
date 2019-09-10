@@ -2,7 +2,7 @@
     <div class="col-lg-12 col-md-12" style="margin: 0px 0px 20px">
         <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">Source</p>
     </div>
-    <div class="col-lg-9 cold-md-9 col-sm-12">
+    <div class="col-lg-12 cold-md-12 col-sm-12">
         <div style="margin-left: 19px; padding-bottom: 20px">
             <label>Search By </label>
             <div style="display: inline-block; position: relative; top: 9px">
@@ -20,7 +20,7 @@
                    placeholder="Search"
                    [(ngModel)]='searchcontent'>
             <span (click)="clearSearch()" style="position: relative; left: -20px; cursor: pointer"><i class="fa fa-close"></i></span>
-            <div *ngIf="matchingResults.length; else noMatch" style="position: absolute; height: 200px; overflow: scroll; background-color: white; width: 57.1%; z-index: 1000; margin-left: 167px; border: 1px solid #cbcbcb; border-top: none">
+            <div *ngIf="matchingResults.length; else noMatch" style="position: absolute; height: 200px; overflow: scroll; background-color: white; width: 57.1%; z-index: 10000; margin-left: 167px; border: 1px solid #cbcbcb; border-top: none">
                         <ul style="list-style: none; padding-left: 5px">
                           <li class="matching-results" *ngFor="let ele of matchingResults; let i = index;">
                               <span style="display: block" (click)="OnSearchSelect(ele)">{{ searchType === 'vendor' ? ( ele.id + ' - ' + ele.name ) : ele.name }}</span>
@@ -28,13 +28,16 @@
                         </ul>
             </div>
             <ng-template #noMatch>
-                <div *ngIf="this.searchcontent" style="position: absolute; height: 200px; overflow: scroll; background-color: white; width: 58%; z-index: 1000; margin-left: 167px; border: 1px solid #cbcbcb; border-top: none">
-                    <span style="font-size: 12px; padding-left: 5px">No Match Found</span>
+                <div *ngIf="this.searchcontent" style="position: absolute; height: 200px; overflow: scroll; background-color: white; width: 57.1%; z-index: 10000; margin-left: 167px; border: 1px solid #cbcbcb; border-top: none">
+                    <span *ngIf="!inSearchMode; else searching" style="font-size: 12px; padding-left: 5px">No Match Found</span>
+                    <ng-template #searching>
+                        <span style="font-size: 12px; padding-left: 5px">Searching ...</span>
+                    </ng-template>
                 </div>
             </ng-template>
             <p style="clear: both"></p>
         </div>
-        <div *ngIf="selectedVendor">
+        <div *ngIf="searchType === 'vendor' && selectedVendor">
             <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
                 <label class="col-lg-3 col-md-3">Selected Vendor : </label>
                 <span class="col-lg-9 col-md-9">{{selectedVendorName}}</span>
@@ -55,32 +58,69 @@
                 </ng-template>
             </div>
         </div>
+        <div *ngIf="searchType === 'order' && selectedOrder">
+            <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
+                <label class="col-lg-3 col-md-3">Selected Client ID : </label>
+                <span class="col-lg-9 col-md-9">{{selectedOrderClientID}}</span>
+            </div>
+            <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
+                <label class="col-lg-3 col-md-3">Selected Channel : </label>
+                <span class="col-lg-9 col-md-9">{{selectedOrderChannel}}</span>
+            </div>
+            <!--<div style="padding-left: 0px" class="col-lg-12 col-md-12">-->
+                <!--<label class="col-lg-3 col-md-3">Payment Methods : </label>-->
+                <!--<div class="col-lg-9 col-md-9" *ngIf="paymentMethods.length; else noPayments">-->
+                    <!--<div *ngFor="let ele of paymentMethods; let i = index;" style="margin-bottom: 10px">-->
+                        <!--<label>Payment Method</label><span style="margin-left: 5px">{{ele.payment_method}}</span><br>-->
+                        <!--<label>Last 4 digits</label><span style="margin-left: 5px">{{ele.last_four_digits}}</span><br>-->
+                        <!--<label>Payment Status</label><span style="margin-left: 5px">{{ele.status}}</span><br>-->
+                        <!--<label>Default</label><span-->
+                            <!--style="margin-left: 5px">{{(ele.is_default == 1 ? 'Yes' : 'No')}}</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<ng-template #noPayments>-->
+                    <!--<span class="col-lg-9 col-md-9"> No Payments Found</span>-->
+                <!--</ng-template>-->
+            <!--</div>-->
+        </div>
         <p style="clear: both"></p>
-        <div style="padding-left: 0px" class="col-lg-6 col-md-6">
+        <div style="padding-left: 0px" class="col-lg-4 col-md-4" *ngIf="searchType === 'vendor'">
+            <span>Orders</span>
             <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectOrders.isDataAvailable">
                 <app-data-table2 [dataObject]="dataObjectOrders"
                                  (triggerActions)="this[$event.action]($event)"></app-data-table2>
             </div>
-            <div class="page-header" *ngIf="!dataObjectOrders.isDataAvailable">
+            <div class="page-header" style="margin-left: 0px" *ngIf="!dataObjectOrders.isDataAvailable">
                 <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to
                     display.
                 </div>
             </div>
         </div>
-        <div style="padding-left: 0px" class="col-lg-6 col-md-6">
+        <div style="padding-left: 0px" class="col-lg-4 col-md-4" *ngIf="searchType === 'vendor'">
+            <span>Payment Methods</span>
+            <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectPaymentMethods.isDataAvailable">
+                <app-data-table2 [dataObject]="dataObjectPaymentMethods"
+                                 (triggerActions)="this[$event.action]($event)"></app-data-table2>
+            </div>
+            <div class="page-header" style="margin-left: 0px" *ngIf="!dataObjectPaymentMethods.isDataAvailable">
+                <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to
+                    display.
+                </div>
+            </div>
+        </div>
+        <div style="padding-left: 0px" class="col-lg-4 col-md-4">
+            <span>Payments</span>
             <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectPayments.isDataAvailable">
                 <app-data-table2 [dataObject]="dataObjectPayments"
                                  (triggerActions)="this[$event.action]($event)"></app-data-table2>
             </div>
-            <div class="page-header" *ngIf="!dataObjectPayments.isDataAvailable">
+            <div class="page-header" style="margin-left: 0px" *ngIf="!dataObjectPayments.isDataAvailable">
                 <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to
                     display.
                 </div>
             </div>
         </div>
         <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
-    </div>
-    <div class="col-lg-3 cold-md-3 col-sm-12" style="border: 1px solid #fff; height: 100vh; background: #fff; border-radius: 4px">
     </div>
 </div>
 

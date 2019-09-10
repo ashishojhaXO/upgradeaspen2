@@ -27,6 +27,7 @@ export class SupportComponent implements OnInit {
     gridData: any;
     dataObjectOrders: any = {};
     dataObjectPayments: any = {};
+    dataObjectPaymentMethods: any = {};
     isDataAvailable: boolean;
     height: any;
     options: Array<any> = [{
@@ -49,6 +50,9 @@ export class SupportComponent implements OnInit {
     caseSensitive: any;
     selectedVendor: string;
     selectedVendorName: string;
+    selectedOrder: string;
+    selectedOrderClientID: string;
+    selectedOrderChannel: string;
     widget: any;
     searchOptions = [{
         id: 'vendor',
@@ -60,6 +64,7 @@ export class SupportComponent implements OnInit {
     searchType = '';
     paymentMethods = [];
     matchingResults = [];
+    inSearchMode = false;
     @ViewChild('searchField') searchField: ElementRef;
 
     constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
@@ -73,7 +78,9 @@ export class SupportComponent implements OnInit {
         this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
         Observable.fromEvent(this.searchField.nativeElement, 'keyup').debounceTime(500).subscribe(value => {
             this.matchingResults = [];
+            this.inSearchMode = true;
             if (!this.searchcontent) {
+                this.inSearchMode = false;
                 return;
             }
 
@@ -83,6 +90,7 @@ export class SupportComponent implements OnInit {
                         if (response && response.body && response.body.length) {
                             this.matchingResults = response.body;
                         }
+                        this.inSearchMode = false;
                     },
                     err => {
                     }
@@ -95,6 +103,7 @@ export class SupportComponent implements OnInit {
                                 return { id: x.id , name :  ( x.id + ' - ' + x.order_id + ' - ' + x.channels_id )};
                             });
                         }
+                        this.inSearchMode = false;
                     },
                     err => {
                     }
@@ -107,15 +116,20 @@ export class SupportComponent implements OnInit {
     }
 
     OnSearchSelect(e: any): void {
+
+        console.log('e >>>')
+        console.log(e);
+
+        this.showSpinner = true;
         if (this.searchType === 'vendor') {
             this.selectedVendor = e.id;
             this.selectedVendorName = e.name;
-            this.searchcontent = '';
             this.getVendorName();
             this.paymentMethods = [];
             this.getVendorPaymentMethods().subscribe(
                 response => {
                     if (response && response.body) {
+                        this.populatePaymentMethods(response.body);
                         this.paymentMethods = response.body;
                     }
                 },
@@ -133,22 +147,33 @@ export class SupportComponent implements OnInit {
             );
             this.getPaymentsData().subscribe(
                 response => {
-                    if (response && response.body && response.body.transactions) {
-                        const data = response.body.transactions.filter(function (x) {
-                            return x.vendor_name === this.selectedVendorName;
-                        }, this)
+                    if (response && response.body && response.body.summary) {
+                        // const data = response.body.transactions.filter(function (x) {
+                        //     return x.vendor_name === this.selectedVendorName;
+                        // }, this)
 
-                        console.log('data >>')
-                        console.log(data);
+                        // console.log('data >>')
+                        // console.log(data);
 
-                        this.populatePayments(data);
+                        this.populatePayments(response.body.summary);
                     }
                 },
                 err => {
                 }
             );
-            this.matchingResults = [];
+        } else {
+            this.selectedOrder = e.id;
+            this.selectedOrderClientID = e.name.indexOf('-') !== -1 ? e.name.split('-')[1] : e.name;
+            this.selectedOrderChannel =  e.name.indexOf('-') !== -1 ? e.name.split('-')[2] : e.name;
         }
+
+        this.matchingResults = [];
+        this.searchcontent = '';
+
+        const __this = this;
+        setTimeout(function () {
+            __this.showSpinner = false;
+        }, 100);
     }
 
     populateOrders(data) {
@@ -177,7 +202,7 @@ export class SupportComponent implements OnInit {
         this.gridData['result'] = data;
         this.dataObjectOrders.gridData = this.gridData;
         this.dataObjectOrders.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
-        this.dataObjectPayments.gridId = 'order';
+        this.dataObjectOrders.gridId = 'order';
     }
 
     populatePayments(data) {
@@ -207,6 +232,34 @@ export class SupportComponent implements OnInit {
         this.dataObjectPayments.gridData = this.gridData;
         this.dataObjectPayments.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
         this.dataObjectPayments.gridId = 'payment';
+    }
+
+    populatePaymentMethods(data) {
+        this.dataObjectPaymentMethods = {};
+        this.gridData = {};
+        this.gridData['result'] = [];
+        const headers = [];
+        if (data.length) {
+            const keys = Object.keys(data[0]);
+            for (let i = 0; i < keys.length; i++) {
+                headers.push({
+                    key: keys[i],
+                    title: keys[i].replace(/_/g,' ').toUpperCase(),
+                    data: keys[i],
+                    isFilterRequired: true,
+                    isCheckbox: false,
+                    class: 'nocolvis',
+                    editButton: false,
+                    width: '150'
+                });
+            }
+        }
+        this.gridData['headers'] = headers;
+        this.gridData['options'] = this.options[0];
+        this.gridData['result'] = data;
+        this.dataObjectPaymentMethods.gridData = this.gridData;
+        this.dataObjectPaymentMethods.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
+        this.dataObjectPaymentMethods.gridId = 'paymentMethods';
     }
 
     getOrdersDataByVendorID(vendorID) {
