@@ -63,7 +63,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
       first_name: new FormControl('', Validators.required),
       last_name: new FormControl('', Validators.required),
       company_name: new FormControl('', Validators.required),
-      email: new FormControl('', Validators.required),
+      email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       address_1: new FormControl('', Validators.required),
       address_2: new FormControl(''),
       city: new FormControl('', Validators.required),

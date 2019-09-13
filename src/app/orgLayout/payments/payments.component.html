@@ -38,18 +38,18 @@
             <div class="form">
                 <div class="form-group-fields">
                     <label class="col-lg-4 col-md-4 ">Org : </label>
-                    <select2 width="100%" class="col-lg-8 col-md-8 select2-field" 
+                    <select2 width="100%" class="col-lg-8 col-md-8 select2-field"
                     [value]="selectedOrg"
                     (valueChanged)="OnOrgChanged($event);"
-                    [data]="organizations"       
+                    [data]="organizations"
                     ></select2>
                   </div>
                   <div class="form-group-fields" >
                       <label class="col-lg-4 col-md-4">Vendor : </label>
-                      <select2 width="100%" placeholder="Select" class="col-lg-8 col-md-8 select2-field" 
+                      <select2 width="100%" placeholder="Select" class="col-lg-8 col-md-8 select2-field"
                       [value]="selectedVendor"
                       (valueChanged)="OnVendorChanged($event);"
-                      [data]="vendors"          
+                      [data]="vendors"
                       ></select2>
                     </div>
                     <div class="form-group-fields">
@@ -62,18 +62,32 @@
 
                     <div class="form-group-fields" *ngIf="paymentModel.type === 'ap'">
                       <label class="col-lg-4 col-md-4">Payment Method : </label>
-                      <select2 width="100%"   class="col-lg-8 col-md-8 select2-field" 
-                    
+                      <select2 width="100%"   class="col-lg-8 col-md-8 select2-field"
+
                       [value]="selectedPaymentMethod"
                             (valueChanged)="OnPaymentMethodChanged($event);"
                             [data]="paymentMethodOptions"
                       ></select2>
                     </div>
-                    
+
 
               <div class="form-group-fields">
                 <label class="col-lg-4 col-md-4">Amount: </label>
-                <input formControlName="amount" type="text" [(ngModel)]="paymentModel.amount" class="col-lg-8 col-md-8 form-field"  />
+                <input formControlName="amount" type="text" [(ngModel)]="paymentModel.amount" name="amount" class="col-lg-8 col-md-8 form-field"  />
+                {{paymentModel.amount.dirty}}
+                <!--<div *ngIf="paymentModel.amount.invalid && (paymentModel.amount.dirty || paymentModel.amount.touched)" class="alert alert-danger">-->
+                  <!--<div *ngIf="paymentModel.amount.errors">-->
+                    <!--Amount is required.-->
+                  <!--</div>-->
+                <!--</div>-->
+              </div>
+              <div class="col-lg-12 col-md-12 form-field" *ngIf="paymentForm.controls['amount'].invalid && (paymentForm.controls['amount'].dirty || paymentForm.controls['amount'].touched)" class="alert alert-danger">
+                <div *ngIf="paymentForm.controls['amount'].errors.required">
+                  Amount is required.
+                </div>
+                <div *ngIf="paymentForm.controls['amount'].errors.pattern">
+                  Amount needs to be a number
+                </div>
               </div>
               <div class="form-group-fields">
                 <label class="col-lg-4 col-md-4">External Request Id : </label>
@@ -85,14 +99,14 @@
               </div>
               <div class="form-group-fields">
                 <label class="col-lg-4 col-md-4">Status : </label>
-                <select2 width="100%"   class="col-lg-8 col-md-8 select2-field" 
-              
+                <select2 width="100%"   class="col-lg-8 col-md-8 select2-field"
+
                 [value]="selectedStatus"
                       (valueChanged)="OnStatusChanged($event);"
                       [data]="statusOptions"
                 ></select2>
               </div>
-              
+
               <div *ngIf="error && error.message" style="text-align: center">
                 <span [class]="error.type === 'success' ? 'success' : 'fail'">{{error.message}}</span>
               </div>

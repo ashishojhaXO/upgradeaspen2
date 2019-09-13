@@ -70,7 +70,7 @@ export class UserManagementComponent implements OnInit  {
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
 
     this.userForm = new FormGroup({
-      email: new FormControl('', Validators.required),
+      email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       first: new FormControl('', Validators.required),
       last: new FormControl('', Validators.required)
     });

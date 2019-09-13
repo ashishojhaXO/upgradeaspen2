@@ -31,26 +31,58 @@
               <input formControlName="external_vendor_id" [(ngModel)]="vendorModel.external_vendor_id" type="text" class="col-lg-8 col-md-8 form-field"
               />
             </div>
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="vendorForm.controls['external_vendor_id'].invalid && (vendorForm.controls['external_vendor_id'].dirty || vendorForm.controls['external_vendor_id'].touched)" class="alert alert-danger">
+              <div *ngIf="vendorForm.controls['external_vendor_id'].errors.required">
+                External Vendor ID is required.
+              </div>
+            </div>
             <div class="form-group-fields">
               <label class="col-lg-4 col-md-4">First Name : </label>
               <input formControlName="first_name" [(ngModel)]="vendorModel.first_name" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="vendorForm.controls['first_name'].invalid && (vendorForm.controls['first_name'].dirty || vendorForm.controls['first_name'].touched)" class="alert alert-danger">
+              <div *ngIf="vendorForm.controls['first_name'].errors.required">
+                First name is required.
+              </div>
             </div>
             <div class="form-group-fields">
               <label class="col-lg-4 col-md-4">Last Name : </label>
               <input formControlName="last_name" [(ngModel)]="vendorModel.last_name" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
-
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="vendorForm.controls['last_name'].invalid && (vendorForm.controls['last_name'].dirty || vendorForm.controls['last_name'].touched)" class="alert alert-danger">
+              <div *ngIf="vendorForm.controls['last_name'].errors.required">
+                Last name is required.
+              </div>
+            </div>
             <div class="form-group-fields">
               <label class="col-lg-4 col-md-4">Company Name : </label>
               <input formControlName="company_name" [(ngModel)]="vendorModel.company_name" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="vendorForm.controls['company_name'].invalid && (vendorForm.controls['company_name'].dirty || vendorForm.controls['company_name'].touched)" class="alert alert-danger">
+              <div *ngIf="vendorForm.controls['company_name'].errors.required">
+                Company name is required.
+              </div>
             </div>
             <div class="form-group-fields">
               <label class="col-lg-4 col-md-4">Email : </label>
               <input formControlName="email" [(ngModel)]="vendorModel.email" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="vendorForm.controls['email'].invalid && (vendorForm.controls['email'].dirty || vendorForm.controls['email'].touched)" class="alert alert-danger">
+              <div *ngIf="vendorForm.controls['email'].errors.required">
+                Email is required.
+              </div>
+              <div *ngIf="vendorForm.controls['email'].errors.pattern">
+                Incorrect Email Format
+              </div>
+            </div>
             <div class="form-group-fields">
               <label class="col-lg-4 col-md-4">Address 1 : </label>
               <input formControlName="address_1" [(ngModel)]="vendorModel.address_1" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="vendorForm.controls['address_1'].invalid && (vendorForm.controls['address_1'].dirty || vendorForm.controls['address_1'].touched)" class="alert alert-danger">
+              <div *ngIf="vendorForm.controls['address_1'].errors.required">
+                Address is required.
+              </div>
             </div>
             <div class="form-group-fields">
               <label class="col-lg-4 col-md-4">Address 2 : </label>
@@ -60,15 +92,29 @@
               <label class="col-lg-4 col-md-4">City : </label>
               <input formControlName="city" [(ngModel)]="vendorModel.city" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="vendorForm.controls['city'].invalid && (vendorForm.controls['city'].dirty || vendorForm.controls['city'].touched)" class="alert alert-danger">
+              <div *ngIf="vendorForm.controls['city'].errors.required">
+                City is required.
+              </div>
+            </div>
             <div class="form-group-fields">
               <label class="col-lg-4 col-md-4">State : </label>
               <input formControlName="state" [(ngModel)]="vendorModel.state" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="vendorForm.controls['state'].invalid && (vendorForm.controls['state'].dirty || vendorForm.controls['state'].touched)" class="alert alert-danger">
+              <div *ngIf="vendorForm.controls['state'].errors.required">
+                State is required.
+              </div>
             </div>
             <div class="form-group-fields">
               <label class="col-lg-4 col-md-4">Country : </label>
               <input formControlName="country" [(ngModel)]="vendorModel.country" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
-
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="vendorForm.controls['country'].invalid && (vendorForm.controls['country'].dirty || vendorForm.controls['country'].touched)" class="alert alert-danger">
+              <div *ngIf="vendorForm.controls['country'].errors.required">
+                Country is required.
+              </div>
+            </div>
             <div *ngIf="error && error.message" style="text-align: center">
               <span [class]="error.type === 'success' ? 'success' : 'fail'">{{error.message}}</span>
             </div>
