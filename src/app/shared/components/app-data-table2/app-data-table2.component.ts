@@ -225,6 +225,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 scrollX: true,
                 retrieve: true,
                 columns: columns,
+                pageLength: localStorage.getItem('gridPageCount') || 25,
                 data: dataSet,
                 dom: domConfig, // l - length changing input control ,f - filtering input ,t - The table!,i - Table information summary,p - pagination control
                 buttons: gridButtons,
