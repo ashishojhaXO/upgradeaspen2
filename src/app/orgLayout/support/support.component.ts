@@ -50,6 +50,10 @@ export class SupportComponent implements OnInit {
     caseSensitive: any;
     selectedVendor: string;
     selectedVendorName: string;
+    selectedVendorUUID: string;
+    pendingAP: string;
+    pendingAR: string;
+    availableBalance: string;
     selectedOrder: string;
     selectedOrderClientID: string;
     selectedOrderChannel: string;
@@ -124,6 +128,7 @@ export class SupportComponent implements OnInit {
         if (this.searchType === 'vendor') {
             this.selectedVendor = e.id;
             this.selectedVendorName = e.name;
+            this.selectedVendorUUID = e.vendor_id;
             this.getVendorName();
             this.paymentMethods = [];
             this.getVendorPaymentMethods().subscribe(
@@ -148,14 +153,19 @@ export class SupportComponent implements OnInit {
             this.getPaymentsData().subscribe(
                 response => {
                     if (response && response.body && response.body.summary) {
+
+                        console.log('response.body.summary >>')
+                        console.log(response.body.summary);
                         // const data = response.body.transactions.filter(function (x) {
                         //     return x.vendor_name === this.selectedVendorName;
                         // }, this)
 
                         // console.log('data >>')
                         // console.log(data);
-
-                        this.populatePayments(response.body.summary);
+                        this.pendingAP = response.body.summary.find(x=> x.type === 'Pending AP') ? response.body.summary.find(x=> x.type === 'Pending AP').amount : '-';
+                        this.pendingAR = response.body.summary.find(x=> x.type === 'Pending AR') ? response.body.summary.find(x=> x.type === 'Pending AR').amount : '-';
+                        this.availableBalance = response.body.summary.find(x=> x.type === 'Available Balance') ? response.body.summary.find(x=> x.type === 'Available Balance').amount : '-';
+                        this.populatePayments(response.body.transactions);
                     }
                 },
                 err => {
@@ -360,7 +370,7 @@ export class SupportComponent implements OnInit {
 
 
         const dataObj = JSON.stringify({
-            vendor_id: this.selectedVendor,
+            vendor_id: this.selectedVendorUUID,
             org_id: 2,
         });
 
