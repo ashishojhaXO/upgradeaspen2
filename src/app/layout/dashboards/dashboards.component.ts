@@ -493,23 +493,23 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
           this.chartConfig.barWidth = (700 / (20 * response.chartData.length));
 
-          this.chartConfig.dataPoints = [
-            {
-              propertyName: 'Monthly Spend',
-              type: 'column',
-              color: 'rgb(56, 199, 224)'
-            },
-            {
-              propertyName: 'Cumulative Spend',
-              type: 'column',
-              color: 'rgb(80, 130, 186)'
-            },
-            {
-              propertyName: 'Line Item Budget',
-              type: 'line',
-              color: 'rgb(253, 8, 0)'
-            }
-          ];
+          // this.chartConfig.dataPoints = [
+          //   {
+          //     propertyName: 'Monthly Spend',
+          //     type: 'column',
+          //     color: 'rgb(56, 199, 224)'
+          //   },
+          //   {
+          //     propertyName: 'Cumulative Spend',
+          //     type: 'column',
+          //     color: 'rgb(80, 130, 186)'
+          //   },
+          //   {
+          //     propertyName: 'Line Item Budget',
+          //     type: 'line',
+          //     color: 'rgb(253, 8, 0)'
+          //   }
+          // ];
         } else {
 
           this.chartConfig.XAxis.labelName = '';
@@ -536,6 +536,21 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               color: 'rgb(253, 8, 0)'
             }
           ];
+        }
+
+        // Chart Labels configured dynamically
+        this.chartConfig.dataPoints = [];
+        const colors = ['rgb(56, 199, 224)', 'rgb(80, 130, 186)', 'rgb(253, 8, 0)', 'rgb(151, 160, 169)', 'rgb(223, 142, 145)', 'rgb(253, 8, 0)'];
+        let i = 0;
+        for(const prop in response.chartData[0]) {
+          if (prop != 'Date') {
+            this.chartConfig.dataPoints.push({
+              propertyName: prop,
+              type: prop === 'Line Item Monthly Budget' ? 'line' : 'column',
+              color: colors[i]
+            });
+          }
+          i++;
         }
 
         this.chartConfig.data = response.chartData;
@@ -575,44 +590,44 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           //   unitType: ''
           // });
 
-          this.chartConfig.dataPoints = [
-            {
-              propertyName: 'Media Cost',
-              type: 'column',
-              color: 'rgb(85, 182, 188)',
-              YaxisAssociation : ''
-            },
-            {
-              propertyName: 'Kenshoo Fee',
-              type: 'column',
-              color: 'rgb(58, 116, 179)',
-              YaxisAssociation : ''
-            },
-            {
-              propertyName: 'THD Fee',
-              type: 'column',
-              color: 'rgb(151, 160, 169)',
-              YaxisAssociation : ''
-            },
-            {
-              propertyName: 'Merchant Processing Fee',
-              type: 'column',
-              color: 'rgb(253, 193, 138)',
-              YaxisAssociation : ''
-            },
-            {
-              propertyName: 'Total Platform Cost',
-              type: 'column',
-              color: 'rgb(223, 142, 145)',
-              YaxisAssociation : ''
-            },
-            {
-              propertyName: 'Line Item Total Budget',
-              type: 'line',
-              color: 'rgb(253, 8, 0)',
-              YaxisAssociation : ''
-            }
-          ];
+          // this.chartConfig.dataPoints = [
+          //   {
+          //     propertyName: 'Media Cost',
+          //     type: 'column',
+          //     color: 'rgb(85, 182, 188)',
+          //     YaxisAssociation : ''
+          //   },
+          //   {
+          //     propertyName: 'Kenshoo Fee',
+          //     type: 'column',
+          //     color: 'rgb(58, 116, 179)',
+          //     YaxisAssociation : ''
+          //   },
+          //   {
+          //     propertyName: 'THD Fee',
+          //     type: 'column',
+          //     color: 'rgb(151, 160, 169)',
+          //     YaxisAssociation : ''
+          //   },
+          //   {
+          //     propertyName: 'Merchant Processing Fee',
+          //     type: 'column',
+          //     color: 'rgb(253, 193, 138)',
+          //     YaxisAssociation : ''
+          //   },
+          //   {
+          //     propertyName: 'Total Platform Cost',
+          //     type: 'column',
+          //     color: 'rgb(223, 142, 145)',
+          //     YaxisAssociation : ''
+          //   },
+          //   {
+          //     propertyName: 'Line Item Total Budget',
+          //     type: 'line',
+          //     color: 'rgb(253, 8, 0)',
+          //     YaxisAssociation : ''
+          //   }
+          // ];
 
         } else {
 
@@ -629,44 +644,60 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           //   unitType: ''
           // });
 
-          this.chartConfig.dataPoints = [
-            {
-              propertyName: 'Media Cost',
-              type: 'column',
-              color: 'rgb(80, 130, 186)'
-            },
-            {
-              propertyName: 'Kenshoo Fee',
-              type: 'column',
-              color: 'rgb(56, 199, 224)'
-            },
-            {
-              propertyName: 'THD Fee',
-              type: 'column',
-              color: 'rgb(85, 182, 188)',
-              YaxisAssociation : ''
-            },
-            {
-              propertyName: 'Merchant Processing Fee',
-              type: 'column',
-              color: 'rgb(253, 193, 138)',
-              YaxisAssociation : ''
-            },
-            {
-              propertyName: 'Total Platform Cost',
-              type: 'column',
-              color: 'rgb(223, 142, 145)',
-              YaxisAssociation : ''
-            },
-            {
-              propertyName: 'Line Item Daily Budget',
-              type: 'line',
-              color: 'rgb(253, 8, 0)'
-            }
-          ];
+          // this.chartConfig.dataPoints = [
+          //   {
+          //     propertyName: 'Media Cost',
+          //     type: 'column',
+          //     color: 'rgb(80, 130, 186)'
+          //   },
+          //   {
+          //     propertyName: 'Kenshoo Fee',
+          //     type: 'column',
+          //     color: 'rgb(56, 199, 224)'
+          //   },
+          //   {
+          //     propertyName: 'THD Fee',
+          //     type: 'column',
+          //     color: 'rgb(85, 182, 188)',
+          //     YaxisAssociation : ''
+          //   },
+          //   {
+          //     propertyName: 'Merchant Processing Fee',
+          //     type: 'column',
+          //     color: 'rgb(253, 193, 138)',
+          //     YaxisAssociation : ''
+          //   },
+          //   {
+          //     propertyName: 'Total Platform Cost',
+          //     type: 'column',
+          //     color: 'rgb(223, 142, 145)',
+          //     YaxisAssociation : ''
+          //   },
+          //   {
+          //     propertyName: 'Line Item Daily Budget',
+          //     type: 'line',
+          //     color: 'rgb(253, 8, 0)'
+          //   }
+          // ];
         }
 
         this.chartConfig.barWidth = (700 / (20 * response.chartData.length));
+
+        // Chart Labels configured dynamically
+        this.chartConfig.dataPoints = [];
+        const colors = ['rgb(56, 199, 224)', 'rgb(80, 130, 186)', 'rgb(253, 8, 0)', 'rgb(151, 160, 169)', 'rgb(223, 142, 145)', 'rgb(253, 8, 0)'];
+        let i = 0;
+        for(const prop in response.chartData[0]) {
+          if (prop != 'Date') {
+            this.chartConfig.dataPoints.push({
+              propertyName: prop,
+              type: prop === 'Line Item Daily Budget' ? 'line' : 'column',
+              color: colors[i],
+              YaxisAssociation : ''
+            });
+          }
+          i++;
+        }
 
         this.chartConfig.data = response.chartData ; //response.chartData;
 

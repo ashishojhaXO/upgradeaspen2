@@ -86,6 +86,8 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
 
   ngOnInit() {
 
+    console.log('header')
+
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
 

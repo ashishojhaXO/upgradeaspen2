@@ -76,8 +76,12 @@
         </div>
         <div *ngIf="searchType === 'order' && selectedOrder">
             <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
-                <label class="col-lg-3 col-md-3">Selected Client ID : </label>
-                <span class="col-lg-9 col-md-9">{{selectedOrderClientID}}</span>
+                <label class="col-lg-3 col-md-3">Selected Order ID : </label>
+                <span class="col-lg-9 col-md-9">{{selectedOrderID}}</span>
+            </div>
+            <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
+                <label class="col-lg-3 col-md-3">Selected Line Item ID : </label>
+                <span class="col-lg-9 col-md-9">{{selectedOrderLineItemID}}</span>
             </div>
             <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
                 <label class="col-lg-3 col-md-3">Selected Channel : </label>
@@ -124,7 +128,7 @@
                 </div>
             </div>
         </div>
-        <div style="padding-left: 0px" class="col-lg-4 col-md-4">
+        <div style="padding-left: 0px" class="col-lg-4 col-md-4" *ngIf="searchType === 'vendor'">
             <span>Transactions</span>
             <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectPayments.isDataAvailable">
                 <app-data-table2 [dataObject]="dataObjectPayments"

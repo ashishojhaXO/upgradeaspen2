@@ -138,6 +138,10 @@ export class LoginComponent implements OnInit {
     if (AccessToken) {
       token = AccessToken.accessToken;
     }
+
+    console.log('token >>>')
+    console.log(token);
+
     const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
     const urserID = localStorage.getItem('loggedInUserID') || '';

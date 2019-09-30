@@ -55,7 +55,8 @@ export class SupportComponent implements OnInit {
     pendingAR: string;
     availableBalance: string;
     selectedOrder: string;
-    selectedOrderClientID: string;
+    selectedOrderID: string;
+    selectedOrderLineItemID: string
     selectedOrderChannel: string;
     widget: any;
     searchOptions = [{
@@ -104,7 +105,7 @@ export class SupportComponent implements OnInit {
                     response => {
                         if (response && response.data && response.data.length) {
                             this.matchingResults = response.data.map(function (x) {
-                                return { id: x.id , name :  ( x.id + ' - ' + x.order_id + ' - ' + x.channels_id )};
+                                return { id: x.order_id , name :  ( x.line_item_id + ' - ' + x.order_id + ' - ' + x.channels_id )};
                             });
                         }
                         this.inSearchMode = false;
@@ -173,7 +174,8 @@ export class SupportComponent implements OnInit {
             );
         } else {
             this.selectedOrder = e.id;
-            this.selectedOrderClientID = e.name.indexOf('-') !== -1 ? e.name.split('-')[1] : e.name;
+            this.selectedOrderID = e.name.indexOf('-') !== -1 ? e.name.split('-')[1] : e.name;
+            this.selectedOrderLineItemID = e.name.indexOf('-') !== -1 ? e.name.split('-')[0] : e.name;
             this.selectedOrderChannel =  e.name.indexOf('-') !== -1 ? e.name.split('-')[2] : e.name;
         }
 
@@ -390,6 +392,9 @@ export class SupportComponent implements OnInit {
             this.searchType = e.value;
             this.searchcontent = '';
             this.matchingResults = [];
+            this.dataObjectPayments = [];
+            this.dataObjectPaymentMethods = [];
+            this.dataObjectOrders = [];
         }
     }
 

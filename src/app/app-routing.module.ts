@@ -5,7 +5,7 @@ import { AuthGuard } from './shared';
 const routes: Routes = [
   {
     path: 'app',
-    loadChildren: './commonLayout/common-layout.module#CommonLayoutModule',
+    loadChildren: './layout/layout.module#LayoutModule',
     canActivate: [AuthGuard]
   },
   {

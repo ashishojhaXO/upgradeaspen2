@@ -7,7 +7,7 @@
 
 import {ChangeDetectorRef, Component, DoCheck, OnInit, ViewChild} from '@angular/core';
 import {Router, ActivatedRoute} from '@angular/router';
-import {FormControl, FormGroup, FormArray, Validators} from '@angular/forms';
+// import {FormControl, FormGroup, FormArray, Validators} from '@angular/forms';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import {finalize, map} from 'rxjs/operators';
 import { DomSanitizer} from '@angular/platform-browser';
