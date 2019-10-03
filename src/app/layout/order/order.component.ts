@@ -15,11 +15,11 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
 
 @Component({
-  selector: 'app-orders',
-  templateUrl: './orders.component.html',
-  styleUrls: ['./orders.component.scss']
+  selector: 'app-order',
+  templateUrl: './order.component.html',
+  styleUrls: ['./order.component.scss']
 })
-export class OrdersComponent implements OnInit  {
+export class OrderComponent implements OnInit  {
 
   gridData: any;
   dataObject: any = {};
@@ -33,6 +33,9 @@ export class OrdersComponent implements OnInit  {
     isAddRow: false,
     isColVisibility: true,
     isDownload: true,
+    isRowSelection: {
+      isMultiple : false
+    },
     isPageLength: true,
     isPagination: true
   }];
@@ -41,6 +44,8 @@ export class OrdersComponent implements OnInit  {
   externalAuth: any;
   showSpinner: boolean;
   widget: any;
+  isExistingOrder = false;
+  dataFieldConfiguration: any;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
   }
@@ -55,6 +60,14 @@ export class OrdersComponent implements OnInit  {
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
     this.searchDataRequest();
+
+    this.dataFieldConfiguration = [
+      {
+        name: 'VENDOR',
+        type: 'date',
+        size: 40
+      }
+    ];
   }
 
   searchDataRequest() {

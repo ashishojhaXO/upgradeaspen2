@@ -31,6 +31,7 @@ import { SupportComponent } from './support/support.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { UserManagementComponent } from './usermanagement/usermanagement.component';
 import { VisDashboardComponent } from './visDashboard/visDashboard.component';
+import { OrderComponent } from './order/order.component';
 
 // providers
 import { AuthGuard } from './../shared';
@@ -75,7 +76,8 @@ import { OrganizationService } from './../../services/organization.service';
         SupportComponent,
         TasksComponent,
         UserManagementComponent,
-        VisDashboardComponent
+        VisDashboardComponent,
+        OrderComponent
     ],
     providers: [AuthGuard, OktaAuthService, OrganizationService],
     schemas: [

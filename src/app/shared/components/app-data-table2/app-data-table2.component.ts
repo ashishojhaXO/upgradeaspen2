@@ -39,6 +39,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     widget: any;
     api_fs: any;
     tableId = 'example';
+    @Input() dataFieldsConfiguration: any;
 
     constructor(
         public toastr: ToastsManager,
@@ -260,6 +261,23 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     if (__this.dataObject.gridData.result[index].isChecked) {
                         $('td', row).find('input.check-row-selection').prop('checked', true);
                         // $(row).addClass('selected');
+                    }
+
+                    if (__this.dataFieldsConfiguration) {
+                        __this.dataFieldsConfiguration.forEach(function (field) {
+                            console.log('field >>>')
+                            console.log(field);
+                            console.log($('td', row).eq(1));
+                            if (field.type === 'input') {
+                                $('td', row).eq(1).html('<input type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 0.375rem 0.75rem; font-size: 1rem; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(1).text() +  '"/>');
+                            } else if (field.type === 'number') {
+                                $('td', row).eq(1).html('<input type="number" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 0.375rem 0.75rem; font-size: 1rem; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(1).text() +  '"/>');
+                            } else if (field.type === 'date') {
+                                const html = '<div class="form-group"><div class="input-group"><input type="text" id="datePicker" class="datePicker form-control" /> <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span> </span></div></div>';
+                                $('td', row).eq(1).html(html);
+                            }
+                           // $('td', row).eq(field.name.index).css('background-color', column.color);
+                        });
                     }
                 }
             };
@@ -550,6 +568,12 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     }
                 }
             });
+
+            // console.log('$(\'#datePicker\') >>>')
+            // console.log($('#datePicker'));
+            if ($('.datePicker').length) {
+                $('.datePicker').datepicker();
+            }
         }
     }
 

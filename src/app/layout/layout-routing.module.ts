@@ -7,6 +7,7 @@ import {AuthGuard} from '../shared/guard/auth.guard';
 import { VendorManagementComponent } from './../layout/vendorManagement/vendorManagement.component';
 import { DashboardsComponent } from './../layout/dashboards/dashboards.component';
 import { OrdersComponent } from './orders/orders.component';
+import { OrderComponent } from './order/order.component';
 import { PaymentsComponent } from './payments/payments.component';
 import { ReconciliationComponent } from './reconciliation/reconciliation.component';
 import { SupportComponent } from './support/support.component';
@@ -100,6 +101,22 @@ const routes: Routes = [
       {
         path: 'orders',
         component: OrdersComponent
+      },
+      {
+        path: 'order',
+        component: OrderComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Order Management'
+        },
+      },
+      {
+        path: 'order/:id',
+        component: OrderComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Modify Order Management'
+        },
       },
       {
         path: 'payments',
