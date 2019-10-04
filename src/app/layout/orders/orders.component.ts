@@ -97,6 +97,7 @@ export class OrdersComponent implements OnInit  {
     // this.appDataTableComponent.table.deselect();
     // this.appDataTable2Component.table.deselect();
     this.appDataTable2Component.table.rows().deselect();
+    this.appDataTable2Component.table.nodes().to$().find("td input.check-row-selection").prop('checked', false);
   }
 
   redirectToPage() {
