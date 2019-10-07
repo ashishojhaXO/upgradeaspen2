@@ -1,3 +1,11 @@
+@mixin flexbox {
+  display: -webkit-box !important;
+  display: -moz-box !important;
+  display: -webkit-flex !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+}
+
 #login-bg-image {
   background: url(../../assets/images/login_background_dark.jpg) no-repeat;
   background-size: cover;
@@ -7,3 +15,55 @@
   margin-top: 100px;
 }
 
+.login-container {
+  .col-equal-height{
+    display: block;
+  }
+  .formErrorContainer{
+    margin-bottom: 2em;
+    i{
+      padding-right: 5px;
+    }
+  }
+  .logoWrapper{
+    background-color: rgb(29,38,45);
+    padding: 2em;
+    align-items: center;
+    @include flexbox;
+    img{
+      width: 100%;
+      max-width: 320px;
+      margin: auto;
+      display: block;
+    }
+  }
+  .loginFormWrapper {
+    background-color: #fff;
+    padding: 6em 0;
+    .form-group{
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    input.form-control{
+      border-radius: 4px;
+    }
+    button.btn{
+      padding: 10px 25px;
+      line-height: 1;
+      border-radius: 5px;
+      width: auto;
+      margin-right: 0px;
+    }
+    span.forgotLink{
+      color: #3FA8F4;
+      cursor: pointer;
+      font-size: 12px;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .col-equal-height{
+    @include flexbox;
+  }
+}
