@@ -101,9 +101,6 @@ const routes: Routes = [
       {
         path: 'orders',
         component: OrdersComponent,
-        data: {
-          breadcrumbs: true,
-        },
         children: [
           {
             path: ':id',

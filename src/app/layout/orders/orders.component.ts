@@ -9,7 +9,7 @@ import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
-import {Router, ActivatedRoute, NavigationEnd} from '@angular/router';
+import {Router, ActivatedRoute} from '@angular/router';
 import {DataTableOptions} from '../../../models/dataTableOptions';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
