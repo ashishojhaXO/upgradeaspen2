@@ -5,14 +5,15 @@
  * Date: 2019-02-27 14:54:37
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
-import {Router, ActivatedRoute} from '@angular/router';
+import {Router, ActivatedRoute, NavigationEnd} from '@angular/router';
 import {DataTableOptions} from '../../../models/dataTableOptions';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
+import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 
 @Component({
   selector: 'app-orders',
@@ -33,14 +34,22 @@ export class OrdersComponent implements OnInit  {
     isAddRow: false,
     isColVisibility: true,
     isDownload: true,
+    isRowSelection: {
+      isMultiple : false,
+    },
     isPageLength: true,
-    isPagination: true
+    isPagination: true,
   }];
   dashboard: any;
   api_fs: any;
   externalAuth: any;
   showSpinner: boolean;
   widget: any;
+
+  @ViewChild ( AppDataTable2Component )
+  private appDataTable2Component : AppDataTable2Component;
+  selectedRow: any;
+  dashboardType: any;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
   }
@@ -55,6 +64,22 @@ export class OrdersComponent implements OnInit  {
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
     this.searchDataRequest();
+
+
+    this.dashboardType = this.router.url.substr(this.router.url.lastIndexOf('/') + 1);
+
+  }
+
+  unselectRow(st: string) {
+    this.appDataTable2Component.table.rows().deselect();
+    this.appDataTable2Component.table.nodes().to$().find("td input.check-row-selection").prop('checked', false);
+  }
+
+  redirectToPage() {
+    if(this.selectedRow && this.selectedRow.rowIndex) {
+      const pageId = this.selectedRow.rowIndex;
+      this.router.navigate([`${pageId}`], { relativeTo: this.route } );
+    }
   }
 
   searchDataRequest() {
@@ -149,7 +174,17 @@ export class OrdersComponent implements OnInit  {
     // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
   }
 
-  handleRowSelection(rowObj: any, rowData: any) {
-
+  handleCheckboxSelection(rowObj: any, rowData: any) {
+    this.selectedRow = rowObj;
   }
+
+  handleUnCheckboxSelection(rowObj: any, rowData: any) {
+    this.selectedRow = null;
+  }
+
+  handleRow(rowObj: any, rowData: any) {
+    if(this[rowObj.action])
+      this[rowObj.action](rowObj);
+  }
+
 }
