@@ -101,18 +101,6 @@ const routes: Routes = [
       {
         path: 'orders',
         component: OrdersComponent,
-        children: [
-          {
-            path: ':id',
-            pathMatch: 'full',
-            component: OrdersComponent,
-            data: {
-              breadcrumbs: true,
-              text: 'Modify Order'
-            },
-          },
-        ]
-
       },
       {
         path: 'order',

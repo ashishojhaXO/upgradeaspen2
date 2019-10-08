@@ -78,7 +78,7 @@ export class OrdersComponent implements OnInit  {
   redirectToPage() {
     if(this.selectedRow && this.selectedRow.rowIndex) {
       const pageId = this.selectedRow.rowIndex;
-      this.router.navigate([`${pageId}`], { relativeTo: this.route } );
+      this.router.navigate([`../order/${pageId}`], { relativeTo: this.route } );
     }
   }
 
