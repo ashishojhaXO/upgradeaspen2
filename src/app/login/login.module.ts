@@ -11,6 +11,7 @@ import {
   OktaCallbackComponent,
   OktaAuthGuard
 } from '@okta/okta-angular';
+import { LoginNewComponent } from './login-new/login-new.component';
 
 const config = {
   issuer: 'https://dev-256587.oktapreview.com/oauth2/default',
@@ -24,7 +25,7 @@ const config = {
     FormsModule,
     ReactiveFormsModule
   ],
-  declarations: [LoginComponent],
+  declarations: [LoginComponent, LoginNewComponent],
   providers: [OktaAuthService]
 })
 export class LoginModule { }
