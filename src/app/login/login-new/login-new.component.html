@@ -1,24 +1,13 @@
-<link
-  href="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/2.14.0/css/okta-sign-in.min.css"
-  type="text/css"
-  rel="stylesheet"/>
-<link
-  href="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/2.14.0/css/okta-theme.css"
-  type="text/css"
-  rel="stylesheet"/>
-
 <div id="login-bg-image" class="login-bg-image" data-se="login-bg-image">
-  <div class="login-container" style="margin-top: 100px">
-    <div id="okta-signin-container">
-    </div>
-    <!-- <div class="row">
+  <div class="login-container">
+    <div class="row">
       <div class="col-xs-offset-1 col-xs-10 col-md-offset-2 col-md-8 col-equal-height">
         <div class="col-sm-6 col-xs-12 logoWrapper">
           <img src="../../assets/images/f7_logo.png" alt="Logo">
         </div>
-        <div class="col-sm-6 col-xs-12 loginFormWrapper"> -->
+        <div class="col-sm-6 col-xs-12 loginFormWrapper">
           <!-- for displaying server side error -->
-          <!-- <div *ngIf="formError" class="alert alert-danger col-sm-10 col-sm-offset-1 formErrorContainer">
+          <div *ngIf="formError" class="alert alert-danger col-sm-10 col-sm-offset-1 formErrorContainer">
               <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
               {{ formError }}
           </div>
@@ -82,9 +71,6 @@
           </form>
         </div>
       </div>
-    </div> -->
+    </div>
   </div>
-</div>
-<div [hidden]="!error ? 'hidden' : ''" style="margin: 0 auto; text-align: center; margin-top: 15px">
-  <span style="color: red; font-weight: bold;">{{error}}</span>
 </div>
