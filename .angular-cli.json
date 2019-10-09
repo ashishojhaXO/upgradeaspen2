@@ -36,13 +36,15 @@
           "styles/datatables.css",
           "styles/fixedHeader.dataTables.min.css",
           "styles/app.scss",
-          "../node_modules/angular-tree-component/dist/angular-tree-component.css"
+          "../node_modules/angular-tree-component/dist/angular-tree-component.css",
+          "../node_modules/ngx-bootstrap/datepicker/bs-datepicker.css"
       ],
       "scripts": [
           "../node_modules/chart.js/dist/Chart.js",
           "../node_modules/jquery/dist/jquery.min.js",
           "../node_modules/select2/dist/js/select2.full.js",
           "../node_modules/bootstrap/dist/js/bootstrap.js",
+          "../node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.js",
           "../node_modules/popper.js/dist/umd/popper.min.js",
           "../node_modules/datatables.net",
           "scripts/jquery.dataTables.min.js",

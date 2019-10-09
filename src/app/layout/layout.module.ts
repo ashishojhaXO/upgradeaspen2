@@ -20,6 +20,7 @@ import { HeaderComponentDirective } from '../shared/components/header/header.com
 import { FooterComponent } from '../shared';
 import {CheckboxSwitchModule} from './../shared/components/app-checkbox-switch/app-checkbox-switch.module';
 import {MultiSelectDropdownModule} from './../shared/components/multiselect-dropdown/multiselect-dropdown.module';
+import { DatepickerModule, BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 //declarations
 import { DashboardsComponent } from './dashboards/dashboards.component';
@@ -61,7 +62,9 @@ import { OrganizationService } from './../../services/organization.service';
         PopUpModalModule,
         ConfirmationPopoverModule,
         CheckboxSwitchModule,
-        MultiSelectDropdownModule
+        MultiSelectDropdownModule,
+        BsDatepickerModule.forRoot(),
+        DatepickerModule.forRoot()
     ],
     declarations: [
         LayoutComponent,

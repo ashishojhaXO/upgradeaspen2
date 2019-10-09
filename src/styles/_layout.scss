@@ -3266,3 +3266,14 @@ div.dataTables_wrapper div.dataTables_paginate {
 .select2-container {
   min-width: 100px !important;
 }
+
+.input-form-control {
+  width: 160px;
+  padding: 6px 12px;
+  font-size: 12px;
+  height: 34px;
+  color: #495057;
+  border: 1px solid #ced4da;
+  background-clip: padding-box;
+  border-radius: 4px;
+}

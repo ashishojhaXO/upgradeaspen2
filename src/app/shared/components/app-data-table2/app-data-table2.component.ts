@@ -41,6 +41,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     tableId = 'example';
     @Input() dataFieldsConfiguration: any;
     table: any;
+    @Input() dataRowUpdated: boolean;
 
     constructor(
         public toastr: ToastsManager,
@@ -64,7 +65,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes['dataObject']) {
+        if (changes['dataObject'] || changes['dataRowUpdated']) {
             console.log('dataObject >>>');
             console.log(this.dataObject);
 
@@ -84,12 +85,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             setTimeout(function () {
                 __this.initializeTable();
             }, 0);
-           // this.initializeTable();
+            // this.initializeTable();
         }
     }
 
     initializeTable() {
-
         const __this = this;
 
         if (this.dataObject) {
@@ -128,6 +128,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     dataSet.push(rowData);
                 }, this);
             }
+
+            console.log('dataSet >>>')
+            console.log(dataSet);
 
             const columnDefs = []; // columnDef define the table body row schema
             const gridButtons = [];
@@ -249,35 +252,45 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     //   $(row).addClass('selected');
                     // }
                 },
-                createdRow: function (row, data, index) {
-
-                    console.log('created ....');
-
+                createdRow: function (row, data, index, cells) {
                     if (__this.dataObject.gridData.columnsToColor) {
                         __this.dataObject.gridData.columnsToColor.forEach(function (column) {
                             $('td', row).eq(column.index).css('background-color', column.color);
                         });
                     }
 
-                    if (__this.dataObject.gridData.result[index].isChecked) {
+                    if (__this.dataObject.gridData.result[index] && __this.dataObject.gridData.result[index].isChecked) {
                         $('td', row).find('input.check-row-selection').prop('checked', true);
                         // $(row).addClass('selected');
                     }
 
+                    // Initialize inline-edit fields
                     if (__this.dataFieldsConfiguration) {
                         __this.dataFieldsConfiguration.forEach(function (field) {
-                            console.log('field >>>')
-                            console.log(field);
-                            console.log($('td', row).eq(1));
-                            if (field.type === 'input') {
-                                $('td', row).eq(1).html('<input type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 0.375rem 0.75rem; font-size: 1rem; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(1).text() +  '"/>');
-                            } else if (field.type === 'number') {
-                                $('td', row).eq(1).html('<input type="number" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 0.375rem 0.75rem; font-size: 1rem; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(1).text() +  '"/>');
-                            } else if (field.type === 'date') {
-                                const html = '<div class="form-group"><div class="input-group"><input type="text" id="datePicker" class="datePicker form-control" /> <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span> </span></div></div>';
-                                $('td', row).eq(1).html(html);
+                            const headerColumnField = __this.dataObject.gridData.headers.find(x=> x.key === field.name);
+                            if (headerColumnField) {
+                                let columnIndex = __this.dataObject.gridData.headers.indexOf(headerColumnField);
+                                if (__this.dataObject.gridData.options.isRowSelection) {
+                                    columnIndex++;
+                                }
+                                if (field.type === 'text' || field.type === 'decimal') {
+                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.name + '" class="inlineEditor" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.name  + ' is required</div></div>');
+                                } else if (field.type === 'number') {
+                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.name + '" class="inlineEditor" type="number" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.name  + ' is required</div></div>');
+                                } else if (field.type === 'amount') {
+                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '">' + (field.includeCurrency ? '<select style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>' : '') + '<input placeholder="Select ' + field.name + '" class="inlineEditor" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.name  + ' is required</div></div>');
+                                } else if (field.type === 'date') {
+                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div class="input-group date datepicker"><input placeholder="Select ' + field.name + '" type="text" class="form-control inlineEditor" style="border-radius: 4px; font-size: 12px" value="' + $('td', row).eq(columnIndex).text()  + '" /> <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span></div></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.name  + ' is required</div></div>';
+                                    $('td', row).eq(columnIndex).html(html);
+                                } else if (field.type === 'select') {
+                                    let options = '';
+                                    field.options.forEach(function (option) {
+                                        options += '<option value="' + option.key +  '">' + option.text  + '</option>';
+                                    });
+                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select class="form-control inlineEditor" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px;">' + options  + '</select></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.name  + ' is required</div></div';
+                                    $('td', row).eq(columnIndex).html(html);
+                                }
                             }
-                           // $('td', row).eq(field.name.index).css('background-color', column.color);
                         });
                     }
                 }
@@ -318,7 +331,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             // Apply selected class when a row is clicked
             $('#' + this.tableId + ' tbody').on('click', 'tr', function () {
-                $(this).toggleClass('selected');
+                if (__this.dataObject.gridData.options.isRowHighlight) {
+                    $(this).toggleClass('selected');
+                }
             });
 
             // Handle sort column event
@@ -530,8 +545,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                             );
 
 
-                           // row.child(__this.format(rowData)).show();
-                           // tr.addClass('shown');
+                            // row.child(__this.format(rowData)).show();
+                            // tr.addClass('shown');
                         }
                     }
                 } else {
@@ -571,11 +586,35 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 }
             });
 
-            // console.log('$(\'#datePicker\') >>>')
-            // console.log($('#datePicker'));
-            if ($('.datePicker').length) {
-                $('.datePicker').datepicker();
-            }
+
+            // Initialize bootstrap datepicker for inline date fields
+            $('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                clearBtn: true,
+                todayBtn: true,
+                autoclose: true
+            });
+
+            // Register change event on inline edit fields
+            $('.inlineEditor').on('change', function () {
+                console.log('$(this).closest(\'.form-group\')')
+                const rowIndex = $(this).closest('.form-group').attr('rowIndex');
+                let columnIndex = $(this).closest('.form-group').attr('columnIndex');
+                console.log($(this).closest('.form-group').attr('rowIndex'));
+                console.log($(this).closest('.form-group').attr('columnIndex'));
+                if (!$(this).val()) {
+                    $(this).closest('.form-group').next('div.alert').show();
+                } else {
+                    $(this).closest('.form-group').next('div.alert').hide();
+                };
+
+                if (__this.dataObject.gridData.options.isRowSelection) {
+                    columnIndex--;
+                }
+                __this.dataObject.gridData.result[rowIndex][__this.dataObject.gridData.headers[columnIndex].key] = $(this).val();
+                console.log('__this.dataObject.gridData.result >>>')
+                console.log(__this.dataObject.gridData);
+            });
         }
     }
 
@@ -586,7 +625,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
         let retHtml = '';
 
-       // retHtml += '<div style="margin-left: 10px; margin-bottom: 10px"><label>Payment Method</label><span>ACH</span><br><label>Last 4 digits</label><span>7827</span><br><label>Payment Status</label><span>Completed</span><label>Default</label><span>true</span></div>';
+        // retHtml += '<div style="margin-left: 10px; margin-bottom: 10px"><label>Payment Method</label><span>ACH</span><br><label>Last 4 digits</label><span>7827</span><br><label>Payment Status</label><span>Completed</span><label>Default</label><span>true</span></div>';
 
         this.getSearchData(row.external_vendor_id, row.org_id).subscribe(
             response => {
@@ -605,7 +644,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             }
         );
 
-      //  retHtml = '<div>Fetching Details ... </div>';
+        //  retHtml = '<div>Fetching Details ... </div>';
         return retHtml;
     }
 
@@ -639,12 +678,24 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
         // Handle table row select event
         table.on('select', function (e, dt, type, indexes) {
-            // if(__this.dataObject.gridData.options.isRowSelection && !__this.dataObject.gridData.options.isRowSelection.isMultiple) {
-            //   $('input.check-row-selection').prop('checked', false);
-            //   $('#example tbody tr').removeClass('selected');
-            // }
+            if (__this.dataObject.gridData.options.isRowSelection && !__this.dataObject.gridData.options.isRowSelection.isMultiple) {
+                $('input.check-row-selection').prop('checked', false);
+                $('#example tbody tr').removeClass('selected');
+            }
+            // if (table[type]) {
+            // TODO : need to expose another property to do this
             table[type](indexes).nodes().to$().find('td input.check-row-selection').prop('checked', true);
             table[type](indexes).nodes().to$().addClass('selected');
+            // if (__this.dataObject.gridData.options.isRowHighlight) {
+            //    table[type](indexes).nodes().to$().find('td input.check-row-selection').prop('checked', true);
+            //    table[type](indexes).nodes().to$().addClass('selected');
+            // } else {
+            //     table[type](indexes).nodes().to$().removeClass('selected');
+            // }
+
+            console.log('indexes >>')
+            console.log(indexes)
+
             if (__this.sendResponseOnCheckboxClick) {
                 __this.triggerActions.emit({
                     action: 'handleCheckboxSelection',
@@ -652,6 +703,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     rowIndex: indexes[0]
                 });
             }
+            //}
         });
     }
 
