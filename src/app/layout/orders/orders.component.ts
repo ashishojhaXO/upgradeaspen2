@@ -49,7 +49,6 @@ export class OrdersComponent implements OnInit  {
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
   selectedRow: any;
-  dashboardType: any;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
   }
@@ -64,10 +63,6 @@ export class OrdersComponent implements OnInit  {
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
     this.searchDataRequest();
-
-
-    this.dashboardType = this.router.url.substr(this.router.url.lastIndexOf('/') + 1);
-
   }
 
   unselectRow(st: string) {
