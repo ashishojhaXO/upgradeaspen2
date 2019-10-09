@@ -40,6 +40,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     api_fs: any;
     tableId = 'example';
     @Input() dataFieldsConfiguration: any;
+    table: any;
     @Input() dataRowUpdated: boolean;
 
     constructor(
@@ -300,6 +301,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             // Initialize Data Table
             const table = $('#' + this.tableId).DataTable(dataTableOptions);
+            this.table = table;
 
             console.log('table >>>');
             console.log(table);

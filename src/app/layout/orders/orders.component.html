@@ -2,9 +2,24 @@
   <div class="col-lg-12 col-md-12" style="margin: 0px 0px 20px">
     <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">ORDERS</p>
   </div>
+  <div class="col-lg-12 col-md-12" style="margin: 0px 0px 20px">
+    <button type="submit" 
+      [attr.disabled]="!selectedRow ? '' : null" 
+      class="btn action-btn" 
+      (click)="redirectToPage()">
+      Modify
+    </button>
+    <button type="button" class="inaction-btn" (click)="unselectRow('ssup')">
+      Cancel
+    </button>
+  </div>
   <div class="">
     <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject.isDataAvailable">
-      <app-data-table2 [dataObject]="dataObject" (triggerActions)="this[$event.action]($event)"></app-data-table2>
+      <app-data-table2 
+      [dataObject]="dataObject" 
+      [sendResponseOnCheckboxClick]=true
+      (triggerActions)="handleRow($event)">
+    </app-data-table2>
       <!--<app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height"></app-data-table1>-->
     </div>
     <div class="clearfix"></div>

@@ -100,7 +100,7 @@ const routes: Routes = [
       },
       {
         path: 'orders',
-        component: OrdersComponent
+        component: OrdersComponent,
       },
       {
         path: 'order',
