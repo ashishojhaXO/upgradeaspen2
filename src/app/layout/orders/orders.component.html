@@ -6,10 +6,13 @@
     <button type="submit" 
       [attr.disabled]="!selectedRow ? '' : null" 
       class="btn action-btn" 
-      (click)="redirectToPage()">
+      (click)="redirectToModifyOrderPage()">
       Modify
     </button>
-    <button type="button" class="inaction-btn" (click)="unselectRow('ssup')">
+    <button type="button"
+      [attr.disabled]="!selectedRow ? '' : null"
+      class="btn action-btn"
+      (click)="cancelOrder()">
       Cancel
     </button>
   </div>

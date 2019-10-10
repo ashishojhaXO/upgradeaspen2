@@ -65,12 +65,13 @@ export class OrdersComponent implements OnInit  {
     this.searchDataRequest();
   }
 
-  unselectRow(st: string) {
-    this.appDataTable2Component.table.rows().deselect();
-    this.appDataTable2Component.table.nodes().to$().find("td input.check-row-selection").prop('checked', false);
+  cancelOrder() {
+    // const res = OrderService.cancelOrder(id)
+    // return res.subscribe( order => console.log(`Order id: ${order.id} cancelled`) )
+    console.warn("Not Implemented: Call to Cancel service yet to be implemented...");
   }
 
-  redirectToPage() {
+  redirectToModifyOrderPage() {
     if(this.selectedRow && this.selectedRow.rowIndex) {
       const pageId = this.selectedRow.rowIndex;
       this.router.navigate([`../order/${pageId}`], { relativeTo: this.route } );
