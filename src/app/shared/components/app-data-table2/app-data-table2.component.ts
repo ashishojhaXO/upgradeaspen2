@@ -42,6 +42,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     @Input() dataFieldsConfiguration: any;
     table: any;
     @Input() dataRowUpdated: boolean;
+    @Input() identity: any;
 
     constructor(
         public toastr: ToastsManager,
@@ -525,26 +526,29 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                             tr.removeClass('shown');
                         } else {
                             // Open this row
+                            if (__this.identity === 'vendor') {
+                                __this.getSearchData(rowData.external_vendor_id, rowData.org_id).subscribe(
+                                    response => {
+                                        let retHtml = '';
+                                        if (response && response.body && response.body.length) {
+                                            response.body.forEach(function (ele) {
+                                                retHtml += '<div style="margin-left: 10px; margin-bottom: 10px"><label>Payment Method:</label><span style="margin-left: 10px">' + ele.payment_method + '</span><br><label>Last 4 digits:</label><span style="margin-left: 10px">' + ele.last_four_digits + '</span><br><label>Payment Status:</label><span style="margin-left: 10px">' + ele.status + '</span><br><label>Default:</label><span style="margin-left: 10px">' + (ele.is_default == 1 ? 'Yes' : 'No') + '</span></div>';
+                                            });
+                                        } else {
+                                            retHtml += ' No details found';
+                                        }
 
-                            __this.getSearchData(rowData.external_vendor_id, rowData.org_id).subscribe(
-                                response => {
-                                    let retHtml = '';
-                                    if (response && response.body && response.body.length) {
-                                        response.body.forEach(function (ele) {
-                                            retHtml += '<div style="margin-left: 10px; margin-bottom: 10px"><label>Payment Method:</label><span style="margin-left: 10px">' + ele.payment_method  + '</span><br><label>Last 4 digits:</label><span style="margin-left: 10px">' + ele.last_four_digits +  '</span><br><label>Payment Status:</label><span style="margin-left: 10px">' + ele.status + '</span><br><label>Default:</label><span style="margin-left: 10px">' + (ele.is_default == 1 ? 'Yes' : 'No') + '</span></div>';
-                                        });
-                                    } else {
-                                        retHtml += ' No details found';
+                                        row.child(retHtml).show();
+                                        tr.addClass('shown');
+                                    },
+                                    err => {
                                     }
-
-                                    row.child(retHtml).show();
-                                    tr.addClass('shown');
-                                },
-                                err => {
-                                }
-                            );
-
-
+                                );
+                            } else if (__this.identity === 'usermanagement') {
+                                const retHtml = '<div><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Set Password & Activate</button><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-arrow-right" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Resend Activatation Email</button><div class="dropdown"><button class="btn action-btn dropdown-toggle" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; line-height: 1.7; font-weight: 600;" type="button" id="menu1" data-toggle="dropdown">More Actions<span class="caret" style="margin-left: 5px"></span></button><ul class="dropdown-menu" role="menu" aria-labelledby="menu1"><li role="presentation" style="margin: 5px 0px"><i class="fa fa-recycle" style="font-size: 20px; margin-left: 10px" aria-hidden="true"></i><a role="menuitem" tabindex="-1" style="line-height: 1.5; cursor: pointer; font-weight: 600; font-size: 12px; padding-left: 5px; display: inline-block; position: relative; top: -2px" href="#">RESET MULTIFACTOR</a></li><li role="presentation" style="margin: 5px 0px"><span style="position: relative; margin-left: 13px"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-pause" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span><a role="menuitem" tabindex="-1" style="line-height: 1.5; cursor: pointer; font-weight: 600; font-size: 12px; padding-left: 6px; display: inline-block; position: relative; top: -2px" href="#">SUSPEND</a></li><li role="presentation" style="margin: 5px 0px"><span style="position: relative; margin-left: 13px"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-times" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span><a role="menuitem" tabindex="-1" style="line-height: 1.5; cursor: pointer; font-weight: 600; font-size: 12px; padding-left: 6px; display: inline-block; position: relative; top: -2px" href="#">DEACTIVATE</a></li></ul></div></div>';
+                                row.child(retHtml).show();
+                                tr.addClass('shown');
+                            }
                             // row.child(__this.format(rowData)).show();
                             // tr.addClass('shown');
                         }
@@ -561,23 +565,28 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                             tr.removeClass('shown');
                         } else {
                             // Open this row
-                            __this.getSearchData(rowData.external_vendor_id, rowData.org_id).subscribe(
-                                response => {
-                                    let retHtml = '';
-                                    if (response && response.body && response.body.length) {
-                                        response.body.forEach(function (ele) {
-                                            retHtml += '<div style="margin-left: 10px; margin-bottom: 10px"><label>Payment Method:</label><span style="margin-left: 10px">' + ele.payment_method  + '</span><br><label>Last 4 digits:</label><span style="margin-left: 10px">' + ele.last_four_digits +  '</span><br><label>Payment Status:</label><span style="margin-left: 10px">' + ele.status + '</span><br><label>Default:</label><span style="margin-left: 10px">' + (ele.is_default == 1 ? 'Yes' : 'No') + '</span></div>';
-                                        });
-                                    } else {
-                                        retHtml += ' No details found';
+                            if (__this.identity === 'vendor') {
+                                __this.getSearchData(rowData.external_vendor_id, rowData.org_id).subscribe(
+                                    response => {
+                                        let retHtml = '';
+                                        if (response && response.body && response.body.length) {
+                                            response.body.forEach(function (ele) {
+                                                retHtml += '<div style="margin-left: 10px; margin-bottom: 10px"><label>Payment Method:</label><span style="margin-left: 10px">' + ele.payment_method + '</span><br><label>Last 4 digits:</label><span style="margin-left: 10px">' + ele.last_four_digits + '</span><br><label>Payment Status:</label><span style="margin-left: 10px">' + ele.status + '</span><br><label>Default:</label><span style="margin-left: 10px">' + (ele.is_default == 1 ? 'Yes' : 'No') + '</span></div>';
+                                            });
+                                        } else {
+                                            retHtml += ' No details found';
+                                        }
+                                        row.child(retHtml).show();
+                                        tr.addClass('shown');
+                                    },
+                                    err => {
                                     }
-                                    row.child(retHtml).show();
-                                    tr.addClass('shown');
-                                },
-                                err => {
-                                }
-                            );
-
+                                );
+                            } else if (__this.identity === 'usermanagement') {
+                                const retHtml = '<div><button class="btn action-btn" style="width: auto">Set Password & Activate</button><button class="btn action-btn" style="width: auto">Resend Activation Email</button></div>';
+                                row.child(retHtml).show();
+                                tr.addClass('shown');
+                            }
 
                             // row.child(__this.format(rowData)).show();
                             // tr.addClass('shown');
