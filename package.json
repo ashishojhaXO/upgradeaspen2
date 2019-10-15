@@ -103,6 +103,7 @@
     "simple-line-icons": "^2.4.1",
     "ts-loader": "^4.1.0",
     "typescript": "^2.3.4",
+    "ui-contextmenu": "^1.18.1",
     "zone.js": "^0.8.4"
   },
   "devDependencies": {
