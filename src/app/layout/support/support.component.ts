@@ -65,6 +65,9 @@ export class SupportComponent implements OnInit {
     },{
         id: 'order',
         text: 'Order ID'
+    },{
+        id: 'retry',
+        text: 'Retry Orders'
     }];
     searchType = '';
     paymentMethods = [];
@@ -396,6 +399,37 @@ export class SupportComponent implements OnInit {
             this.dataObjectPaymentMethods = [];
             this.dataObjectOrders = [];
         }
+
+        if(this.searchType == 'retry') {
+            // Get orders
+            this.getOrders()
+        }
+    }
+
+    getOrdersService( ) {
+        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        let token = '';
+        if (AccessToken) {
+            token = AccessToken.accessToken;
+        }
+
+        const headers = new Headers({'Content-Type': 'application/json', 'callingapp': 'pine', 'token': token});
+        const options = new RequestOptions({headers: headers});
+        const url = this.api_fs.api + '/api/order';
+
+        return this.http.get(url, options)
+            .map(res => {
+                return res.json();
+            }).share();
+    }
+    
+    getOrders() {
+        // Call From Orders service 
+        this.getOrdersService()
+        .subscribe(resp => 
+            // this.orders = resp.body
+            this.dataObjectPayments = resp.body
+        );
     }
 
     handleRowSelection(rowObj: any) {
