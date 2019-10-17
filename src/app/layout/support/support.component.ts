@@ -16,6 +16,7 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-modal.component';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {OktaAuthService} from '../../../services/okta.service';
+import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 
 @Component({
     selector: 'app-support',
@@ -27,6 +28,7 @@ export class SupportComponent implements OnInit {
     gridData: any;
     dataObjectOrders: any = {};
     dataObjectPayments: any = {};
+    dataObjectRetryOrders : any = {};
     dataObjectPaymentMethods: any = {};
     isDataAvailable: boolean;
     height: any;
@@ -74,6 +76,8 @@ export class SupportComponent implements OnInit {
     matchingResults = [];
     inSearchMode = false;
     @ViewChild('searchField') searchField: ElementRef;
+    @ViewChild ( AppDataTable2Component )
+    private appDataTable2Component : AppDataTable2Component;
 
     constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
     }
@@ -406,6 +410,63 @@ export class SupportComponent implements OnInit {
         }
     }
 
+    // Retry Orders
+
+    compileTableHeaders(data) {
+        const headers = [];
+        if (data.length) {
+            const keys = Object.keys(data[0]);
+            for (let i = 0; i < keys.length; i++) {
+                headers.push({
+                    key: keys[i],
+                    title: keys[i].replace(/_/g,' ').toUpperCase(),
+                    data: keys[i],
+                    isFilterRequired: true,
+                    isCheckbox: false,
+                    class: 'nocolvis',
+                    editButton: false,
+                    width: '150'
+                });
+            }
+        }
+
+        return headers;
+    }
+
+    populateRetryOrders(data) {
+        console.log("POPULATE", data);
+
+        // this.dataObjectPayments = {};
+        this.dataObjectRetryOrders = {};
+
+        this.gridData = {};
+        this.gridData['result'] = [];
+        this.gridData['headers'] = this.compileTableHeaders(data);
+
+        console.log( "thisopts" ,this.options[0] );
+        const optDict = {
+            isRowSelection: {
+                isMultiple : true,
+            },
+        }
+        this.options[0] = Object.assign({}, this.options[0], optDict);
+
+        this.gridData['options'] = this.options[0];
+
+        this.gridData.columnsToColor = [
+        { index: 11, name: 'MERCHANT PROCESSING FEE', color: 'rgb(47,132,234,0.2)'},
+        { index: 15, name: 'LINE ITEM MEDIA BUDGET', color: 'rgb(47,132,234,0.2)'},
+        { index: 16, name: 'KENSHOO FEE', color: 'rgb(47,132,234,0.2)'},
+        { index: 17, name: 'THD FEE', color: 'rgb(47,132,234,0.2)'},
+        { index: 10, name: 'LINE ITEM TOTAL BUDGET', color: 'rgb(47,132,234,0.4)'}
+        ];
+
+        this.gridData['result'] = data;
+        this.dataObjectRetryOrders.gridData = this.gridData;
+        this.dataObjectRetryOrders.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
+        this.dataObjectRetryOrders.gridId = 'payment';
+    }
+
     getOrdersService( ) {
         const AccessToken: any = this.widget.tokenManager.get('accessToken');
         let token = '';
@@ -415,26 +476,81 @@ export class SupportComponent implements OnInit {
 
         const headers = new Headers({'Content-Type': 'application/json', 'callingapp': 'pine', 'token': token});
         const options = new RequestOptions({headers: headers});
-        const url = this.api_fs.api + '/api/order';
+        // const url = this.api_fs.api + '/api/orders/line-items'
+        const url = this.api_fs.api + '/api/orders/line-items';
 
         return this.http.get(url, options)
+            // .pipe(
+            //     map( (res) => {
+            //         console.log("map res", res );
+            //         return res.json();
+            //         // res.json()
+            //      }),
+            //     filter( item => {
+            //         console.log("ITEM: ", item);
+            //         return item['Vendor Payment Status'] == "ERROR PROCESSING PAYMENT";
+            //     })
+            // )
+
             .map(res => {
                 return res.json();
-            }).share();
+            })
+            // .flatMap(res => Observable.from(res))
+            // .filter( ( res, idx ) => {
+            //     // return res[];
+            //     return res['Vendor Payment Status'] == "ERROR PROCESSING PAYMENT";
+            // })
+            .share();
+            
+            // .map(res => {
+            //     console.log( "ORDERS MAP: ", res);
+            //     return res.json();
+            // }).share();
     }
     
     getOrders() {
         // Call From Orders service 
         this.getOrdersService()
-        .subscribe(resp => 
+        .subscribe(resp => {
+            console.log("SUBS resp", resp);
             // this.orders = resp.body
-            this.dataObjectPayments = resp.body
-        );
+            // this.dataObjectRetryOrders = resp
+            this.populateRetryOrders( resp.filter((val) => {
+                return val['Vendor Payment Status'] == "ERROR PROCESSING PAYMENT";
+            }))
+            // .body
+        });
     }
+
+    // Retry Orders/
 
     handleRowSelection(rowObj: any) {
         console.log('rowObj >>')
         console.log(rowObj);
+    }
+
+    selectedRow: any;
+    handleCheckboxSelection(rowObj: any, rowData: any) {
+        console.log("CHECK")
+        this.selectedRow = rowObj;
+    }
+
+    handleUnCheckboxSelection(rowObj: any, rowData: any) {
+        console.log("UNCHECK")
+        this.selectedRow = null;
+    }
+
+    handleRow(rowObj: any, rowData: any) {
+        if(this[rowObj.action])
+            this[rowObj.action](rowObj);
+    }
+
+    retrySubmitBtn(rowObj: any) {
+        console.log( "appDATA@: ", this.appDataTable2Component )
+        const selectedRows = this.appDataTable2Component.table.rows({selected: true})
+        const selectedRowsData = selectedRows.data();
+        const len = selectedRowsData.length;
+
     }
 
     clearSearch() {

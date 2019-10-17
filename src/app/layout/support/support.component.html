@@ -147,13 +147,19 @@
         </div>
 
         <!-- Retry Orders -->
-        <div style="padding-left: 0px" class="col-lg-4 col-md-4" *ngIf="searchType === 'retry'">
+        <div style="padding-left: 0px" 
+            *ngIf="searchType === 'retry'"
+        >
             <span>Failed Orders</span>
-            <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectPayments.isDataAvailable">
-                <app-data-table2 [dataObject]="dataObjectPayments"
-                                 (triggerActions)="this[$event.action]($event)"></app-data-table2>
+            <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectRetryOrders.isDataAvailable">
+                Starting RETORD ADT2
+                <button (click)="retrySubmitBtn($event)">Retry these Orders</button>
+                <app-data-table2 [dataObject]="dataObjectRetryOrders"
+                                 (triggerActions)="handleRow($event)"
+                ></app-data-table2>
             </div>
-            <div class="page-header" style="margin-left: 0px" *ngIf="!dataObjectPayments.isDataAvailable">
+            <div class="page-header" style="margin-left: 0px" *ngIf="!dataObjectRetryOrders.isDataAvailable">
+                Starting RETORD ADT2 NOTHING
                 <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to
                     display.
                 </div>
