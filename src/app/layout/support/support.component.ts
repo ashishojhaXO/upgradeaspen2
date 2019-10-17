@@ -16,6 +16,7 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-modal.component';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {OktaAuthService} from '../../../services/okta.service';
+import Swal from 'sweetalert2';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 
 @Component({
@@ -545,11 +546,41 @@ export class SupportComponent implements OnInit {
             this[rowObj.action](rowObj);
     }
 
+    postRetryOrder(data) {
+        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        let token = '';
+        if (AccessToken) {
+            token = AccessToken.accessToken;
+        }
+
+        const dataObj = JSON.stringify({
+            vendor_id: this.selectedVendorUUID,
+            org_id: 2,
+        });
+
+        const headers = new Headers({'Content-Type': 'application/json', 'callingapp': 'pine', 'token': token});
+        const options = new RequestOptions({headers: headers});
+        const url = this.api_fs.api + '/api/orders/line-items';
+
+        return this.http
+            .post(url, dataObj, options)
+            .map(res => {
+                return res.json();
+            }).share();
+    }
+
     retrySubmitBtn(rowObj: any) {
         console.log( "appDATA@: ", this.appDataTable2Component )
         const selectedRows = this.appDataTable2Component.table.rows({selected: true})
         const selectedRowsData = selectedRows.data();
         const len = selectedRowsData.length;
+
+        Swal.fire({
+            title: 'Error!',
+            text: 'Do you want to continue',
+            type: 'error',
+            confirmButtonText: 'Cool'
+        })
 
     }
 
