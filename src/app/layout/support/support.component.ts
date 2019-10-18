@@ -20,6 +20,7 @@ import {OktaAuthService} from '../../../services/okta.service';
 import Swal from 'sweetalert2';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import { fromPromise } from 'rxjs/observable/fromPromise';
+import { OrderList } from 'primeng/primeng';
 
 @Component({
     selector: 'app-support',
@@ -572,22 +573,54 @@ export class SupportComponent implements OnInit {
     }
 
     // PopUpComponent
-    questionPopUp(options?: {}): {} {
-        const orderIdList = [1,2,3];
+    questionPopUp(options: {}, orderIdList: [Number]): {} {
+        const data = {"ar_id": orderIdList, "acion": "retry"};
+
         const startOptions = {
             title: 'Retry Orders',
             text: `Are you sure you wish to retry payments of order ids: ${orderIdList}`,
             type: 'question',
-            showCancelButton: true,
-            cancelButtonText: "Cancel",
+            // showCancelButton: true,
+            // cancelButtonText: "Cancel",
+            showCloseButton: true,
             confirmButtonText: "Submit",
+            reverseButtons: true,
+            // preConfirm: false,
+            showLoaderOnConfirm: true,
+            preConfirm: (login) => {
+                console.log("PRECOONFIRM", login);
+                return this.postRetryOrderService(data);
+                // fetch(`//api.github.com/users/${login}`, {
+                //     method: 'POST', 
+                //     mode: 'cors', 
+                //     cache: 'no-cache', 
+                //     credentials: 'same-origin', 
+                //     headers: {
+                //         'Content-Type': 'application/json'
+                //     },
+                //     redirect: 'follow', 
+                //     referrer: 'no-referrer', 
+                //     body: JSON.stringify(data) 
+                // })
+                // .then(response => {
+                //     if (!response.ok) {
+                //         throw new Error(response.statusText)
+                //     }
+                //     return response.json()
+                // })
+                // .catch(error => {
+                //     Swal.showValidationMessage(
+                //         `Request failed: ${error}`
+                //     )
+                // })
+            },
+
         };
 
         return startOptions;
     }
 
     errorPopUp(options?: {}): {} {
-        const orderIdList = [1,2,3];
         const startOptions = {
             title: "Operation Failed",
             text: "Operation to retry orders ids failed",
@@ -628,8 +661,8 @@ export class SupportComponent implements OnInit {
 
     }
 
-    runCompileShowPopUp() {
-        const options = this.questionPopUp()
+    runCompileShowPopUp(rowDataOrderIds) {
+        const options = this.questionPopUp({}, rowDataOrderIds);
         return this.showPopUp(options);
     }
     // PopUpComponent/
@@ -640,23 +673,21 @@ export class SupportComponent implements OnInit {
         const selectedRowsData = selectedRows.data();
         const len = selectedRowsData.length;
         let rowDataOrderIds = [];
+        // Taking Hard Coded index temporarily, since DataTables not returning data with column Names
+        const line_item_id = 5;
         for(let i = 0; i < len; i++) {
             this.dataObjectOrders.push
-            rowDataOrderIds.push(selectedRowsData[i])
+            rowDataOrderIds.push(selectedRowsData[i][line_item_id])
         }
 
-        console.log("IDIDID", rowDataOrderIds);
-
         return rowDataOrderIds;
-
     }
 
     retrySubmitBtn(rowObj: any) {
 
         const rowDataOrderIds = this.getRetryOrderIds();
         // Either this
-        const prom = this.runCompileShowPopUp();
-
+        const prom = this.runCompileShowPopUp(rowDataOrderIds);
 
         // prom
         // .then((res) => {
@@ -679,7 +710,7 @@ export class SupportComponent implements OnInit {
                 // else {
                 //     console.log("ELELELELEL");
                 // }
-                return this.postRetryOrderService(rowDataOrderIds);
+                // return this.postRetryOrderService(rowDataOrderIds);
             })
         )
         .subscribe(
