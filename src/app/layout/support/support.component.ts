@@ -7,6 +7,7 @@
 
 import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import 'rxjs/add/operator/filter';
+import { switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import 'jquery';
 import 'bootstrap';
@@ -18,6 +19,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {OktaAuthService} from '../../../services/okta.service';
 import Swal from 'sweetalert2';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
+import { fromPromise } from 'rxjs/observable/fromPromise';
 
 @Component({
     selector: 'app-support',
@@ -546,7 +548,7 @@ export class SupportComponent implements OnInit {
             this[rowObj.action](rowObj);
     }
 
-    postRetryOrder(data) {
+    postRetryOrderService(data) {
         const AccessToken: any = this.widget.tokenManager.get('accessToken');
         let token = '';
         if (AccessToken) {
@@ -569,18 +571,127 @@ export class SupportComponent implements OnInit {
             }).share();
     }
 
-    retrySubmitBtn(rowObj: any) {
+    // PopUpComponent
+    questionPopUp(options?: {}): {} {
+        const orderIdList = [1,2,3];
+        const startOptions = {
+            title: 'Retry Orders',
+            text: `Are you sure you wish to retry payments of order ids: ${orderIdList}`,
+            type: 'question',
+            showCancelButton: true,
+            cancelButtonText: "Cancel",
+            confirmButtonText: "Submit",
+        };
+
+        return startOptions;
+    }
+
+    errorPopUp(options?: {}): {} {
+        const orderIdList = [1,2,3];
+        const startOptions = {
+            title: "Operation Failed",
+            text: "Operation to retry orders ids failed",
+            type: 'error',
+            // cancelButtonText: "Ok",
+        };
+
+        return startOptions;
+    }
+
+    showPopUp(options) {
+        return Swal.fire(options)
+
+        // .then((res)=> {
+        //     if(res.value) {
+        //         console.log("THEN REs", res)
+        //     }
+        //     // Fire Retry Orders
+
+        //     // Call async, if this passes, 
+
+        //     // postRetryOrder
+        //     // return new Promise
+
+
+        // })
+        // .then((res) => {
+        //     // Success Swal
+        //     console.log("THEN REs2222", res)
+
+        // })
+        // .catch((err)=> {
+        //     console.log("Errror", err)
+        //     // Else error Swal
+        //     this.errorPopUp()
+        // });
+        // console.log("FFFF: ", f);
+
+    }
+
+    runCompileShowPopUp() {
+        const options = this.questionPopUp()
+        return this.showPopUp(options);
+    }
+    // PopUpComponent/
+
+    getRetryOrderIds() {
         console.log( "appDATA@: ", this.appDataTable2Component )
         const selectedRows = this.appDataTable2Component.table.rows({selected: true})
         const selectedRowsData = selectedRows.data();
         const len = selectedRowsData.length;
+        let rowDataOrderIds = [];
+        for(let i = 0; i < len; i++) {
+            this.dataObjectOrders.push
+            rowDataOrderIds.push(selectedRowsData[i])
+        }
 
-        Swal.fire({
-            title: 'Error!',
-            text: 'Do you want to continue',
-            type: 'error',
-            confirmButtonText: 'Cool'
-        })
+        console.log("IDIDID", rowDataOrderIds);
+
+        return rowDataOrderIds;
+
+    }
+
+    retrySubmitBtn(rowObj: any) {
+
+        const rowDataOrderIds = this.getRetryOrderIds();
+        // Either this
+        const prom = this.runCompileShowPopUp();
+
+
+        // prom
+        // .then((res) => {
+        //     console.log("RESO", res);
+        // }, () => {
+        //     console.log("REJEC");
+        // })
+        // .catch();
+
+        // Else this
+        // Fire Observable here from Promise
+        fromPromise(prom)
+        .pipe(
+            switchMap( (res) => {
+                console.log("switch: ", res);
+                // if( res && res.value){
+                //     console.log("IFIFIFF");
+                //     return this.postRetryOrderService(rowDataOrderIds);
+                // }
+                // else {
+                //     console.log("ELELELELEL");
+                // }
+                return this.postRetryOrderService(rowDataOrderIds);
+            })
+        )
+        .subscribe(
+            // success
+            (res)=>{
+                this.getOrdersService().subscribe( (res) => {
+                    console.log("getORDERSERVICE REs", res)
+                })
+            },
+            // error
+            ()=>{}
+        )
 
     }
 

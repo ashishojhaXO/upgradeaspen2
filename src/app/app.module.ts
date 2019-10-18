@@ -45,7 +45,7 @@ export function HttpLoaderFactory(http: Http) {
         }),
         SlimLoadingBarModule.forRoot(),
         Ng2MultiSelectDropDownModule.forRoot(),
-        ConfirmationPopoverModule.forRoot()
+        ConfirmationPopoverModule.forRoot(),
     ],
     providers: [AuthGuard, Validator, Common, Title],
     bootstrap: [AppComponent]

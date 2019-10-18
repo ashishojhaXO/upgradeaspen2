@@ -102,6 +102,7 @@
     "save-svg-as-png": "^1.2.0",
     "select2": "^4.0.3",
     "simple-line-icons": "^2.4.1",
+    "sweetalert2": "^8.18.4",
     "ts-loader": "^4.1.0",
     "typescript": "^2.3.4",
     "ui-contextmenu": "^1.18.1",

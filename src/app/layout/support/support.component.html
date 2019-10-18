@@ -153,7 +153,13 @@
             <span>Failed Orders</span>
             <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectRetryOrders.isDataAvailable">
                 Starting RETORD ADT2
-                <button (click)="retrySubmitBtn($event)">Retry these Orders</button>
+                <button class="btn active-btn"
+                    (click)="retrySubmitBtn($event)"
+                    (cancel)="cancel($event)"
+                    (confirm)="retrySubmitBtn($event)"
+                >
+                    Retry Orders
+                </button>
                 <app-data-table2 [dataObject]="dataObjectRetryOrders"
                                  (triggerActions)="handleRow($event)"
                 ></app-data-table2>
