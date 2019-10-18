@@ -550,16 +550,18 @@ export class SupportComponent implements OnInit {
     }
 
     postRetryOrderService(data) {
+        console.log("postRetryOrderService", data);
         const AccessToken: any = this.widget.tokenManager.get('accessToken');
         let token = '';
         if (AccessToken) {
             token = AccessToken.accessToken;
         }
 
-        const dataObj = JSON.stringify({
-            vendor_id: this.selectedVendorUUID,
-            org_id: 2,
-        });
+        // const dataObj = JSON.stringify({
+        //     vendor_id: this.selectedVendorUUID,
+        //     org_id: 2,
+        // });
+        const dataObj = data;
 
         const headers = new Headers({'Content-Type': 'application/json', 'callingapp': 'pine', 'token': token});
         const options = new RequestOptions({headers: headers});
@@ -567,25 +569,25 @@ export class SupportComponent implements OnInit {
 
         return this.http
             .post(url, dataObj, options)
-            .map(res => {
-                return res.json();
-            }).share();
+            .toPromise();
+            // .map(res => {
+            //     return res.json();
+            // }).share();
     }
 
     // PopUpComponent
     questionPopUp(options: {}, orderIdList: [Number]): {} {
-        const data = {"ar_id": orderIdList, "acion": "retry"};
+        const data = {"ar_id": orderIdList, "action": "retry"};
 
         const startOptions = {
             title: 'Retry Orders',
             text: `Are you sure you wish to retry payments of order ids: ${orderIdList}`,
             type: 'question',
-            // showCancelButton: true,
-            // cancelButtonText: "Cancel",
             showCloseButton: true,
+            showCancelButton: true,
+            cancelButtonText: "Cancel",
             confirmButtonText: "Submit",
             reverseButtons: true,
-            // preConfirm: false,
             showLoaderOnConfirm: true,
             preConfirm: (login) => {
                 console.log("PRECOONFIRM", login);
@@ -633,32 +635,6 @@ export class SupportComponent implements OnInit {
 
     showPopUp(options) {
         return Swal.fire(options)
-
-        // .then((res)=> {
-        //     if(res.value) {
-        //         console.log("THEN REs", res)
-        //     }
-        //     // Fire Retry Orders
-
-        //     // Call async, if this passes, 
-
-        //     // postRetryOrder
-        //     // return new Promise
-
-
-        // })
-        // .then((res) => {
-        //     // Success Swal
-        //     console.log("THEN REs2222", res)
-
-        // })
-        // .catch((err)=> {
-        //     console.log("Errror", err)
-        //     // Else error Swal
-        //     this.errorPopUp()
-        // });
-        // console.log("FFFF: ", f);
-
     }
 
     runCompileShowPopUp(rowDataOrderIds) {
@@ -689,40 +665,49 @@ export class SupportComponent implements OnInit {
         // Either this
         const prom = this.runCompileShowPopUp(rowDataOrderIds);
 
-        // prom
-        // .then((res) => {
-        //     console.log("RESO", res);
-        // }, () => {
-        //     console.log("REJEC");
-        // })
-        // .catch();
+        prom
+        .then((res) => {
+            if(res && res.value) {
+                console.log("RESO", res);
+                // return this.postRetryOrderService(rowDataOrderIds);
+            }
+            return null;
+        }, (rej) => {
+            console.log("REJEC", rej);
+        })
+        .catch((err)=>{
+            console.log("ERrro", err);
+        });
 
         // Else this
         // Fire Observable here from Promise
-        fromPromise(prom)
-        .pipe(
-            switchMap( (res) => {
-                console.log("switch: ", res);
-                // if( res && res.value){
-                //     console.log("IFIFIFF");
-                //     return this.postRetryOrderService(rowDataOrderIds);
-                // }
-                // else {
-                //     console.log("ELELELELEL");
-                // }
-                // return this.postRetryOrderService(rowDataOrderIds);
-            })
-        )
-        .subscribe(
-            // success
-            (res)=>{
-                this.getOrdersService().subscribe( (res) => {
-                    console.log("getORDERSERVICE REs", res)
-                })
-            },
-            // error
-            ()=>{}
-        )
+        // fromPromise(prom)
+        // .pipe(
+        //     switchMap( (res) => {
+        //         console.log("switch: ", res);
+        //         if( res ){
+        //             // if(res.value) {
+
+        //             console.log("IFIFIFF");
+        //             return this.postRetryOrderService(rowDataOrderIds);
+        //             // }
+        //         }
+        //         else {
+        //             console.log("ELELELELEL");
+        //         }
+        //         // return this.postRetryOrderService(rowDataOrderIds);
+        //     })
+        // )
+        // .subscribe(
+        //     // success
+        //     (res)=>{
+        //         this.getOrdersService().subscribe( (res) => {
+        //             console.log("getORDERSERVICE REs", res)
+        //         })
+        //     },
+        //     // error
+        //     ()=>{}
+        // )
 
     }
 
