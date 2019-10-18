@@ -546,7 +546,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           if (prop != 'Date') {
             this.chartConfig.dataPoints.push({
               propertyName: prop,
-              type: prop === 'Line Item Monthly Budget' ? 'line' : 'column',
+              type: (prop === 'Line Item Monthly Media Budget' || prop ==='Line Item Media Budget') ? 'line' : 'column',
               color: colors[i]
             });
           }
