@@ -17,6 +17,7 @@ import { TagInputModule } from 'ngx-chips';
 import { Ng2MultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
 import { AppPopUpComponentComponent } from './shared/components/app-pop-up-component/app-pop-up-component.component';
+import { AppPopUpComponent } from './shared/components/app-pop-up/app-pop-up.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
@@ -27,6 +28,7 @@ export function HttpLoaderFactory(http: Http) {
     declarations: [
         AppComponent,
         AppPopUpComponentComponent,
+        AppPopUpComponent,
     ],
     imports: [
         BrowserModule,
