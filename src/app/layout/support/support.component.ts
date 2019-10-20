@@ -630,47 +630,34 @@ export class SupportComponent implements OnInit {
             if(res && res.value) {
                 this.showSpinner = true;
                 console.log("RESO", res);
-                return this.postRetryOrderService(data)
-                .toPromise()
-                .then((res)=>{
-                    // Resolve
-                    const swalOptions = {
-                        title: 'Retry Orders Successful',
-                        text: 'Retry Orders Successful',
-                        type: 'success',
-                        showCloseButton: true,
-                        confirmButtonText: "Ok",
-                    };
+                return this.postRetryOrderService(data).toPromise()
+        }})
+        .then((res)=>{
+            // Resolve
+            this.showSpinner = false;
+            const swalOptions = {
+                title: 'Retry Orders Successful',
+                text: 'Retry Orders Successful',
+                type: 'success',
+                showCloseButton: true,
+                confirmButtonText: "Ok",
+            };
 
-                    this.popUp.showPopUp(swalOptions)
-                    .then((ok) => {
-                        // On Resolve Call getOrders
-                        if(ok.value) {
-                            console.log("OK value")
-                        }
-                         
-                    }, (rej) => {
-                        // On Rejected
-
-                    })
-                    .catch((err) => {
-                        // On Error
-                        console.log("ERROR", err)
-                    })
-                }, (rej) => {
-                    // Rejected
-                })
-                .catch((err)=>{
-                    // On Error
-                    console.log("ERROR", err)
-                })
+            return this.popUp.showPopUp(swalOptions)
+        })
+        .then((ok) => {
+            // On Resolve Call getOrders
+            if(ok.value) {
+                console.log("OK value");
+                // return this.getOrders();
             }
-            // return null;
+                
         }, (rej) => {
-            console.log("REJEC", rej);
+            // On Rejected
+
         })
         .catch((err)=>{
-            console.log("ERrro", err);
+                console.log("ERrro", err);
         });
 
         // Else this
