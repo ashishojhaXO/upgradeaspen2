@@ -631,8 +631,10 @@ export class SupportComponent implements OnInit {
                 this.showSpinner = true;
                 console.log("RESO", res);
                 return this.postRetryOrderService(data).toPromise()
-        }})
+            }
+        })
         .then((res)=>{
+            console.log("then 2");
             // Resolve
             this.showSpinner = false;
             const swalOptions = {
@@ -644,20 +646,31 @@ export class SupportComponent implements OnInit {
             };
 
             return this.popUp.showPopUp(swalOptions)
+        }, (rej) => {
+            console.log("then 2 rej");
+            this.showSpinner = false;
+            const swalOptions = {
+                title: 'Retry Orders Failed',
+                text: 'Retry Orders Failed',
+                type: 'error',
+                showCloseButton: true,
+                confirmButtonText: "Ok",
+            };
+            return this.popUp.showPopUp(swalOptions)
         })
         .then((ok) => {
             // On Resolve Call getOrders
+            console.log("then 3");
+            this.showSpinner = false;
             if(ok.value) {
                 console.log("OK value");
                 // return this.getOrders();
             }
                 
-        }, (rej) => {
-            // On Rejected
-
         })
         .catch((err)=>{
-                console.log("ERrro", err);
+            console.log("ERrro", err);
+            this.showSpinner = false;
         });
 
         // Else this
