@@ -21,12 +21,13 @@ import Swal from 'sweetalert2';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import { fromPromise } from 'rxjs/observable/fromPromise';
 import { OrderList } from 'primeng/primeng';
-import { AppPopUpComponentComponent } from '../../shared/components/app-pop-up-component/app-pop-up-component.component';
+import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up.component';
 
 @Component({
     selector: 'app-support',
     templateUrl: './support.component.html',
-    styleUrls: ['./support.component.scss']
+    styleUrls: ['./support.component.scss'],
+    providers: [AppPopUpComponent]
 })
 export class SupportComponent implements OnInit {
 
@@ -89,7 +90,7 @@ export class SupportComponent implements OnInit {
         private route: ActivatedRoute, 
         private router: Router, 
         private http: Http,
-        private popUp: AppPopUpComponentComponent
+        private popUp: AppPopUpComponent
     ) {
     }
 
@@ -620,15 +621,51 @@ export class SupportComponent implements OnInit {
 
         const serviceFunc: Function = this.postRetryOrderService;
         // Either this
-        const prom = this.popUp.runCompileShowPopUp(data, serviceFunc);
+        // const prom = this.popUp.runCompileShowPopUp(data, serviceFunc);
+        const prom = this.popUp.runCompileShowPopUp(data);
 
         prom
         .then((res) => {
+            console.log("prom then", res);
             if(res && res.value) {
+                this.showSpinner = true;
                 console.log("RESO", res);
-                // return this.postRetryOrderService(rowDataOrderIds);
+                return this.postRetryOrderService(data)
+                .toPromise()
+                .then((res)=>{
+                    // Resolve
+                    const swalOptions = {
+                        title: 'Retry Orders Successful',
+                        text: 'Retry Orders Successful',
+                        type: 'success',
+                        showCloseButton: true,
+                        confirmButtonText: "Ok",
+                    };
+
+                    this.popUp.showPopUp(swalOptions)
+                    .then((ok) => {
+                        // On Resolve Call getOrders
+                        if(ok.value) {
+                            console.log("OK value")
+                        }
+                         
+                    }, (rej) => {
+                        // On Rejected
+
+                    })
+                    .catch((err) => {
+                        // On Error
+                        console.log("ERROR", err)
+                    })
+                }, (rej) => {
+                    // Rejected
+                })
+                .catch((err)=>{
+                    // On Error
+                    console.log("ERROR", err)
+                })
             }
-            return null;
+            // return null;
         }, (rej) => {
             console.log("REJEC", rej);
         })

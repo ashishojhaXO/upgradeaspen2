@@ -14,7 +14,8 @@ export class AppPopUpComponent implements OnInit {
   }
 
   // PopUpComponent
-  questionPopUp(data: {}, serviceFunc ): {} {
+  // questionPopUp(data: {}, serviceFunc ): {} {
+  questionPopUp(data: {} ): {} {
 
     const startOptions = {
       title: 'Retry Orders',
@@ -25,12 +26,12 @@ export class AppPopUpComponent implements OnInit {
       cancelButtonText: "Cancel",
       confirmButtonText: "Submit",
       reverseButtons: true,
-      showLoaderOnConfirm: true,
-      preConfirm: (login) => {
-        console.log("PRECOONFIRM", login);
-        // return this.postRetryOrderService(data).toPromise();
-        return serviceFunc().toPromise();
-      },
+      // showLoaderOnConfirm: true,
+      // preConfirm: (login) => {
+      //   console.log("PRECOONFIRM", login);
+      //   // return this.postRetryOrderService(data).toPromise();
+      //   return serviceFunc().toPromise();
+      // },
 
     };
 
@@ -52,8 +53,10 @@ export class AppPopUpComponent implements OnInit {
     return Swal.fire(options)
   }
 
-  runCompileShowPopUp(data, serviceFunc) {
-    const options = this.questionPopUp(data, serviceFunc);
+  // runCompileShowPopUp(data, serviceFunc) {
+  runCompileShowPopUp(data) {
+    // const options = this.questionPopUp(data, serviceFunc);
+    const options = this.questionPopUp(data);
     return this.showPopUp(options);
   }
   // PopUpComponent/
