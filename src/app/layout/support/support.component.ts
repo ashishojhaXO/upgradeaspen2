@@ -21,6 +21,7 @@ import Swal from 'sweetalert2';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import { fromPromise } from 'rxjs/observable/fromPromise';
 import { OrderList } from 'primeng/primeng';
+import { AppPopUpComponentComponent } from '../../shared/components/app-pop-up-component/app-pop-up-component.component';
 
 @Component({
     selector: 'app-support',
@@ -83,7 +84,13 @@ export class SupportComponent implements OnInit {
     @ViewChild ( AppDataTable2Component )
     private appDataTable2Component : AppDataTable2Component;
 
-    constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
+    constructor(
+        private okta: OktaAuthService, 
+        private route: ActivatedRoute, 
+        private router: Router, 
+        private http: Http,
+        private popUp: AppPopUpComponentComponent
+    ) {
     }
 
     ngOnInit() {
@@ -130,6 +137,7 @@ export class SupportComponent implements OnInit {
         this.selectedVendor = '';
         this.showSpinner = false;
     }
+
 
     OnSearchSelect(e: any): void {
 
@@ -569,79 +577,12 @@ export class SupportComponent implements OnInit {
 
         return this.http
             .post(url, dataObj, options)
-            .toPromise();
+            // .toPromise();
             // .map(res => {
             //     return res.json();
             // }).share();
     }
 
-    // PopUpComponent
-    questionPopUp(options: {}, orderIdList: [Number]): {} {
-        const data = {"ar_id": orderIdList, "action": "retry"};
-
-        const startOptions = {
-            title: 'Retry Orders',
-            text: `Are you sure you wish to retry payments of order ids: ${orderIdList}`,
-            type: 'question',
-            showCloseButton: true,
-            showCancelButton: true,
-            cancelButtonText: "Cancel",
-            confirmButtonText: "Submit",
-            reverseButtons: true,
-            showLoaderOnConfirm: true,
-            preConfirm: (login) => {
-                console.log("PRECOONFIRM", login);
-                return this.postRetryOrderService(data);
-                // fetch(`//api.github.com/users/${login}`, {
-                //     method: 'POST', 
-                //     mode: 'cors', 
-                //     cache: 'no-cache', 
-                //     credentials: 'same-origin', 
-                //     headers: {
-                //         'Content-Type': 'application/json'
-                //     },
-                //     redirect: 'follow', 
-                //     referrer: 'no-referrer', 
-                //     body: JSON.stringify(data) 
-                // })
-                // .then(response => {
-                //     if (!response.ok) {
-                //         throw new Error(response.statusText)
-                //     }
-                //     return response.json()
-                // })
-                // .catch(error => {
-                //     Swal.showValidationMessage(
-                //         `Request failed: ${error}`
-                //     )
-                // })
-            },
-
-        };
-
-        return startOptions;
-    }
-
-    errorPopUp(options?: {}): {} {
-        const startOptions = {
-            title: "Operation Failed",
-            text: "Operation to retry orders ids failed",
-            type: 'error',
-            // cancelButtonText: "Ok",
-        };
-
-        return startOptions;
-    }
-
-    showPopUp(options) {
-        return Swal.fire(options)
-    }
-
-    runCompileShowPopUp(rowDataOrderIds) {
-        const options = this.questionPopUp({}, rowDataOrderIds);
-        return this.showPopUp(options);
-    }
-    // PopUpComponent/
 
     getRetryOrderIds() {
         console.log( "appDATA@: ", this.appDataTable2Component )
@@ -659,11 +600,27 @@ export class SupportComponent implements OnInit {
         return rowDataOrderIds;
     }
 
-    retrySubmitBtn(rowObj: any) {
+    prepareData() {
 
         const rowDataOrderIds = this.getRetryOrderIds();
+        const data = {"ar_id": rowDataOrderIds, "action": "retry"};
+
+        return data;
+    }
+
+
+    serviceFunc() {
+        const data = this.prepareData();
+        this.postRetryOrderService(data).toPromise()
+    }
+
+    retrySubmitBtn(rowObj: any) {
+
+        const data = this.prepareData();
+
+        const serviceFunc: Function = this.postRetryOrderService;
         // Either this
-        const prom = this.runCompileShowPopUp(rowDataOrderIds);
+        const prom = this.popUp.runCompileShowPopUp(data, serviceFunc);
 
         prom
         .then((res) => {
