@@ -84,6 +84,7 @@ export class SupportComponent implements OnInit {
     @ViewChild('searchField') searchField: ElementRef;
     @ViewChild ( AppDataTable2Component )
     private appDataTable2Component : AppDataTable2Component;
+    selectedRowLength: Number = 0;
 
     constructor(
         private okta: OktaAuthService, 
@@ -542,15 +543,12 @@ export class SupportComponent implements OnInit {
         console.log(rowObj);
     }
 
-    selectedRow: any;
     handleCheckboxSelection(rowObj: any, rowData: any) {
-        console.log("CHECK")
-        this.selectedRow = rowObj;
+        this.selectedRowLength = this.appDataTable2Component.table.rows({selected: true}).data().length;
     }
 
     handleUnCheckboxSelection(rowObj: any, rowData: any) {
-        console.log("UNCHECK")
-        this.selectedRow = null;
+        this.selectedRowLength = this.appDataTable2Component.table.rows({selected: true}).data().length;
     }
 
     handleRow(rowObj: any, rowData: any) {
@@ -559,7 +557,6 @@ export class SupportComponent implements OnInit {
     }
 
     postRetryOrderService(data) {
-        console.log("postRetryOrderService", data);
         const AccessToken: any = this.widget.tokenManager.get('accessToken');
         let token = '';
         if (AccessToken) {

@@ -156,15 +156,17 @@
                     (click)="retrySubmitBtn($event)"
                     (cancel)="cancel($event)"
                     (confirm)="retrySubmitBtn($event)"
+                    [attr.disabled]="selectedRowLength > 0 ? null : ''"
                 >
                     Retry
                 </button>
-                <app-data-table2 [dataObject]="dataObjectRetryOrders"
-                                 (triggerActions)="handleRow($event)"
+                <app-data-table2 
+                    [dataObject]="dataObjectRetryOrders"
+                    [sendResponseOnCheckboxClick]=true
+                    (triggerActions)="handleRow($event)"
                 ></app-data-table2>
             </div>
             <div class="page-header" style="margin-left: 0px" *ngIf="!dataObjectRetryOrders.isDataAvailable">
-                Starting RETORD ADT2 NOTHING
                 <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to
                     display.
                 </div>
