@@ -593,13 +593,6 @@ export class SupportComponent implements OnInit {
         return data;
     }
 
-
-    serviceFunc() {
-        const data = this.prepareData();
-        this.postRetryOrderService(data).toPromise()
-    }
-
-
     retrySubmitBtn(rowObj: any) {
 
         const data = this.prepareData();
