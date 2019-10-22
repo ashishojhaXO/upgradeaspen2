@@ -615,6 +615,7 @@ export class SupportComponent implements OnInit {
         this.postRetryOrderService(data).toPromise()
     }
 
+
     retrySubmitBtn(rowObj: any) {
 
         const data = this.prepareData();
@@ -626,51 +627,55 @@ export class SupportComponent implements OnInit {
 
         prom
         .then((res) => {
-            console.log("prom then", res);
+            // console.log("prom then", res);
             if(res && res.value) {
                 this.showSpinner = true;
-                console.log("RESO", res);
+                // console.log("RESO", res);
                 return this.postRetryOrderService(data).toPromise()
             }
         })
         .then((res)=>{
-            console.log("then 2");
+            console.log("then 2", res);
             // Resolve
             this.showSpinner = false;
-            const swalOptions = {
-                title: 'Retry Orders Successful',
-                text: 'Retry Orders Successful',
-                type: 'success',
-                showCloseButton: true,
-                confirmButtonText: "Ok",
-            };
-
-            return this.popUp.showPopUp(swalOptions)
+            if(res) {
+                const swalOptions = {
+                    title: 'Retry Orders Successful',
+                    text: 'Retry Orders Successful',
+                    type: 'success',
+                    showCloseButton: true,
+                    confirmButtonText: "Ok",
+                };
+                return this.popUp.showPopUp(swalOptions)
+            }
+            return null;
         }, (rej) => {
-            console.log("then 2 rej");
             this.showSpinner = false;
-            const swalOptions = {
-                title: 'Retry Orders Failed',
-                text: 'Retry Orders Failed',
-                type: 'error',
-                showCloseButton: true,
-                confirmButtonText: "Ok",
-            };
-            return this.popUp.showPopUp(swalOptions)
+            if(rej) {
+                const swalOptions = {
+                    title: 'Retry Orders Failed',
+                    text: 'Retry Orders Failed',
+                    type: 'error',
+                    showCloseButton: true,
+                    confirmButtonText: "Ok",
+                };
+                this.popUp.showPopUp(swalOptions)
+                throw new Error("Rejected");
+            }
+            return null;
         })
         .then((ok) => {
             // On Resolve Call getOrders
-            console.log("then 3");
-            this.showSpinner = false;
-            if(ok.value) {
-                console.log("OK value");
+            this.showSpinner = false; // true here & then when getOrders pulled, false spinner
+            if(ok && ok.value) {
                 // return this.getOrders();
             }
-                
+            return null;
         })
         .catch((err)=>{
-            console.log("ERrro", err);
+            // if (err instanceof ApiError)
             this.showSpinner = false;
+            console.log(err);
         });
 
         // Else this
