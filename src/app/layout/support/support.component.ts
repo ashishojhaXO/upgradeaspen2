@@ -448,16 +448,13 @@ export class SupportComponent implements OnInit {
     }
 
     populateRetryOrders(data) {
-        console.log("POPULATE", data);
 
-        // this.dataObjectPayments = {};
         this.dataObjectRetryOrders = {};
 
         this.gridData = {};
         this.gridData['result'] = [];
         this.gridData['headers'] = this.compileTableHeaders(data);
 
-        console.log( "thisopts" ,this.options[0] );
         const optDict = {
             isRowSelection: {
                 isMultiple : true,
@@ -526,7 +523,6 @@ export class SupportComponent implements OnInit {
         // Call From Orders service 
         this.getOrdersService()
         .subscribe(resp => {
-            console.log("SUBS resp", resp);
             // this.orders = resp.body
             // this.dataObjectRetryOrders = resp
             this.populateRetryOrders( resp.filter((val) => {
@@ -563,10 +559,6 @@ export class SupportComponent implements OnInit {
             token = AccessToken.accessToken;
         }
 
-        // const dataObj = JSON.stringify({
-        //     vendor_id: this.selectedVendorUUID,
-        //     org_id: 2,
-        // });
         const dataObj = data;
 
         const headers = new Headers({'Content-Type': 'application/json', 'callingapp': 'pine', 'token': token});
@@ -575,15 +567,10 @@ export class SupportComponent implements OnInit {
 
         return this.http
             .post(url, dataObj, options)
-            // .toPromise();
-            // .map(res => {
-            //     return res.json();
-            // }).share();
     }
 
 
     getRetryOrderIds() {
-        console.log( "appDATA@: ", this.appDataTable2Component )
         const selectedRows = this.appDataTable2Component.table.rows({selected: true})
         const selectedRowsData = selectedRows.data();
         const len = selectedRowsData.length;
@@ -616,23 +603,16 @@ export class SupportComponent implements OnInit {
     retrySubmitBtn(rowObj: any) {
 
         const data = this.prepareData();
-
-        const serviceFunc: Function = this.postRetryOrderService;
-        // Either this
-        // const prom = this.popUp.runCompileShowPopUp(data, serviceFunc);
         const prom = this.popUp.runCompileShowPopUp(data);
 
         prom
         .then((res) => {
-            // console.log("prom then", res);
             if(res && res.value) {
                 this.showSpinner = true;
-                // console.log("RESO", res);
                 return this.postRetryOrderService(data).toPromise()
             }
         })
         .then((res)=>{
-            console.log("then 2", res);
             // Resolve
             this.showSpinner = false;
             if(res) {
