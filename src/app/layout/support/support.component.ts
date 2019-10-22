@@ -655,36 +655,6 @@ export class SupportComponent implements OnInit {
             console.log(err);
         });
 
-        // Else this
-        // Fire Observable here from Promise
-        // fromPromise(prom)
-        // .pipe(
-        //     switchMap( (res) => {
-        //         console.log("switch: ", res);
-        //         if( res ){
-        //             // if(res.value) {
-
-        //             console.log("IFIFIFF");
-        //             return this.postRetryOrderService(rowDataOrderIds);
-        //             // }
-        //         }
-        //         else {
-        //             console.log("ELELELELEL");
-        //         }
-        //         // return this.postRetryOrderService(rowDataOrderIds);
-        //     })
-        // )
-        // .subscribe(
-        //     // success
-        //     (res)=>{
-        //         this.getOrdersService().subscribe( (res) => {
-        //             console.log("getORDERSERVICE REs", res)
-        //         })
-        //     },
-        //     // error
-        //     ()=>{}
-        // )
-
     }
 
     clearSearch() {
