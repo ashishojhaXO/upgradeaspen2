@@ -50,7 +50,7 @@ export class AppPopUpComponent implements OnInit {
   }
 
   showPopUp(options) {
-    return Swal.fire(options)
+    return Swal(options)
   }
 
   // runCompileShowPopUp(data, serviceFunc) {
