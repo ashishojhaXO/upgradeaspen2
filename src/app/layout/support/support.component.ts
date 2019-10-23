@@ -420,7 +420,7 @@ export class SupportComponent implements OnInit {
 
         if(this.searchType == 'retry') {
             // Get orders
-            this.getOrders()
+            this.getRetryOrders()
         }
     }
 
@@ -519,7 +519,7 @@ export class SupportComponent implements OnInit {
             // }).share();
     }
     
-    getOrders() {
+    getRetryOrders() {
         // Call From Orders service 
         this.getOrdersService()
         .subscribe(resp => {
@@ -635,10 +635,11 @@ export class SupportComponent implements OnInit {
             return null;
         })
         .then((ok) => {
-            // On Resolve Call getOrders
-            this.showSpinner = false; // true here & then when getOrders pulled, false spinner
+            // On Resolve Call getRetryOrders
+            this.showSpinner = false; // true here & then when getRetryOrders pulled, false spinner
             if(ok && ok.value) {
-                // return this.getOrders();
+                console.log("OK OKVALUE")
+                return this.getRetryOrders();
             }
             return null;
         })
