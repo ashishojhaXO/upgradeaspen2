@@ -14,6 +14,7 @@ import { SupportComponent } from './support/support.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { UserManagementComponent } from './usermanagement/usermanagement.component';
 import { VisDashboardComponent } from './visDashboard/visDashboard.component';
+import { OrdersProcessedComponent } from './orders-processed/orders-processed.component';
 
 const routes: Routes = [
   {
@@ -160,6 +161,14 @@ const routes: Routes = [
             data: {
               breadcrumbs: true,
               text: 'Support'
+            }
+          },
+          {
+            path: 'orders-processed',
+            component: OrdersProcessedComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Orders Processed'
             }
           },
         ]

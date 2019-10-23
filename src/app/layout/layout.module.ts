@@ -38,6 +38,7 @@ import { OrderComponent } from './order/order.component';
 import { AuthGuard } from './../shared';
 import { OktaAuthService } from './../../services/okta.service';
 import { OrganizationService } from './../../services/organization.service';
+import { OrdersProcessedComponent } from './orders-processed/orders-processed.component';
 
 @NgModule({
     imports: [
@@ -80,7 +81,8 @@ import { OrganizationService } from './../../services/organization.service';
         TasksComponent,
         UserManagementComponent,
         VisDashboardComponent,
-        OrderComponent
+        OrderComponent,
+        OrdersProcessedComponent
     ],
     providers: [AuthGuard, OktaAuthService, OrganizationService],
     schemas: [
