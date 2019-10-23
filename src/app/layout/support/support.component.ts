@@ -17,9 +17,7 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-modal.component';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {OktaAuthService} from '../../../services/okta.service';
-import Swal from 'sweetalert2';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
-import { fromPromise } from 'rxjs/observable/fromPromise';
 import { OrderList } from 'primeng/primeng';
 import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up.component';
 
@@ -491,44 +489,19 @@ export class SupportComponent implements OnInit {
         const url = this.api_fs.api + '/api/orders/line-items';
 
         return this.http.get(url, options)
-            // .pipe(
-            //     map( (res) => {
-            //         console.log("map res", res );
-            //         return res.json();
-            //         // res.json()
-            //      }),
-            //     filter( item => {
-            //         console.log("ITEM: ", item);
-            //         return item['Vendor Payment Status'] == "ERROR PROCESSING PAYMENT";
-            //     })
-            // )
-
             .map(res => {
                 return res.json();
             })
-            // .flatMap(res => Observable.from(res))
-            // .filter( ( res, idx ) => {
-            //     // return res[];
-            //     return res['Vendor Payment Status'] == "ERROR PROCESSING PAYMENT";
-            // })
             .share();
-            
-            // .map(res => {
-            //     console.log( "ORDERS MAP: ", res);
-            //     return res.json();
-            // }).share();
     }
     
     getRetryOrders() {
         // Call From Orders service 
         this.getOrdersService()
         .subscribe(resp => {
-            // this.orders = resp.body
-            // this.dataObjectRetryOrders = resp
             this.populateRetryOrders( resp.filter((val) => {
                 return val['Vendor Payment Status'] == "ERROR PROCESSING PAYMENT";
             }))
-            // .body
         });
     }
 
@@ -638,7 +611,6 @@ export class SupportComponent implements OnInit {
             // On Resolve Call getRetryOrders
             this.showSpinner = false; // true here & then when getRetryOrders pulled, false spinner
             if(ok && ok.value) {
-                console.log("OK OKVALUE")
                 return this.getRetryOrders();
             }
             return null;
