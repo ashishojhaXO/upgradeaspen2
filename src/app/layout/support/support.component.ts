@@ -612,8 +612,8 @@ export class SupportComponent implements OnInit {
         })
         .then((ok) => {
             // On Resolve Call getRetryOrders
-            this.showSpinner = true; // true here & then when getRetryOrders pulled, false spinner
             if(ok && ok.value) {
+                this.showSpinner = true; // true here & then when getRetryOrders pulled, false spinner
                 return this.getRetryOrders();
             }
             return null;
