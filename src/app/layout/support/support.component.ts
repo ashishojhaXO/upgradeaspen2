@@ -7,6 +7,7 @@
 
 import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import 'rxjs/add/operator/filter';
+import { switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import 'jquery';
 import 'bootstrap';
@@ -16,17 +17,22 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-modal.component';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {OktaAuthService} from '../../../services/okta.service';
+import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
+import { OrderList } from 'primeng/primeng';
+import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up.component';
 
 @Component({
     selector: 'app-support',
     templateUrl: './support.component.html',
-    styleUrls: ['./support.component.scss']
+    styleUrls: ['./support.component.scss'],
+    providers: [AppPopUpComponent]
 })
 export class SupportComponent implements OnInit {
 
     gridData: any;
     dataObjectOrders: any = {};
     dataObjectPayments: any = {};
+    dataObjectRetryOrders : any = {};
     dataObjectPaymentMethods: any = {};
     isDataAvailable: boolean;
     height: any;
@@ -65,14 +71,26 @@ export class SupportComponent implements OnInit {
     },{
         id: 'order',
         text: 'Order ID'
+    },{
+        id: 'retry',
+        text: 'Retry Orders'
     }];
     searchType = '';
     paymentMethods = [];
     matchingResults = [];
     inSearchMode = false;
     @ViewChild('searchField') searchField: ElementRef;
+    @ViewChild ( AppDataTable2Component )
+    private appDataTable2Component : AppDataTable2Component;
+    selectedRowLength: Number = 0;
 
-    constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
+    constructor(
+        private okta: OktaAuthService, 
+        private route: ActivatedRoute, 
+        private router: Router, 
+        private http: Http,
+        private popUp: AppPopUpComponent
+    ) {
     }
 
     ngOnInit() {
@@ -119,6 +137,7 @@ export class SupportComponent implements OnInit {
         this.selectedVendor = '';
         this.showSpinner = false;
     }
+
 
     OnSearchSelect(e: any): void {
 
@@ -396,11 +415,215 @@ export class SupportComponent implements OnInit {
             this.dataObjectPaymentMethods = [];
             this.dataObjectOrders = [];
         }
+
+        if(this.searchType == 'retry') {
+            // Get orders
+            this.getRetryOrders()
+        }
     }
+
+    // Retry Orders
+
+    compileTableHeaders(data) {
+        const headers = [];
+        if (data.length) {
+            const keys = Object.keys(data[0]);
+            for (let i = 0; i < keys.length; i++) {
+                headers.push({
+                    key: keys[i],
+                    title: keys[i].replace(/_/g,' ').toUpperCase(),
+                    data: keys[i],
+                    isFilterRequired: true,
+                    isCheckbox: false,
+                    class: 'nocolvis',
+                    editButton: false,
+                    width: '150'
+                });
+            }
+        }
+
+        return headers;
+    }
+
+    populateRetryOrders(data) {
+        this.showSpinner = false;
+
+        this.dataObjectRetryOrders = {};
+
+        this.gridData = {};
+        this.gridData['result'] = [];
+        this.gridData['headers'] = this.compileTableHeaders(data);
+
+        const optDict = {
+            isRowSelection: {
+                isMultiple : true,
+            },
+        }
+        this.options[0] = Object.assign({}, this.options[0], optDict);
+
+        this.gridData['options'] = this.options[0];
+
+        this.gridData.columnsToColor = [
+        { index: 11, name: 'MERCHANT PROCESSING FEE', color: 'rgb(47,132,234,0.2)'},
+        { index: 15, name: 'LINE ITEM MEDIA BUDGET', color: 'rgb(47,132,234,0.2)'},
+        { index: 16, name: 'KENSHOO FEE', color: 'rgb(47,132,234,0.2)'},
+        { index: 17, name: 'THD FEE', color: 'rgb(47,132,234,0.2)'},
+        { index: 10, name: 'LINE ITEM TOTAL BUDGET', color: 'rgb(47,132,234,0.4)'}
+        ];
+
+        this.gridData['result'] = data;
+        this.dataObjectRetryOrders.gridData = this.gridData;
+        this.dataObjectRetryOrders.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
+        this.dataObjectRetryOrders.gridId = 'payment';
+    }
+
+    getOrdersService( ) {
+        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        let token = '';
+        if (AccessToken) {
+            token = AccessToken.accessToken;
+        }
+
+        const headers = new Headers({'Content-Type': 'application/json', 'callingapp': 'pine', 'token': token});
+        const options = new RequestOptions({headers: headers});
+        // const url = this.api_fs.api + '/api/orders/line-items'
+        const url = this.api_fs.api + '/api/orders/line-items';
+
+        return this.http.get(url, options)
+            .map(res => {
+                return res.json();
+            })
+            .share();
+    }
+    
+    getRetryOrders() {
+        this.selectedRowLength = 0;
+
+        // Call From Orders service 
+        this.getOrdersService()
+        .subscribe(resp => {
+            this.populateRetryOrders( resp.filter((val) => {
+                return val['Vendor Payment Status'] == "ERROR PROCESSING PAYMENT";
+            }))
+        });
+    }
+
+    // Retry Orders/
 
     handleRowSelection(rowObj: any) {
         console.log('rowObj >>')
         console.log(rowObj);
+    }
+
+    handleCheckboxSelection(rowObj: any, rowData: any) {
+        this.selectedRowLength = this.appDataTable2Component.table.rows({selected: true}).data().length;
+    }
+
+    handleUnCheckboxSelection(rowObj: any, rowData: any) {
+        this.selectedRowLength = this.appDataTable2Component.table.rows({selected: true}).data().length;
+    }
+
+    handleRow(rowObj: any, rowData: any) {
+        if(this[rowObj.action])
+            this[rowObj.action](rowObj);
+    }
+
+    postRetryOrderService(data) {
+        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        let token = '';
+        if (AccessToken) {
+            token = AccessToken.accessToken;
+        }
+
+        const dataObj = data;
+
+        const headers = new Headers({'Content-Type': 'application/json', 'callingapp': 'pine', 'token': token});
+        const options = new RequestOptions({headers: headers});
+        const url = this.api_fs.api + '/api/orders/line-items';
+
+        return this.http
+            .post(url, dataObj, options)
+    }
+
+
+    getRetryOrderIds() {
+        const selectedRows = this.appDataTable2Component.table.rows({selected: true})
+        const selectedRowsData = selectedRows.data();
+        const len = selectedRowsData.length;
+        let rowDataOrderIds = [];
+        // Taking Hard Coded index temporarily, since DataTables not returning data with column Names
+        const line_item_id = 5;
+        for(let i = 0; i < len; i++) {
+            this.dataObjectOrders.push
+            rowDataOrderIds.push(selectedRowsData[i][line_item_id])
+        }
+
+        return rowDataOrderIds;
+    }
+
+    prepareData() {
+
+        const rowDataOrderIds = this.getRetryOrderIds();
+        const data = {"ar_id": rowDataOrderIds, "action": "retry"};
+
+        return data;
+    }
+
+    retrySubmitBtn(rowObj: any) {
+
+        const data = this.prepareData();
+        const prom = this.popUp.runCompileShowPopUp(data);
+
+        prom
+        .then((res) => {
+            if(res && res.value) {
+                this.showSpinner = true;
+                return this.postRetryOrderService(data).toPromise()
+            }
+        })
+        .then((res)=>{
+            // Resolve
+            this.showSpinner = false;
+            if(res) {
+                const swalOptions = {
+                    title: 'Retry Orders Successful',
+                    text: 'Retry Orders Successful',
+                    type: 'success',
+                    showCloseButton: true,
+                    confirmButtonText: "Ok",
+                };
+                return this.popUp.showPopUp(swalOptions)
+            }
+            return null;
+        }, (rej) => {
+            this.showSpinner = false;
+            if(rej) {
+                const swalOptions = {
+                    title: 'Retry Orders Failed',
+                    text: 'Retry Orders Failed',
+                    type: 'error',
+                    showCloseButton: true,
+                    confirmButtonText: "Ok",
+                };
+                this.popUp.showPopUp(swalOptions)
+                throw new Error("Rejected");
+            }
+            return null;
+        })
+        .then((ok) => {
+            // On Resolve Call getRetryOrders
+            this.showSpinner = true; // true here & then when getRetryOrders pulled, false spinner
+            if(ok && ok.value) {
+                return this.getRetryOrders();
+            }
+            return null;
+        })
+        .catch((err)=>{
+            // if (err instanceof ApiError)
+            this.showSpinner = false;
+            console.log("Error: Retry Orders: ", err);
+        });
+
     }
 
     clearSearch() {

@@ -16,6 +16,7 @@ import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 import { TagInputModule } from 'ngx-chips';
 import { Ng2MultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
+import { AppPopUpComponent } from './shared/components/app-pop-up/app-pop-up.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
@@ -25,6 +26,7 @@ export function HttpLoaderFactory(http: Http) {
 @NgModule({
     declarations: [
         AppComponent,
+        AppPopUpComponent,
     ],
     imports: [
         BrowserModule,
@@ -45,7 +47,7 @@ export function HttpLoaderFactory(http: Http) {
         }),
         SlimLoadingBarModule.forRoot(),
         Ng2MultiSelectDropDownModule.forRoot(),
-        ConfirmationPopoverModule.forRoot()
+        ConfirmationPopoverModule.forRoot(),
     ],
     providers: [AuthGuard, Validator, Common, Title],
     bootstrap: [AppComponent]
