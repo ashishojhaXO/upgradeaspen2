@@ -152,6 +152,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 if (this.dataObject.gridData.options.isDeleteOption) {
                     columnButtonDefs += '<a class="fa fa-trash fa-action-view deleteLink" style="cursor: pointer"></a>';
                 }
+                if (this.dataObject.gridData.options.isEmailOption) {
+                    columnButtonDefs += '<a class="fa fa-trash fa-action-view emailLink" style="cursor: pointer"></a>';
+                }
 
                 if (columnButtonDefs) {
                     columns.push({
@@ -396,6 +399,16 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // const data = table.row($(this).parents('tr')).data();
                 __this.triggerActions.emit({
                     action: 'handleDelete',
+                    data: __this.dataObject.gridData.result[table.row($(this).parents('tr')).index()],
+                    rowIndex: table.row($(this).parents('tr')).index()
+                });
+            });
+
+            // Email Click
+            $('#' + this.tableId + ' tbody').on('click', '.emailLink', function () {
+                // const data = table.row($(this).parents('tr')).data();
+                __this.triggerActions.emit({
+                    action: 'handleEmail',
                     data: __this.dataObject.gridData.result[table.row($(this).parents('tr')).index()],
                     rowIndex: table.row($(this).parents('tr')).index()
                 });

@@ -1,20 +1,6 @@
 <div>
   <div class="col-lg-12 col-md-12" style="margin: 0px 0px 20px">
-    <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">ORDERS</p>
-  </div>
-  <div class="col-lg-12 col-md-12" style="margin: 0px 0px 20px">
-    <button type="submit" 
-      [attr.disabled]="!selectedRow ? '' : null" 
-      class="btn action-btn" 
-      (click)="redirectToModifyOrderPage()">
-      Modify
-    </button>
-    <button type="button"
-      [attr.disabled]="!selectedRow ? '' : null"
-      class="btn action-btn"
-      (click)="cancelOrder()">
-      Cancel
-    </button>
+    <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">ORDERS Processed</p>
   </div>
   <div class="">
     <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject.isDataAvailable">
