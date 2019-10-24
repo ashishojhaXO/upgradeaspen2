@@ -446,6 +446,7 @@ export class SupportComponent implements OnInit {
     }
 
     populateRetryOrders(data) {
+        this.showSpinner = false;
 
         this.dataObjectRetryOrders = {};
 
@@ -496,6 +497,8 @@ export class SupportComponent implements OnInit {
     }
     
     getRetryOrders() {
+        this.selectedRowLength = 0;
+
         // Call From Orders service 
         this.getOrdersService()
         .subscribe(resp => {
@@ -609,7 +612,7 @@ export class SupportComponent implements OnInit {
         })
         .then((ok) => {
             // On Resolve Call getRetryOrders
-            this.showSpinner = false; // true here & then when getRetryOrders pulled, false spinner
+            this.showSpinner = true; // true here & then when getRetryOrders pulled, false spinner
             if(ok && ok.value) {
                 return this.getRetryOrders();
             }
@@ -618,7 +621,7 @@ export class SupportComponent implements OnInit {
         .catch((err)=>{
             // if (err instanceof ApiError)
             this.showSpinner = false;
-            console.log(err);
+            console.log("Error: Retry Orders: ", err);
         });
 
     }
