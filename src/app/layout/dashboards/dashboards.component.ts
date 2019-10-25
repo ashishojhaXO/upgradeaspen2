@@ -468,7 +468,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     console.log(response.chartData);
 
     this.chartConfig = JSON.parse(JSON.stringify(chartConfig));
-    if (response.chartData && response.chartData.length) {
+    if (response.chartData && response.chartData.data && response.chartData.data.length) {
 
       console.log('response.chartData >>><<')
       console.log(response.chartData);
@@ -480,7 +480,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         this.chartConfig.isStacked = true;
 
         if (this.selectedView === 'Monthly') {
-          response.chartData.forEach(function (x) {
+          response.chartData.data.forEach(function (x) {
             x['date'] = this.getMonthName(x['Month']) + ' ' + x['Year'];
           }, this);
 
@@ -491,25 +491,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             unitType: ''
           });
 
-          this.chartConfig.barWidth = (700 / (20 * response.chartData.length));
+          this.chartConfig.barWidth = (700 / (20 * response.chartData.data.length));
 
-          // this.chartConfig.dataPoints = [
-          //   {
-          //     propertyName: 'Monthly Spend',
-          //     type: 'column',
-          //     color: 'rgb(56, 199, 224)'
-          //   },
-          //   {
-          //     propertyName: 'Cumulative Spend',
-          //     type: 'column',
-          //     color: 'rgb(80, 130, 186)'
-          //   },
-          //   {
-          //     propertyName: 'Line Item Budget',
-          //     type: 'line',
-          //     color: 'rgb(253, 8, 0)'
-          //   }
-          // ];
         } else {
 
           this.chartConfig.XAxis.labelName = '';
@@ -519,41 +502,20 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             unitType: '',
             // tickIntervalType: 'logarithmic'
           });
-          this.chartConfig.dataPoints = [
-            {
-              propertyName: 'Daily Spend',
-              type: 'column',
-              color: 'rgb(56, 199, 224)'
-            },
-            {
-              propertyName: 'Monthly Cumulative Spend',
-              type: 'column',
-              color: 'rgb(80, 130, 186)'
-            },
-            {
-              propertyName: 'Line Item Monthly Budget',
-              type: 'line',
-              color: 'rgb(253, 8, 0)'
-            }
-          ];
         }
 
         // Chart Labels configured dynamically
-        this.chartConfig.dataPoints = [];
-        const colors = ['rgb(56, 199, 224)', 'rgb(80, 130, 186)', 'rgb(253, 8, 0)', 'rgb(151, 160, 169)', 'rgb(223, 142, 145)', 'rgb(253, 8, 0)'];
-        let i = 0;
-        for(const prop in response.chartData[0]) {
-          if (prop != 'Date') {
-            this.chartConfig.dataPoints.push({
-              propertyName: prop,
-              type: (prop === 'Line Item Monthly Media Budget' || prop ==='Line Item Media Budget') ? 'line' : 'column',
-              color: colors[i]
-            });
-          }
-          i++;
-        }
+        const dataPoints = [];
+        response.chartData.meta.forEach(function (meta) {
+          dataPoints.push({
+            propertyName: meta.label,
+            type: meta.chartTye,
+            color: meta.color
+          });
+        });
+        this.chartConfig.dataPoints = dataPoints;
 
-        this.chartConfig.data = response.chartData;
+        this.chartConfig.data = response.chartData.data;
 
         console.log('this.chartConfig.data >>')
         console.log(this.chartConfig.data);
@@ -571,14 +533,14 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
         if (this.selectedView === 'Monthly') {
 
-          response.chartData.forEach(function (x) {
+          response.chartData.data.forEach(function (x) {
             x['date'] = this.getMonthName(x['Month']) + ' ' + x['Year'];
           }, this);
 
           this.chartConfig.XAxis.labelName = '';
           this.chartConfig.XAxis.dataPropertyName = 'date';
 
-          this.chartConfig.barWidth = (700 / (20 * response.chartData.length));
+          this.chartConfig.barWidth = (700 / (20 * response.chartData.data.length));
 
           this.chartConfig.YAxis.data.push({
             labelName: '',
@@ -681,25 +643,20 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           // ];
         }
 
-        this.chartConfig.barWidth = (700 / (20 * response.chartData.length));
+        this.chartConfig.barWidth = (700 / (20 * response.chartData.data.length));
 
         // Chart Labels configured dynamically
-        this.chartConfig.dataPoints = [];
-        const colors = ['rgb(56, 199, 224)', 'rgb(80, 130, 186)', 'rgb(253, 8, 0)', 'rgb(151, 160, 169)', 'rgb(223, 142, 145)', 'rgb(253, 8, 0)'];
-        let i = 0;
-        for(const prop in response.chartData[0]) {
-          if (prop != 'Date') {
-            this.chartConfig.dataPoints.push({
-              propertyName: prop,
-              type: prop === 'Line Item Daily Budget' ? 'line' : 'column',
-              color: colors[i],
-              YaxisAssociation : ''
-            });
-          }
-          i++;
-        }
+        const dataPoints = [];
+        response.chartData.meta.forEach(function (meta) {
+          dataPoints.push({
+            propertyName: meta.label,
+            type: meta.chartTye,
+            color: meta.color
+          });
+        });
+        this.chartConfig.dataPoints = dataPoints;
 
-        this.chartConfig.data = response.chartData ; //response.chartData;
+        this.chartConfig.data = response.chartData.data;
 
         console.log('this.chartConfig.data >>')
         console.log(this.chartConfig.data);
