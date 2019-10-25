@@ -153,7 +153,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     columnButtonDefs += '<a class="fa fa-trash fa-action-view deleteLink" style="cursor: pointer"></a>';
                 }
                 if (this.dataObject.gridData.options.isEmailOption) {
-                    columnButtonDefs += '<a class="fa fa-trash fa-action-view emailLink" style="cursor: pointer"></a>';
+                    columnButtonDefs += '<a class="fa fa-envelope fa-action-view emailLink" style="cursor: pointer"></a>';
                 }
 
                 if (columnButtonDefs) {

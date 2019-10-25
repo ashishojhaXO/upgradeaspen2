@@ -50,7 +50,7 @@ export class OrdersComponent implements OnInit  {
   private appDataTable2Component : AppDataTable2Component;
   selectedRow: any;
 
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
+  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, protected http: Http) {
   }
 
   ngOnInit() {

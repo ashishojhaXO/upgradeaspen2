@@ -50,6 +50,10 @@ export class OrdersProcessedComponent extends OrdersComponent {
 
   init() {
     const options = {
+      // isSelection To stop selecting and highlighting Row, not working as this config still to be used in app-data-table2 Conponent
+      isSelection: false,
+      isRowHighlight: false,
+      isRowSelection: false,
       isEmailOption: true,
       isPlayOption: true,
       isDownloadOption: true,
@@ -115,7 +119,7 @@ export class OrdersProcessedComponent extends OrdersComponent {
   }
 
   handleEmail(dataObj: any) {
-    console.log("Handle Email Option");
+    console.log("Trigger Email API");
   }
 
   random() {
@@ -123,38 +127,41 @@ export class OrdersProcessedComponent extends OrdersComponent {
   }
 
   handleRun(dataObj: any) {
-    const reportId = dataObj.data.id;
-    this.runReport(reportId).subscribe(response => {
-      console.log(response);
-      this.dataObject.isDataAvailable = false;
-      // this.populateReportDataTable();
-      this.random();
-    }, error => {
-     // const message = JSON.parse(error._body).message;
-     // this.toastr.error('ERROR!', message);
-    });
+    console.log("Trigger Execute/Run API")
+
+    // const reportId = dataObj.data.id;
+    // this.runReport(reportId).subscribe(response => {
+    //   console.log(response);
+    //   this.dataObject.isDataAvailable = false;
+    //   // this.populateReportDataTable();
+    //   this.random();
+    // }, error => {
+    //  // const message = JSON.parse(error._body).message;
+    //  // this.toastr.error('ERROR!', message);
+    // });
   }
 
   runReport(reportId) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
-    let token = '';
-    if (AccessToken) {
-      token = AccessToken.accessToken;
-    }
-    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
-    const options = new RequestOptions({headers: headers});
-    const data = { "adhoc_report_id" : reportId};
+    // const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    // let token = '';
+    // if (AccessToken) {
+    //   token = AccessToken.accessToken;
+    // }
+    // const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    // const options = new RequestOptions({headers: headers});
+    // const data = { "adhoc_report_id" : reportId};
 
-    var url = this.api_fs.api + '/api/reports/adhoc/reexecute';
-    return this.http
-        .post(url, data, options);
+    // var url = this.api_fs.api + '/api/reports/adhoc/reexecute';
+    // return this.http
+    //     .post(url, data, options);
   }
 
   handleDownload(dataObj: any) {
-    const link = document.createElement('a');
-    link.setAttribute('href', dataObj.data.downloadurl);
-    document.body.appendChild(link);
-    link.click();
+    console.log("Trigger Download API");
+    // const link = document.createElement('a');
+    // link.setAttribute('href', dataObj.data.downloadurl);
+    // document.body.appendChild(link);
+    // link.click();
   }
 
 }
