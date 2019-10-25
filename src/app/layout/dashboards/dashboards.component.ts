@@ -509,7 +509,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         response.chartData.meta.forEach(function (meta) {
           dataPoints.push({
             propertyName: meta.label,
-            type: meta.chartTye,
+            type: meta.chart_type,
             color: meta.color
           });
         });
@@ -650,7 +650,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         response.chartData.meta.forEach(function (meta) {
           dataPoints.push({
             propertyName: meta.label,
-            type: meta.chartTye,
+            type: meta.chart_type,
             color: meta.color
           });
         });
