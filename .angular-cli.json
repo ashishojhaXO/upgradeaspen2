@@ -58,6 +58,7 @@
           "../node_modules/datatables.net-rowreorder/js/dataTables.rowReorder.min.js",
           "scripts/dataTables.fixedHeader.min.js",
           "scripts/data-table/sorting.js",
+          "scripts/widget-config.js",
           "scripts/treegrid/jquery.jqgrid.src.js",
           "../node_modules/dragula/dist/dragula.js",
           "../node_modules/jspdf/dist/jspdf.min.js",

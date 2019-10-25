@@ -8,6 +8,7 @@ import { VendorManagementComponent } from './../layout/vendorManagement/vendorMa
 import { DashboardsComponent } from './../layout/dashboards/dashboards.component';
 import { OrdersComponent } from './orders/orders.component';
 import { OrderComponent } from './order/order.component';
+import { OrderPaymentComponent } from './orderPayment/orderPayment.component';
 import { PaymentsComponent } from './payments/payments.component';
 import { ReconciliationComponent } from './reconciliation/reconciliation.component';
 import { SupportComponent } from './support/support.component';
@@ -116,6 +117,14 @@ const routes: Routes = [
         data: {
           breadcrumbs: true,
           text: 'Modify Order Management'
+        },
+      },
+      {
+        path: 'orderPayment',
+        component: OrderPaymentComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Order Payment'
         },
       },
       {

@@ -21,11 +21,13 @@ import { FooterComponent } from '../shared';
 import {CheckboxSwitchModule} from './../shared/components/app-checkbox-switch/app-checkbox-switch.module';
 import {MultiSelectDropdownModule} from './../shared/components/multiselect-dropdown/multiselect-dropdown.module';
 import { DatepickerModule, BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { AppScriptEmbedderModule} from './../shared/components/app-script-embedder/app-script-embedder.module';
 
 //declarations
 import { DashboardsComponent } from './dashboards/dashboards.component';
 import { VendorManagementComponent } from './vendorManagement/vendorManagement.component';
 import { OrdersComponent } from './orders/orders.component';
+import { OrderPaymentComponent } from './orderPayment/orderPayment.component';
 import { PaymentsComponent } from './payments/payments.component';
 import { ReconciliationComponent } from './reconciliation/reconciliation.component';
 import { SupportComponent } from './support/support.component';
@@ -64,7 +66,8 @@ import { OrganizationService } from './../../services/organization.service';
         CheckboxSwitchModule,
         MultiSelectDropdownModule,
         BsDatepickerModule.forRoot(),
-        DatepickerModule.forRoot()
+        DatepickerModule.forRoot(),
+        AppScriptEmbedderModule
     ],
     declarations: [
         LayoutComponent,
@@ -80,7 +83,8 @@ import { OrganizationService } from './../../services/organization.service';
         TasksComponent,
         UserManagementComponent,
         VisDashboardComponent,
-        OrderComponent
+        OrderComponent,
+        OrderPaymentComponent
     ],
     providers: [AuthGuard, OktaAuthService, OrganizationService],
     schemas: [
