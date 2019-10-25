@@ -111,11 +111,11 @@ export class OrdersProcessedComponent extends OrdersComponent {
     const options = this.compileHeaderData();
     const data = {};
 
-    var url = this.api_fs.api + this.config.urls.sendEmail;
-    return this.http.get(url, options)
-      .map(res => {
-        return res.json();
-      }).share();
+    // var url = this.api_fs.api + this.config.urls.sendEmail;
+    // return this.http.get(url, options)
+    //   .map(res => {
+    //     return res.json();
+    //   }).share();
   }
 
   handleRun(dataObj: any) {
@@ -124,12 +124,15 @@ export class OrdersProcessedComponent extends OrdersComponent {
     const options = this.compileHeaderData();
     const data = {};
 
-    var url = this.api_fs.api + this.config.urls.executeJob;
-    return this.http.post(url, data, options)
-      .map(res => {
-        return res.json();
-    }).share();
+    // var url = this.api_fs.api + this.config.urls.executeJob;
+    // return this.http.post(url, data, options)
+    //   .map(res => {
+    //     return res.json();
+    // }).share();
 
+  }
+
+  beforeRunReport() {
     // const reportId = dataObj.data.id;
     // this.runReport(reportId).subscribe(response => {
     //   console.log(response);
@@ -163,11 +166,12 @@ export class OrdersProcessedComponent extends OrdersComponent {
 
     const options = this.compileHeaderData();
     const data = {};
-    var url = this.api_fs.api + this.config.urls.downloadJob
-    return this.http.get(url, options)
-      .map(res => {
-        return res.json();
-    }).share();
+
+    // var url = this.api_fs.api + this.config.urls.downloadJob
+    // return this.http.get(url, options)
+    //   .map(res => {
+    //     return res.json();
+    // }).share();
   }
 
 }
