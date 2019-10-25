@@ -16,30 +16,15 @@ import { OrdersComponent } from '../orders/orders.component';
 })
 export class OrdersProcessedComponent extends OrdersComponent {
 
-  // gridData: any;
-  // dataObject: any = {};
-  // isDataAvailable: boolean;
-  // height: any;
-  // options: Array<any> = [{
-  //   isSearchColumn: true,
-  //   isTableInfo: true,
-  //   isEditOption: false,
-  //   isDeleteOption: false,
-  //   isAddRow: false,
-  //   isColVisibility: true,
-  //   isDownload: true,
-  //   isRowSelection: {
-  //     isMultiple : false,
-  //   },
-  //   isPageLength: true,
-  //   isPagination: true,
-  // }];
-  // dashboard: any;
-  // api_fs: any;
-  // externalAuth: any;
-  // showSpinner: boolean;
-  // widget: any;
-  // selectedRow: any;
+  config = {
+    urls: {
+      downloadJob: '/api/reports/adhoc/reexecute',
+      executeJob: '',
+      sendEmail: ''
+    }
+  };
+
+  columnsToShow: string[] = ["Vendor", "Order ID", "End Date", "Created At (GMT)"];
 
   constructor(okta: OktaAuthService, route: ActivatedRoute, router: Router, http: Http) { 
     super(okta, route, router, http)
@@ -58,25 +43,20 @@ export class OrdersProcessedComponent extends OrdersComponent {
       isPlayOption: true,
       isDownloadOption: true,
     }
-    this.options[0] = Object.assign( {}, this.options[0], options);
 
-    console.log("options: ", this.options);
+    this.options[0] = Object.assign( {}, this.options[0], options);
   }
 
-  columnsToShow: string[] = ["Vendor", "Order ID", "End Date", "Created At (GMT)"];
 
   ngOnInit() {
-    console.log("NGON ININ")
     super.ngOnInit();
   }
 
   populateDataTable(response, initialLoad) {
-    console.log("Pro popDT resp", response);
     const tableData = response;
     this.gridData = {};
     this.gridData['result'] = [];
     const headers = [];
-
 
     if (tableData.length) {
       const keys = Object.keys(tableData[0]);
@@ -102,32 +82,53 @@ export class OrdersProcessedComponent extends OrdersComponent {
     this.gridData['headers'] = headers;
     this.gridData['options'] = this.options[0];
 
-    // this.gridData.columnsToColor = [
-    //   { index: 11, name: 'MERCHANT PROCESSING FEE', color: 'rgb(47,132,234,0.2)'},
-    //   { index: 15, name: 'LINE ITEM MEDIA BUDGET', color: 'rgb(47,132,234,0.2)'},
-    //   { index: 16, name: 'KENSHOO FEE', color: 'rgb(47,132,234,0.2)'},
-    //   { index: 17, name: 'THD FEE', color: 'rgb(47,132,234,0.2)'},
-    //   { index: 10, name: 'LINE ITEM TOTAL BUDGET', color: 'rgb(47,132,234,0.4)'}
-    // ];
-
     this.dashboard = 'paymentGrid';
     this.dataObject.gridData = this.gridData;
-    console.log("griididiidid: ", this.gridData);
     this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
     // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
 
   }
 
-  handleEmail(dataObj: any) {
-    console.log("Trigger Email API");
+  compileHeaderData() {
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+
+    return options;
   }
 
   random() {
 
   }
 
+  handleEmail(dataObj: any) {
+    console.log("Trigger Email API");
+
+    const options = this.compileHeaderData();
+    const data = {};
+
+    var url = this.api_fs.api + this.config.urls.sendEmail;
+    return this.http.get(url, options)
+      .map(res => {
+        return res.json();
+      }).share();
+  }
+
   handleRun(dataObj: any) {
     console.log("Trigger Execute/Run API")
+    
+    const options = this.compileHeaderData();
+    const data = {};
+
+    var url = this.api_fs.api + this.config.urls.executeJob;
+    return this.http.post(url, data, options)
+      .map(res => {
+        return res.json();
+    }).share();
 
     // const reportId = dataObj.data.id;
     // this.runReport(reportId).subscribe(response => {
@@ -156,12 +157,17 @@ export class OrdersProcessedComponent extends OrdersComponent {
     //     .post(url, data, options);
   }
 
+
   handleDownload(dataObj: any) {
     console.log("Trigger Download API");
-    // const link = document.createElement('a');
-    // link.setAttribute('href', dataObj.data.downloadurl);
-    // document.body.appendChild(link);
-    // link.click();
+
+    const options = this.compileHeaderData();
+    const data = {};
+    var url = this.api_fs.api + this.config.urls.downloadJob
+    return this.http.get(url, options)
+      .map(res => {
+        return res.json();
+    }).share();
   }
 
 }
