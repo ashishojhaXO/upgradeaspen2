@@ -20,6 +20,7 @@ import * as common from '../../../../constants/common';
 import {Headers, Http, RequestOptions} from '@angular/http';
 import { DatePipe } from '@angular/common';
 import { OktaAuthService } from '../../../../services/okta.service';
+import set = Reflect.set;
 
 declare var $: any;
 
@@ -274,21 +275,21 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 if (__this.dataObject.gridData.options.isRowSelection) {
                                     columnIndex++;
                                 }
-                                if (field.type === 'text' || field.type === 'decimal') {
-                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.name + '" class="inlineEditor" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.name  + ' is required</div></div>');
-                                } else if (field.type === 'number') {
-                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.name + '" class="inlineEditor" type="number" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.name  + ' is required</div></div>');
+                                if (field.type === 'text' || field.type === 'decimal' || field.type === 'varchar') {
+                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.label + '" class="inlineEditor" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>');
+                                } else if (field.type === 'int') {
+                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.label + '" class="inlineEditor" type="number" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>');
                                 } else if (field.type === 'amount') {
-                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '">' + (field.includeCurrency ? '<select style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>' : '') + '<input placeholder="Select ' + field.name + '" class="inlineEditor" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.name  + ' is required</div></div>');
+                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '">' + (field.includeCurrency ? '<select style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>' : '') + '<input placeholder="Select ' + field.label + '" class="inlineEditor" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>');
                                 } else if (field.type === 'date') {
-                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div class="input-group date datepicker"><input placeholder="Select ' + field.name + '" type="text" class="form-control inlineEditor" style="border-radius: 4px; font-size: 12px" value="' + $('td', row).eq(columnIndex).text()  + '" /> <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span></div></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.name  + ' is required</div></div>';
+                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div class="input-group date datepicker"><input placeholder="Select ' + field.label + '" type="text" class="form-control inlineEditor" style="border-radius: 4px; font-size: 12px" value="' + $('td', row).eq(columnIndex).text()  + '" /> <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span></div></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>';
                                     $('td', row).eq(columnIndex).html(html);
-                                } else if (field.type === 'select') {
+                                } else if (field.type === 'list') {
                                     let options = '';
                                     field.options.forEach(function (option) {
-                                        options += '<option value="' + option.key +  '">' + option.text  + '</option>';
+                                        options += '<option value="' + option.key + '">' + option.text + '</option>';
                                     });
-                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select class="form-control inlineEditor" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px;">' + options  + '</select></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.name  + ' is required</div></div';
+                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select class="form-control inlineEditor" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px;">' + options  + '</select></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div';
                                     $('td', row).eq(columnIndex).html(html);
                                 }
                             }
@@ -548,7 +549,90 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 const retHtml = '<div><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Set Password & Activate</button><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-arrow-right" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Resend Activatation Email</button><div class="dropdown"><button class="btn action-btn dropdown-toggle" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; line-height: 1.7; font-weight: 600;" type="button" id="menu1" data-toggle="dropdown">More Actions<span class="caret" style="margin-left: 5px"></span></button><ul class="dropdown-menu" role="menu" aria-labelledby="menu1"><li role="presentation" style="margin: 5px 0px"><i class="fa fa-recycle" style="font-size: 20px; margin-left: 10px" aria-hidden="true"></i><a role="menuitem" tabindex="-1" style="line-height: 1.5; cursor: pointer; font-weight: 600; font-size: 12px; padding-left: 5px; display: inline-block; position: relative; top: -2px" href="#">RESET MULTIFACTOR</a></li><li role="presentation" style="margin: 5px 0px"><span style="position: relative; margin-left: 13px"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-pause" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span><a role="menuitem" tabindex="-1" style="line-height: 1.5; cursor: pointer; font-weight: 600; font-size: 12px; padding-left: 6px; display: inline-block; position: relative; top: -2px" href="#">SUSPEND</a></li><li role="presentation" style="margin: 5px 0px"><span style="position: relative; margin-left: 13px"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-times" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span><a role="menuitem" tabindex="-1" style="line-height: 1.5; cursor: pointer; font-weight: 600; font-size: 12px; padding-left: 6px; display: inline-block; position: relative; top: -2px" href="#">DEACTIVATE</a></li></ul></div></div>';
                                 row.child(retHtml).show();
                                 tr.addClass('shown');
+                            } else if (__this.identity === 'orders') {
+                                let retHtml = '';
+                                const orderSteps = [];
+                                orderSteps.push({
+                                    title: 'Order Started',
+                                    subTitle: '10/01/2019',
+                                    state : 'done',
+                                    description: 'Order details during started'
+                                });
+                                orderSteps.push({
+                                    title: 'Payment Received',
+                                    subTitle: '10/01/2019',
+                                    state : 'done',
+                                    description: 'Order details during payment received'
+                                });
+                                orderSteps.push({
+                                    title: 'Payment Processing',
+                                    subTitle: 'Pending',
+                                    state : 'active'
+                                });
+                                orderSteps.push({
+                                    title: 'Order Ended',
+                                    subTitle: '---',
+                                    state : ''
+                                });
+                                retHtml += '<div><h4>Order Details</h4></div>';
+                                const id = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
+                                retHtml += __this.smartSteps(id, orderSteps);
+                                retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="width: 450px; border-radius: 4px; overflow-y: scroll;"><h4>Order History</h4><ul></ul><li>10/03/2019 - Order Modified</li><li>10/01/2019 - Payment Received - AMEX xxxx0747 </li><li>10/01/2019 - Order Created</li></div>';
+                                retHtml += '<p style="clear: both">';
+                                retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="margin: 20px 0px"><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Modify Order</button><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Cancel Order</button></div>';
+                                retHtml += '<p style="clear: both">';
+                                // retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" id="' + accordian + '" style="width: 700px; height: 50px; background: lavender; margin-left: 15px"><h5 style="margin-top: 17px">Line Item 1</h5><div><p>Some Details</p></div><h5 style="margin-top: 17px">Line Item 2</h5><div><p>Some Details</p></div><h5 style="margin-top: 17px">Line Item 3</h5><div><p>Some Details</p></div></div>';
+                                const items = [];
+                                items.push({
+                                    header: 'Line Item 1',
+                                    content: 'Line Item 1 details goes here',
+                                    steps : [{
+                                        title: 'Campaign Start',
+                                        subTitle: '10/01/2019',
+                                        state : 'done'
+                                    },{
+                                        title: 'Campaign End',
+                                        subTitle: '10/31/2019',
+                                        state : ''
+                                    }]
+                                });
+                                items.push({
+                                    header: 'Line Item 2',
+                                    content: 'Line Item 2 details goes here',
+                                    steps : [{
+                                        title: 'Campaign Start',
+                                        subTitle: '11/01/2019',
+                                        state : 'done'
+                                    },{
+                                        title: 'Campaign End',
+                                        subTitle: '11/30/2019',
+                                        state : ''
+                                    }]
+                                });
+                                items.push({
+                                    header: 'Line Item 3',
+                                    content: 'Line Item 3 details goes here',
+                                    steps : [{
+                                        title: 'Campaign Start',
+                                        subTitle: '12/01/2019',
+                                        state : 'done'
+                                    },{
+                                        title: 'Campaign End',
+                                        subTitle: '12/31/2019',
+                                        state : ''
+                                    }]
+                                });
+                                retHtml += __this.lineItemDetails(items);
+
+                                row.child(retHtml).show();
+                                tr.addClass('shown');
+
+                                // Register Accordian click event
+                                $(".accordion .accordion-header").on("click", function() {
+                                    $(this).toggleClass("active").next().slideToggle();
+                                });
                             }
+
                             // row.child(__this.format(rowData)).show();
                             // tr.addClass('shown');
                         }
@@ -586,6 +670,36 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 const retHtml = '<div><button class="btn action-btn" style="width: auto">Set Password & Activate</button><button class="btn action-btn" style="width: auto">Resend Activation Email</button></div>';
                                 row.child(retHtml).show();
                                 tr.addClass('shown');
+                            } else if (__this.identity === 'orders') {
+                                let retHtml = '';
+                                const orderSteps = [];
+                                orderSteps.push({
+                                    title: 'Created',
+                                    subTitle: 'Date Order Created'
+                                });
+                                orderSteps.push({
+                                    title: 'Payment Submitted',
+                                    subTitle: 'Date Payment Submitted'
+                                });
+                                orderSteps.push({
+                                    title: 'Payment Received',
+                                    subTitle: 'Date Payment Received'
+                                });
+                                orderSteps.push({
+                                    title: 'Ended',
+                                    subTitle: 'Date order ended'
+                                });
+                                retHtml += '<div>Order #123</div>';
+                                const id = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
+                                retHtml += __this.smartSteps(id, orderSteps);
+                                retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="border: 1px solid; width: 450px"> Test </div>';
+                                row.child(retHtml).show();
+                                tr.addClass('shown');
+
+                                $('#' + id).smartWizard({
+                                    theme: 'dots',
+                                    enableFinishButton: false
+                                });
                             }
 
                             // row.child(__this.format(rowData)).show();
@@ -624,7 +738,69 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 console.log('__this.dataObject.gridData.result >>>')
                 console.log(__this.dataObject.gridData);
             });
+
+            $(document).on('click', '.step-anchor .nav-item', function(){
+               console.log('this')
+                console.log($(this));
+            });
         }
+    }
+
+    smartSteps(id, steps, isLineItem = false) {
+        const $mainDiv = $('<div/>', {
+            'class': 'col-lg-6 col-md-6 col-sm-12',
+            css : {
+                'width' : isLineItem ? '300px' : '700px',
+                'margin' : '20px 0px'
+            }
+        });
+        const $div = $('<div/>', {
+            id: id
+        });
+        const $ul = $('<ul/>');
+        const $divDetails = $('<div/>');
+        for (let i=0; i < steps.length; i++) {
+            $ul.append('<li class="' + steps[i].state + '"><a href="#step-' + i + '">' + steps[i].title + '<br/><small>'  + steps[i].subTitle + '</small></a></li>');
+            if (steps[i].description) {
+                $divDetails.append('<div id="step-' + i + '">' + steps[i].description + '</div>');
+            }
+        }
+        $div.append($ul);
+        $mainDiv.append($div);
+
+        setTimeout(function () {
+            $('#' + id).smartWizard({
+                theme: 'dots',
+                keyNavigation: false,
+                enableFinishButton: false,
+                showStepURLhash: false,
+                enableAll: true,
+                anchorSettings: {
+                    anchorClickable: true, // Enable/Disable anchor navigation
+                    enableAllAnchors: false, // Activates all anchors clickable all times
+                    //  markDoneStep: false, // add done css
+                    //  enableAnchorOnDoneStep: false // Enable/Disable the done steps navigation
+                }
+            });
+
+            $('#' + id).smartWizard("stepState", [1], "enable");
+
+        }, 100);
+
+      //  $div.append($divDetails);
+        return $mainDiv[0].outerHTML;
+    }
+
+    lineItemDetails(items) {
+        const $mainDiv = $('<div/>', {
+            'class': 'accordion'
+        });
+        for (let i=0; i < items.length; i++) {
+            const id = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
+            $mainDiv.append('<div class="accordion-header">' + items[i].header + '</div>');
+            $mainDiv.append('<div class="accordion-content"><p>' + items[i].content + '</p>' + this.smartSteps(id, items[i].steps, true) + '<p style="clear: both"</div>');
+        }
+        return $mainDiv[0].outerHTML;
     }
 
     format(row) {

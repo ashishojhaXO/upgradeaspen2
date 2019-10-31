@@ -48,14 +48,8 @@ export class OrderComponent implements OnInit  {
   showSpinner: boolean;
   widget: any;
   isExistingOrder = false;
-  dataFieldConfiguration: any;
-  templates = [{
-    id: 'template1',
-    text: 'Template 1'
-  }, {
-    id: 'template2',
-    text: 'Template 2'
-  }];
+  dataFieldConfiguration = [];
+  templates = [];
   template = '';
   templateDefinition = [];
   data: any = {};
@@ -77,13 +71,192 @@ export class OrderComponent implements OnInit  {
 
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
-   // this.searchDataRequest();
+    this.searchTemplates();
 
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.isExistingOrder = true;
       }
     });
+  }
+
+  searchTemplates() {
+    this.getTemplates().subscribe(
+        response => {
+          console.log('response >>')
+          console.log(response);
+
+          if (response && response.orgTemplates && response.orgTemplates.templates && response.orgTemplates.templates.length) {
+            response.orgTemplates.templates.forEach(function (ele) {
+              this.templates.push({
+                id: ele.id,
+                text: ele.name
+              });
+            }, this);
+          }
+        },
+        err => {
+
+          if(err.status === 401) {
+            if(this.widget.tokenManager.get('accessToken')) {
+              this.widget.tokenManager.refresh('accessToken')
+                  .then(function (newToken) {
+                    this.widget.tokenManager.add('accessToken', newToken);
+                    this.showSpinner = false;
+                    this.searchTemplates();
+                  })
+                  .catch(function (err) {
+                    console.log('error >>')
+                    console.log(err);
+                  });
+            } else {
+              this.widget.signOut(() => {
+                this.widget.tokenManager.remove('accessToken');
+                window.location.href = '/login';
+              });
+            }
+          } else {
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+
+  searchTemplateDetails(templateID) {
+    this.getTemplateDetails(templateID).subscribe(
+        response => {
+          if (response && response.orderTemplateData && response.orderTemplateData.orderFields && response.orderTemplateData.orderFields.length) {
+            response.orderTemplateData.orderFields.forEach(function (ele) {
+
+              const obj: any = {
+                label : ele.label,
+                name: ele.name,
+                type: ele.type,
+                validation : ele.validation,
+                value: ele.value || '',
+                disabled : ele.disable !== 0,
+                size: 40
+              };
+
+              if (ele.type === 'list') {
+                obj.options = [];
+                if (ele.attr_list && ele.attr_list.options && ele.attr_list.options.length) {
+                  ele.attr_list.options.forEach(function (option) {
+                    for(const prop in option) {
+                      obj.options.push({
+                        id : prop,
+                        text: option[prop]
+                      });
+                    }
+                  });
+                }
+              }
+
+              this.templateDefinition.push(obj);
+
+            }, this);
+
+            this.buildTemplateForm();
+
+            if (response && response.orderTemplateData && response.orderTemplateData.lineItems && response.orderTemplateData.lineItems.length) {
+              response.orderTemplateData.lineItems.forEach(function (ele) {
+
+                const obj: any = {
+                  label : ele.label,
+                  name: ele.name,
+                  type: ele.type,
+                  validation : ele.validation,
+                  value: ele.value || '',
+                  disabled : ele.disable !== 0
+                };
+
+                if (ele.type === 'list') {
+                  obj.options = [];
+                  if (ele.attr_list && ele.attr_list.options && ele.attr_list.options.length) {
+                    ele.attr_list.options.forEach(function (option) {
+                      for(const prop in option) {
+                        obj.options.push({
+                          key : prop,
+                          text: option[prop]
+                        });
+                      }
+                    });
+                  }
+                }
+
+                this.dataFieldConfiguration.push(obj);
+
+              }, this);
+            }
+
+            if (this.dataFieldConfiguration.length) {
+              this.buildLineItem(this.dataFieldConfiguration);
+            }
+
+          }
+        },
+        err => {
+
+          if(err.status === 401) {
+            if(this.widget.tokenManager.get('accessToken')) {
+              this.widget.tokenManager.refresh('accessToken')
+                  .then(function (newToken) {
+                    this.widget.tokenManager.add('accessToken', newToken);
+                    this.showSpinner = false;
+                    this.getTemplateDetails(templateID);
+                  })
+                  .catch(function (err) {
+                    console.log('error >>')
+                    console.log(err);
+                  });
+            } else {
+              this.widget.signOut(() => {
+                this.widget.tokenManager.remove('accessToken');
+                window.location.href = '/login';
+              });
+            }
+          } else {
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+
+  getTemplates() {
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/orders/templates';
+    return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
+  getTemplateDetails(templateID) {
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+
+    const data = {
+      template_id : templateID
+    }
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/orders/form';
+    return this.http
+        .post(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   addLineItem() {
@@ -107,133 +280,13 @@ export class OrderComponent implements OnInit  {
   OnTemplateChange(e) {
     if (e.value && e.value !== this.template) {
       this.template = e.value;
-      this.templateDefinition = [{
-        label : 'Advertiser',
-        name: 'advertiser',
-        type: 'text',
-        validation : ['required'],
-        value: 'Radisson Hotels',
-        disabled : true
-      },
-        {
-        label : 'Region',
-        name: 'region',
-        type: 'text',
-        validation : ['required'],
-        value: 'CESE',
-        disabled : true
-      },
-        {
-          label : 'Order Start Date',
-          name: 'order_start_date',
-          type: 'date',
-          validation : ['required'],
-          value: '',
-          disabled : false
-        },
-        {
-          label : 'Order End Date',
-          name: 'order_end_date',
-          type: 'date',
-          validation : ['required'],
-          value: '',
-          disabled : false
-        },
-        {
-          label : 'Order Budget',
-          name: 'order_budget',
-          type: 'decimal',
-          validation : ['required'],
-          value: '',
-          disabled : false
-        }];
+      this.searchTemplateDetails(this.template);
+    }
+  }
 
-      this.buildTemplateForm();
-
-      this.dataFieldConfiguration = [{
-        name: 'Start Date',
-        type: 'date',
-        validation : ['required'],
-        disabled : true,
-        size: 40
-      },{
-        name: 'End Date',
-        type: 'date',
-        validation : ['required'],
-        disabled : true,
-        size: 40
-      },
-        {
-          name: 'Tactic',
-          type: 'select',
-          validation : ['required'],
-          value: '',
-          options: [{
-            key : '',
-            text : 'Select Tactic'
-          },{
-            key : 'tactic1',
-            text : 'TacTic 1'
-          },
-            {
-              key : 'tactic2',
-              text : 'Tactic 2'
-            }],
-          disabled : false,
-          size: 20
-        },
-        {
-          name: 'Channel',
-          type: 'select',
-          validation : ['required'],
-          options: [{
-            key : '',
-            text : 'Select Channel'
-          },{
-            key : 'channel1',
-            text : 'Channel 1'
-          },
-            {
-              key : 'channel2',
-              text : 'Channel 2'
-            }],
-          value: '',
-          disabled : false,
-          size: 20
-        },
-        {
-          name: 'Line Item Budget',
-          type: 'amount',
-          includeCurrency : true,
-          validation : ['required'],
-          value: '',
-          disabled : false,
-          size: 20
-        },
-        {
-          name: 'SITA Code',
-          type: 'select',
-          validation : ['required'],
-          value: '',
-          options: [,
-            {
-              key : '',
-              text : 'Select Code'
-            },{
-            key : 'code1',
-            text : 'Code 1'
-          },
-            {
-              key : 'code2',
-              text : 'Code 2'
-            }],
-          disabled : false,
-          size: 20
-        }];
-
-      if (this.dataFieldConfiguration.length) {
-        this.buildLineItem(this.dataFieldConfiguration);
-      }
+  OnSelectValueChange(e, def) {
+    if (e.value && e.value !== def.value) {
+      def.value = e.value;
     }
   }
 

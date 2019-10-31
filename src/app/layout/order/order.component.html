@@ -28,11 +28,19 @@
                  bsDatepicker [(bsValue)]="def.value" />
           <span style="display: inline-block; width: 40px; position: relative; left: -43px; height: 34px; border: 1px solid #ced4da;" class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'decimal'">
+        <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'decimal' || def.type === 'amount'">
           <input class="input-form-control" [attr.disabled]="def.disabled ? '' : null" [formControl]="FormModel.attributes[def.name]"/>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'number'">
+        <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'int'">
           <input class="input-form-control" [attr.disabled]="def.disabled ? '' : null" type="number" [formControl]="FormModel.attributes[def.name]"/>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'list'">
+          <select2 *ngIf="def.options" width="100%" placeholder="Select"
+                   class="col-lg-4 col-md-4"
+                   style="padding: 0px; line-height: 1.42857143"
+                   [value]="def.value"
+                   (valueChanged)="OnSelectValueChange($event, def);"
+                   [data]="def.options"></select2>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="FormModel.attributes[def.name] && FormModel.attributes[def.name].invalid && (FormModel.attributes[def.name].dirty || FormModel.attributes[def.name].touched)" class="alert alert-danger" style="display: inline-block; z-index: 10; margin-left: 15px">
           <div *ngIf="FormModel.attributes[def.name].errors.required">
@@ -63,7 +71,7 @@
   <div style="padding-left: 15px;" *ngIf="template">
     <button class="btn btn-primary">CANCEL</button>
     <button class="btn btn-primary"
-            [disabled]="!form.valid"
+            [disabled]="form && !form.valid"
             style="text-transform: none">
       SAVE
     </button>
