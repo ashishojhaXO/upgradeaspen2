@@ -194,6 +194,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     gridButtons.push({
                         extend: 'csv',
                         text: '<span><i class="fa fa-download fa-Idown" aria-hidden="true"></i></span>',
+                        exportOptions: {
+                            columns: ":visible"
+                        }
                     });
                 }
 
