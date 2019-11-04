@@ -3277,3 +3277,179 @@ div.dataTables_wrapper div.dataTables_paginate {
   background-clip: padding-box;
   border-radius: 4px;
 }
+
+// Smart Steps starts here
+div.steps-main {
+  position: relative;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border-radius: .25rem !important;
+
+  > ul.step-anchor {
+    position: relative;
+    background: #fff;
+    border: 0px solid #ccc !important;
+    list-style: none;
+
+    > li {
+      border: none;
+
+      > a {
+        position: relative;
+        text-align: center;
+        border: none !important;
+      }
+
+      > a:before {
+        content: ' ';
+        position: absolute;
+        bottom: 2px;
+        left: 40%;
+        margin-top: 10px;
+        display: block;
+        border-radius: 50%;
+        color: #428bca;
+        background: #f5f5f5;
+        border: none;
+        width: 0px;
+        height: 30px;
+        text-decoration: none;
+        z-index: 98;
+      }
+    }
+
+    > li.current > a {
+      color: orange;
+    }
+
+    > li.current > a:after {
+      content: ' ';
+      position: relative;
+      left: 43%;
+      bottom: 2px;
+      margin-top: 10px;
+      display: block;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      z-index: 99;
+      background: orange
+    }
+
+    > li.done > a {
+      color: #5cb85c;
+    }
+
+    > li.done > a:after {
+      content: ' ';
+      position: relative;
+      left: 43%;
+      bottom: 2px;
+      margin-top: 10px;
+      display: block;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      z-index: 99;
+      background: #5cb85c
+    }
+
+    > li.invalid > a {
+      color: #ccc;
+    }
+
+    > li.invalid > a:after {
+      content: ' ';
+      position: relative;
+      left: 43%;
+      bottom: 2px;
+      margin-top: 10px;
+      display: block;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      z-index: 99;
+      background: #ccc
+    }
+  }
+  > ul.step-anchor:before {
+    content: " ";
+    position: absolute;
+    top: 59px;
+    bottom: 17px;
+    width: 100%;
+    height: 0px;
+    background-color: lightgray;
+    /* border-radius: 3px; */
+    z-order: 0;
+    z-index: 95;
+  }
+}
+
+// smart steps ends here
+
+.sw-theme-dots > ul.step-anchor {
+  background: transparent !important;
+}
+.sw-theme-dots > ul.step-anchor:hover {
+  background: transparent !important;
+}
+
+.sw-theme-dots > ul.step-anchor > li > a:before, .sw-theme-dots > ul.step-anchor:before {
+  background: lightgray !important;
+}
+
+.sw-theme-dots > ul.step-anchor:before {
+  top: 59px !important;
+}
+
+.sw-theme-dots > ul.step-anchor > li > a:before {
+  width: 0px !important;
+}
+
+.sw-theme-dots > ul.step-anchor > li > a:after {
+  left: 43.9% !important;
+}
+
+.accordion {
+  background: linear-gradient(to bottom right, white, #F8F8F8);
+  max-width: 700px;
+  background: white;
+  box-shadow: 0 15px 20px -15px rgba(0, 0, 0, 0.3), 0 35px 50px -25px rgba(0, 0, 0, 0.3), 0 85px 60px -25px rgba(0, 0, 0, 0.1);
+}
+
+.accordion-header {
+  border-bottom: 1px solid #DDE0E7;
+  color: #2a313a;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 1.5rem;
+}
+
+.accordion-header:hover {
+  background: #F6F7F9;
+}
+
+.accordion-content {
+  display: none;
+  border-bottom: 1px solid #DDE0E7;
+  background: #F6F7F9;
+  padding: 1.5rem;
+  color: #4a5666;
+}
+
+.accordion-header::before {
+  content: '';
+  vertical-align: middle;
+  display: inline-block;
+  width: .75rem;
+  height: .75rem;
+  border-radius: 50%;
+  background-color: #B1B5BE;
+  margin-right: .75rem;
+}
+
+.active.accordion-header::before {
+  background-color: #FC6468;
+}

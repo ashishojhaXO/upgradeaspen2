@@ -570,19 +570,20 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 orderSteps.push({
                                     title: 'Payment Processing',
                                     subTitle: 'Pending',
-                                    state : 'active'
+                                    state : 'current',
+                                    description: 'Payment Processing Pending'
                                 });
                                 orderSteps.push({
                                     title: 'Order Ended',
                                     subTitle: '---',
-                                    state : ''
+                                    state : 'invalid'
                                 });
                                 retHtml += '<div><h4>Order Details</h4></div>';
                                 const id = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
                                 retHtml += __this.smartSteps(id, orderSteps);
                                 retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="width: 450px; border-radius: 4px; overflow-y: scroll;"><h4>Order History</h4><ul></ul><li>10/03/2019 - Order Modified</li><li>10/01/2019 - Payment Received - AMEX xxxx0747 </li><li>10/01/2019 - Order Created</li></div>';
                                 retHtml += '<p style="clear: both">';
-                                retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="margin: 20px 0px"><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Modify Order</button><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Cancel Order</button></div>';
+                                retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-bottom: 20px"><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Modify Order</button><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Cancel Order</button></div>';
                                 retHtml += '<p style="clear: both">';
                                 // retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" id="' + accordian + '" style="width: 700px; height: 50px; background: lavender; margin-left: 15px"><h5 style="margin-top: 17px">Line Item 1</h5><div><p>Some Details</p></div><h5 style="margin-top: 17px">Line Item 2</h5><div><p>Some Details</p></div><h5 style="margin-top: 17px">Line Item 3</h5><div><p>Some Details</p></div></div>';
                                 const items = [];
@@ -592,11 +593,12 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     steps : [{
                                         title: 'Campaign Start',
                                         subTitle: '10/01/2019',
-                                        state : 'done'
+                                        state : 'done',
+                                        description: 'Information on Line Item 1 start'
                                     },{
                                         title: 'Campaign End',
                                         subTitle: '10/31/2019',
-                                        state : ''
+                                        state : 'done'
                                     }]
                                 });
                                 items.push({
@@ -605,11 +607,12 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     steps : [{
                                         title: 'Campaign Start',
                                         subTitle: '11/01/2019',
-                                        state : 'done'
+                                        state : 'done',
+                                        description: 'Information on Line Item 2 start'
                                     },{
                                         title: 'Campaign End',
                                         subTitle: '11/30/2019',
-                                        state : ''
+                                        state : 'invalid'
                                     }]
                                 });
                                 items.push({
@@ -618,11 +621,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     steps : [{
                                         title: 'Campaign Start',
                                         subTitle: '12/01/2019',
-                                        state : 'done'
+                                        state : 'invalid'
                                     },{
                                         title: 'Campaign End',
                                         subTitle: '12/31/2019',
-                                        state : ''
+                                        state : 'invalid'
                                     }]
                                 });
                                 retHtml += __this.lineItemDetails(items);
@@ -631,11 +634,10 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 tr.addClass('shown');
 
                                 // Register Accordian click event
-                                $(".accordion .accordion-header").on("click", function() {
-                                    $(this).toggleClass("active").next().slideToggle();
+                                $('.accordion .accordion-header').on('click', function() {
+                                    $(this).toggleClass('active').next().slideToggle();
                                 });
                             }
-
                             // row.child(__this.format(rowData)).show();
                             // tr.addClass('shown');
                         }
@@ -742,9 +744,14 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 console.log(__this.dataObject.gridData);
             });
 
-            $(document).on('click', '.step-anchor .nav-item', function(){
-               console.log('this')
-                console.log($(this));
+            $(document).on('click', '.step-nav', function() {
+                const id = $(this).attr('id').replace('#','');
+                $(this).closest('div.steps-main').find('div.step-container').find('.step-content').removeClass('active');
+                $(this).closest('div.steps-main').find('div.step-container').find('.step-content').each(function () {
+                    if($(this).attr('id') === id) {
+                        $(this).addClass('active');
+                    }
+                });
             });
         }
     }
@@ -753,45 +760,77 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         const $mainDiv = $('<div/>', {
             'class': 'col-lg-6 col-md-6 col-sm-12',
             css : {
-                'width' : isLineItem ? '300px' : '700px',
+                'width' : isLineItem ? '600px' : '700px',
                 'margin' : '20px 0px'
             }
         });
         const $div = $('<div/>', {
-            id: id
+            id: id,
+            class: 'steps-main'
         });
-        const $ul = $('<ul/>');
-        const $divDetails = $('<div/>');
-        for (let i=0; i < steps.length; i++) {
-            $ul.append('<li class="' + steps[i].state + '"><a href="#step-' + i + '">' + steps[i].title + '<br/><small>'  + steps[i].subTitle + '</small></a></li>');
-            if (steps[i].description) {
-                $divDetails.append('<div id="step-' + i + '">' + steps[i].description + '</div>');
+        const $ul = $('<ul/>', {
+            class : 'step-anchor nav nav-tabs'
+        });
+        const $divDetails = $('<div/>', {
+            class : 'step-container tab-content',
+            css : {
+                'min-height' : '37px'
             }
+        });
+        for (let i=0; i < steps.length; i++) {
+            $ul.append('<li class="' + (steps[i].state === 'invalid' ? (steps[i].state + ' nav-item disabled') : (steps[i].state + ' nav-item')) + '"><a href="javascript:void(0)" style="padding-right: ' + (i === 0 && isLineItem ? '334px' : '0px')  +  '" class="step-nav nav-item nav-link" id="#step-' + i + '">' + steps[i].title + '<br/><small>'  + steps[i].subTitle + '</small></a></li>');
+            if(i === 0 && isLineItem && this.displayTag(steps, true)) {
+                const daysLeft = this.getDaysBetweenDates(new Date(steps[1].subTitle), new Date()) + 1;
+                const totaldays = (this.getDaysBetweenDates(new Date(steps[1].subTitle), new Date(steps[0].subTitle))) + 1;
+                const markerPointLeft = -378 + ((429 / (totaldays)) * (totaldays - (daysLeft + 1)));
+                // px point between 2 line items = 429 ( -378 - 0 - 51 ). Ex: with 30 days, each px is 14.33 , so the logic has to start from -378 + (429/no_of_days);
+                $ul.append('<li><span style="position: absolute; top: 64px; left: '  + (markerPointLeft - 32)  + 'px; border: 1px solid #5bc0de; padding: 4px; background: #5bc0de; color: white; border-radius: 4px; ">' + (daysLeft) + ' days left</span></li>');
+                $ul.append('<li><span style="position: absolute; top: 50px; z-index: 100; left: ' + markerPointLeft + 'px; color: #5bc0de">|</span></li>');
+            }
+            $divDetails.append('<div class="'  + (steps[i].state === 'current' ? 'tab-pane step-content active' : 'tab-pane step-content') +  '" style="margin-top: 20px" id="step-' + i + '">' + (steps[i].description || 'No Description Available') + '</div>');
+        }
+        if(this.displayTag(steps, true)) {
+            $divDetails.append('<div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: 20px"><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Modify Line Item</button><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Cancel Line Item</button></div>');
         }
         $div.append($ul);
+        $div.append($divDetails);
         $mainDiv.append($div);
 
-        setTimeout(function () {
-            $('#' + id).smartWizard({
-                theme: 'dots',
-                keyNavigation: false,
-                enableFinishButton: false,
-                showStepURLhash: false,
-                enableAll: true,
-                anchorSettings: {
-                    anchorClickable: true, // Enable/Disable anchor navigation
-                    enableAllAnchors: false, // Activates all anchors clickable all times
-                    //  markDoneStep: false, // add done css
-                    //  enableAnchorOnDoneStep: false // Enable/Disable the done steps navigation
-                }
-            });
+        // setTimeout(function () {
+        //     $('#' + id).smartWizard({
+        //         theme: 'dots',
+        //         keyNavigation: false,
+        //         enableFinishButton: false,
+        //         showStepURLhash: false,
+        //         enableAll: true,
+        //         anchorSettings: {
+        //             anchorClickable: true, // Enable/Disable anchor navigation
+        //             enableAllAnchors: false, // Activates all anchors clickable all times
+        //             //  markDoneStep: false, // add done css
+        //             //  enableAnchorOnDoneStep: false // Enable/Disable the done steps navigation
+        //         }
+        //     });
+        //
+        //     $('#' + id).smartWizard("stepState", [1], "enable");
+        //
+        // }, 100);
 
-            $('#' + id).smartWizard("stepState", [1], "enable");
-
-        }, 100);
-
-      //  $div.append($divDetails);
         return $mainDiv[0].outerHTML;
+    }
+
+    displayTag(steps, isLineItem) {
+        let ret = false;
+        if (isLineItem) {
+            const d = new Date();
+            if (d.getTime() <= new Date(steps[1].subTitle).getTime() && d.getTime() >= new Date(steps[0].subTitle).getTime()) {
+                ret = true;
+            }
+        }
+        return ret;
+    }
+
+    getDaysBetweenDates(second, first) {
+        return Math.round((second - first) / (1000 * 60 * 60 * 24));
     }
 
     lineItemDetails(items) {

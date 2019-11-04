@@ -39,6 +39,7 @@ export class OrdersComponent implements OnInit  {
     },
     isPageLength: true,
     isPagination: true,
+    isTree: true
   }];
   dashboard: any;
   api_fs: any;

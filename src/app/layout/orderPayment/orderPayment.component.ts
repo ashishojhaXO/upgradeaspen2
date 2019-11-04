@@ -9,14 +9,6 @@ import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
 import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
-import {Router, ActivatedRoute} from '@angular/router';
-import {DataTableOptions} from '../../../models/dataTableOptions';
-import {Http, Headers, RequestOptions} from '@angular/http';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import{PopUpModalComponent} from "../../shared/components/pop-up-modal/pop-up-modal.component";
-import { OktaAuthService } from '../../../services/okta.service';
-import { OrganizationService} from '../../../services';
-import * as _ from 'lodash';
 
 @Component({
   selector: 'app-order-payment',
@@ -25,6 +17,8 @@ import * as _ from 'lodash';
 })
 export class OrderPaymentComponent {
   constructor() {
-
+    if (window['fs_widget_config']) {
+        window['fs_widget_config'].vendor_id = 'd5b3f693-1a86-407f-8732-04cb349e605d';
+    }
   }
 }

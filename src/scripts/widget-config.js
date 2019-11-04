@@ -17,5 +17,5 @@ var fs_widget_config = {
     api_domain: 'https://plazo-dev.fusionseven.net', // required
     payment_domain: 'https://www.snappayglobal.com/interop/interoprequest?reqno=', // required
     redirectUrl: '',  // if left empty, the page would refresh ( optional ),
-    displayExistingPayment: true
+    displayExistingPayment: false
 }
