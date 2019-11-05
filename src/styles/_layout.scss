@@ -3387,6 +3387,70 @@ div.steps-main {
   }
 }
 
+div.crumbs-main {
+
+  .crumb-trail {
+    background-color: #CCD2D8;
+    color: #62717C;
+    list-style: none;
+    padding: 0px;
+    margin: auto;
+    width: 80%;
+    border-radius: 4px;
+  }
+
+  .crumb {
+    padding: 4px 16px;
+    position: relative;
+    .current {
+      background: orange;
+      color: #fff;
+    }
+    .done {
+      background: #5cb85c !important;
+      color: #fff !important;
+    }
+    .invalid {
+      background: #ccc;
+    }
+  }
+
+  //.crumb.done {
+  //  background: #5cb85c !important;
+  //  color: #fff !important;
+  //}
+
+
+  .crumb:not(:last-child):before,
+  .crumb:not(:last-child):after {
+    content: '';
+    display: inline-block;
+    height: 1px;
+    width: 17px;
+    position: absolute;
+    right: -7px;
+    background-color: #fff;
+  }
+
+  .crumb:before {
+    top: 6px;
+    -moz-transform: rotate(60deg);
+    -ms-transform: rotate(60deg);
+    -o-transform: rotate(60deg);
+    -webkit-transform: rotate(60deg);
+    transform: rotate(60deg);
+  }
+  .crumb:after {
+    bottom: 6px;
+    -moz-transform: rotate(120deg);
+    -ms-transform: rotate(120deg);
+    -o-transform: rotate(120deg);
+    -webkit-transform: rotate(120deg);
+    transform: rotate(120deg);
+  }
+
+}
+
 // smart steps ends here
 
 .sw-theme-dots > ul.step-anchor {

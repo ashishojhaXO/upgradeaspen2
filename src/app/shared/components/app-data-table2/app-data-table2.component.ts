@@ -573,17 +573,17 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     state : 'current',
                                     description: 'Payment Processing Pending'
                                 });
-                                orderSteps.push({
-                                    title: 'Order Ended',
-                                    subTitle: '---',
-                                    state : 'invalid'
-                                });
-                                retHtml += '<div><h4>Order Details</h4></div>';
+                                // orderSteps.push({
+                                //     title: 'Order Ended',
+                                //     subTitle: '---',
+                                //     state : 'invalid'
+                                // });
+                                // retHtml += '<div><h4>Order Details</h4></div>';
                                 const id = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
-                                retHtml += __this.smartSteps(id, orderSteps);
-                                retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="width: 450px; border-radius: 4px; overflow-y: scroll;"><h4>Order History</h4><ul></ul><li>10/03/2019 - Order Modified</li><li>10/01/2019 - Payment Received - AMEX xxxx0747 </li><li>10/01/2019 - Order Created</li></div>';
+                                retHtml += __this.smartSteps1(id, orderSteps);
+                              //  retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="width: 450px; border-radius: 4px; overflow-y: scroll;"><h4>Order History</h4><ul></ul><li>10/03/2019 - Order Modified</li><li>10/01/2019 - Payment Received - AMEX xxxx0747 </li><li>10/01/2019 - Order Created</li></div>';
                                 retHtml += '<p style="clear: both">';
-                                retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-bottom: 20px"><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Modify Order</button><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Cancel Order</button></div>';
+                                retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-bottom: 20px"><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600; padding: 4px;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Modify Order</button><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600; padding: 4px;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Cancel Order</button></div>';
                                 retHtml += '<p style="clear: both">';
                                 // retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" id="' + accordian + '" style="width: 700px; height: 50px; background: lavender; margin-left: 15px"><h5 style="margin-top: 17px">Line Item 1</h5><div><p>Some Details</p></div><h5 style="margin-top: 17px">Line Item 2</h5><div><p>Some Details</p></div><h5 style="margin-top: 17px">Line Item 3</h5><div><p>Some Details</p></div></div>';
                                 const items = [];
@@ -756,6 +756,52 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         }
     }
 
+    smartSteps1(id, steps, isLineItem = false) {
+        const $mainDiv = $('<div/>', {
+            'class': 'col-lg-6 col-md-6 col-sm-12',
+            css : {
+                'width' : isLineItem ? '800px' : '700px',
+                'margin-bottom' : '20px'
+            }
+        });
+        const $div = $('<div/>', {
+            id: id,
+            class: 'crumbs-main',
+            css : {
+                'position' : 'relative',
+                'left' : isLineItem ? '-77px' : '-67px'
+            }
+        });
+        const $ul = $('<ul/>', {
+            class : 'crumb-trail clearfix'
+        });
+        for (let i=0; i < steps.length; i++) {
+            if(i === 0 && isLineItem) {
+                $ul.append(this.getLineItemWidth(i, steps));
+            } else {
+                $ul.append('<li class="crumb pull-left ' + steps[i].state + '">' + steps[i].title  + '</li>');
+            }
+        }
+        $div.append($ul);
+        $mainDiv.append($div);
+
+        return $mainDiv[0].outerHTML;
+    }
+
+    getLineItemWidth(i, steps) {
+          const d = new Date();
+          if (d.getTime() <= new Date(steps[1].subTitle).getTime() && d.getTime() >= new Date(steps[0].subTitle).getTime()) {
+              const daysLeft = this.getDaysBetweenDates(new Date(steps[1].subTitle), new Date()) + 1;
+              const totaldays = (this.getDaysBetweenDates(new Date(steps[1].subTitle), new Date(steps[0].subTitle))) + 1;
+              const markerPointLeft = 128.28 + ((494 / (totaldays)) * (totaldays - (daysLeft + 1)));
+              return '<li class="crumb pull-left" style="width: ' + markerPointLeft + 'px">' + steps[i].title  +  '</li>';
+          } else if (d.getTime() >= new Date(steps[1].subTitle).getTime()) {
+              return '<li class="crumb pull-left" style="width: 494px">' + steps[i].title  +  '</li>';
+          } else {
+              return '<li class="crumb pull-left">' + steps[i].title  +  '</li>';
+          }
+    }
+
     smartSteps(id, steps, isLineItem = false) {
         const $mainDiv = $('<div/>', {
             'class': 'col-lg-6 col-md-6 col-sm-12',
@@ -835,12 +881,15 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
     lineItemDetails(items) {
         const $mainDiv = $('<div/>', {
-            'class': 'accordion'
+            'class': 'accordion',
+            css : {
+                'margin-top' : '-20px'
+            }
         });
         for (let i=0; i < items.length; i++) {
             const id = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
             $mainDiv.append('<div class="accordion-header">' + items[i].header + '</div>');
-            $mainDiv.append('<div class="accordion-content"><p>' + items[i].content + '</p>' + this.smartSteps(id, items[i].steps, true) + '<p style="clear: both"</div>');
+            $mainDiv.append('<div class="accordion-content">' + this.smartSteps1(id, items[i].steps, true) + '<p style="clear: both"></p><div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-bottom: 20px"><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600; padding: 4px;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Modify Order</button><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600; padding: 4px;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Cancel Order</button></div></div>');
         }
         return $mainDiv[0].outerHTML;
     }
