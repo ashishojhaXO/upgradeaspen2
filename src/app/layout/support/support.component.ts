@@ -83,6 +83,7 @@ export class SupportComponent implements OnInit {
     @ViewChild ( AppDataTable2Component )
     private appDataTable2Component : AppDataTable2Component;
     selectedRowLength: Number = 0;
+    orderDetails: Object;
 
     constructor(
         private okta: OktaAuthService,
@@ -198,11 +199,28 @@ export class SupportComponent implements OnInit {
             this.selectedOrderID = e.name.indexOf('-') !== -1 ? e.name.split('-')[1] : e.name;
             this.selectedOrderLineItemID = e.name.indexOf('-') !== -1 ? e.name.split('-')[0] : e.name;
             this.selectedOrderChannel =  e.name.indexOf('-') !== -1 ? e.name.split('-')[2] : e.name;
+
             this.getOrderDetails(this.selectedOrder).subscribe(
                 response => {
-
+                    // --- Show extended Order details
+                    if (response && response.data && response.data.length) {
+                        const resp = response.data[0];
+                        // This orderDetails will be used in HTML
+                        this.orderDetails = resp;
+                        // Orders
+                        if( resp.audit_orders)
+                            this.populateOrders(resp.audit_orders);
+                        // Line-Items
+                        if( resp.line_items && resp.line_items.length ) {
+                            const line_items_data = resp.line_items.map(
+                                (v, k) =>  Object.assign( {}, {line_item_id: v.line_item_id}, v.ar_ap_transaction || {} )
+                            );
+                            this.populatePayments(line_items_data);
+                        }
+                    }
                 },
                 err => {
+                    console.log("getOrderDetails err: ", err);
                 }
             );
         }
