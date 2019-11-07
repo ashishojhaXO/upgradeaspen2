@@ -85,9 +85,9 @@ export class SupportComponent implements OnInit {
     selectedRowLength: Number = 0;
 
     constructor(
-        private okta: OktaAuthService, 
-        private route: ActivatedRoute, 
-        private router: Router, 
+        private okta: OktaAuthService,
+        private route: ActivatedRoute,
+        private router: Router,
         private http: Http,
         private popUp: AppPopUpComponent
     ) {
@@ -193,9 +193,18 @@ export class SupportComponent implements OnInit {
             );
         } else {
             this.selectedOrder = e.id;
+            console.log('this.selectedOrder >>')
+            console.log(this.selectedOrder);
             this.selectedOrderID = e.name.indexOf('-') !== -1 ? e.name.split('-')[1] : e.name;
             this.selectedOrderLineItemID = e.name.indexOf('-') !== -1 ? e.name.split('-')[0] : e.name;
             this.selectedOrderChannel =  e.name.indexOf('-') !== -1 ? e.name.split('-')[2] : e.name;
+            this.getOrderDetails(this.selectedOrder).subscribe(
+                response => {
+
+                },
+                err => {
+                }
+            );
         }
 
         this.matchingResults = [];
@@ -334,6 +343,22 @@ export class SupportComponent implements OnInit {
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
         const options = new RequestOptions({headers: headers});
         var url = this.api_fs.api + '/api/orders/search?search=' + match;
+        return this.http
+            .get(url, options)
+            .map(res => {
+                return res.json();
+            }).share();
+    }
+
+    getOrderDetails(orderID) {
+        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        let token = '';
+        if (AccessToken) {
+            token = AccessToken.accessToken;
+        }
+        const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+        const options = new RequestOptions({headers: headers});
+        var url = this.api_fs.api + '/api/orders/deepsearch?search=' + orderID;
         return this.http
             .get(url, options)
             .map(res => {
@@ -495,11 +520,11 @@ export class SupportComponent implements OnInit {
             })
             .share();
     }
-    
+
     getRetryOrders() {
         this.selectedRowLength = 0;
 
-        // Call From Orders service 
+        // Call From Orders service
         this.getOrdersService()
         .subscribe(resp => {
             this.populateRetryOrders( resp.filter((val) => {

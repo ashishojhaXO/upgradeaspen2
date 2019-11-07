@@ -5,7 +5,7 @@
     <div class="col-lg-12 cold-md-12 col-sm-12">
         <div style="margin-left: 19px; padding-bottom: 20px">
             <label>Search By </label>
-            <div 
+            <div
                 style="display: inline-block; position: relative; top: 9px"
             >
                 <select2 *ngIf="searchOptions.length" width="50%" placeholder="Select Type"
@@ -86,12 +86,12 @@
             </div>
             <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
                 <label class="col-lg-3 col-md-3">Selected Line Item ID : </label>
-                <span class="col-lg-9 col-md-9">{{selectedOrderLineItemID}}</span>
-            </div>
-            <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
-                <label class="col-lg-3 col-md-3">Selected Channel : </label>
-                <span class="col-lg-9 col-md-9">{{selectedOrderChannel}}</span>
-            </div>
+            <span class="col-lg-9 col-md-9">{{selectedOrderLineItemID}}</span>
+        </div>
+        <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
+            <label class="col-lg-3 col-md-3">Selected Channel : </label>
+            <span class="col-lg-9 col-md-9">{{selectedOrderChannel}}</span>
+        </div>
             <!--<div style="padding-left: 0px" class="col-lg-12 col-md-12">-->
                 <!--<label class="col-lg-3 col-md-3">Payment Methods : </label>-->
                 <!--<div class="col-lg-9 col-md-9" *ngIf="paymentMethods.length; else noPayments">-->
@@ -147,7 +147,7 @@
         </div>
 
         <!-- Retry Orders -->
-        <div style="padding-left: 0px" 
+        <div style="padding-left: 0px"
             *ngIf="searchType === 'retry'"
         >
             <span>Failed Orders</span>
@@ -160,7 +160,7 @@
                 >
                     Retry
                 </button>
-                <app-data-table2 
+                <app-data-table2
                     [dataObject]="dataObjectRetryOrders"
                     [sendResponseOnCheckboxClick]=true
                     (triggerActions)="handleRow($event)"
