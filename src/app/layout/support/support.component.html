@@ -131,7 +131,7 @@
         </div>
         <p style="clear: both"></p>
         <div style="padding-left: 0px" [class]="searchType === 'order' ? 'col-lg-6 col-md-6' : 'col-lg-4 col-md-4'" *ngIf="searchType === 'vendor' || searchType === 'order'">
-            <span>Orders</span>
+            <span>{{searchType === 'order' ? 'Order History' : 'Orders'}}</span>
             <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectOrders.isDataAvailable">
                 <app-data-table2 [dataObject]="dataObjectOrders"
                                  (triggerActions)="this[$event.action]($event)"></app-data-table2>
