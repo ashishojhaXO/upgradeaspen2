@@ -462,6 +462,11 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     }
   }
 
+  setChartConfig(response) {
+
+      this.chartConfig.barWidth = (3000 / (10 * response.chartData.data.length));
+  }
+
   populateChart(response) {
 
     console.log('chart response >>>')
@@ -472,6 +477,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
       console.log('response.chartData >>><<')
       console.log(response.chartData);
+
+      // Set Dynamic Chart configs here
+      this.setChartConfig(response)
 
       if(this.dashboardType === 'pacing') {
 
@@ -490,8 +498,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             labelName: '',
             unitType: ''
           });
-
-          this.chartConfig.barWidth = (700 / (20 * response.chartData.data.length));
 
         } else {
 
@@ -539,8 +545,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
           this.chartConfig.XAxis.labelName = '';
           this.chartConfig.XAxis.dataPropertyName = 'date';
-
-          this.chartConfig.barWidth = (700 / (20 * response.chartData.data.length));
 
           this.chartConfig.YAxis.data.push({
             labelName: '',
@@ -642,8 +646,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           //   }
           // ];
         }
-
-        this.chartConfig.barWidth = (700 / (20 * response.chartData.data.length));
 
         // Chart Labels configured dynamically
         const dataPoints = [];
