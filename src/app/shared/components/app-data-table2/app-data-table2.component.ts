@@ -336,8 +336,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             // Apply selected class when a row is clicked
             $('#' + this.tableId + ' tbody').on('click', 'tr', function () {
+                console.log(__this.dataObject.gridData.options);
                 if (__this.dataObject.gridData.options.isRowHighlight) {
                     $(this).toggleClass('selected');
+                } else {
+                    $(this).removeClass('selected');
                 }
             });
 
@@ -435,13 +438,13 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 }
 
                 // Highlight selected rows
-                // if ($(this).is(':checked')) {
-                //   if (!$(this).closest('tr').hasClass('selected')) {
-                //     $(this).closest('tr').addClass('selected');
-                //   }
-                // } else {
-                //   $(this).closest('tr').removeClass('selected');
-                // }
+                if ($(this).is(':checked')) {
+                    if (!$(this).closest('tr').hasClass('selected')) {
+                        $(this).closest('tr').addClass('selected');
+                    }
+                } else {
+                    $(this).closest('tr').removeClass('selected');
+                }
             });
 
             // Handle table draw event ( like pagination, sorting )
@@ -569,9 +572,15 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 });
                                 orderSteps.push({
                                     title: 'Payment Processing',
-                                    subTitle: 'Pending',
+                                    subTitle: '10/04/2019',
+                                    state : 'done',
+                                    description: 'Payment Processing Completed'
+                                });
+                                orderSteps.push({
+                                    title: 'Order In Progress',
+                                    subTitle: '10/07/2019',
                                     state : 'current',
-                                    description: 'Payment Processing Pending'
+                                    description: 'Order details during started'
                                 });
                                 // orderSteps.push({
                                 //     title: 'Order Ended',
@@ -581,14 +590,14 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 // retHtml += '<div><h4>Order Details</h4></div>';
                                 const id = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
                                 retHtml += __this.smartSteps1(id, orderSteps);
-                              //  retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="width: 450px; border-radius: 4px; overflow-y: scroll;"><h4>Order History</h4><ul></ul><li>10/03/2019 - Order Modified</li><li>10/01/2019 - Payment Received - AMEX xxxx0747 </li><li>10/01/2019 - Order Created</li></div>';
+                                //  retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="width: 450px; border-radius: 4px; overflow-y: scroll;"><h4>Order History</h4><ul></ul><li>10/03/2019 - Order Modified</li><li>10/01/2019 - Payment Received - AMEX xxxx0747 </li><li>10/01/2019 - Order Created</li></div>';
                                 retHtml += '<p style="clear: both">';
-                                retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-bottom: 20px"><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600; padding: 4px;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Modify Order</button><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600; padding: 4px;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Cancel Order</button></div>';
+                                retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-bottom: 20px"><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600; padding: 4px; font-size: 10px"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 15px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Extend</button></div>';
                                 retHtml += '<p style="clear: both">';
                                 // retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" id="' + accordian + '" style="width: 700px; height: 50px; background: lavender; margin-left: 15px"><h5 style="margin-top: 17px">Line Item 1</h5><div><p>Some Details</p></div><h5 style="margin-top: 17px">Line Item 2</h5><div><p>Some Details</p></div><h5 style="margin-top: 17px">Line Item 3</h5><div><p>Some Details</p></div></div>';
                                 const items = [];
                                 items.push({
-                                    header: 'Line Item 1',
+                                    header: 'Google',
                                     content: 'Line Item 1 details goes here',
                                     steps : [{
                                         title: 'Campaign Start',
@@ -599,10 +608,14 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                         title: 'Campaign End',
                                         subTitle: '10/31/2019',
                                         state : 'done'
-                                    }]
+                                    }],
+                                    actions : [
+                                        'Extend','Refund','RollOver'
+                                    ],
+                                    adGroup : 'North America'
                                 });
                                 items.push({
-                                    header: 'Line Item 2',
+                                    header: 'Facebook',
                                     content: 'Line Item 2 details goes here',
                                     steps : [{
                                         title: 'Campaign Start',
@@ -613,10 +626,14 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                         title: 'Campaign End',
                                         subTitle: '11/30/2019',
                                         state : 'invalid'
-                                    }]
+                                    }],
+                                    actions : [
+                                        'Extend', 'Cancel'
+                                    ],
+                                    adGroup : 'Europe'
                                 });
                                 items.push({
-                                    header: 'Line Item 3',
+                                    header: 'Pinterest',
                                     content: 'Line Item 3 details goes here',
                                     steps : [{
                                         title: 'Campaign Start',
@@ -626,7 +643,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                         title: 'Campaign End',
                                         subTitle: '12/31/2019',
                                         state : 'invalid'
-                                    }]
+                                    }],
+                                    actions : [
+                                        'Extend', 'Cancel', ' Refund', 'Modify'
+                                    ],
+                                    adGroup : 'Asia'
                                 });
                                 retHtml += __this.lineItemDetails(items);
 
@@ -753,6 +774,31 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     }
                 });
             });
+
+            // Register ad events
+            $(document).on('click', '.adCopy', function() {
+                console.log('$thid')
+                console.log($(this).next('.adDetails'));
+                $(this).next('.adDetails').show();
+            });
+            $(document).on('keyup', '.adInputHeader', function() {
+                if($(this).val()) {
+                    $(this).closest('.adDetails').find('.adHeader').text($(this).val());
+                }
+            });
+            $(document).on('keyup', '.adInputUrl', function() {
+                if($(this).val()) {
+                    $(this).closest('.adDetails').find('.adUrl').text($(this).val());
+                }
+            });
+            $(document).on('keyup', '.adInputDescription', function() {
+                if($(this).val()) {
+                    $(this).closest('.adDetails').find('.adDescription').text($(this).val());
+                }
+            });
+            $(document).on('click', '.closeAd', function() {
+                $(this).closest('.adDetails').hide();
+            });
         }
     }
 
@@ -779,8 +825,12 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             if(i === 0 && isLineItem) {
                 $ul.append(this.getLineItemWidth(i, steps));
             } else {
-                $ul.append('<li class="crumb pull-left ' + steps[i].state + '">' + steps[i].title  + '</li>');
+                $ul.append('<li class="crumb pull-left ' + steps[i].state + '"><div><span style="font-size: 10px">' + steps[i].title + '</span><p style="clear:both"></p><small style="position: absolute;top: 20px; font-size: 8px">' +  steps[i].subTitle +  '</small></div></li>');
             }
+        }
+        if(isLineItem) {
+            $div.append('<img class="adCopy" tooltip="View/Change AdCopy" style="width: 38px;position: relative;left: 10px;margin-left: 42px;margin-right: 12px;float: left; cursor: pointer; top: -4px" src="./../../../../assets/images/adCopy.png"/>');
+            $div.append('<div class="adDetails" style="position: absolute;left: 50px;z-index: 100;border: 1px solid;border-radius: 4px;margin: 4px;padding: 5px 10px;background: beige;top: -3px; display: none; width: 320px"><div><b>Ad Details</b></div><div style="margin-top: 10px"><label>Header</label><br><input style="border-radius: 4px; width: 300px" type="text" class="form-control adInputHeader"/></div><div style="margin-top: 10px"><label>Url</label><br><input style="border-radius: 4px; width: 300px" type="text" class="form-control adInputUrl"/></div><div style="margin-top: 10px"><label>Description</label><br><textarea class="adInputDescription" style="border-radius: 4px; width: 300px" type="text" class="form-control"/></div><div style="margin-top: 10px"><label>Preview</label><br><div style="border-radius: 4px; width: 300px;"/><a href="javascript:void(0)" class="adHeader">Start Your Free Trial - Forma Gym</a><br><span class="adUrl" style="color: green; white-space: pre-wrap">https://formagym.com/promotions/trial</span><br><span class="adDescription" style="white-space: pre-wrap">For a limited time, try any of our gym facility for 7 days for FREE. No Credit Card Needed</span></div><div style="margin-top: 10px"><br><button class="btn-info">Update</button><button style="margin-left: 10px" class="btn-info closeAd">Cancel</button></div>');
         }
         $div.append($ul);
         $mainDiv.append($div);
@@ -789,17 +839,24 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     }
 
     getLineItemWidth(i, steps) {
-          const d = new Date();
-          if (d.getTime() <= new Date(steps[1].subTitle).getTime() && d.getTime() >= new Date(steps[0].subTitle).getTime()) {
-              const daysLeft = this.getDaysBetweenDates(new Date(steps[1].subTitle), new Date()) + 1;
-              const totaldays = (this.getDaysBetweenDates(new Date(steps[1].subTitle), new Date(steps[0].subTitle))) + 1;
-              const markerPointLeft = 128.28 + ((494 / (totaldays)) * (totaldays - (daysLeft + 1)));
-              return '<li class="crumb pull-left" style="width: ' + markerPointLeft + 'px">' + steps[i].title  +  '</li>';
-          } else if (d.getTime() >= new Date(steps[1].subTitle).getTime()) {
-              return '<li class="crumb pull-left" style="width: 494px">' + steps[i].title  +  '</li>';
-          } else {
-              return '<li class="crumb pull-left">' + steps[i].title  +  '</li>';
-          }
+        const d = new Date();
+        let retHtml = '';
+        if (d.getTime() <= new Date(steps[1].subTitle).getTime() && d.getTime() >= new Date(steps[0].subTitle).getTime()) {
+            const daysLeft = this.getDaysBetweenDates(new Date(steps[1].subTitle), new Date()) + 1;
+            const totaldays = (this.getDaysBetweenDates(new Date(steps[1].subTitle), new Date(steps[0].subTitle))) + 1;
+            const markerPointLeft = 128.28 + ((485 / (totaldays)) * (totaldays - (daysLeft + 1)));
+            retHtml += '<li class="crumb pull-left done" style="width: ' + markerPointLeft + 'px"><div><span style="font-size: 10px">' + steps[i].title + '</span><p style="clear:both"></p><small style="position: absolute;top: 20px; font-size: 8px">' +  steps[i].subTitle +  '</small></div></li>';
+            retHtml += '<li><span style="position: absolute; top: -22px; left: '  + (markerPointLeft + 21)  + 'px; border: 1px solid #5bc0de; padding: 4px; background: #5bc0de; color: white; border-radius: 4px; font-size: 9px ">In Progress (' + (daysLeft) + ' days left)</span></li>';
+            // retHtml += '<li><span style="position: absolute; top: -6px; z-index: 100; left: ' + markerPointLeft + 'px; color: #5bc0de">|</span></li>';
+        } else if (d.getTime() >= new Date(steps[1].subTitle).getTime()) {
+            retHtml += '<li class="crumb pull-left done" style="width: 485px"><div><span style="font-size: 10px">' + steps[i].title + '</span><p style="clear:both"></p><small style="position: absolute;top: 20px; font-size: 8px">' +  steps[i].subTitle +  '</small></div></li>';
+            retHtml += '<li><span style="position: absolute; top: -22px; left: '  + (485 + 48)  + 'px; border: 1px solid #5bc0de; padding: 4px; background: #5bc0de; color: white; border-radius: 4px; font-size: 9px ">Completed</span></li>';
+        } else {
+            retHtml += '<li class="crumb pull-left invalid"><div><span style="font-size: 10px">' + steps[i].title + '</span><p style="clear:both"></p><small style="position: absolute;top: 20px; font-size: 8px">' +  steps[i].subTitle +  '</small></div></li>';
+            retHtml += '<li><span style="position: absolute; top: -22px; left: '  + (170)  + 'px; border: 1px solid #5bc0de; padding: 4px; background: #5bc0de; color: white; border-radius: 4px; font-size: 9px ">Not Started</span></li>';
+        }
+
+        return retHtml;
     }
 
     smartSteps(id, steps, isLineItem = false) {
@@ -836,7 +893,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             $divDetails.append('<div class="'  + (steps[i].state === 'current' ? 'tab-pane step-content active' : 'tab-pane step-content') +  '" style="margin-top: 20px" id="step-' + i + '">' + (steps[i].description || 'No Description Available') + '</div>');
         }
         if(this.displayTag(steps, true)) {
-            $divDetails.append('<div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: 20px"><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Modify Line Item</button><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Cancel Line Item</button></div>');
+
+            $divDetails.append('<div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: 20px"></div>');
         }
         $div.append($ul);
         $div.append($divDetails);
@@ -888,8 +946,14 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         });
         for (let i=0; i < items.length; i++) {
             const id = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
-            $mainDiv.append('<div class="accordion-header">' + items[i].header + '</div>');
-            $mainDiv.append('<div class="accordion-content">' + this.smartSteps1(id, items[i].steps, true) + '<p style="clear: both"></p><div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-bottom: 20px"><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600; padding: 4px;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Modify Order</button><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600; padding: 4px;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Cancel Order</button></div></div>');
+            $mainDiv.append('<div class="accordion-header"><span style="position: relative; top: -5px">' + items[i].header + '</span></div>');
+            if(items[i].actions) {
+                let buttons = '';
+                items[i].actions.forEach(function (action) {
+                    buttons += '<button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600; padding: 4px; font-size: 10px"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 15px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>' + action  + '</button>';
+                });
+                $mainDiv.append('<div class="accordion-content">' + this.smartSteps1(id, items[i].steps, true) + '<p style="clear: both"></p><div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-bottom: 20px; margin-left: 15px">' + buttons + '</div><p style="clear: both"></p><div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-left: 15px"><span>Ad Group : ' + items[i].adGroup + '</span></div></div>');
+            }
         }
         return $mainDiv[0].outerHTML;
     }
@@ -956,30 +1020,35 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         table.on('select', function (e, dt, type, indexes) {
             if (__this.dataObject.gridData.options.isRowSelection && !__this.dataObject.gridData.options.isRowSelection.isMultiple) {
                 $('input.check-row-selection').prop('checked', false);
-                $('#example tbody tr').removeClass('selected');
+                if (__this.dataObject.gridData.options.isRowHighlight) {
+                    $('#example tbody tr').removeClass('selected');
+                }
             }
-            // if (table[type]) {
-            // TODO : need to expose another property to do this
-            table[type](indexes).nodes().to$().find('td input.check-row-selection').prop('checked', true);
-            table[type](indexes).nodes().to$().addClass('selected');
-            // if (__this.dataObject.gridData.options.isRowHighlight) {
-            //    table[type](indexes).nodes().to$().find('td input.check-row-selection').prop('checked', true);
-            //    table[type](indexes).nodes().to$().addClass('selected');
-            // } else {
-            //     table[type](indexes).nodes().to$().removeClass('selected');
-            // }
+            if (table[type]) {
 
-            console.log('indexes >>')
-            console.log(indexes)
+                table[type](indexes).nodes().to$().find('td input.check-row-selection').prop('checked', true);
+                if (__this.dataObject.gridData.options.isRowHighlight) {
+                    table[type](indexes).nodes().to$().addClass('selected');
+                }
 
-            if (__this.sendResponseOnCheckboxClick) {
-                __this.triggerActions.emit({
-                    action: 'handleCheckboxSelection',
-                    data: __this.dataObject.gridData.result[indexes[0]],
-                    rowIndex: indexes[0]
-                });
+                if (__this.dataObject.gridData.options.isRowHighlight) {
+                    table[type](indexes).nodes().to$().find('td input.check-row-selection').prop('checked', true);
+                    table[type](indexes).nodes().to$().addClass('selected');
+                } else {
+                    table[type](indexes).nodes().to$().removeClass('selected');
+                }
+
+                console.log('indexes >>')
+                console.log(indexes)
+
+                if (__this.sendResponseOnCheckboxClick) {
+                    __this.triggerActions.emit({
+                        action: 'handleCheckboxSelection',
+                        data: __this.dataObject.gridData.result[indexes[0]],
+                        rowIndex: indexes[0]
+                    });
+                }
             }
-            //}
         });
     }
 
