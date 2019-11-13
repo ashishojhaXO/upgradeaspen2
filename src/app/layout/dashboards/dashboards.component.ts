@@ -464,7 +464,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
   setChartConfig(response, dataPoints: Array<Number> = []) {
     const dataPointsLength = dataPoints.length || 1;
-    // this.chartConfig.barWidth = (3000 / (10 * response.chartData.data.length))/ (dataPoints.length);
     this.chartConfig.barWidth = (3000 / (response.chartData.data.length) ) / (dataPointsLength) / 4;
   }
 
