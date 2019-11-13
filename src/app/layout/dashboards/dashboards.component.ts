@@ -462,9 +462,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     }
   }
 
-  setChartConfig(response) {
-
-      this.chartConfig.barWidth = (3000 / (10 * response.chartData.data.length));
+  setChartConfig(response, dataPoints) {
+    // this.chartConfig.barWidth = (3000 / (10 * response.chartData.data.length))/ (dataPoints.length);
+    this.chartConfig.barWidth = (3000 / (response.chartData.data.length) ) / (dataPoints.length) / 5;
   }
 
   populateChart(response) {
@@ -478,8 +478,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       console.log('response.chartData >>><<')
       console.log(response.chartData);
 
-      // Set Dynamic Chart configs here
-      this.setChartConfig(response)
 
       if(this.dashboardType === 'pacing') {
 
@@ -522,6 +520,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         this.chartConfig.dataPoints = dataPoints;
 
         this.chartConfig.data = response.chartData.data;
+
+      // Set Dynamic Chart configs here
+      // this.setChartConfig(response)
+        this.setChartConfig(response, dataPoints);
 
         console.log('this.chartConfig.data >>')
         console.log(this.chartConfig.data);
@@ -660,6 +662,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
         this.chartConfig.data = response.chartData.data;
 
+        // Set Dynamic Chart configs here
+        this.setChartConfig(response, dataPoints);
+
         console.log('this.chartConfig.data >>')
         console.log(this.chartConfig.data);
 
@@ -669,6 +674,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         //   }
         // });
       }
+
     }
   }
 
