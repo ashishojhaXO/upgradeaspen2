@@ -521,8 +521,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
         this.chartConfig.data = response.chartData.data;
 
-      // Set Dynamic Chart configs here
-      // this.setChartConfig(response)
+        // Set Dynamic Chart configs here
         this.setChartConfig(response, dataPoints);
 
         console.log('this.chartConfig.data >>')
