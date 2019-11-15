@@ -1,0 +1,76 @@
+<div class="row">
+  <div class="col-xs-12">
+    <p class="heading">Create Order Template</p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+    <form [formGroup]="templateForm" (ngSubmit)="onSubmitTemplate()" class="templateForm">
+      <!-- template name -->
+      <div class="form-group-fields row">
+        <label for="templateName" class="col-xs-12 col-sm-2">Template Name</label>
+        <div class="col-xs-12 col-sm-6">
+          <input type="text" placeholder="Template Name" class="form-control" aria-label="templateName" formControlName="templateName">
+        </div>
+        <div class="col-lg-8 col-md-8 form-field alert alert-danger" *ngIf="templateForm.get('templateName').invalid && (templateForm.get('templateName').dirty || templateForm.get('templateName').touched)">
+          <div *ngIf="templateForm.get('templateName').errors['required']">
+            <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+            Please enter a Template Name.
+          </div>
+        </div>
+      </div>
+      <!-- organization name -->
+      <div class="form-group-fields row">
+        <label for="organization" class="col-xs-12 col-sm-2">Organization</label>
+        <div class="col-xs-12 col-sm-6">
+          <select formControlName="orgName" class="form-control">
+            <option [ngValue]="null" disabled>Choose organization</option>
+            <option *ngFor="let org of organizations" [ngValue]="org.id">
+              {{ org.text }}
+            </option>
+          </select>
+        </div>
+        <div class="col-lg-8 col-md-8 form-field alert alert-danger" *ngIf="templateForm.get('orgName').invalid && (templateForm.get('orgName').dirty || templateForm.get('orgName').touched)">
+          <div *ngIf="templateForm.get('orgName').errors['required']">
+            <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+            Please enter an Organization Name.
+          </div>
+        </div>
+      </div>
+      <!-- order form builder start -->
+      <div class="form-group-fields row">
+        <div class="col-xs-12 col-sm-2">
+          <p class="sub-heading">Select Order Template</p>
+        </div>
+        <div class="col-xs-12 col-sm-10">
+          <p>Customize your form by drag and drop below fields in the 'Drop Here' area.</p>
+          <div class="order-container">
+            <app-customformbuilder #orderForm></app-customformbuilder>
+          </div>
+        </div>
+      </div>
+      <!-- order form builder end -->
+
+      <!-- lineitem form builder start -->
+      <div class="form-group-fields row">
+        <div class="col-xs-12 col-sm-2">
+          <p class="sub-heading">Select Line Item Template</p>
+        </div>
+        <div class="col-xs-12 col-sm-10">
+          <p>Customize your form by drag and drop below fields in the 'Drop Here' area.</p>
+          <div class="lineitem-container">
+            <app-customformbuilder #lineItemForm></app-customformbuilder>
+          </div>
+        </div>
+      </div>
+      <!-- lineitem form builder end -->
+      <div class="form-group-fields row">
+        <div class="col-xs-12">
+          <button class="btn btn-primary" type="submit"  [disabled]="!templateForm.valid">Create</button>
+          <button class="btn btn-primary" type="submit"  [disabled]="true">Publish</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
