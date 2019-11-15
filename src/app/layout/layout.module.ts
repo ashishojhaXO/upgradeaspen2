@@ -27,7 +27,6 @@ import { AppScriptEmbedderModule} from './../shared/components/app-script-embedd
 import { DashboardsComponent } from './dashboards/dashboards.component';
 import { VendorManagementComponent } from './vendorManagement/vendorManagement.component';
 import { OrdersComponent } from './orders/orders.component';
-import { OrderPaymentComponent } from './orderPayment/orderPayment.component';
 import { PaymentsComponent } from './payments/payments.component';
 import { ReconciliationComponent } from './reconciliation/reconciliation.component';
 import { SupportComponent } from './support/support.component';
@@ -35,6 +34,9 @@ import { TasksComponent } from './tasks/tasks.component';
 import { UserManagementComponent } from './usermanagement/usermanagement.component';
 import { VisDashboardComponent } from './visDashboard/visDashboard.component';
 import { OrderComponent } from './order/order.component';
+import { OrderPaymentComponent } from './orderPayment/orderPayment.component';
+import { ConfigureAdComponent } from './configureAd/configureAd.component';
+import { TargetAudComponent } from './targetAud/targetAud.component';
 
 // providers
 import { AuthGuard } from './../shared';
@@ -89,6 +91,8 @@ import { CustomFormBuilderModule } from '../shared/components/customformbuilder/
         OrderComponent,
         OrderPaymentComponent,
         OrderTemplateComponent
+        ConfigureAdComponent,
+        TargetAudComponent
     ],
     providers: [AuthGuard, OktaAuthService, OrganizationService],
     schemas: [
