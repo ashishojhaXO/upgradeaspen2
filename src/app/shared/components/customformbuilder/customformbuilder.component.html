@@ -1,0 +1,185 @@
+<div>
+
+  <!-- drag drop functionality -->
+  <div class="padding20 white-bg">
+    <!-- formbuilder start -->
+    <div class="row">
+      <div class="col-xs-12">
+        <h4 class="subHeading">Select Fields</h4>
+      </div>
+      <div class="col-xs-3">
+        <!--a draggable element-->
+        <div class="fields" *ngFor="let item of fieldModels">
+          <div class="field pointer shadow-bg" [dndDraggable]="item" [dndEffectAllowed]="'copy'"
+            (dndEnd)="onDragEnd($event)">
+            <i [ngClass]="item.icon" class="fa pull-left"></i>
+            <h5 class="mb0">{{item.label}}</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xs-8">
+
+        <!--a dropzone-->
+        <!--to allow dropping content that is not [dndDraggable] set dndAllowExternal to true-->
+
+        <!-- dropdown section -->
+        <section dndDropzone (dndDragover)="onDragover($event)" (dndDrop)="onDrop($event,model.attributes)"
+          class="dndDropArea empty">
+          <h3 *ngIf="model.attributes.length == 0" class="dropHere">Drop Here</h3>
+
+          <div class="field" *ngFor="let item of model.attributes;let i= index;" (dndStart)="onDragStart($event)"
+            (dndCanceled)="onDragCanceled($event)" (dndMoved)="onDragged(item, model.attributes, 'move')"
+            [dndEffectAllowed]="'all'" [dndDraggable]="item">
+            <!-- drop wrapper -->
+            <div class="row form-group-fields">
+              <div class="col-xs-1"><i class="fa fa-ellipsis-v dndHandle" dndHandle></i></div>
+              <!-- drop form elements -->
+              <div class="col-xs-7">
+                <div *ngIf="item.dropType=='text'">
+                  <label>{{item.label}}</label> <label *ngIf="item.validation.required" class="text-danger">*</label>
+                  <input type="text" class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [disabled]="item.disable">
+                </div>
+                <div *ngIf="item.dropType=='email'">
+                  <label>{{item.label}}</label> <label *ngIf="item.validation.required" class="text-danger">*</label>
+                  <input type="email" class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [disabled]="item.disable">
+                </div>
+                <div *ngIf="item.dropType=='phone'">
+                  <label>{{item.label}}</label> <label *ngIf="item.validation.required" class="text-danger">*</label>
+                  <input type="text" class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [disabled]="item.disable">
+                </div>
+                <div *ngIf="item.dropType=='number'">
+                  <label>{{item.label}}</label> <label *ngIf="item.validation.required" class="text-danger">*</label>
+                  <input type="number" class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [disabled]="item.disable">
+                </div>
+                <div *ngIf="item.dropType=='amount'">
+                  <label>{{item.label}}</label> <label *ngIf="item.validation.required" class="text-danger">*</label>
+                  <div class="input-group">
+                    <span class="input-group-addon">$</span>
+                    <input type="number" class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [disabled]="item.disable">
+                  </div>
+                </div>
+                <div *ngIf="item.dropType=='date'">
+                  <label>{{item.label}}</label> <label *ngIf="item.validation.required" class="text-danger">*</label>
+                  <input type="date" class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [disabled]="item.disable">
+                </div>
+                <div *ngIf="item.dropType=='textarea'">
+                  <label>{{item.label}}</label> <label *ngIf="item.validation.required" class="text-danger">*</label>
+                  <textarea class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}"  [disabled]="item.disable"></textarea>
+                </div>
+                <div *ngIf="item.dropType=='autocomplete'">
+                  <label>{{item.label}}</label> <label *ngIf="item.validation.required" class="text-danger">*</label>
+                  <select class="form-control" id="{{item.dropName}}" [disabled]="item.disable">
+                    <option *ngFor="let v of item.attr_list.options" [value]="v.option">{{v.option}}</option>
+                  </select>
+                </div>
+                <div *ngIf="item.dropType=='checkbox'">
+                  <label>{{item.label}}</label> <label *ngIf="item.validation.required" class="text-danger">*</label>
+                  <div *ngFor="let v of item.attr_list.options" class="inline-form-group">
+                    <label class="cust-check-bx">
+                      <input type="checkbox" [value]="v.option" name="{{item.dropName}}" [disabled]="item.disable">
+                      {{v.option}}
+                      <span class="checkmark"></span>
+                    </label>
+                  </div>
+                </div>
+                <div *ngIf="item.dropType=='radio'">
+                  <label>{{item.label}}</label> <label *ngIf="item.validation.required" class="text-danger">*</label>
+                  <div *ngFor="let v of item.attr_list.options" class="inline-form-group">
+                    <label class="cust-check-bx">
+                      <input type="radio" [value]="v.option" name="{{item.dropName}}" [disabled]="item.disable"> {{v.option}}
+                      <span class="checkmark"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-4">
+                <i *ngIf="item.toggle" (click)="item.toggle=false" class="fa fa-chevron-up pull-right"></i>
+                <i *ngIf="!item.toggle" (click)="item.toggle=true" class="fa fa-chevron-down pull-right"></i>
+                <i (click)="removeField(i)" class="fa fa-trash pull-right"></i>
+              </div>
+            </div>
+            <!-- drop control customization -->
+            <div *ngIf="item.toggle" class="toggle-Wrapper">
+              <div class="form-group-fields">
+                <label>Required</label>
+                <i *ngIf="item.validation.required" (click)="item.validation.required=false"
+                  class="fa fa-toggle-on red"></i>
+                <i *ngIf="!item.validation.required" (click)="item.validation.required=true"
+                  class="fa fa-toggle-off"></i>
+                  <span>&nbsp;&nbsp;&nbsp;</span>
+                <label>Disable</label>
+                <i *ngIf="item.disable" (click)="item.disable=0"
+                  class="fa fa-toggle-on red"></i>
+                <i *ngIf="!item.disable" (click)="item.disable=1"
+                  class="fa fa-toggle-off"></i>
+                <span class="pull-right ucfirst">{{item.dropType}}</span>
+              </div>
+              <div class="form-group-fields">
+                <label>Label</label>
+                <input class="form-control" type="text" [(ngModel)]="item.label" />
+              </div>
+              <div class="form-group-fields">
+                <label>Name</label>
+                <input class="form-control" type="text" [(ngModel)]="item.name" />
+              </div>
+              <div class="form-group-fields">
+                <label>Default Value</label>
+                <input class="form-control" type="text" [(ngModel)]="item.default_value" />
+              </div>
+              <div class="form-group-fields">
+                <label>Regex</label>
+                <input class="form-control" type="text" [(ngModel)]="item.validation.regex" />
+              </div>
+
+              <!-- radio || checkbox || autocomplete -->
+              <div *ngIf="item.dropType=='radio'|| item.dropType=='checkbox' || item.dropType=='autocomplete'">
+                <div class="row">
+                  <div class="col-xs-8">
+                    <div class="form-group-fields">
+                      <label>Option</label>
+                    </div>
+                  </div>
+                  <div class="col-xs-2">
+                    <div class="form-group-fields">
+                      <label>Action</label>
+                    </div>
+                  </div>
+                </div>
+                <div *ngFor="let i of item.attr_list.options; let valueIndex=index;" class="row">
+                  <div class="col-xs-8">
+                    <div class="form-group-fields">
+                      <input class="form-control" type="text" [(ngModel)]="i.option" />
+                    </div>
+                  </div>
+                  <div class="col-xs-2">
+                    <div class="form-group-fields">
+                      <label (click)="item.attr_list.options.splice(valueIndex,1)">remove</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-8">
+                    <div class="form-group-fields">
+                      <input class="form-control" type="text" [(ngModel)]="value.option" />
+                    </div>
+                  </div>
+                  <div class="col-xs-2">
+                    <div class="form-group-fields">
+                      <label (click)="addValue(item.attr_list.options)">Add</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--optional placeholder element for dropzone-->
+          <!--will be removed from DOM on init-->
+          <div class="dndPlaceholder" dndPlaceholderRef>
+          </div>
+        </section>
+      </div>
+    </div>
+    <!-- formbuilder end -->
+  </div>
+</div>

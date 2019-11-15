@@ -40,6 +40,8 @@ import { OrderComponent } from './order/order.component';
 import { AuthGuard } from './../shared';
 import { OktaAuthService } from './../../services/okta.service';
 import { OrganizationService } from './../../services/organization.service';
+import { OrderTemplateComponent } from './order-template/order-template.component';
+import { CustomFormBuilderModule } from '../shared/components/customformbuilder/customformbuilder.module';
 
 @NgModule({
     imports: [
@@ -67,7 +69,8 @@ import { OrganizationService } from './../../services/organization.service';
         MultiSelectDropdownModule,
         BsDatepickerModule.forRoot(),
         DatepickerModule.forRoot(),
-        AppScriptEmbedderModule
+        AppScriptEmbedderModule,
+        CustomFormBuilderModule
     ],
     declarations: [
         LayoutComponent,
@@ -84,7 +87,8 @@ import { OrganizationService } from './../../services/organization.service';
         UserManagementComponent,
         VisDashboardComponent,
         OrderComponent,
-        OrderPaymentComponent
+        OrderPaymentComponent,
+        OrderTemplateComponent
     ],
     providers: [AuthGuard, OktaAuthService, OrganizationService],
     schemas: [
