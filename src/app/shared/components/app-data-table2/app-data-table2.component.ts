@@ -779,7 +779,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             $(document).on('click', '.adCopy', function() {
                 console.log('$thid')
                 console.log($(this).next('.adDetails'));
-                $(this).next('.adDetails').show();
+                $(this).next('.adDetails').show(500);
             });
             $(document).on('keyup', '.adInputHeader', function() {
                 if($(this).val()) {
@@ -797,12 +797,12 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 }
             });
             $(document).on('click', '.closeAd', function() {
-                $(this).closest('.adDetails').hide();
+                $(this).closest('.adDetails').hide(500);
             });
         }
     }
 
-    smartSteps1(id, steps, isLineItem = false) {
+    smartSteps1(id, steps, isLineItem = false, lineItemName = null) {
         const $mainDiv = $('<div/>', {
             'class': 'col-lg-6 col-md-6 col-sm-12',
             css : {
@@ -828,9 +828,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 $ul.append('<li class="crumb pull-left ' + steps[i].state + '"><div><span style="font-size: 10px">' + steps[i].title + '</span><p style="clear:both"></p><small style="position: absolute;top: 20px; font-size: 8px">' +  steps[i].subTitle +  '</small></div></li>');
             }
         }
-        if(isLineItem) {
+        if (isLineItem) {
             $div.append('<img class="adCopy" tooltip="View/Change AdCopy" style="width: 38px;position: relative;left: 10px;margin-left: 42px;margin-right: 12px;float: left; cursor: pointer; top: -4px" src="./../../../../assets/images/adCopy.png"/>');
-            $div.append('<div class="adDetails" style="position: absolute;left: 50px;z-index: 100;border: 1px solid;border-radius: 4px;margin: 4px;padding: 5px 10px;background: beige;top: -3px; display: none; width: 320px"><div><b>Ad Details</b></div><div style="margin-top: 10px"><label>Header</label><br><input style="border-radius: 4px; width: 300px" type="text" class="form-control adInputHeader"/></div><div style="margin-top: 10px"><label>Url</label><br><input style="border-radius: 4px; width: 300px" type="text" class="form-control adInputUrl"/></div><div style="margin-top: 10px"><label>Description</label><br><textarea class="adInputDescription" style="border-radius: 4px; width: 300px" type="text" class="form-control"/></div><div style="margin-top: 10px"><label>Preview</label><br><div style="border-radius: 4px; width: 300px;"/><a href="javascript:void(0)" class="adHeader">Start Your Free Trial - Forma Gym</a><br><span class="adUrl" style="color: green; white-space: pre-wrap">https://formagym.com/promotions/trial</span><br><span class="adDescription" style="white-space: pre-wrap">For a limited time, try any of our gym facility for 7 days for FREE. No Credit Card Needed</span></div><div style="margin-top: 10px"><br><button class="btn-info">Update</button><button style="margin-left: 10px" class="btn-info closeAd">Cancel</button></div>');
+            $div.append('<div class="adDetails" style="position: absolute;left: 50px;z-index: 100;border: 1px solid;border-radius: 4px;margin: 4px;padding: 5px 10px;background: beige;top: -3px; display: none; width: 520px"><div><b style="font-size: 14px">Ad Details</b></div><div class="col-lg-6 col-md-6 col-sm-6"><div style="margin-top: 10px"><img style="width: 200px" src="../../../../assets/images/sample_ad.jpeg"/></div><div style="margin-top: 10px"><label>Header</label><br><span style="white-space: pre-wrap">Toshiba Laptops - 40% Off</span></div><div style="margin-top: 10px"><label>Description</label><br><span style="white-space: pre-wrap">For a limited time, get Toshiba 29xx series laptops, starting at just $149 </span></div></div><div class="col-lg-6 col-md-6 col-sm-6"><span>Summary ( As of '   +  (((new Date().getMonth() > 8) ? (new Date().getMonth() + 1) : ('0' + (new Date().getMonth() + 1))) + '/' + ((new Date().getDate() > 9) ? new Date().getDate() : ('0' + new Date().getDate())) + '/' + new Date().getFullYear())   +    ' )</span><div style="margin-top: 10px"><ul><li style="white-space: pre-wrap">Ad Copy displayed on ' +  lineItemName  +  ' News Feed</li><li>Ad Reach : 20,000</li><li>ROAs : 40%</li><li>Revenue : $8,000</li><li>7-day attribution period</li></ul></div></div><p style="clear: both"></p><div style="margin-top: 10px"><br><button style="margin-left: 10px" class="btn-info closeAd">Close</button></div>');
         }
         $div.append($ul);
         $mainDiv.append($div);
@@ -952,7 +952,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 items[i].actions.forEach(function (action) {
                     buttons += '<button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600; padding: 4px; font-size: 10px"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 15px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>' + action  + '</button>';
                 });
-                $mainDiv.append('<div class="accordion-content">' + this.smartSteps1(id, items[i].steps, true) + '<p style="clear: both"></p><div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-bottom: 20px; margin-left: 15px">' + buttons + '</div><p style="clear: both"></p><div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-left: 15px"><span>Ad Group : ' + items[i].adGroup + '</span></div></div>');
+                $mainDiv.append('<div class="accordion-content">' + this.smartSteps1(id, items[i].steps, true, items[i].header) + '<p style="clear: both"></p><div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-bottom: 20px; margin-left: 15px">' + buttons + '</div><p style="clear: both"></p><div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-left: 15px"><span>Ad Group : ' + items[i].adGroup + '</span></div></div>');
             }
         }
         return $mainDiv[0].outerHTML;

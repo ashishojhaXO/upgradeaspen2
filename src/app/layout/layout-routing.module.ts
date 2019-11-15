@@ -15,6 +15,8 @@ import { SupportComponent } from './support/support.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { UserManagementComponent } from './usermanagement/usermanagement.component';
 import { VisDashboardComponent } from './visDashboard/visDashboard.component';
+import { ConfigureAdComponent } from './configureAd/configureAd.component';
+import { TargetAudComponent } from './targetAud/targetAud.component';
 
 const routes: Routes = [
   {
@@ -120,11 +122,51 @@ const routes: Routes = [
         },
       },
       {
+        path: 'configureAd',
+        component: ConfigureAdComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Configure AD'
+        },
+      },
+      {
+        path: 'configureAd/:id',
+        component: ConfigureAdComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Modify AD'
+        },
+      },
+      {
+        path: 'targetAud',
+        component: TargetAudComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Configure Target Audience'
+        },
+      },
+      {
+        path: 'targetAud/:id',
+        component: TargetAudComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Modify Target Audience'
+        },
+      },
+      {
         path: 'orderPayment',
         component: OrderPaymentComponent,
         data: {
           breadcrumbs: true,
-          text: 'Order Payment'
+          text: 'Configure Order Payment'
+        },
+      },
+      {
+        path: 'orderPayment/:id',
+        component: OrderPaymentComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Modify Order Payment'
         },
       },
       {
