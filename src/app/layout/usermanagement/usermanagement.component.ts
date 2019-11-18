@@ -15,11 +15,13 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-modal.component';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { OktaAuthService } from '../../../services/okta.service';
+import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up.component';
 
 @Component({
   selector: 'app-usermanagement',
   templateUrl: './usermanagement.component.html',
-  styleUrls: ['./usermanagement.component.scss']
+  styleUrls: ['./usermanagement.component.scss'],
+  providers: [AppPopUpComponent]
 })
 export class UserManagementComponent implements OnInit  {
 
@@ -68,7 +70,13 @@ export class UserManagementComponent implements OnInit  {
   vendorOptions = [];
   widget: any;
 
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
+  constructor(
+    private okta: OktaAuthService, 
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private http: Http, 
+    private popUp: AppPopUpComponent
+  ) {
 
     this.userForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
@@ -211,7 +219,7 @@ export class UserManagementComponent implements OnInit  {
       this.selectedVendor = e.value;
     }
   }
-
+  
   handleRowSelection(rowObj: any, rowData: any) {
 
   }
@@ -375,4 +383,205 @@ export class UserManagementComponent implements OnInit  {
   handleShowModal(modalComponent: PopUpModalComponent) {
     modalComponent.show();
   }
+
+  // Started
+
+  showError() {
+    console.log("Some error occured while catching data from child component");
+  }
+
+  handleRow(rowObj: any, rowData: any) {
+    // If this.rowObj.action func exists then run that function
+    const func = this[rowObj.action] ? this[rowObj.action] : this.showError();
+  }
+
+  apiCall(endPoint, dataObj) {
+    // TODO: FTM: All calls are Post, change it to be generic
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    const data = JSON.stringify(dataObj);
+    const url = this.api_fs.api + endPoint;
+    console.log("apiCALL GET HERE")
+    return this.http
+      .post(url, data, options)
+      .map(res => {
+        return res.json();
+      }).share();
+  }
+
+  setPassword() {
+    console.log("SPASS: this; ", this);
+
+  }
+
+  resendEmail() {
+    console.log("RESEM", this)
+
+    // const endPoint = '/users/{{userID}}/suspend';
+    const endPoint = '/users/suspend';
+    const data = {};
+
+    const popUpOptions = {
+      title: "Resend Email",
+      text: "Do you wish to receive another Email?",
+      type: 'question',
+      // cancelButtonText: "Ok",
+    }
+
+    const prom = this.popUp.showPopUp(popUpOptions);
+    prom
+    .then((res) => {
+        if(res && res.value) {
+            this.showSpinner = true;
+            return this.apiCall(endPoint, data).toPromise()
+        }
+    })
+    .then((res)=>{
+        // Resolve
+        this.showSpinner = false;
+        if(res) {
+            const swalOptions = {
+                title: 'Retry Orders Successful',
+                text: 'Retry Orders Successful',
+                type: 'success',
+                showCloseButton: true,
+                confirmButtonText: "Ok",
+            };
+            return this.popUp.showPopUp(swalOptions)
+        }
+        return null;
+    }, (rej) => {
+        this.showSpinner = false;
+        if(rej) {
+            const swalOptions = {
+                title: 'Retry Orders Failed',
+                text: 'Retry Orders Failed',
+                type: 'error',
+                showCloseButton: true,
+                confirmButtonText: "Ok",
+            };
+            this.popUp.showPopUp(swalOptions)
+            throw new Error("Rejected");
+        }
+        return null;
+    })
+    .then((ok) => {
+        // On Resolve Call getRetryOrders
+        if(ok && ok.value) {
+            this.showSpinner = true; // true here & then when getRetryOrders pulled, false spinner
+            return this.searchDataRequest();
+        }
+        return null;
+    })
+    .catch((err)=>{
+        // if (err instanceof ApiError)
+        this.showSpinner = false;
+        console.log("Error: Retry Orders: ", err);
+    });
+
+    // Pre AreUSure SweetAlert PopUp
+    // this.apiCall(endPoint, data).subscribe( res => {
+    //   console.log("RESEM: ", res);
+    // });
+  }
+
+  suspend() {
+    console.log("SUSP: ", this);
+    // const endPoint = '/users/{{userID}}/suspend';
+    const endPoint = '/users/suspend';
+    const data = {};
+
+    const popUpOptions = {
+      title: "Suspend",
+      text: "Are you sure you want to Suspend the account?",
+      type: 'question',
+      // cancelButtonText: "Ok",
+    }
+
+    const prom = this.popUp.showPopUp(popUpOptions);
+    prom
+    .then((res) => {
+        if(res && res.value) {
+            this.showSpinner = true;
+            return this.apiCall(endPoint, data).toPromise()
+        }
+    })
+    .then((res)=>{
+        // Resolve
+        this.showSpinner = false;
+        if(res) {
+            const swalOptions = {
+                title: 'Retry Orders Successful',
+                text: 'Retry Orders Successful',
+                type: 'success',
+                showCloseButton: true,
+                confirmButtonText: "Ok",
+            };
+            return this.popUp.showPopUp(swalOptions)
+        }
+        return null;
+    }, (rej) => {
+        this.showSpinner = false;
+        if(rej) {
+            const swalOptions = {
+                title: 'Retry Orders Failed',
+                text: 'Retry Orders Failed',
+                type: 'error',
+                showCloseButton: true,
+                confirmButtonText: "Ok",
+            };
+            this.popUp.showPopUp(swalOptions)
+            throw new Error("Rejected");
+        }
+        return null;
+    })
+    .then((ok) => {
+        // On Resolve Call getRetryOrders
+        if(ok && ok.value) {
+            this.showSpinner = true; // true here & then when getRetryOrders pulled, false spinner
+            return this.searchDataRequest();
+        }
+        return null;
+    })
+    .catch((err)=>{
+        // if (err instanceof ApiError)
+        this.showSpinner = false;
+        console.log("Error: Retry Orders: ", err);
+    });
+
+    // Pre AreUSure SweetAlert PopUp
+    // this.apiCall(endPoint, dataObj).subscribe( res => {
+    //   console.log("SUS: ", res);
+    // });
+    // Post Success/Error SweetAlert PopUp
+  }
+
+  deactivate() {
+    console.log("DEACT", this)
+
+  }
+  
+  handleActions(ev: any) {
+    const action = $(ev.data).data('action');
+
+    if(this[action]) {
+      // const func = this[action];
+      // func();
+      this[action]();
+    } else {
+        // Some problem
+        // Function does not exists in this class, if data-action string is correct
+        // Else if all functions exists, then, data-action string coming from html is not correct
+        console.log("Error: Problem executing function")
+    }
+  }
+
+
+  // Started/
+
 }

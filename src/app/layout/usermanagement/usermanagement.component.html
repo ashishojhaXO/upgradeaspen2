@@ -7,7 +7,11 @@
   </div>
   <div class="">
     <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject.isDataAvailable">
-      <app-data-table2 [dataObject]="dataObject" identity="usermanagement" (triggerActions)="this[$event.action]($event)"></app-data-table2>
+      <app-data-table2 
+        [dataObject]="dataObject" 
+        identity="usermanagement" 
+        (triggerActions)="this[$event.action]($event)">
+      </app-data-table2>
       <!--<app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height"></app-data-table1>-->
     </div>
     <div class="clearfix"></div>
