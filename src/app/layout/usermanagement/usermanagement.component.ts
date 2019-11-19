@@ -465,12 +465,19 @@ export class UserManagementComponent implements OnInit  {
   setPasswordAndActivate() {
     console.log("SPASS: this; ", this);
     const userID = localStorage.getItem('loggedInUserID') || '';
-    const endPoint = '/users/{{userID}}/activate';
-    const data = {};
+    const endPoint = `/users/${userID}/activate`;
+    const data = {
+      "credentials": {
+        "password": {
+          "value": ""
+        }
+      }
+    }
 
     const popUpOptions = {
       title: 'Activate',
       input: 'text',
+      text: "Please set a password",
       inputAttributes: {
         autocapitalize: 'off'
       },
@@ -478,20 +485,29 @@ export class UserManagementComponent implements OnInit  {
       confirmButtonText: 'Look up',
       showLoaderOnConfirm: true,
       preConfirm: (login) => {
-        console.log("PRECONFI");
-        return fetch(`//api.github.com/users/${login}`)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error(response.statusText)
-            }
-            return response.json()
-          })
-          .catch(error => {
-            const popUpOptions = {
-              text: "Request failed",
-            }
-            this.popUp.showPopUp(popUpOptions)
-          })
+        data.credentials.password.value = login;
+        console.log("PRECONFI data: ", data);
+        
+        // return fetch(`//api.github.com/users/${login}`)
+        //   .then(response => {
+        //     if (!response.ok) {
+        //       console.log("fetch not ok")
+        //       throw new Error(response.statusText)
+        //     }
+        //     console.log("fetch is ok")
+        //     return response.json()
+        //   })
+        //   .catch(error => {
+        //     console.log("fetch erro")
+        //     const popUpOptions = {
+        //       text: "Request failed",
+        //     }
+        //     this.popUp.showPopUp(popUpOptions)
+        //     return error;
+        //   })
+
+          return this.apiCall( endPoint, data).toPromise();
+
       },
     }
 
@@ -500,19 +516,13 @@ export class UserManagementComponent implements OnInit  {
 
     const prom = this.popUp.showPopUp(popUpOptions);
     prom
-    .then((res) => {
-        if(res && res.value) {
-          this.showSpinner = true;
-          return this.apiCall(endPoint, data).toPromise()
-        }
-    })
     .then((res)=>{
         // Resolve
         this.showSpinner = false;
         if(res) {
           const swalOptions = {
             title: 'Success',
-            text: 'Account suspended.',
+            text: 'Password set and Activated.',
             type: 'success',
             showCloseButton: true,
             confirmButtonText: "Ok",
@@ -525,7 +535,7 @@ export class UserManagementComponent implements OnInit  {
         if(rej) {
           const swalOptions = {
             title: 'Error',
-            text: 'Error while suspending account.',
+            text: 'Error while setting password and activating, please try after sometime.',
             type: 'error',
             showCloseButton: true,
             confirmButtonText: "Ok",

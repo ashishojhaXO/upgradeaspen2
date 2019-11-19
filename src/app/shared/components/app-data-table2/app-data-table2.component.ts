@@ -586,7 +586,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     <span style="margin-right: 5px; position: relative;">
                                     <i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i>
                                     <i class="fa fa-arrow-right" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i>
-                                    </span>Resend Activatation Email
+                                    </span>Resend Activation Email
                                     </button>
                                     <div class="dropdown">
                                     <button class="btn action-btn dropdown-toggle" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; line-height: 1.7; font-weight: 600;" type="button" id="menu1" data-toggle="dropdown">
