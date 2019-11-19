@@ -22,6 +22,7 @@ import {CheckboxSwitchModule} from './../shared/components/app-checkbox-switch/a
 import {MultiSelectDropdownModule} from './../shared/components/multiselect-dropdown/multiselect-dropdown.module';
 import { DatepickerModule, BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { AppScriptEmbedderModule} from './../shared/components/app-script-embedder/app-script-embedder.module';
+import {A2Edatetimepicker} from 'ng2-eonasdan-datetimepicker';
 
 //declarations
 import { DashboardsComponent } from './dashboards/dashboards.component';
@@ -72,7 +73,8 @@ import { CustomFormBuilderModule } from '../shared/components/customformbuilder/
         BsDatepickerModule.forRoot(),
         DatepickerModule.forRoot(),
         AppScriptEmbedderModule,
-        CustomFormBuilderModule
+        CustomFormBuilderModule,
+        A2Edatetimepicker
     ],
     declarations: [
         LayoutComponent,
@@ -90,7 +92,7 @@ import { CustomFormBuilderModule } from '../shared/components/customformbuilder/
         VisDashboardComponent,
         OrderComponent,
         OrderPaymentComponent,
-        OrderTemplateComponent
+        OrderTemplateComponent,
         ConfigureAdComponent,
         TargetAudComponent
     ],

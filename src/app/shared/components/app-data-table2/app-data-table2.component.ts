@@ -288,12 +288,18 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div class="input-group date datepicker"><input placeholder="Select ' + field.label + '" type="text" class="form-control inlineEditor" style="border-radius: 4px; font-size: 12px" value="' + $('td', row).eq(columnIndex).text()  + '" /> <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span></div></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>';
                                     $('td', row).eq(columnIndex).html(html);
                                 } else if (field.type === 'list') {
-                                    let options = '';
-                                    field.options.forEach(function (option) {
-                                        options += '<option value="' + option.key + '">' + option.text + '</option>';
-                                    });
-                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select class="form-control inlineEditor" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px;">' + options  + '</select></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div';
-                                    $('td', row).eq(columnIndex).html(html);
+                                    console.log('field >>')
+                                    console.log(field);
+                                    if (field.name === 'ad_copy') {
+                                        $('td', row).eq(columnIndex).html('<div><button class="btn btn-info display-ad">Select</button><div style="position: absolute; z-index: 1; background: beige; padding: 15px; width: 500px; display: none"><div class="col-lg-6 col-md-6 col-sm-6"><div style="height: 130px; cursor: pointer"><img class="ad-image" width="200px" src="./../../../../assets/images/test_ad_1.jpeg"/></div><br/><div style="text-align: center"><span>Click to Select</span><br/><span>Size : 200x112</span><br/><span>Price : $100/month</span></div></div><div class="col-lg-6 col-md-6 col-sm-6"><div style="height: 130px; cursor: pointer"><img class="ad-image" width="200px" src="./../../../../assets/images/test_ad_2.jpeg"/></div><br/><div style="text-align: center"><span>Click to Select</span><br/><span>Size : 200x96</span><br/><span>Price : $85/month</span></div></div><p style="clear: both"/><div class="col-lg-6 col-md-6 col-sm-6"><div style="height: 130px; cursor: pointer"><img class="ad-image" width="200px" src="./../../../../assets/images/test_ad_3.jpeg"/></div><br/><div style="text-align: center"><span>Click to Select</span><br/><span>Size : 200x112</span><br/><span>Price : $100/month</span></div></div><div class="col-lg-6 col-md-6 col-sm-6"><div style="height: 130px; cursor: pointer"><img class="ad-image" width="200px" src="./../../../../assets/images/test_ad_4.jpeg"/></div><br/><div style="text-align: center"><span>Click to Select</span><br/><span>Size : 200x141</span><br/><span>Price : $150/month</span></div></div><div></div>');
+                                    } else {
+                                        let options = '';
+                                        field.options.forEach(function (option) {
+                                            options += '<option value="' + option.key + '">' + option.text + '</option>';
+                                        });
+                                        const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select class="form-control inlineEditor" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label + ' is required</div></div';
+                                        $('td', row).eq(columnIndex).html(html);
+                                    }
                                 }
                             }
                         });
@@ -571,7 +577,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     description: 'Order details during payment received'
                                 });
                                 orderSteps.push({
-                                    title: 'Payment Processing',
+                                    title: 'Payment Processed',
                                     subTitle: '10/04/2019',
                                     state : 'done',
                                     description: 'Payment Processing Completed'
@@ -740,13 +746,30 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             $('.datepicker').datepicker({
                 format: 'yyyy-mm-dd',
                 clearBtn: true,
-                todayBtn: true,
-                autoclose: true
+                // todayBtn: true,
+                autoclose: true,
+                todayHighlight: true
             });
+
+            // Initiate ad image click
+            $(document).on('click', '.ad-image', function () {
+                $(this).after('<i class="fa fa-check-circle" style="font-size: 38px; position: absolute; left: 0px; color: green;"></i>');
+            });
+
+            $(document).on('click', '.display-ad', function () {
+                if (!$(this).hasClass('ad-displayed')) {
+                    $(this).next('div').show(1000);
+                    $(this).addClass('ad-displayed');
+                } else {
+                    // $(this).next('div').hide(1000);
+                    // $(this).removeClass('ad-displayed');
+                }
+
+            });
+
 
             // Register change event on inline edit fields
             $('.inlineEditor').on('change', function () {
-                console.log('$(this).closest(\'.form-group\')')
                 const rowIndex = $(this).closest('.form-group').attr('rowIndex');
                 let columnIndex = $(this).closest('.form-group').attr('columnIndex');
                 console.log($(this).closest('.form-group').attr('rowIndex'));

@@ -18,6 +18,21 @@ label {
   }
 }
 
+.datepicker-icon {
+  position: relative !important;
+  left: -62px !important;
+  border-right: 0px !important;
+}
+
+.datepicker.datepicker-dropdown {
+  z-index: 10000 !important;
+}
+
+.bootstrap-datetimepicker-widget {
+  z-index: 1000 !important;
+}
+
+
 .page-content {
   background: #ededed;
 }
@@ -3500,7 +3515,7 @@ div.crumbs-main {
   background-color: #FC6468;
 }
 
-.bs-datepicker-body table tbody tr {
-  height: 10px !important;
-}
+
+
+
 

@@ -59,6 +59,12 @@ export class OrderComponent implements OnInit  {
   dataRowUpdated = false;
   minDate = new Date();
 
+  dateOptions = {
+    format: "YYYY-MM-DD",
+    showClear: true,
+    keepOpen: true
+  };
+
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder,) {
     this.formAttribute = fb;
   }
@@ -448,5 +454,9 @@ export class OrderComponent implements OnInit  {
 
   handleRowSelection(rowObj: any, rowData: any) {
 
+  }
+
+  OnSubmit() {
+    this.router.navigate(['/app/targetAud/']);
   }
 }

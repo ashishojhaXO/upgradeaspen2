@@ -81,6 +81,7 @@
     "ng2-datetime": "^1.4.0",
     "ng2-dnd": "^4.2.0",
     "ng2-dragula": "^1.5.0",
+    "ng2-eonasdan-datetimepicker": "^0.1.4",
     "ng2-password-strength-bar": "^1.2.0",
     "ng2-select2": "^1.0.0-beta.10",
     "ng2-slim-loading-bar": "^4.0.0",

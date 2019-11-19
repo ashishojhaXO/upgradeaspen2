@@ -58,6 +58,7 @@ export class TargetAudComponent implements OnInit  {
   formAttribute: any;
   dataRowUpdated = false;
   minDate = new Date();
+  kpis = [1];
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder,) {
     this.formAttribute = fb;
@@ -78,5 +79,9 @@ export class TargetAudComponent implements OnInit  {
         this.isExistingOrder = true;
       }
     });
+  }
+
+  addKpi() {
+    this.kpis.push(1);
   }
 }
