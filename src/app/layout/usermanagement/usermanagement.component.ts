@@ -414,110 +414,185 @@ export class UserManagementComponent implements OnInit  {
       }).share();
   }
 
-  setPassword() {
+
+  successCallBack = (res) => {
+    console.log("API CALLL IN ", this);
+    this.showSpinner = false;
+    let popUpOptions = {};
+    if (res.status = 200) {
+      popUpOptions = {
+        title: "Email sent",
+        text: "Email has been sent to your registered account.",
+        type: 'success',
+        cancelButtonText: "Cancel",
+      }
+
+    } else if (res.status == 400) {
+      popUpOptions = {
+        title: "Error in sending Email",
+        text: "Error while sending email.",
+        type: 'error',
+        cancelButtonText: "Cancel",
+      }
+
+    } else {
+      popUpOptions = {
+        title: "Error",
+        text: "Some error in sending email.",
+        type: 'error',
+        cancelButtonText: "Cancel",
+      }
+
+    }
+    this.popUp.showPopUp(popUpOptions);
+
+    // console.log("RESEM: ", res);
+
+  }
+
+  errorCallBack = (err) => {
+    this.showSpinner = false;
+    const popUpOptions = {
+      title: "Error",
+      text: "Some error occured while calling server.",
+      type: 'error',
+      cancelButtonText: "Cancel",
+    }
+
+    this.popUp.showPopUp(popUpOptions);
+  }
+
+  setPasswordAndActivate() {
     console.log("SPASS: this; ", this);
+    const userID = localStorage.getItem('loggedInUserID') || '';
+    const endPoint = '/users/{{userID}}/activate';
+    const data = {};
+
+    const popUpOptions = {
+      title: 'Activate',
+      input: 'text',
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Look up',
+      showLoaderOnConfirm: true,
+      preConfirm: (login) => {
+        console.log("PRECONFI");
+        return fetch(`//api.github.com/users/${login}`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(response.statusText)
+            }
+            return response.json()
+          })
+          .catch(error => {
+            const popUpOptions = {
+              text: "Request failed",
+            }
+            this.popUp.showPopUp(popUpOptions)
+          })
+      },
+    }
+
+
+
+
+    const prom = this.popUp.showPopUp(popUpOptions);
+    prom
+    .then((res) => {
+        if(res && res.value) {
+          this.showSpinner = true;
+          return this.apiCall(endPoint, data).toPromise()
+        }
+    })
+    .then((res)=>{
+        // Resolve
+        this.showSpinner = false;
+        if(res) {
+          const swalOptions = {
+            title: 'Success',
+            text: 'Account suspended.',
+            type: 'success',
+            showCloseButton: true,
+            confirmButtonText: "Ok",
+          };
+          return this.popUp.showPopUp(swalOptions)
+        }
+        return null;
+    }, (rej) => {
+        this.showSpinner = false;
+        if(rej) {
+          const swalOptions = {
+            title: 'Error',
+            text: 'Error while suspending account.',
+            type: 'error',
+            showCloseButton: true,
+            confirmButtonText: "Ok",
+          };
+          this.popUp.showPopUp(swalOptions)
+          throw new Error("Rejected");
+        }
+        return null;
+    })
+    .then((ok) => {
+        // On Resolve Call getRetryOrders
+        if(ok && ok.value) {
+          this.showSpinner = true; // true here & then when getRetryOrders pulled, false spinner
+          return this.searchDataRequest();
+        }
+        return null;
+    })
+    .catch((err) => {
+      // if (err instanceof ApiError)
+      this.showSpinner = false;
+      console.log("Error: Account suspending: ", err);
+    });
 
   }
 
   resendEmail() {
+    // TODO: To be completed still, waiting for API
     console.log("RESEM", this)
+    const userID = localStorage.getItem('loggedInUserID') || '';
 
     // const endPoint = '/users/{{userID}}/suspend';
     const endPoint = '/users/suspend';
     const data = {};
 
-    const popUpOptions = {
-      title: "Resend Email",
-      text: "Do you wish to receive another Email?",
-      type: 'question',
-      // cancelButtonText: "Ok",
-    }
-
-    const prom = this.popUp.showPopUp(popUpOptions);
-    prom
-    .then((res) => {
-        if(res && res.value) {
-            this.showSpinner = true;
-            return this.apiCall(endPoint, data).toPromise()
-        }
-    })
-    .then((res)=>{
-        // Resolve
-        this.showSpinner = false;
-        if(res) {
-            const swalOptions = {
-                title: 'Retry Orders Successful',
-                text: 'Retry Orders Successful',
-                type: 'success',
-                showCloseButton: true,
-                confirmButtonText: "Ok",
-            };
-            return this.popUp.showPopUp(swalOptions)
-        }
-        return null;
-    }, (rej) => {
-        this.showSpinner = false;
-        if(rej) {
-            const swalOptions = {
-                title: 'Retry Orders Failed',
-                text: 'Retry Orders Failed',
-                type: 'error',
-                showCloseButton: true,
-                confirmButtonText: "Ok",
-            };
-            this.popUp.showPopUp(swalOptions)
-            throw new Error("Rejected");
-        }
-        return null;
-    })
-    .then((ok) => {
-        // On Resolve Call getRetryOrders
-        if(ok && ok.value) {
-            this.showSpinner = true; // true here & then when getRetryOrders pulled, false spinner
-            return this.searchDataRequest();
-        }
-        return null;
-    })
-    .catch((err)=>{
-        // if (err instanceof ApiError)
-        this.showSpinner = false;
-        console.log("Error: Retry Orders: ", err);
-    });
-
+    this.showSpinner = true;
     // Pre AreUSure SweetAlert PopUp
-    // this.apiCall(endPoint, data).subscribe( res => {
-    //   console.log("RESEM: ", res);
-    // });
+    // this.apiCall(endPoint, data).subscribe( this.successCallBack, this.errorCallBack(this.errorFunc) );
+    this.apiCall(endPoint, data).subscribe( this.successCallBack, this.errorCallBack );
   }
 
   suspend() {
     console.log("SUSP: ", this);
-    // const endPoint = '/users/{{userID}}/suspend';
-    const endPoint = '/users/suspend';
+    const userID = localStorage.getItem('loggedInUserID') || '';
+    const endPoint = `/users/${userID}/suspend`;
     const data = {};
 
     const popUpOptions = {
-      title: "Suspend",
+      title: "Suspend?",
       text: "Are you sure you want to Suspend the account?",
       type: 'question',
       // cancelButtonText: "Ok",
     }
-
     const prom = this.popUp.showPopUp(popUpOptions);
     prom
     .then((res) => {
-        if(res && res.value) {
-            this.showSpinner = true;
-            return this.apiCall(endPoint, data).toPromise()
-        }
+      if(res && res.value) {
+        this.showSpinner = true;
+        return this.apiCall(endPoint, data).toPromise()
+      }
     })
-    .then((res)=>{
+    .then((res) => {
         // Resolve
         this.showSpinner = false;
         if(res) {
             const swalOptions = {
-                title: 'Retry Orders Successful',
-                text: 'Retry Orders Successful',
+                title: 'Success',
+                text: 'Account suspended.',
                 type: 'success',
                 showCloseButton: true,
                 confirmButtonText: "Ok",
@@ -525,45 +600,104 @@ export class UserManagementComponent implements OnInit  {
             return this.popUp.showPopUp(swalOptions)
         }
         return null;
-    }, (rej) => {
+      }, (rej) => {
         this.showSpinner = false;
         if(rej) {
-            const swalOptions = {
-                title: 'Retry Orders Failed',
-                text: 'Retry Orders Failed',
-                type: 'error',
-                showCloseButton: true,
-                confirmButtonText: "Ok",
-            };
-            this.popUp.showPopUp(swalOptions)
-            throw new Error("Rejected");
+          const swalOptions = {
+            title: 'Error',
+            text: 'Error while suspending account.',
+            type: 'error',
+            showCloseButton: true,
+            confirmButtonText: "Ok",
+          };
+          this.popUp.showPopUp(swalOptions)
+          throw new Error("Rejected");
         }
         return null;
     })
     .then((ok) => {
         // On Resolve Call getRetryOrders
-        if(ok && ok.value) {
-            this.showSpinner = true; // true here & then when getRetryOrders pulled, false spinner
-            return this.searchDataRequest();
-        }
-        return null;
+      if(ok && ok.value) {
+        this.showSpinner = true; // true here & then when getRetryOrders pulled, false spinner
+        return this.searchDataRequest();
+      }
+      return null;
     })
     .catch((err)=>{
-        // if (err instanceof ApiError)
-        this.showSpinner = false;
-        console.log("Error: Retry Orders: ", err);
+      // if (err instanceof ApiError)
+      this.showSpinner = false;
+      console.log("Error: Account suspending: ", err);
     });
-
-    // Pre AreUSure SweetAlert PopUp
-    // this.apiCall(endPoint, dataObj).subscribe( res => {
-    //   console.log("SUS: ", res);
-    // });
     // Post Success/Error SweetAlert PopUp
+
   }
 
   deactivate() {
     console.log("DEACT", this)
 
+    // const endPoint = '/users/{{userID}}/suspend';
+    const userID = localStorage.getItem('loggedInUserID') || '';
+    const endPoint = `/users/${userID}/deactivate`;
+    const data = {};
+
+    const popUpOptions = {
+      title: "Deactivate?",
+      text: "Are you sure you want to deactivate the account?",
+      type: 'question',
+      cancelButtonText: "Cancel",
+    }
+
+    const prom = this.popUp.showPopUp(popUpOptions);
+    prom
+    .then((res) => {
+        if(res && res.value) {
+            this.showSpinner = true;
+            return this.apiCall(endPoint, data).toPromise()
+        }
+    })
+    .then((res)=>{
+        // Resolve
+        this.showSpinner = false;
+        if(res) {
+            const swalOptions = {
+                title: 'Error',
+                text: 'Account deactivated',
+                type: 'success',
+                showCloseButton: true,
+                confirmButtonText: "Ok",
+            };
+            return this.popUp.showPopUp(swalOptions)
+        }
+        return null;
+    }, (rej) => {
+        this.showSpinner = false;
+        if(rej) {
+            const swalOptions = {
+                title: 'Error',
+                text: 'Error while deactivating account',
+                type: 'error',
+                showCloseButton: true,
+                confirmButtonText: "Ok",
+            };
+            this.popUp.showPopUp(swalOptions)
+            throw new Error("Rejected");
+        }
+        return null;
+    })
+    .then((ok) => {
+        // On Resolve Call getRetryOrders
+        if(ok && ok.value) {
+            this.showSpinner = true; // true here & then when getRetryOrders pulled, false spinner
+            return this.searchDataRequest();
+        }
+        return null;
+    })
+    .catch((err)=>{
+        // if (err instanceof ApiError)
+        this.showSpinner = false;
+        console.log("Error: Deactivating account: ", err);
+    });
+    // Post Success/Error SweetAlert PopUp
   }
   
   handleActions(ev: any) {

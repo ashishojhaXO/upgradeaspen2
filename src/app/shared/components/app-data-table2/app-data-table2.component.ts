@@ -570,7 +570,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 const retHtml = `<div>
                                     <button 
                                         class="btn action-btn api-action" 
-                                        data-action="setPassword"
+                                        data-action="setPasswordAndActivate"
                                         style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
                                     >
                                         <span style="margin-right: 5px; position: relative;">
