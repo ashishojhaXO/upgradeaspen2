@@ -69,6 +69,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes['dataObject'] || changes['dataRowUpdated']) {
+
             console.log('dataObject >>>');
             console.log(this.dataObject);
 
@@ -284,7 +285,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 } else if (field.type === 'int') {
                                     $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.label + '" class="inlineEditor" type="number" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>');
                                 } else if (field.type === 'amount') {
-                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '">' + (field.includeCurrency ? '<select style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>' : '') + '<input placeholder="Select ' + field.label + '" class="inlineEditor" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>');
+                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '">' + (field.includeCurrency ? '<select style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>' : '<select style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>') + '<input placeholder="Select ' + field.label + '" class="inlineEditor" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>');
                                 } else if (field.type === 'date') {
                                     const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div class="input-group date datepicker"><input placeholder="Select ' + field.label + '" type="text" class="form-control inlineEditor" style="border-radius: 4px; font-size: 12px" value="' + $('td', row).eq(columnIndex).text()  + '" /> <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span></div></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>';
                                     $('td', row).eq(columnIndex).html(html);
@@ -292,7 +293,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     console.log('field >>')
                                     console.log(field);
                                     if (field.name === 'ad_copy') {
-                                        $('td', row).eq(columnIndex).html('<div><button class="btn btn-info display-ad">Select</button><div style="position: absolute; z-index: 1; background: beige; padding: 15px; width: 500px; display: none"><div class="col-lg-6 col-md-6 col-sm-6"><div style="height: 130px; cursor: pointer"><img class="ad-image" width="200px" src="./../../../../assets/images/test_ad_1.jpeg"/></div><br/><div style="text-align: center"><span>Click to Select</span><br/><span>Placeholder : News Feed</span><br/><span>Price : $25/day</span></div></div><div class="col-lg-6 col-md-6 col-sm-6"><div style="height: 130px; cursor: pointer"><img class="ad-image" width="200px" src="./../../../../assets/images/test_ad_2.jpeg"/></div><br/><div style="text-align: center"><span>Click to Select</span><br/><span>Placeholder : Shopping</span><br/><span>Price : $12/day</span></div></div><p style="clear: both"/><div class="col-lg-6 col-md-6 col-sm-6"><div style="height: 130px; cursor: pointer"><img class="ad-image" width="200px" src="./../../../../assets/images/test_ad_3.jpeg"/></div><br/><div style="text-align: center"><span>Click to Select</span><br/><span>Placeholder : Messenger</span><br/><span>Price : $10/day</span></div></div><div class="col-lg-6 col-md-6 col-sm-6"><div style="height: 130px; cursor: pointer"><img class="ad-image" width="200px" src="./../../../../assets/images/test_ad_4.jpeg"/></div><br/><div style="text-align: center"><span>Click to Select</span><br/><span>Placeholder : Group</span><br/><span>Price : $5/day</span></div></div><div></div>');
+                                        $('td', row).eq(columnIndex).html('<div><img class="display-ad" src="./../../../../assets/images/adCopy.png" style="width: 38px; cursor: pointer"/></div>');
                                     } else {
                                         let options = '';
                                         field.options.forEach(function (option) {
@@ -589,12 +590,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     state : 'current',
                                     description: 'Order details during started'
                                 });
-                                // orderSteps.push({
-                                //     title: 'Order Ended',
-                                //     subTitle: '---',
-                                //     state : 'invalid'
-                                // });
-                                // retHtml += '<div><h4>Order Details</h4></div>';
                                 const id = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
                                 retHtml += __this.smartSteps1(id, orderSteps);
                                 //  retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="width: 450px; border-radius: 4px; overflow-y: scroll;"><h4>Order History</h4><ul></ul><li>10/03/2019 - Order Modified</li><li>10/01/2019 - Payment Received - AMEX xxxx0747 </li><li>10/01/2019 - Order Created</li></div>';
@@ -707,31 +702,98 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 let retHtml = '';
                                 const orderSteps = [];
                                 orderSteps.push({
-                                    title: 'Created',
-                                    subTitle: 'Date Order Created'
-                                });
-                                orderSteps.push({
-                                    title: 'Payment Submitted',
-                                    subTitle: 'Date Payment Submitted'
+                                    title: 'Order Started',
+                                    subTitle: '10/01/2019',
+                                    state : 'done',
+                                    description: 'Order details during started'
                                 });
                                 orderSteps.push({
                                     title: 'Payment Received',
-                                    subTitle: 'Date Payment Received'
+                                    subTitle: '10/01/2019',
+                                    state : 'done',
+                                    description: 'Order details during payment received'
                                 });
                                 orderSteps.push({
-                                    title: 'Ended',
-                                    subTitle: 'Date order ended'
+                                    title: 'Payment Processed',
+                                    subTitle: '10/04/2019',
+                                    state : 'done',
+                                    description: 'Payment Processing Completed'
                                 });
-                                retHtml += '<div>Order #123</div>';
+                                orderSteps.push({
+                                    title: 'Order In Progress',
+                                    subTitle: '10/07/2019',
+                                    state : 'current',
+                                    description: 'Order details during started'
+                                });
                                 const id = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
-                                retHtml += __this.smartSteps(id, orderSteps);
-                                retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="border: 1px solid; width: 450px"> Test </div>';
+                                retHtml += __this.smartSteps1(id, orderSteps);
+                                //  retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="width: 450px; border-radius: 4px; overflow-y: scroll;"><h4>Order History</h4><ul></ul><li>10/03/2019 - Order Modified</li><li>10/01/2019 - Payment Received - AMEX xxxx0747 </li><li>10/01/2019 - Order Created</li></div>';
+                                retHtml += '<p style="clear: both">';
+                                retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-bottom: 20px"><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600; padding: 4px; font-size: 10px"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 15px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Extend</button></div>';
+                                retHtml += '<p style="clear: both">';
+                                // retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" id="' + accordian + '" style="width: 700px; height: 50px; background: lavender; margin-left: 15px"><h5 style="margin-top: 17px">Line Item 1</h5><div><p>Some Details</p></div><h5 style="margin-top: 17px">Line Item 2</h5><div><p>Some Details</p></div><h5 style="margin-top: 17px">Line Item 3</h5><div><p>Some Details</p></div></div>';
+                                const items = [];
+                                items.push({
+                                    header: 'Google',
+                                    content: 'Line Item 1 details goes here',
+                                    steps : [{
+                                        title: 'Campaign Start',
+                                        subTitle: '10/01/2019',
+                                        state : 'done',
+                                        description: 'Information on Line Item 1 start'
+                                    },{
+                                        title: 'Campaign End',
+                                        subTitle: '10/31/2019',
+                                        state : 'done'
+                                    }],
+                                    actions : [
+                                        'Extend','Refund','RollOver'
+                                    ],
+                                    adGroup : 'North America'
+                                });
+                                items.push({
+                                    header: 'Facebook',
+                                    content: 'Line Item 2 details goes here',
+                                    steps : [{
+                                        title: 'Campaign Start',
+                                        subTitle: '11/01/2019',
+                                        state : 'done',
+                                        description: 'Information on Line Item 2 start'
+                                    },{
+                                        title: 'Campaign End',
+                                        subTitle: '11/30/2019',
+                                        state : 'invalid'
+                                    }],
+                                    actions : [
+                                        'Extend', 'Cancel'
+                                    ],
+                                    adGroup : 'Europe'
+                                });
+                                items.push({
+                                    header: 'Pinterest',
+                                    content: 'Line Item 3 details goes here',
+                                    steps : [{
+                                        title: 'Campaign Start',
+                                        subTitle: '12/01/2019',
+                                        state : 'invalid'
+                                    },{
+                                        title: 'Campaign End',
+                                        subTitle: '12/31/2019',
+                                        state : 'invalid'
+                                    }],
+                                    actions : [
+                                        'Extend', 'Cancel', ' Refund', 'Modify'
+                                    ],
+                                    adGroup : 'Asia'
+                                });
+                                retHtml += __this.lineItemDetails(items);
+
                                 row.child(retHtml).show();
                                 tr.addClass('shown');
 
-                                $('#' + id).smartWizard({
-                                    theme: 'dots',
-                                    enableFinishButton: false
+                                // Register Accordian click event
+                                $('.accordion .accordion-header').on('click', function() {
+                                    $(this).toggleClass('active').next().slideToggle();
                                 });
                             }
 
@@ -751,23 +813,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 autoclose: true,
                 todayHighlight: true
             });
-
-            // Initiate ad image click
-            $(document).on('click', '.ad-image', function () {
-                $(this).after('<i class="fa fa-check-circle" style="font-size: 38px; position: absolute; left: 0px; color: green;"></i>');
-            });
-
-            $(document).on('click', '.display-ad', function () {
-                if (!$(this).hasClass('ad-displayed')) {
-                    $(this).next('div').show(1000);
-                    $(this).addClass('ad-displayed');
-                } else {
-                    // $(this).next('div').hide(1000);
-                    // $(this).removeClass('ad-displayed');
-                }
-
-            });
-
 
             // Register change event on inline edit fields
             $('.inlineEditor').on('change', function () {
@@ -800,30 +845,104 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             });
 
             // Register ad events
+            $(document).off('click', '.adCopy');
             $(document).on('click', '.adCopy', function() {
                 console.log('$thid')
                 console.log($(this).next('.adDetails'));
                 $(this).next('.adDetails').show(500);
             });
-            $(document).on('keyup', '.adInputHeader', function() {
-                if($(this).val()) {
-                    $(this).closest('.adDetails').find('.adHeader').text($(this).val());
-                }
-            });
-            $(document).on('keyup', '.adInputUrl', function() {
-                if($(this).val()) {
-                    $(this).closest('.adDetails').find('.adUrl').text($(this).val());
-                }
-            });
-            $(document).on('keyup', '.adInputDescription', function() {
-                if($(this).val()) {
-                    $(this).closest('.adDetails').find('.adDescription').text($(this).val());
-                }
-            });
+
+            $(document).off('click', '.closeAd');
             $(document).on('click', '.closeAd', function() {
                 $(this).closest('.adDetails').hide(500);
             });
+
+            // Initiate ad image click
+            $(document).off('click', '.ad-image');
+            $(document).on('click', '.ad-image', function () {
+
+                // remove existing
+                $('i.fa-check-circle.visible').hide();
+                $('.ad-image').removeClass('visible');
+                $('i.fa-check-circle.visible').removeClass('visible');
+
+                if (!$(this).hasClass('visible')) {
+                    $(this).addClass('visible');
+                    $(this).next('i.fa-check-circle').addClass('visible');
+                    $(this).next('i.fa-check-circle').show(500);
+                } else {
+                    $(this).removeClass('visible');
+                    $(this).next('i.fa-check-circle').removeClass('visible');
+                    $(this).next('i.fa-check-circle').hide(500);
+                }
+            });
+
+            $(document).off('click', '.display-ad');
+            $(document).on('click', '.display-ad', function () {
+
+                $(this).addClass('selected');
+                const adInfo = [{
+                    placeHolder : 'News Feed',
+                    price: 25
+                },{
+                    placeHolder : 'Shopping',
+                    price: 15
+                },{
+                    placeHolder: 'Messenger',
+                    price: 10
+                },{
+                    placeHolder:  'Group',
+                    price: 5
+                }];
+
+                let retHtml = '';
+                for (let i=0; i < adInfo.length; i++) {
+                    retHtml += '<div class="col-lg-6 col-md-6 col-sm-6"><div style="height: 130px; cursor: pointer"><img class="ad-image" width="200px" src="./../../../../assets/images/test_ad_' + (i+1) + '.jpeg"/><i class="fa fa-check-circle" style="font-size: 38px; position: absolute; left: 0px; color: green; display: none"></i></div><br/><div style="text-align: center"><span>Click to Select</span><br/><span>Placeholder : ' + adInfo[i].placeHolder + '</span><br/><span>Price : $' + adInfo[i].price + '/day</span></div></div>';
+                }
+
+                $('#bootstrap-modal-header').text('Select Ad');
+                $('#bootstrap-modal-body').html('<div style="padding: 15px; width: 500px;">' + retHtml + '<div>');
+                $('#myModal').modal('show');
+            });
         }
+    }
+
+    handleModalSave() {
+        const __this = this;
+        $('.ad-image').each(function () {
+            if ($(this).hasClass('visible')) {
+                const index = $('.ad-image').index(this);
+                const adInfo = [{
+                    placeHolder : 'News Feed',
+                    price: 25
+                }, {
+                    placeHolder : 'Shopping',
+                    price: 15
+                }, {
+                    placeHolder: 'Messenger',
+                    price: 10
+                }, {
+                    placeHolder:  'Group',
+                    price: 5
+                }];
+                const price = adInfo[index].price;
+                const imageIndex = (index + 1);
+                $('.display-ad').each(function () {
+                    if ($(this).hasClass('selected')) {
+                        $(this).attr('src','./../../../../assets/images/test_ad_' + imageIndex + '.jpeg');
+                        $(this).css('width', '100px');
+                        const start = $(this).closest('tr').find('td').eq(1).find('input.inlineEditor').val();
+                        const end = $(this).closest('tr').find('td').eq(2).find('input.inlineEditor').val();
+                        if (start && end) {
+                            const daysDiff = __this.getDaysBetweenDates(new Date(end), new Date(start));
+                            $(this).closest('tr').find('td').last().find('input.inlineEditor').val((daysDiff + 1) * price);
+                        }
+                    }
+                });
+                $('.display-ad').removeClass('selected');
+            }
+        });
+        $('#myModal').modal('hide');
     }
 
     smartSteps1(id, steps, isLineItem = false, lineItemName = null) {

@@ -1,2 +1,18 @@
-<table [id]="tableId" class="display nowrap dataContainer" style="width:100%" >
+<table [id]="tableId" class="display nowrap dataContainer" style="width:100%">
 </table>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i
+                        class="fa fa-times-circle" aria-hidden="true"></i></button>
+                <h4 class="modal-title" id="bootstrap-modal-header">Modal title</h4>
+            </div>
+            <div id="bootstrap-modal-body" class="modal-body">
+            </div>
+            <p style="clear: both"></p>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-info" (click)="handleModalSave()">Save</button>
+            </div>
+        </div>
