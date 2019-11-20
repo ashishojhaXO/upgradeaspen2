@@ -12,8 +12,8 @@
         <div class="fields" *ngFor="let item of fieldModels">
           <div class="field pointer shadow-bg" [dndDraggable]="item" [dndEffectAllowed]="'copy'"
             (dndEnd)="onDragEnd($event)">
-            <i [ngClass]="item.icon" class="fa pull-left"></i>
-            <h5 class="mb0">{{item.label}}</h5>
+            <!-- <i [ngClass]="item.icon" class="fa pull-left"></i> -->
+            <h5 class="mb0 dragListItem">{{item.name}}</h5>
           </div>
         </div>
       </div>
@@ -25,7 +25,7 @@
 
         <!-- dropdown section -->
         <section dndDropzone (dndDragover)="onDragover($event)" (dndDrop)="onDrop($event,model.attributes)"
-          class="dndDropArea empty">
+          class="dndDropArea empty" [ngStyle]="{'height': viewHeight}">
           <h3 *ngIf="model.attributes.length == 0" class="dropHere">Drop Here</h3>
 
           <div class="field" *ngFor="let item of model.attributes;let i= index;" (dndStart)="onDragStart($event)"
@@ -35,7 +35,52 @@
             <div class="row form-group-fields">
               <div class="col-xs-1"><i class="fa fa-ellipsis-v dndHandle" dndHandle></i></div>
               <!-- drop form elements -->
-              <div class="col-xs-7">
+              <div class="col-xs-7" *ngIf="isBaseField">
+                <div *ngIf="item.dropType=='text'">
+                  <label>{{item.name}}</label>
+                  <input type="text" class="form-control" id="{{item.dropName}}" placeholder="{{item.name}}">
+                </div>
+                <div *ngIf="item.dropType=='email'">
+                  <label>{{item.name}}</label>
+                  <input type="email" class="form-control" id="{{item.dropName}}" placeholder="{{item.name}}">
+                </div>
+                <div *ngIf="item.dropType=='phone'">
+                  <label>{{item.name}}</label>
+                  <input type="text" class="form-control" id="{{item.dropName}}" placeholder="{{item.name}}">
+                </div>
+                <div *ngIf="item.dropType=='number'">
+                  <label>{{item.name}}</label>
+                  <input type="number" class="form-control" id="{{item.dropName}}" placeholder="{{item.name}}">
+                </div>
+                <div *ngIf="item.dropType=='amount'">
+                  <label>{{item.name}}</label>
+                  <div class="input-group">
+                    <span class="input-group-addon">$</span>
+                    <input type="number" class="form-control" id="{{item.dropName}}" placeholder="{{item.name}}">
+                  </div>
+                </div>
+                <div *ngIf="item.dropType=='date'">
+                  <label>{{item.name}}</label>
+                  <input type="date" class="form-control" id="{{item.dropName}}" placeholder="{{item.name}}">
+                </div>
+                <div *ngIf="item.dropType=='textarea'">
+                  <label>{{item.name}}</label>
+                  <textarea class="form-control" id="{{item.dropName}}" placeholder="{{item.name}}"></textarea>
+                </div>
+                <div *ngIf="item.dropType=='autocomplete'">
+                  <label>{{item.name}}</label>
+                  <select class="form-control" id="{{item.dropName}}">
+                    <option></option>
+                  </select>
+                </div>
+                <div *ngIf="item.dropType=='checkbox'">
+                  <label>{{item.name}}</label>
+                </div>
+                <div *ngIf="item.dropType=='radio'">
+                  <label>{{item.name}}</label>
+                </div>
+              </div>
+              <div class="col-xs-7" *ngIf="!isBaseField">
                 <div *ngIf="item.dropType=='text'">
                   <label>{{item.label}}</label> <label *ngIf="item.validation.required" class="text-danger">*</label>
                   <input type="text" class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [disabled]="item.disable">
@@ -100,7 +145,7 @@
               </div>
             </div>
             <!-- drop control customization -->
-            <div *ngIf="item.toggle" class="toggle-Wrapper">
+            <div *ngIf="item.toggle && !isBaseField" class="toggle-Wrapper">
               <div class="form-group-fields">
                 <label>Required</label>
                 <i *ngIf="item.validation.required" (click)="item.validation.required=false"
@@ -121,7 +166,7 @@
               </div>
               <div class="form-group-fields">
                 <label>Name</label>
-                <input class="form-control" type="text" [(ngModel)]="item.name" />
+                <input class="form-control" type="text" [(ngModel)]="item.name" [disabled]="true"/>
               </div>
               <div class="form-group-fields">
                 <label>Default Value</label>
@@ -170,6 +215,12 @@
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+            <div *ngIf="item.toggle && isBaseField" class="toggle-Wrapper">
+              <div class="form-group-fields">
+                <label>Name</label>
+                <input class="form-control" type="text" [(ngModel)]="item.name" />
               </div>
             </div>
           </div>

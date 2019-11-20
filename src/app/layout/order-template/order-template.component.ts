@@ -18,6 +18,7 @@ export class OrderTemplateComponent implements OnInit {
 
   templateForm: FormGroup;
   organizations = [];
+  attributesArray = [];
   templateResponse:any = {};
   api_fs: any;
   externalAuth: any;

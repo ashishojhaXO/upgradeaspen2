@@ -46,7 +46,7 @@
         <div class="col-xs-12 col-sm-10">
           <p>Customize your form by drag and drop below fields in the 'Drop Here' area.</p>
           <div class="order-container">
-            <app-customformbuilder #orderForm></app-customformbuilder>
+            <app-customformbuilder [orderTemplateAttribute]="attributesArray" #orderForm></app-customformbuilder>
           </div>
         </div>
       </div>
@@ -60,7 +60,7 @@
         <div class="col-xs-12 col-sm-10">
           <p>Customize your form by drag and drop below fields in the 'Drop Here' area.</p>
           <div class="lineitem-container">
-            <app-customformbuilder #lineItemForm></app-customformbuilder>
+            <app-customformbuilder [orderTemplateAttribute]="attributesArray" #lineItemForm></app-customformbuilder>
           </div>
         </div>
       </div>

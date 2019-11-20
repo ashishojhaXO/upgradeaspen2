@@ -15,6 +15,7 @@ import { SupportComponent } from './support/support.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { UserManagementComponent } from './usermanagement/usermanagement.component';
 import { VisDashboardComponent } from './visDashboard/visDashboard.component';
+import { BaseFieldsComponent } from './baseFields/baseFields.component';
 import { OrderTemplateComponent } from './order-template/order-template.component';
 import { ConfigureAdComponent } from './configureAd/configureAd.component';
 import { TargetAudComponent } from './targetAud/targetAud.component';
@@ -111,6 +112,14 @@ const routes: Routes = [
         data: {
           breadcrumbs: true,
           text: 'Order Management'
+        },
+      },
+      {
+        path: 'baseFields',
+        component: BaseFieldsComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Base Fields'
         },
       },
       {

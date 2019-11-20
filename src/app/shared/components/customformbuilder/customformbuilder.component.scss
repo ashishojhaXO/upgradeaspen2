@@ -67,8 +67,9 @@
 }
 
 .dndDropArea.empty{
-    min-height:250px;
+    min-height:350px;
     border: dotted #ddd 2px;
+    padding: 20px;
 }
 
 .field{
@@ -76,7 +77,7 @@
     margin-bottom:10px;
     position: relative;
 }
-.field:hover{
+.field{
     box-shadow: 1px 1px 4px #ddd;
 }
 .toggle-Wrapper{
@@ -122,11 +123,15 @@
     width:100%;
 }
 
+// .dndDropArea .field .fa{
+//     opacity:0;
+// }
 .dndDropArea .field .fa{
-    opacity:0;
-}
-.dndDropArea .field:hover .fa{
     opacity:1;
+}
+
+.dndDropArea label, .dragListItem{
+    text-transform: capitalize;
 }
 
 .colorpick{

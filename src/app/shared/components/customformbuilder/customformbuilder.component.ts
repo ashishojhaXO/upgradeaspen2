@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { value, field } from "./customformbuilder.model";
 import Swal from "sweetalert2";
 import { DndDropEvent, DropEffect } from 'ngx-drag-drop';
+import { Headers, RequestOptions, Http } from '@angular/http';
+import { OktaAuthService } from '../../../../services/okta.service';
 
 @Component({
   selector: 'app-customformbuilder',
@@ -10,203 +12,224 @@ import { DndDropEvent, DropEffect } from 'ngx-drag-drop';
 })
 export class CustomFormbuilderComponent implements OnInit {
 
+  @Input() isBaseField: boolean;
+  @Input() orderTemplateAttribute;
+  attributesArray = [];
+  api_fs: any;
+  externalAuth: any;
+  showSpinner: boolean;
+  widget: any;
+
   value = {
     option: ""
   }
 
-  fieldModels: Array<field>=[
-    {
-      "id": "",
-      "dropType": "text",
-      "type": "varchar",
-      "icon": "fa-font",
-      "label": "Text",
-      "default_value": "",
-      "attr_list": "",
-      "validation": {
-        "required": false,
-        "regex": ""
-      },
-      "disable": 0
-    },
-    {
-      "id": "",
-      "dropType": "email",
-      "type": "text",
-      "icon": "fa-envelope",
-      "label": "Email",
-      "default_value": "",
-      "attr_list": "",
-      "validation": {
-        "required": true,
-        "regex": "^([a-zA-Z0-9_.-]+)@([a-zA-Z0-9_.-]+)\.([a-zA-Z]{2,5})$"
-      },
-      "disable": 0
-    },
-    {
-      "id": "",
-      "dropType": "phone",
-      "type": "int",
-      "icon": "fa-phone",
-      "label": "Phone",
-      "default_value": "",
-      "attr_list": "",
-      "validation": {
-        "required": false,
-        "regex": "^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$"
-      },
-      "disable": 0
-    },
-    {
-      "id": "",
-      "dropType": "number",
-      "type": "int",
-      "label": "Number",
-      "icon": "fa-html5",
-      "default_value": "",
-      "attr_list": "",
-      "validation": {
-        "required": false,
-        "regex": ""
-      },
-      "disable": 0
-    },
-    {
-      "id": "",
-      "dropType": "amount",
-      "type": "amount",
-      "label": "Amount",
-      "icon": "fa-usd",
-      "default_value": "",
-      "attr_list": "",
-      "validation": {
-        "required": false,
-        "regex": ""
-      },
-      "disable": 0
-    },
-    {
-      "id": "",
-      "dropType": "date",
-      "type": "date",
-      "icon":"fa-calendar",
-      "label": "Date",
-      "default_value": "now",
-      "attr_list": "",
-      "validation": {
-        "required": false,
-        "regex": ""
-      },
-      "disable": 0
-    },
-    {
-      "id": "",
-      "dropType": "textarea",
-      "type": "text",
-      "icon":"fa-text-width",
-      "label": "Textarea",
-      "default_value": "Textarea",
-      "attr_list": "",
-      "validation": {
-        "required": false,
-        "regex": ""
-      },
-      "disable": 0
-    },
-    {
-      "id": "",
-      "dropType": "checkbox",
-      "type": "checkbox",
-      "label": "Checkbox",
-      "default_value": "",
-      "attr_list": {
-        "options": [
-          {
-              "option": "value1"
-          },
-          {
-              "option": "value2"
-          }
-        ]
-      },
-      "validation": {
-        "required": false,
-        "regex": ""
-      },
-      "icon":"fa-list",
-      "disable": 0
-    },
-    {
-      "id": "",
-      "dropType": "radio",
-      "type": "radio",
-      "icon":"fa-list-ul",
-      "label": "Radio",
-      "default_value": "",
-      "attr_list": {
-        "options": [
-          {
-              "option": "value1"
-          },
-          {
-              "option": "value2"
-          }
-        ]
-      },
-      "validation": {
-        "required": false,
-        "regex": ""
-      },
-      "disable": 0
-    },
-    {
-      "id": "",
-      "dropType": "autocomplete",
-      "type": "list",
-      "icon":"fa-bars",
-      "label": "List",
-      "default_value": "",
-      "attr_list": {
-        "options": [
-          {
-              "option": "value1"
-          },
-          {
-              "option": "value2"
-          }
-        ]
-      },
-      "validation": {
-        "required": false,
-        "regex": ""
-      },
-      "disable": 0
-    }
-  ];
-
+  
+  fieldModels: Array<field>=[];
   modelFields:Array<field>=[];
 
   model:any = {
     attributes:this.modelFields
   };
 
-  constructor() { }
+  constructor( private okta: OktaAuthService, private http: Http) {
+  }
 
   ngOnInit() {
+    if (this.isBaseField) {
+      this.fieldModels = [
+        {
+          "id": "",
+          "dropType": "text",
+          "type": "varchar",
+          "icon": "fa-font",
+          "name": "text"
+        },
+        {
+          "id": "",
+          "dropType": "email",
+          "type": "text",
+          "icon": "fa-envelope",
+          "name": "email"
+        },
+        {
+          "id": "",
+          "dropType": "phone",
+          "type": "int",
+          "icon": "fa-phone",
+          "name": "phone"
+        },
+        {
+          "id": "",
+          "dropType": "number",
+          "type": "int",
+          "icon": "fa-html5",
+          "name": "number"
+        },
+        {
+          "id": "",
+          "dropType": "amount",
+          "type": "amount",
+          "icon": "fa-usd",
+          "name": "amount"
+        },
+        {
+          "id": "",
+          "dropType": "date",
+          "type": "date",
+          "icon":"fa-calendar",
+          "name": "date"
+        },
+        {
+          "id": "",
+          "dropType": "textarea",
+          "type": "text",
+          "icon":"fa-text-width",
+          "name": "textarea"
+        },
+        {
+          "id": "",
+          "dropType": "checkbox",
+          "type": "checkbox",
+          "icon":"fa-list",
+          "name": "checkbox"
+        },
+        {
+          "id": "",
+          "dropType": "radio",
+          "type": "radio",
+          "icon":"fa-list-ul",
+          "name": "radio"
+        },
+        {
+          "id": "",
+          "dropType": "autocomplete",
+          "type": "list",
+          "icon":"fa-bars",
+          "name": "List"
+        }
+      ];
+    } else{
+      this.showSpinner = true;
+      this.widget = this.okta.getWidget();
+      this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
+      this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
+      this.getAttributes();
+    }
+  }
+
+  getAttributes(){
+    this.getAttributeService().subscribe(
+      response => {
+        if (response && response.attributes) {
+          //console.log('response from get attributes', response.attributes);
+          this.fieldModels = response.attributes;
+          this.fieldModels.forEach(element => {
+            element.validation = {required : false};
+            element.disable = 0;
+            if(element.type == 'varchar' || element.type == 'text' || element.type == 'string'){
+              element.dropType = 'text';
+              element.attr_list = "";
+            }else if(element.type == 'int' || element.type == "decimal"){
+              element.dropType = 'number';
+              element.attr_list = "";
+            }else if(element.type == 'list'){
+              element.dropType = 'autocomplete';
+              element.attr_list =  {
+                "options": [
+                  {
+                      "option": "value1"
+                  },
+                  {
+                      "option": "value2"
+                  }
+                ]
+              }
+            }else if(element.type == 'radio'){
+              element.dropType = 'radio';
+              element.attr_list =  {
+                "options": [
+                  {
+                      "option": "value1"
+                  },
+                  {
+                      "option": "value2"
+                  }
+                ]
+              }
+            }else if(element.type == 'checkbox'){
+              element.dropType = 'checkbox';
+              element.attr_list =  {
+                "options": [
+                  {
+                      "option": "value1"
+                  },
+                  {
+                      "option": "value2"
+                  }
+                ]
+              }
+            }else {
+              element.dropType = element.type;
+            }
+          });
+          // console.log('attributes drop fields', this.fieldModels);
+        }
+      },
+      err => {
+        if(err.status === 401) {
+          if(this.widget.tokenManager.get('accessToken')) {
+            this.widget.tokenManager.refresh('accessToken')
+                .then(function (newToken) {
+                  this.widget.tokenManager.add('accessToken', newToken);
+                  this.showSpinner = false;
+                  this.getAttributeService();
+                })
+                .catch(function (err) {
+                  console.log('error >>')
+                  console.log(err);
+                });
+          } else {
+            this.widget.signOut(() => {
+              this.widget.tokenManager.remove('accessToken');
+              window.location.href = '/login';
+            });
+          }
+        } else {
+          this.showSpinner = false;
+        }
+      }
+    );
+  }
+
+  getAttributeService() {
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/orders/templates/attributes';
+    return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   onDragStart(event:DragEvent) {
     //console.log("drag started", JSON.stringify(event, null, 2));
   }
-  
+
   onDragEnd(event:DragEvent) {
     //console.log("drag ended", JSON.stringify(event, null, 2));
   }
-  
+
   onDraggableCopied(event:DragEvent) {
     //console.log("draggable copied", JSON.stringify(event, null, 2));
   }
-  
+
   onDraggableLinked(event:DragEvent) {
     //console.log("draggable linked", JSON.stringify(event, null, 2));
   }
@@ -217,21 +240,23 @@ export class CustomFormbuilderComponent implements OnInit {
       list.splice( index, 1 );
     }
   }
-      
+
   onDragCanceled(event:DragEvent) {
     //console.log("drag cancelled", JSON.stringify(event, null, 2));
   }
-  
+
   onDragover(event:DragEvent) {
     //console.log("dragover", JSON.stringify(event, null, 2));
   }
-  
+
   onDrop( event:DndDropEvent, list?:any[] ) {
     if( list && (event.dropEffect === "copy" || event.dropEffect === "move") ) {
-      
+
       if(event.dropEffect === "copy")
       event.data.dropName = event.data.dropType+'-'+new Date().getTime();
-      event.data.name = event.data.label;
+      if(!this.isBaseField){
+        event.data.label = event.data.name;
+      }
       let index = event.index;
       if( typeof index === "undefined" ) {
         index = list.length;

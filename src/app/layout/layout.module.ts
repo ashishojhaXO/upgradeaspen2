@@ -38,12 +38,14 @@ import { OrderComponent } from './order/order.component';
 import { OrderPaymentComponent } from './orderPayment/orderPayment.component';
 import { ConfigureAdComponent } from './configureAd/configureAd.component';
 import { TargetAudComponent } from './targetAud/targetAud.component';
+import { BaseFieldsComponent } from './baseFields/baseFields.component';
+import { OrderTemplateComponent } from './order-template/order-template.component';
+
 
 // providers
 import { AuthGuard } from './../shared';
 import { OktaAuthService } from './../../services/okta.service';
 import { OrganizationService } from './../../services/organization.service';
-import { OrderTemplateComponent } from './order-template/order-template.component';
 import { CustomFormBuilderModule } from '../shared/components/customformbuilder/customformbuilder.module';
 
 @NgModule({
@@ -92,6 +94,7 @@ import { CustomFormBuilderModule } from '../shared/components/customformbuilder/
         VisDashboardComponent,
         OrderComponent,
         OrderPaymentComponent,
+        BaseFieldsComponent,
         OrderTemplateComponent,
         ConfigureAdComponent,
         TargetAudComponent
