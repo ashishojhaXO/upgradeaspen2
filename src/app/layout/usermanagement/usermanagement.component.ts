@@ -52,6 +52,7 @@ export class UserManagementComponent implements OnInit  {
   selectedVendor: any;
   error: any;
   showSpinner: boolean;
+  userID: string;
 
   sourceOptions = [
     {
@@ -402,11 +403,11 @@ export class UserManagementComponent implements OnInit  {
     if (AccessToken) {
       token = AccessToken.accessToken;
     }
+    const api_url_part = '/api';
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     const data = JSON.stringify(dataObj);
-    const url = this.api_fs.api + endPoint;
-    console.log("apiCALL GET HERE")
+    const url = this.api_fs.api + api_url_part + endPoint;
     return this.http
       .post(url, data, options)
       .map(res => {
@@ -414,9 +415,7 @@ export class UserManagementComponent implements OnInit  {
       }).share();
   }
 
-
   successCallBack = (res) => {
-    console.log("API CALLL IN ", this);
     this.showSpinner = false;
     let popUpOptions = {};
     if (res.status = 200) {
@@ -445,9 +444,6 @@ export class UserManagementComponent implements OnInit  {
 
     }
     this.popUp.showPopUp(popUpOptions);
-
-    // console.log("RESEM: ", res);
-
   }
 
   errorCallBack = (err) => {
@@ -463,9 +459,8 @@ export class UserManagementComponent implements OnInit  {
   }
 
   setPasswordAndActivate() {
-    console.log("SPASS: this; ", this);
-    const userID = localStorage.getItem('loggedInUserID') || '';
-    const endPoint = `/users/${userID}/activate`;
+    // const userID = localStorage.getItem('loggedInUserID') || '';
+    const endPoint = `/users/${this.userID}/activate`;
     const data = {
       "credentials": {
         "password": {
@@ -475,54 +470,34 @@ export class UserManagementComponent implements OnInit  {
     }
 
     const popUpOptions = {
-      title: 'Activate',
+      title: 'Set Password and Activate',
       input: 'text',
-      text: "Please set a password",
+      text: "Please set a password <br />(Atleast 8 chars, with lowercase, uppercase, a number and a special char).",
       inputAttributes: {
         autocapitalize: 'off'
       },
+      showCloseButton: true,
       showCancelButton: true,
-      confirmButtonText: 'Look up',
+      // cancelButtonText: "Cancel",
+      confirmButtonText: 'Activate',
       showLoaderOnConfirm: true,
       preConfirm: (login) => {
         data.credentials.password.value = login;
-        console.log("PRECONFI data: ", data);
-        
-        // return fetch(`//api.github.com/users/${login}`)
-        //   .then(response => {
-        //     if (!response.ok) {
-        //       console.log("fetch not ok")
-        //       throw new Error(response.statusText)
-        //     }
-        //     console.log("fetch is ok")
-        //     return response.json()
-        //   })
-        //   .catch(error => {
-        //     console.log("fetch erro")
-        //     const popUpOptions = {
-        //       text: "Request failed",
-        //     }
-        //     this.popUp.showPopUp(popUpOptions)
-        //     return error;
-        //   })
-
-          return this.apiCall( endPoint, data).toPromise();
-
+        return this.apiCall( endPoint, data).toPromise();
       },
     }
-
-
-
 
     const prom = this.popUp.showPopUp(popUpOptions);
     prom
     .then((res)=>{
+      console.log("then res", res)
         // Resolve
         this.showSpinner = false;
-        if(res) {
+        if(res && res.value) {
+          const str = res.value.body.error;
           const swalOptions = {
             title: 'Success',
-            text: 'Password set and Activated.',
+            text: str,
             type: 'success',
             showCloseButton: true,
             confirmButtonText: "Ok",
@@ -531,6 +506,7 @@ export class UserManagementComponent implements OnInit  {
         }
         return null;
     }, (rej) => {
+      console.log("then rej", rej)
         this.showSpinner = false;
         if(rej) {
           const swalOptions = {
@@ -546,6 +522,7 @@ export class UserManagementComponent implements OnInit  {
         return null;
     })
     .then((ok) => {
+      console.log("then res ok on 2nd popup", ok)
         // On Resolve Call getRetryOrders
         if(ok && ok.value) {
           this.showSpinner = true; // true here & then when getRetryOrders pulled, false spinner
@@ -554,20 +531,17 @@ export class UserManagementComponent implements OnInit  {
         return null;
     })
     .catch((err) => {
+      console.log("catch err", err)
       // if (err instanceof ApiError)
       this.showSpinner = false;
-      console.log("Error: Account suspending: ", err);
+      console.log("Error: Set password and activate: ", err);
     });
 
   }
 
   resendEmail() {
     // TODO: To be completed still, waiting for API
-    console.log("RESEM", this)
-    const userID = localStorage.getItem('loggedInUserID') || '';
-
-    // const endPoint = '/users/{{userID}}/suspend';
-    const endPoint = '/users/suspend';
+    const endPoint = `/users/${this.userID}/blah`;
     const data = {};
 
     this.showSpinner = true;
@@ -577,9 +551,8 @@ export class UserManagementComponent implements OnInit  {
   }
 
   suspend() {
-    console.log("SUSP: ", this);
     const userID = localStorage.getItem('loggedInUserID') || '';
-    const endPoint = `/users/${userID}/suspend`;
+    const endPoint = `/users/${this.userID}/suspend`;
     const data = {};
 
     const popUpOptions = {
@@ -600,9 +573,10 @@ export class UserManagementComponent implements OnInit  {
         // Resolve
         this.showSpinner = false;
         if(res) {
+          const str = res.value.body.error;
             const swalOptions = {
                 title: 'Success',
-                text: 'Account suspended.',
+                text: str,
                 type: 'success',
                 showCloseButton: true,
                 confirmButtonText: "Ok",
@@ -643,11 +617,9 @@ export class UserManagementComponent implements OnInit  {
   }
 
   deactivate() {
-    console.log("DEACT", this)
-
     // const endPoint = '/users/{{userID}}/suspend';
     const userID = localStorage.getItem('loggedInUserID') || '';
-    const endPoint = `/users/${userID}/deactivate`;
+    const endPoint = `/users/${this.userID}/deactivate`;
     const data = {};
 
     const popUpOptions = {
@@ -669,9 +641,10 @@ export class UserManagementComponent implements OnInit  {
         // Resolve
         this.showSpinner = false;
         if(res) {
+          const str = res.value.body.error;
             const swalOptions = {
                 title: 'Error',
-                text: 'Account deactivated',
+                text: str,
                 type: 'success',
                 showCloseButton: true,
                 confirmButtonText: "Ok",
@@ -711,7 +684,9 @@ export class UserManagementComponent implements OnInit  {
   }
   
   handleActions(ev: any) {
-    const action = $(ev.data).data('action');
+    console.log("hanAC: ", ev);
+    const action = $(ev.elem).data('action');
+    this.userID = ev.data.data()[4];
 
     if(this[action]) {
       // const func = this[action];

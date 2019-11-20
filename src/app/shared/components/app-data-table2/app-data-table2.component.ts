@@ -91,16 +91,16 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         }
     }
 
-    attachEvents() {
+    attachEvents(row) {
         const __this = this;
         $(".api-action")
         .on('click', function($event){
             const elem = this;
-            console.log("attEv: ", __this.triggerActions, " $event: ", $event)
             // __this.triggerActions.emit($event);
             __this.triggerActions.emit({
                 action: 'handleActions',
-                data: elem
+                elem: elem,
+                data: row
             }
             );
         });
@@ -351,7 +351,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             // Apply selected class when a row is clicked
             $('#' + this.tableId + ' tbody').on('click', 'tr', function () {
-                console.log("TR click: ", __this.dataObject.gridData.options);
                 if (__this.dataObject.gridData.options.isRowHighlight) {
                     $(this).toggleClass('selected');
                 } else {
@@ -600,7 +599,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     </ul></div>
                                 </div>`;
                                 row.child(retHtml).show();
-                                __this.attachEvents();
+                                __this.attachEvents(row);
                                 tr.addClass('shown');
                             } else if (__this.identity === 'orders') {
                                 let retHtml = '';
@@ -740,7 +739,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     }
                                 );
                             } else if (__this.identity === 'usermanagement') {
-                                console.log("UM iiiii")
                                 const retHtml = `<div>
                                     <button 
                                         class="btn action-btn" 
