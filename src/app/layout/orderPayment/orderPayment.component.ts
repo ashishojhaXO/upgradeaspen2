@@ -16,9 +16,20 @@ import 'bootstrap';
   styleUrls: ['./orderPayment.component.scss']
 })
 export class OrderPaymentComponent {
+
+  selectionType = '';
   constructor() {
     if (window['fs_widget_config']) {
-        window['fs_widget_config'].vendor_id = 'd5b3f693-1a86-407f-8732-04cb349e605d';
+      console.log('window[\'fs_widget_config\'] >>')
+      console.log(window['fs_widget_config']);
+        const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
+        window['fs_widget_config'].vendor_id = customerInfo.vendor.vendor_id;
+        window['fs_widget_config'].api_key = customerInfo.org.x_api_key;
+        window['fs_widget_config'].org_id = customerInfo.org.org_id;
     }
+  }
+
+  paymentTypeSelection(type) {
+    this.selectionType = type;
   }
 }

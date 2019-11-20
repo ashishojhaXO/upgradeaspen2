@@ -33,13 +33,11 @@ export class OrdersComponent implements OnInit  {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
+    isRowHighlight: false,
     isDownload: true,
-    isRowSelection: {
-      isMultiple : false,
-    },
     isPageLength: true,
     isPagination: true,
-    isTree: false
+    isTree: true
   }];
   dashboard: any;
   api_fs: any;
@@ -126,10 +124,10 @@ export class OrdersComponent implements OnInit  {
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/orders/line-items';
     return this.http
-      .get(url, options)
-      .map(res => {
-        return res.json();
-      }).share();
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   populateDataTable(response, initialLoad) {

@@ -462,6 +462,12 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     }
   }
 
+  setChartConfig(response, dataPoints: Array<Number> = []) {
+    const num = this.dashboardType == 'spend' ? 4 : 3;
+    const dataPointsLength = dataPoints.length || 1;
+    this.chartConfig.barWidth = 3000 / (response.chartData.data.length * dataPointsLength * num ) ;
+  }
+
   populateChart(response) {
 
     console.log('chart response >>>')
@@ -472,6 +478,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
       console.log('response.chartData >>><<')
       console.log(response.chartData);
+
 
       if(this.dashboardType === 'pacing') {
 
@@ -490,8 +497,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             labelName: '',
             unitType: ''
           });
-
-          this.chartConfig.barWidth = (700 / (20 * response.chartData.data.length));
 
         } else {
 
@@ -517,6 +522,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
         this.chartConfig.data = response.chartData.data;
 
+        // Set Dynamic Chart configs here
+        this.setChartConfig(response, dataPoints);
+
         console.log('this.chartConfig.data >>')
         console.log(this.chartConfig.data);
 
@@ -539,8 +547,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
           this.chartConfig.XAxis.labelName = '';
           this.chartConfig.XAxis.dataPropertyName = 'date';
-
-          this.chartConfig.barWidth = (700 / (20 * response.chartData.data.length));
 
           this.chartConfig.YAxis.data.push({
             labelName: '',
@@ -643,8 +649,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           // ];
         }
 
-        this.chartConfig.barWidth = (700 / (20 * response.chartData.data.length));
-
         // Chart Labels configured dynamically
         const dataPoints = [];
         response.chartData.meta.forEach(function (meta) {
@@ -658,6 +662,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
         this.chartConfig.data = response.chartData.data;
 
+        // Set Dynamic Chart configs here
+        this.setChartConfig(response, dataPoints);
+
         console.log('this.chartConfig.data >>')
         console.log(this.chartConfig.data);
 
@@ -667,6 +674,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         //   }
         // });
       }
+
     }
   }
 

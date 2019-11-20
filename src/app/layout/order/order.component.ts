@@ -57,6 +57,13 @@ export class OrderComponent implements OnInit  {
   public form: FormGroup;
   formAttribute: any;
   dataRowUpdated = false;
+  minDate = new Date();
+
+  dateOptions = {
+    format: "YYYY-MM-DD",
+    showClear: true,
+    keepOpen: true
+  };
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder,) {
     this.formAttribute = fb;
@@ -93,6 +100,11 @@ export class OrderComponent implements OnInit  {
                 text: ele.name
               });
             }, this);
+
+            if(this.templates.length) {
+              this.template = '1';
+              this.searchTemplateDetails(this.template);
+            }
           }
         },
         err => {
@@ -297,8 +309,8 @@ export class OrderComponent implements OnInit  {
     this.data.controls = this.templateDefinition;
 
     this.data.controls.forEach(function(item) {
-        attributes[item.name] = '';
-        group[item.name] = (item.validation && item.validation.length && item.validation.indexOf('required') !== -1) ? ['', Validators.compose([Validators.required])] : [''];
+      attributes[item.name] = '';
+      group[item.name] = (item.validation && item.validation.length && item.validation.indexOf('required') !== -1) ? ['', Validators.compose([Validators.required])] : [''];
     }, this);
 
     // Model object
@@ -311,7 +323,7 @@ export class OrderComponent implements OnInit  {
 
     this.form = this.formAttribute.group(group);
     this.data.controls.forEach(function(item) {
-        this.FormModel.attributes[item.name] = this.form.controls[item.name];
+      this.FormModel.attributes[item.name] = this.form.controls[item.name];
       // populate values
       (<FormControl>this.form.controls[item.name]).setValue(item.value || '');
     }, this);
@@ -343,7 +355,7 @@ export class OrderComponent implements OnInit  {
 
     this.gridData['headers'] = headers;
     this.gridData['options'] = this.options[0];
-   // this.gridData['result'] = [dataObj];
+    // this.gridData['result'] = [dataObj];
     this.dashboard = 'orderLineItem';
     this.dataObject.gridData = this.gridData;
   }
@@ -395,10 +407,10 @@ export class OrderComponent implements OnInit  {
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/orders/line-items';
     return this.http
-      .get(url, options)
-      .map(res => {
-        return res.json();
-      }).share();
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   populateDataTable(response, initialLoad) {
@@ -447,5 +459,9 @@ export class OrderComponent implements OnInit  {
 
   handleRowSelection(rowObj: any, rowData: any) {
 
+  }
+
+  OnSubmit() {
+    this.router.navigate(['/app/targetAud/']);
   }
 }

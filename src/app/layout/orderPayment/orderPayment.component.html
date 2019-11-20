@@ -1,3 +1,77 @@
-<div id="fs_widget">
+<div>
+    <div class="col-lg-12 col-md-12" style="margin: 0px 0px 20px">
+        <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">Payment</p>
+
+    </div>
+    <p style="clear: both"></p>
+    <div style="margin-left: 10px">
+        <div style="margin-bottom: 10px">
+            <input type="radio" name="payment" value="default" (change)="paymentTypeSelection('default')"/> Pay By CC/ACH
+            <div [hidden]="selectionType !== 'default'">
+                <div id="fs_widget">
+                </div>
+            </div>
+        </div>
+        <div>
+            <input type="radio" name="payment" value="loan" (change)="paymentTypeSelection('loan')"/> Apply for business loan
+            <div [hidden]="selectionType !== 'loan'">
+                <div>
+                    <label class="col-lg-2 col-md-2 col-sm-12" style="margin-top: 20px;">Personal Details</label>
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 20px">
+                        <div>
+                            <label class="col-lg-2 col-md-2 col-sm-12">Full Name</label>
+                            <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+                                <input type="text" class="input-form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 20px">
+                        <div>
+                            <label class="col-lg-2 col-md-2 col-sm-12">Gender</label>
+                            <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+                                <select2 width="100%" placeholder="Select"
+                                         class="col-lg-4 col-md-4"
+                                         style="padding: 0px; line-height: 1.42857143"
+                                         [data]="[{id: '1', text: 'Male'}, {id: '2', text: 'Female'}]"></select2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 20px">
+                        <div>
+                            <label class="col-lg-2 col-md-2 col-sm-12">Age</label>
+                            <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+                                <input type="text" class="input-form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 20px">
+                        <div>
+                            <label class="col-lg-2 col-md-2 col-sm-12">Street Address</label>
+                            <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+                                <input type="text" class="input-form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 20px">
+                        <div>
+                            <label class="col-lg-2 col-md-2 col-sm-12">Address</label>
+                            <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+                                <input type="text" class="input-form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12" style=" margin-top: 20px">
+                        <div>
+                            <label class="col-lg-2 col-md-2 col-sm-12">Zip Code</label>
+                            <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+                                <input type="text" class="input-form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<app-script-embedder src="https://static.fusionseven.net/widget/widget_prod.js" type="text/javascript"></app-script-embedder>
+
+<app-script-embedder src="https://static.fusionseven.net/widget/widget_dev.js" type="text/javascript"></app-script-embedder>

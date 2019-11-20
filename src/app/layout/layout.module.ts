@@ -22,12 +22,12 @@ import {CheckboxSwitchModule} from './../shared/components/app-checkbox-switch/a
 import {MultiSelectDropdownModule} from './../shared/components/multiselect-dropdown/multiselect-dropdown.module';
 import { DatepickerModule, BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { AppScriptEmbedderModule} from './../shared/components/app-script-embedder/app-script-embedder.module';
+import {A2Edatetimepicker} from 'ng2-eonasdan-datetimepicker';
 
 //declarations
 import { DashboardsComponent } from './dashboards/dashboards.component';
 import { VendorManagementComponent } from './vendorManagement/vendorManagement.component';
 import { OrdersComponent } from './orders/orders.component';
-import { OrderPaymentComponent } from './orderPayment/orderPayment.component';
 import { PaymentsComponent } from './payments/payments.component';
 import { ReconciliationComponent } from './reconciliation/reconciliation.component';
 import { SupportComponent } from './support/support.component';
@@ -35,11 +35,18 @@ import { TasksComponent } from './tasks/tasks.component';
 import { UserManagementComponent } from './usermanagement/usermanagement.component';
 import { VisDashboardComponent } from './visDashboard/visDashboard.component';
 import { OrderComponent } from './order/order.component';
+import { OrderPaymentComponent } from './orderPayment/orderPayment.component';
+import { ConfigureAdComponent } from './configureAd/configureAd.component';
+import { TargetAudComponent } from './targetAud/targetAud.component';
+import { BaseFieldsComponent } from './baseFields/baseFields.component';
+import { OrderTemplateComponent } from './order-template/order-template.component';
+
 
 // providers
 import { AuthGuard } from './../shared';
 import { OktaAuthService } from './../../services/okta.service';
 import { OrganizationService } from './../../services/organization.service';
+import { CustomFormBuilderModule } from '../shared/components/customformbuilder/customformbuilder.module';
 
 @NgModule({
     imports: [
@@ -67,7 +74,9 @@ import { OrganizationService } from './../../services/organization.service';
         MultiSelectDropdownModule,
         BsDatepickerModule.forRoot(),
         DatepickerModule.forRoot(),
-        AppScriptEmbedderModule
+        AppScriptEmbedderModule,
+        CustomFormBuilderModule,
+        A2Edatetimepicker
     ],
     declarations: [
         LayoutComponent,
@@ -84,7 +93,11 @@ import { OrganizationService } from './../../services/organization.service';
         UserManagementComponent,
         VisDashboardComponent,
         OrderComponent,
-        OrderPaymentComponent
+        OrderPaymentComponent,
+        BaseFieldsComponent,
+        OrderTemplateComponent,
+        ConfigureAdComponent,
+        TargetAudComponent
     ],
     providers: [AuthGuard, OktaAuthService, OrganizationService],
     schemas: [

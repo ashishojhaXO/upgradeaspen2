@@ -1,0 +1,124 @@
+<div>
+  <div class="col-lg-12 col-md-12">
+    <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">{{isExistingOrder ? 'MODIFY ' : 'CONFIGURE '}} TARGET AUDIENCES</p>
+  </div>
+  <p style="clear: both"></p>
+  <div class="col-lg-2 col-md-2 col-sm-2" style="border: 1px solid #fff; background: #fff">
+    <ul style="list-style: none">
+      <li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:0px; left: -26px; font-size: 18px; color: green" class="fa fa-check-circle"></i><a href="javascript:void(0)" routerLink="/app/order">Create Order</a></li>
+      <!--<li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:3px; left: -26px" class="fa fa-arrow-right"></i><a href="javascript:void(0)">Configure AD</a></li>-->
+      <li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:3px; left: -26px" class="fa fa-arrow-right"></i><a href="javascript:void(0)">Target Audience</a></li>
+      <li style="margin-top: 20px"><span>Summary</span></li>
+      <li style="margin-top: 20px"><span>Payment</span></li>
+    </ul>
+  </div>
+  <div class="col-lg-10 col-md-10 col-sm-10" style="margin-top: 5px">
+    <div class="col-lg-10 col-md-10 col-sm-10">
+      <label class="col-lg-2 col-md-2 col-sm-12" style="margin-top: 20px;">Demographics</label>
+      <div class="col-lg-12 col-md-12 col-sm-12" style="padding-bottom: 20px; margin-top: 20px">
+        <div>
+          <label class="col-lg-2 col-md-2 col-sm-12">Age</label>
+          <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+            <input type="number" class="input-form-control"/>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 20px">
+        <div>
+          <label class="col-lg-2 col-md-2 col-sm-12">Location</label>
+          <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+            <select2 width="100%" placeholder="Select"
+                     class="col-lg-4 col-md-4"
+                     style="padding: 0px; line-height: 1.42857143"
+                     [data]="[{id: '1', text: 'North East'}, {id: '2', text: 'South West'}]"></select2>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 20px">
+        <div>
+          <label class="col-lg-2 col-md-2 col-sm-12">Gender</label>
+          <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+            <select2 width="100%" placeholder="Select"
+                     class="col-lg-4 col-md-4"
+                     style="padding: 0px; line-height: 1.42857143"
+                     [data]="[{id: '1', text: 'Male'}, {id: '2', text: 'Female'}]"></select2>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 20px">
+        <div>
+          <label class="col-lg-2 col-md-2 col-sm-12">Education</label>
+          <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+            <input type="text" class="input-form-control"/>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 20px">
+        <div>
+          <label class="col-lg-2 col-md-2 col-sm-12">Language</label>
+          <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+            <select2 width="100%" placeholder="Select"
+                     class="col-lg-4 col-md-4"
+                     style="padding: 0px; line-height: 1.42857143"
+                     [data]="[{id: '1', text: 'English'}, {id: '2', text: 'Spanish'}]"></select2>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 20px">
+        <div>
+          <label class="col-lg-2 col-md-2 col-sm-12">Interest</label>
+          <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+            <input type="text" class="input-form-control"/>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 20px">
+        <div>
+          <label class="col-lg-2 col-md-2 col-sm-12">Target Email List</label>
+          <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+            <input type="file" class="input-form-control"/>
+          </div>
+        </div>
+      </div>
+      <label class="col-lg-2 col-md-2 col-sm-12" style="margin-top: 20px;">PLANS</label>
+      <div class="col-lg-12 col-md-12 col-sm-12" style="padding-bottom: 20px; margin-top: 20px; margin-left: 10px">
+        <div class="">
+          <input type="radio" name="payment" value="default"/>First Party Data Plan 1 ( $3,000 )
+        </div>
+        <div>
+          <input type="radio" name="payment" value="loan"/>First Party Data Plan 2 ( $4,000 )
+        </div>
+      </div>
+      <label class="col-lg-2 col-md-2 col-sm-12" style="margin-top: 20px;">CAMPAIGN GOAL</label>
+      <div class="col-lg-12 col-md-12 col-sm-12" style="padding-bottom: 20px; margin-top: 20px">
+        <div>
+          <label class="col-lg-2 col-md-2 col-sm-12">KPI</label>
+          <button class="btn btn-info" (click)="addKpi()">ADD</button>
+          <p style="clear: both"></p>
+          <p style="clear: both"></p>
+          <div class="col-lg-10 col-md-10 col-sm-12" style="position: relative; top: -8px">
+            <div *ngFor="let item of kpis; let i = index;">
+              <select2 width="100%" placeholder="Select"
+                       class="col-lg-4 col-md-4"
+                       style="padding: 0px; line-height: 1.42857143"
+                       [data]="[{id: '1', text: 'Impressions'}, {id: '2', text: 'Clicks'}]"></select2>
+              <input placeholder="value" type="text" class="input-form-control"/>
+              <select2 width="100%" placeholder="Select"
+                       class="col-lg-4 col-md-4"
+                       style="padding: 0px; line-height: 1.42857143"
+                       [data]="[{id: '1', text: 'Units'}, {id: '2', text: '%'}]"></select2>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <p style="clear: both"></p>
+      <div style="padding-left: 15px; margin-top: 20px">
+        <button class="btn btn-primary">CANCEL</button>
+        <button class="btn btn-primary" style="text-transform: none">
+          SAVE
+        </button>
+      </div>
+    </div>
+  </div>
+
