@@ -489,7 +489,6 @@ export class UserManagementComponent implements OnInit  {
     const prom = this.popUp.showPopUp(popUpOptions);
     prom
     .then((res)=>{
-      console.log("then res", res)
       // Resolve
       this.showSpinner = false;
       if(res && res.value) {
@@ -505,7 +504,6 @@ export class UserManagementComponent implements OnInit  {
       }
       return null;
     }, (rej) => {
-      console.log("then rej", rej)
       this.showSpinner = false;
       if(rej) {
         const swalOptions = {
@@ -521,7 +519,6 @@ export class UserManagementComponent implements OnInit  {
       return null;
     })
     .then((ok) => {
-      console.log("then res ok on 2nd popup", ok)
       // On Resolve Call getRetryOrders
       if(ok && ok.value) {
         this.showSpinner = true; // true here & then when getRetryOrders pulled, false spinner
@@ -530,7 +527,6 @@ export class UserManagementComponent implements OnInit  {
       return null;
     })
     .catch((err) => {
-      console.log("catch err", err)
       // if (err instanceof ApiError)
       this.showSpinner = false;
       console.log("Error: Set password and activate: ", err);
@@ -681,7 +677,6 @@ export class UserManagementComponent implements OnInit  {
   }
   
   handleActions(ev: any) {
-    console.log("hanAC: ", ev);
     const action = $(ev.elem).data('action');
     this.userID = ev.data.data()[4];
 
