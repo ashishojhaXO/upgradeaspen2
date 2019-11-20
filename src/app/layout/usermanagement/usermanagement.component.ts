@@ -554,6 +554,8 @@ export class UserManagementComponent implements OnInit  {
       title: "Suspend?",
       text: "Are you sure you want to Suspend the account?",
       type: 'question',
+      showCloseButton: true,
+      showCancelButton: true,
       // cancelButtonText: "Ok",
     }
     const prom = this.popUp.showPopUp(popUpOptions);
@@ -619,7 +621,8 @@ export class UserManagementComponent implements OnInit  {
       title: "Deactivate?",
       text: "Are you sure you want to deactivate the account?",
       type: 'question',
-      cancelButtonText: "Cancel",
+      showCloseButton: true,
+      showCancelButton: true,
     }
 
     const prom = this.popUp.showPopUp(popUpOptions);
