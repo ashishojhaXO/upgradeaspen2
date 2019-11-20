@@ -472,13 +472,12 @@ export class UserManagementComponent implements OnInit  {
     const popUpOptions = {
       title: 'Set Password and Activate',
       input: 'text',
-      text: "Please set a password <br />(Atleast 8 chars, with lowercase, uppercase, a number and a special char).",
+      text: "Please set a password (Atleast 8 chars, with lowercase, uppercase, a number and a special char).",
       inputAttributes: {
         autocapitalize: 'off'
       },
       showCloseButton: true,
       showCancelButton: true,
-      // cancelButtonText: "Cancel",
       confirmButtonText: 'Activate',
       showLoaderOnConfirm: true,
       preConfirm: (login) => {
@@ -491,44 +490,44 @@ export class UserManagementComponent implements OnInit  {
     prom
     .then((res)=>{
       console.log("then res", res)
-        // Resolve
-        this.showSpinner = false;
-        if(res && res.value) {
-          const str = res.value.body.error;
-          const swalOptions = {
-            title: 'Success',
-            text: str,
-            type: 'success',
-            showCloseButton: true,
-            confirmButtonText: "Ok",
-          };
-          return this.popUp.showPopUp(swalOptions)
-        }
-        return null;
+      // Resolve
+      this.showSpinner = false;
+      if(res && res.value) {
+        const str = res.value.body.error;
+        const swalOptions = {
+          title: 'Success',
+          text: str,
+          type: 'success',
+          showCloseButton: true,
+          confirmButtonText: "Ok",
+        };
+        return this.popUp.showPopUp(swalOptions)
+      }
+      return null;
     }, (rej) => {
       console.log("then rej", rej)
-        this.showSpinner = false;
-        if(rej) {
-          const swalOptions = {
-            title: 'Error',
-            text: 'Error while setting password and activating, please try after sometime.',
-            type: 'error',
-            showCloseButton: true,
-            confirmButtonText: "Ok",
-          };
-          this.popUp.showPopUp(swalOptions)
-          throw new Error("Rejected");
-        }
-        return null;
+      this.showSpinner = false;
+      if(rej) {
+        const swalOptions = {
+          title: 'Error',
+          text: 'Error while setting password and activating, please try after sometime.',
+          type: 'error',
+          showCloseButton: true,
+          confirmButtonText: "Ok",
+        };
+        this.popUp.showPopUp(swalOptions)
+        throw new Error("Rejected");
+      }
+      return null;
     })
     .then((ok) => {
       console.log("then res ok on 2nd popup", ok)
-        // On Resolve Call getRetryOrders
-        if(ok && ok.value) {
-          this.showSpinner = true; // true here & then when getRetryOrders pulled, false spinner
-          return this.searchDataRequest();
-        }
-        return null;
+      // On Resolve Call getRetryOrders
+      if(ok && ok.value) {
+        this.showSpinner = true; // true here & then when getRetryOrders pulled, false spinner
+        return this.searchDataRequest();
+      }
+      return null;
     })
     .catch((err) => {
       console.log("catch err", err)
@@ -570,34 +569,34 @@ export class UserManagementComponent implements OnInit  {
       }
     })
     .then((res) => {
-        // Resolve
-        this.showSpinner = false;
-        if(res) {
-          const str = res.value.body.error;
-            const swalOptions = {
-                title: 'Success',
-                text: str,
-                type: 'success',
-                showCloseButton: true,
-                confirmButtonText: "Ok",
-            };
-            return this.popUp.showPopUp(swalOptions)
-        }
-        return null;
-      }, (rej) => {
-        this.showSpinner = false;
-        if(rej) {
-          const swalOptions = {
-            title: 'Error',
-            text: 'Error while suspending account.',
-            type: 'error',
-            showCloseButton: true,
-            confirmButtonText: "Ok",
-          };
-          this.popUp.showPopUp(swalOptions)
-          throw new Error("Rejected");
-        }
-        return null;
+      // Resolve
+      this.showSpinner = false;
+      if(res) {
+        const str = res.value.body.error;
+        const swalOptions = {
+          title: 'Success',
+          text: str,
+          type: 'success',
+          showCloseButton: true,
+          confirmButtonText: "Ok",
+        };
+        return this.popUp.showPopUp(swalOptions)
+      }
+      return null;
+    }, (rej) => {
+      this.showSpinner = false;
+      if(rej) {
+        const swalOptions = {
+          title: 'Error',
+          text: 'Error while suspending account.',
+          type: 'error',
+          showCloseButton: true,
+          confirmButtonText: "Ok",
+        };
+        this.popUp.showPopUp(swalOptions)
+        throw new Error("Rejected");
+      }
+      return null;
     })
     .then((ok) => {
         // On Resolve Call getRetryOrders
@@ -617,8 +616,6 @@ export class UserManagementComponent implements OnInit  {
   }
 
   deactivate() {
-    // const endPoint = '/users/{{userID}}/suspend';
-    const userID = localStorage.getItem('loggedInUserID') || '';
     const endPoint = `/users/${this.userID}/deactivate`;
     const data = {};
 
@@ -632,53 +629,53 @@ export class UserManagementComponent implements OnInit  {
     const prom = this.popUp.showPopUp(popUpOptions);
     prom
     .then((res) => {
-        if(res && res.value) {
-            this.showSpinner = true;
-            return this.apiCall(endPoint, data).toPromise()
-        }
+      if(res && res.value) {
+        this.showSpinner = true;
+        return this.apiCall(endPoint, data).toPromise()
+      }
     })
     .then((res)=>{
-        // Resolve
-        this.showSpinner = false;
-        if(res) {
-          const str = res.value.body.error;
-            const swalOptions = {
-                title: 'Error',
-                text: str,
-                type: 'success',
-                showCloseButton: true,
-                confirmButtonText: "Ok",
-            };
-            return this.popUp.showPopUp(swalOptions)
-        }
-        return null;
+      // Resolve
+      this.showSpinner = false;
+      if(res) {
+        const str = res.value.body.error;
+        const swalOptions = {
+          title: 'Error',
+          text: str,
+          type: 'success',
+          showCloseButton: true,
+          confirmButtonText: "Ok",
+        };
+        return this.popUp.showPopUp(swalOptions)
+      }
+      return null;
     }, (rej) => {
-        this.showSpinner = false;
-        if(rej) {
-            const swalOptions = {
-                title: 'Error',
-                text: 'Error while deactivating account',
-                type: 'error',
-                showCloseButton: true,
-                confirmButtonText: "Ok",
-            };
-            this.popUp.showPopUp(swalOptions)
-            throw new Error("Rejected");
-        }
-        return null;
+      this.showSpinner = false;
+      if(rej) {
+        const swalOptions = {
+          title: 'Error',
+          text: 'Error while deactivating account',
+          type: 'error',
+          showCloseButton: true,
+          confirmButtonText: "Ok",
+        };
+        this.popUp.showPopUp(swalOptions)
+        throw new Error("Rejected");
+      }
+      return null;
     })
     .then((ok) => {
-        // On Resolve Call getRetryOrders
-        if(ok && ok.value) {
-            this.showSpinner = true; // true here & then when getRetryOrders pulled, false spinner
-            return this.searchDataRequest();
-        }
-        return null;
+      // On Resolve Call getRetryOrders
+      if(ok && ok.value) {
+        this.showSpinner = true; // true here & then when getRetryOrders pulled, false spinner
+        return this.searchDataRequest();
+      }
+      return null;
     })
     .catch((err)=>{
-        // if (err instanceof ApiError)
-        this.showSpinner = false;
-        console.log("Error: Deactivating account: ", err);
+      // if (err instanceof ApiError)
+      this.showSpinner = false;
+      console.log("Error: Deactivating account: ", err);
     });
     // Post Success/Error SweetAlert PopUp
   }
@@ -693,13 +690,12 @@ export class UserManagementComponent implements OnInit  {
       // func();
       this[action]();
     } else {
-        // Some problem
-        // Function does not exists in this class, if data-action string is correct
-        // Else if all functions exists, then, data-action string coming from html is not correct
-        console.log("Error: Problem executing function")
+      // Some problem
+      // Function does not exists in this class, if data-action string is correct
+      // Else if all functions exists, then, data-action string coming from html is not correct
+      console.log("Error: Problem executing function")
     }
   }
-
 
   // Started/
 
