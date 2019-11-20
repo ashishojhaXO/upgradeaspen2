@@ -100,6 +100,11 @@ export class OrderComponent implements OnInit  {
                 text: ele.name
               });
             }, this);
+
+            if(this.templates.length) {
+              this.template = '1';
+              this.searchTemplateDetails(this.template);
+            }
           }
         },
         err => {
