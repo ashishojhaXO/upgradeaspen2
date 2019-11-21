@@ -458,6 +458,20 @@ export class UserManagementComponent implements OnInit  {
     this.popUp.showPopUp(popUpOptions);
   }
 
+  resendEmail() {
+    // TODO: To be completed still, waiting for API
+    const endPoint = `/users/${this.userID}/resend-activation-email`;
+    const data = {
+      // "vendor | f7 | thd", pine: vendor, aspen: f7
+      "source": "f7"
+    };
+
+    this.showSpinner = true;
+    // Pre AreUSure SweetAlert PopUp
+    // this.apiCall(endPoint, data).subscribe( this.successCallBack, this.errorCallBack(this.errorFunc) );
+    this.apiCall(endPoint, data).subscribe( this.successCallBack, this.errorCallBack );
+  }
+
   setPasswordAndActivate() {
     // const userID = localStorage.getItem('loggedInUserID') || '';
     const endPoint = `/users/${this.userID}/activate`;
@@ -532,17 +546,6 @@ export class UserManagementComponent implements OnInit  {
       console.log("Error: Set password and activate: ", err);
     });
 
-  }
-
-  resendEmail() {
-    // TODO: To be completed still, waiting for API
-    const endPoint = `/users/${this.userID}/blah`;
-    const data = {};
-
-    this.showSpinner = true;
-    // Pre AreUSure SweetAlert PopUp
-    // this.apiCall(endPoint, data).subscribe( this.successCallBack, this.errorCallBack(this.errorFunc) );
-    this.apiCall(endPoint, data).subscribe( this.successCallBack, this.errorCallBack );
   }
 
   suspend() {
