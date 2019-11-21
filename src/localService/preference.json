@@ -84,7 +84,23 @@
       "title": "Orders",
       "selected": false,
       "id": "orders",
-      "url":"app/orders"
+      "url":"app/orders",
+      "submenu": [
+        {
+          "index": 1,
+          "name": "baseFields",
+          "title": "Configure Base Fields",
+          "id": "baseFields",
+          "url": "app/baseFields"
+        },
+        {
+          "index": 2,
+          "name": "ordertemplate",
+          "title": "Configure Template",
+          "id": "ordertemplate",
+          "url": "app/ordertemplate"
+        }
+      ]
     },
     {
       "index": 7,

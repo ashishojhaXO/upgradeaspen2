@@ -18,6 +18,19 @@ label {
   }
 }
 
+.datepicker-icon {
+  position: relative !important;
+  left: -62px !important;
+  border-right: 0px !important;
+}
+
+.datepicker.datepicker-dropdown {
+  z-index: 10000 !important;
+}
+
+ //Following style is used for setting z-index on angular directive for eonasdan-bootstrap-datetimepicker
+.usetwentyfour{z-index:100000 !important}
+
 .page-content {
   background: #ededed;
 }
@@ -3203,9 +3216,10 @@ table.dataContainer tbody td {
   white-space: pre-wrap;
 }
 
-.dataTables_scrollBody {
-  height: 320px !important;
-}
+//.dataTables_scrollBody {
+//  height: 320px !important;
+//}
+
 
 table.dataContainer tbody tr.selected {
   background: #0085c7 !important;
@@ -3500,7 +3514,7 @@ div.crumbs-main {
   background-color: #FC6468;
 }
 
-.bs-datepicker-body table tbody tr {
-  height: 10px !important;
-}
+
+
+
 

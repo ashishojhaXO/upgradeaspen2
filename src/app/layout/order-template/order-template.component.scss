@@ -1,0 +1,24 @@
+.heading {
+    color: #0777bc;
+    font-size: 20px;
+    text-transform: uppercase;
+    margin-left: 15px;
+}
+.templateForm{
+    margin-left: 15px;
+    padding: 15px;
+    .form-group-fields{
+        padding-bottom: 20px;
+    }
+    .form-control {
+        border-radius: 4px;
+    }
+    .alert-danger{
+        margin-top: 20px;
+    }
+    .sub-heading{
+        color: #1c252b;
+        font-size: 12px;
+        font-weight: 700;
+    }
+}

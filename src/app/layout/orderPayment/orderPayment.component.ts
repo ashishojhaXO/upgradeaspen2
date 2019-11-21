@@ -16,6 +16,8 @@ import 'bootstrap';
   styleUrls: ['./orderPayment.component.scss']
 })
 export class OrderPaymentComponent {
+
+  selectionType = '';
   constructor() {
     if (window['fs_widget_config']) {
       console.log('window[\'fs_widget_config\'] >>')
@@ -25,5 +27,9 @@ export class OrderPaymentComponent {
         window['fs_widget_config'].api_key = customerInfo.org.x_api_key;
         window['fs_widget_config'].org_id = customerInfo.org.org_id;
     }
+  }
+
+  paymentTypeSelection(type) {
+    this.selectionType = type;
   }
 }

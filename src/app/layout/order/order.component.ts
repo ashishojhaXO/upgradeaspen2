@@ -59,6 +59,11 @@ export class OrderComponent implements OnInit  {
   dataRowUpdated = false;
   minDate = new Date();
 
+  dateOptions = {
+    format: "YYYY-MM-DD",
+    showClear: true
+  };
+
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder,) {
     this.formAttribute = fb;
   }
@@ -94,6 +99,11 @@ export class OrderComponent implements OnInit  {
                 text: ele.name
               });
             }, this);
+
+            if(this.templates.length) {
+              this.template = '1';
+              this.searchTemplateDetails(this.template);
+            }
           }
         },
         err => {
@@ -124,6 +134,8 @@ export class OrderComponent implements OnInit  {
   }
 
   searchTemplateDetails(templateID) {
+    this.templateDefinition = [];
+    this.dataFieldConfiguration = [];
     this.getTemplateDetails(templateID).subscribe(
         response => {
           if (response && response.orderTemplateData && response.orderTemplateData.orderFields && response.orderTemplateData.orderFields.length) {
@@ -194,6 +206,9 @@ export class OrderComponent implements OnInit  {
               this.buildLineItem(this.dataFieldConfiguration);
             }
 
+          } else {
+            this.buildTemplateForm();
+            this.buildLineItem(this.dataFieldConfiguration);
           }
         },
         err => {
@@ -448,5 +463,9 @@ export class OrderComponent implements OnInit  {
 
   handleRowSelection(rowObj: any, rowData: any) {
 
+  }
+
+  OnSubmit() {
+    this.router.navigate(['/app/targetAud/']);
   }
 }
