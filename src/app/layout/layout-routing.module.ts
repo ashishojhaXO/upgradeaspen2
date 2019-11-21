@@ -19,6 +19,8 @@ import { BaseFieldsComponent } from './baseFields/baseFields.component';
 import { OrderTemplateComponent } from './order-template/order-template.component';
 import { ConfigureAdComponent } from './configureAd/configureAd.component';
 import { TargetAudComponent } from './targetAud/targetAud.component';
+import { OrderSummaryComponent } from './orderSummary/orderSummary.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -131,6 +133,14 @@ const routes: Routes = [
         },
       },
       {
+        path: 'ordertemplate/:id',
+        component: OrderTemplateComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Modify Order Template'
+        },
+      },
+      {
         path: 'order/:id',
         component: OrderComponent,
         data: {
@@ -168,6 +178,22 @@ const routes: Routes = [
         data: {
           breadcrumbs: true,
           text: 'Modify Target Audience'
+        },
+      },
+      {
+        path: 'orderSummary',
+        component: OrderSummaryComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Order Summary'
+        },
+      },
+      {
+        path: 'orderSummary/:id',
+        component: OrderSummaryComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Order Summary'
         },
       },
       {

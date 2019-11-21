@@ -7,12 +7,12 @@
       <div class="col-xs-12">
         <h4 class="subHeading">Select Fields</h4>
       </div>
-      <div class="col-xs-3" style="height: 400px; overflow-y: scroll">
+      <div class="col-xs-3" style="height: 450px; overflow-y: scroll">
         <!--a draggable element-->
         <div class="fields" *ngFor="let item of fieldModels">
           <div class="field pointer shadow-bg" [dndDraggable]="item" [dndEffectAllowed]="'copy'"
             (dndEnd)="onDragEnd($event)">
-            <!-- <i [ngClass]="item.icon" class="fa pull-left"></i> -->
+            <i *ngIf="isBaseField" [ngClass]="item.icon" class="fa pull-left"></i>
             <h5 class="mb0 dragListItem">{{item.name}}</h5>
           </div>
         </div>
@@ -27,7 +27,6 @@
         <section dndDropzone (dndDragover)="onDragover($event)" (dndDrop)="onDrop($event,model.attributes)"
           class="dndDropArea empty" [ngStyle]="{'height': viewHeight}">
           <h3 *ngIf="model.attributes.length == 0" class="dropHere">Drop Here</h3>
-
           <div class="field" *ngFor="let item of model.attributes;let i= index;" (dndStart)="onDragStart($event)"
             (dndCanceled)="onDragCanceled($event)" (dndMoved)="onDragged(item, model.attributes, 'move')"
             [dndEffectAllowed]="'all'" [dndDraggable]="item">
@@ -148,9 +147,9 @@
             <div *ngIf="item.toggle && !isBaseField" class="toggle-Wrapper">
               <div class="form-group-fields">
                 <label>Required</label>
-                <i *ngIf="item.validation.required" (click)="item.validation.required=false"
+                <i *ngIf="item.validation.required" (click)="item.validation.required=0"
                   class="fa fa-toggle-on red"></i>
-                <i *ngIf="!item.validation.required" (click)="item.validation.required=true"
+                <i *ngIf="!item.validation.required" (click)="item.validation.required=1"
                   class="fa fa-toggle-off"></i>
                   <span>&nbsp;&nbsp;&nbsp;</span>
                 <label>Disable</label>

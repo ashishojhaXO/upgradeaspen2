@@ -40,6 +40,7 @@ import { ConfigureAdComponent } from './configureAd/configureAd.component';
 import { TargetAudComponent } from './targetAud/targetAud.component';
 import { BaseFieldsComponent } from './baseFields/baseFields.component';
 import { OrderTemplateComponent } from './order-template/order-template.component';
+import { OrderSummaryComponent } from './orderSummary/orderSummary.component';
 
 
 // providers
@@ -97,7 +98,8 @@ import { CustomFormBuilderModule } from '../shared/components/customformbuilder/
         BaseFieldsComponent,
         OrderTemplateComponent,
         ConfigureAdComponent,
-        TargetAudComponent
+        TargetAudComponent,
+        OrderSummaryComponent
     ],
     providers: [AuthGuard, OktaAuthService, OrganizationService],
     schemas: [
