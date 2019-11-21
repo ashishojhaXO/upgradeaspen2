@@ -7,7 +7,7 @@
       <div class="col-xs-12">
         <h4 class="subHeading">Select Fields</h4>
       </div>
-      <div class="col-xs-3">
+      <div class="col-xs-3" style="height: 400px; overflow-y: scroll">
         <!--a draggable element-->
         <div class="fields" *ngFor="let item of fieldModels">
           <div class="field pointer shadow-bg" [dndDraggable]="item" [dndEffectAllowed]="'copy'"
