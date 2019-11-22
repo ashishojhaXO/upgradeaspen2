@@ -14,7 +14,7 @@
   </div>
   <div class="col-lg-9 col-md-9 col-sm-12" style="margin-left: 15px;">
     <div style="background: #fff">
-      <label style="padding: 0px; margin: 10px 0px 20px 15px; font-size: 16px">ORDER</label>
+      <label style="padding: 0px; margin: 10px 0px 20px 15px; font-size: 16px"><span style="border-bottom:3px solid #38A6F7;">ORDER</span></label>
       <div style="margin-left: 15px">
         <div style="padding: 0px;margin: 10px 0px 0px 0px;" class="col-lg-12 col-md-12 col-sm-12">
           <label class="col-lg-2 col-md-2 col-sm-12">Order ID</label>
@@ -48,64 +48,95 @@
         </div>
       </div>
       <p style="clear: both"></p>
-      <label style="padding: 0px; margin: 30px 0px 20px 15px; font-size: 16px">LINE ITEMS</label>
-      <div style="margin-left: 15px" *ngFor="let item of lineItems; let i = index;">
-        <label style="padding: 0px; margin: 10px 0px 20px 15px; font-size: 14px">{{item.name}}</label>
-        <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
-          <label class="col-lg-2 col-md-2 col-sm-12">Age</label>
-          <div class="col-lg-3 col-md-3 col-sm-12">
-            <span>21</span>
-          </div>
-        </div>
-        <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
-          <label class="col-lg-2 col-md-2 col-sm-12">Location</label>
-          <div class="col-lg-3 col-md-3 col-sm-12">
-            <span>North America</span>
-          </div>
-        </div>
-        <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
-          <label class="col-lg-2 col-md-2 col-sm-12">Gender</label>
-          <div class="col-lg-3 col-md-3 col-sm-12">
-            <span>Male</span>
-          </div>
-        </div>
-        <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
-          <label class="col-lg-2 col-md-2 col-sm-12">Language</label>
-          <div class="col-lg-3 col-md-3 col-sm-12">
-            <span>English</span>
-          </div>
-        </div>
-        <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
-          <label class="col-lg-2 col-md-2 col-sm-12">Interest</label>
-          <div class="col-lg-3 col-md-3 col-sm-12">
-            <span>Electronics</span>
-          </div>
-        </div>
-        <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
-          <label class="col-lg-2 col-md-2 col-sm-12">Target Email List</label>
-          <div class="col-lg-3 col-md-3 col-sm-12">
-            <span><a href="javascript:void(0)">View</a></span>
-          </div>
-        </div>
-        <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
-          <label class="col-lg-2 col-md-2 col-sm-12">Plan</label>
-          <div class="col-lg-3 col-md-3 col-sm-12">
-            <span>First Party Data Plan 1 ( $3000 )</span>
-          </div>
-        </div>
-        <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
-          <label class="col-lg-2 col-md-2 col-sm-12">Campaign Goal</label>
-          <div class="col-lg-3 col-md-3 col-sm-12">
-            <div class="col-lg-12 col-md-12 col-sm-12" style="padding-left: 0px">
-              <span>Impressions - 1000</span>
-            </div>
-            <div class="col-lg-12 col-md-12 col-sm-12" style="padding-left: 0px">
-              <span>Clicks - 20%</span>
+      <label style="padding: 0px; margin: 30px 0px 20px 15px; font-size: 16px"><span style="border-bottom:3px solid #38A6F7;">LINE ITEMS</span></label>
+        <div [style.marginBottom]="i !== (lineItems.length - 1) ? '30px' : '0px'" style="margin-left: 15px; background: #FBFAFB; margin-right: 15px" *ngFor="let item of lineItems; let i = index;">
+          <!--<label style="padding: 0px; margin: 10px 0px 20px 15px; font-size: 14px">{{i+1}}</label>-->
+          <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
+            <label class="col-lg-2 col-md-2 col-sm-12">Channel</label>
+            <div class="col-lg-3 col-md-3 col-sm-12">
+              <span>{{item.name}}</span>
             </div>
           </div>
+          <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
+            <label class="col-lg-2 col-md-2 col-sm-12">Start Date</label>
+            <div class="col-lg-3 col-md-3 col-sm-12">
+              <span>2019-12-10</span>
+            </div>
+          </div>
+          <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
+            <label class="col-lg-2 col-md-2 col-sm-12">End Date</label>
+            <div class="col-lg-3 col-md-3 col-sm-12">
+              <span>2019-12-30</span>
+            </div>
+          </div>
+          <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
+            <label class="col-lg-2 col-md-2 col-sm-12">Budget</label>
+            <div class="col-lg-3 col-md-3 col-sm-12">
+              <span>$10,000</span>
+            </div>
+          </div>
+          <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
+            <label class="col-lg-2 col-md-2 col-sm-12">Inventory</label>
+            <div class="col-lg-3 col-md-3 col-sm-12">
+              <span><a href="javascript:void(0)">View</a></span>
+            </div>
+          </div>
+          <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
+            <label class="col-lg-2 col-md-2 col-sm-12">Age</label>
+            <div class="col-lg-3 col-md-3 col-sm-12">
+              <span>21</span>
+            </div>
+          </div>
+          <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
+            <label class="col-lg-2 col-md-2 col-sm-12">Location</label>
+            <div class="col-lg-3 col-md-3 col-sm-12">
+              <span>North America</span>
+            </div>
+          </div>
+          <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
+            <label class="col-lg-2 col-md-2 col-sm-12">Gender</label>
+            <div class="col-lg-3 col-md-3 col-sm-12">
+              <span>Male</span>
+            </div>
+          </div>
+          <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
+            <label class="col-lg-2 col-md-2 col-sm-12">Language</label>
+            <div class="col-lg-3 col-md-3 col-sm-12">
+              <span>English</span>
+            </div>
+          </div>
+          <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
+            <label class="col-lg-2 col-md-2 col-sm-12">Interest</label>
+            <div class="col-lg-3 col-md-3 col-sm-12">
+              <span>Electronics</span>
+            </div>
+          </div>
+          <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
+            <label class="col-lg-2 col-md-2 col-sm-12">Target Email List</label>
+            <div class="col-lg-3 col-md-3 col-sm-12">
+              <span><a href="javascript:void(0)">View</a></span>
+            </div>
+          </div>
+          <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
+            <label class="col-lg-2 col-md-2 col-sm-12">Plan</label>
+            <div class="col-lg-3 col-md-3 col-sm-12">
+              <span>First Party Data Plan 1 ( $3000 )</span>
+            </div>
+          </div>
+          <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
+            <label class="col-lg-2 col-md-2 col-sm-12">Campaign Goal</label>
+            <div class="col-lg-3 col-md-3 col-sm-12">
+              <div class="col-lg-12 col-md-12 col-sm-12" style="padding-left: 0px">
+                <span>Impressions - 1000</span>
+              </div>
+              <div class="col-lg-12 col-md-12 col-sm-12" style="padding-left: 0px">
+                <span>Clicks - 20%</span>
+              </div>
+            </div>
+          </div>
+          <p style="clear: both"></p>
         </div>
-      </div>
-      <p style="clear: both"></p>
+         <p style="clear: both"></p>
     </div>
     <div style="margin-top: 15px;">
       <button class="btn btn-primary">CANCEL</button>

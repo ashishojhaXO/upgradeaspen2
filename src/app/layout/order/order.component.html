@@ -3,7 +3,7 @@
     <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">{{isExistingOrder ? 'MODIFY ' : 'CREATE '}} ORDER</p>
   </div>
   <p style="clear: both"></p>
-  <div class="col-lg-2 col-md-2 col-sm-2" style="border: 1px solid #fff; background: #fff">
+  <div class="col-lg-2 col-md-2 col-sm-12" style="border: 1px solid #fff; background: #fff; border-radius: 4px">
    <ul style="list-style: none">
      <li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:3px; left: -26px" class="fa fa-arrow-right"></i><a href="javascript:void(0)">Create Order</a></li>
      <!--<li style="margin-top: 20px"><span>Configure AD</span></li>-->
@@ -13,79 +13,81 @@
    </ul>
   </div>
   <div class="col-lg-10 col-md-10 col-sm-10">
-    <label style="padding: 0px; margin: 10px 0px 20px 15px; font-size: 16px">ORDER</label>
-    <div class="col-lg-12 col-md-12 col-sm-12" style="padding-bottom: 20px">
-      <label class="col-lg-2 col-md-2 col-sm-12">Template</label>
-      <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -4px">
-        <select2 *ngIf="templates.length" width="100%" placeholder="Select Template"
-                 class="col-lg-4 col-md-4"
-                 style="padding: 0px; line-height: 1.42857143; width: 160px"
-                 [value]="template"
-                 (valueChanged)="OnTemplateChange($event);"
-                 [data]="templates"></select2>
-      </div>
-      <div *ngIf="data.controls && data.controls.length">
-        <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12" *ngFor="let def of data.controls; let i = index;">
-          <label class="col-lg-2 col-md-2 col-sm-12">{{def.label}} <span class="text-danger">{{def.validation && def.validation.indexOf('required') !== -1 ? '*' : ''}}</span></label>
-          <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'text' || def.type ==='varchar'">
-            <input class="input-form-control" [attr.disabled]="def.disabled ? 'disabled' : null" type="text" [formControl]="FormModel.attributes[def.name]"/>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-12" style="position: relative; top: -4px" *ngIf="def.type === 'date'">
-            <div class="form-group">
-                  <div class="input-group">
-                      <input class="input-form-control"
-                             [attr.disabled]="def.disabled ? 'disabled' : null"
-                             a2e-datetimepicker
-                             [formControl]="FormModel.attributes[def.name]"
-                             [options]="dateOptions"/>
-                      <span class="input-group-addon datepicker-icon">
+    <div style="background: #fff; border-radius: 4px">
+      <label style="padding: 0px; margin: 10px 0px 20px 15px; font-size: 16px"><span style="border-bottom:3px solid #38A6F7;">ORDER</span></label>
+      <div class="col-lg-12 col-md-12 col-sm-12" style="padding-bottom: 20px; margin-top: 15px ">
+        <label class="col-lg-2 col-md-2 col-sm-12">Template</label>
+        <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -4px">
+          <select2 *ngIf="templates.length" width="100%" placeholder="Select Template"
+                   class="col-lg-4 col-md-4"
+                   style="padding: 0px; line-height: 1.42857143; width: 160px"
+                   [value]="template"
+                   (valueChanged)="OnTemplateChange($event);"
+                   [data]="templates"></select2>
+        </div>
+        <div *ngIf="data.controls && data.controls.length">
+          <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12" *ngFor="let def of data.controls; let i = index;">
+            <label class="col-lg-2 col-md-2 col-sm-12">{{def.label}} <span class="text-danger">{{def.validation && def.validation.indexOf('required') !== -1 ? '*' : ''}}</span></label>
+            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'text' || def.type ==='varchar'">
+              <input class="input-form-control" [attr.disabled]="def.disabled ? 'disabled' : null" type="text" [formControl]="FormModel.attributes[def.name]"/>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12" style="position: relative; top: -4px" *ngIf="def.type === 'date'">
+              <div class="form-group">
+                <div class="input-group">
+                  <input class="input-form-control"
+                         [attr.disabled]="def.disabled ? 'disabled' : null"
+                         a2e-datetimepicker
+                         [formControl]="FormModel.attributes[def.name]"
+                         [options]="dateOptions"/>
+                  <span class="input-group-addon datepicker-icon">
                              <span class="glyphicon glyphicon-calendar"></span>
                        </span>
-                  </div>
+                </div>
               </div>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'decimal'">
-            <input class="input-form-control" [attr.disabled]="def.disabled ? 'disabled' : null" [formControl]="FormModel.attributes[def.name]"/>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'amount'">
-            <select style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>
-            <input style="width: 118px" class="input-form-control" [attr.disabled]="def.disabled ? 'disabled' : null" [formControl]="FormModel.attributes[def.name]"/>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'int'">
-            <input class="input-form-control" [attr.disabled]="def.disabled ? 'disabled' : null" type="number" [formControl]="FormModel.attributes[def.name]"/>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'list'">
-            <select2 *ngIf="def.options" width="100%" placeholder="Select"
-                     class="col-lg-4 col-md-4"
-                     [attr.disabled]="def.disabled ? 'disabled' : null"
-                     style="padding: 0px; line-height: 1.42857143; width: 160px"
-                     [value]="def.value"
-                     (valueChanged)="OnSelectValueChange($event, def);"
-                     [data]="def.options"></select2>
-          </div>
-          <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="FormModel.attributes[def.name] && FormModel.attributes[def.name].invalid && (FormModel.attributes[def.name].dirty || FormModel.attributes[def.name].touched)" class="alert alert-danger" style="display: inline-block; z-index: 10; margin-left: 15px">
-            <div *ngIf="FormModel.attributes[def.name].errors.required">
-              {{def.label}} is required
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'decimal'">
+              <input class="input-form-control" [attr.disabled]="def.disabled ? 'disabled' : null" [formControl]="FormModel.attributes[def.name]"/>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'amount'">
+              <select style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>
+              <input style="width: 118px" class="input-form-control" [attr.disabled]="def.disabled ? 'disabled' : null" [formControl]="FormModel.attributes[def.name]"/>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'int'">
+              <input class="input-form-control" [attr.disabled]="def.disabled ? 'disabled' : null" type="number" [formControl]="FormModel.attributes[def.name]"/>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'list'">
+              <select2 *ngIf="def.options" width="100%" placeholder="Select"
+                       class="col-lg-4 col-md-4"
+                       [attr.disabled]="def.disabled ? 'disabled' : null"
+                       style="padding: 0px; line-height: 1.42857143; width: 160px"
+                       [value]="def.value"
+                       (valueChanged)="OnSelectValueChange($event, def);"
+                       [data]="def.options"></select2>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="FormModel.attributes[def.name] && FormModel.attributes[def.name].invalid && (FormModel.attributes[def.name].dirty || FormModel.attributes[def.name].touched)" class="alert alert-danger" style="display: inline-block; z-index: 10; margin-left: 15px">
+              <div *ngIf="FormModel.attributes[def.name].errors.required">
+                {{def.label}} is required
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div style="padding-left: 15px" *ngIf="template">
-      <label class="col-lg-12 col-md-12 col-sm-12" style="padding: 0px; margin: 30px 0px 10px 0px; font-size: 16px">LINE ITEM</label>
-      <button class="btn btn-primary" (click)="addLineItem()">ADD</button>
-      <button class="btn btn-primary" (click)="removeLineItem()">REMOVE</button>
-      <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject && dataFieldConfiguration.length">
-        <app-data-table2 [dataObject]="dataObject" (triggerActions)="this[$event.action]($event)" [dataRowUpdated]="dataRowUpdated" [dataFieldsConfiguration]="dataFieldConfiguration"></app-data-table2>
-        <!--<app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height"></app-data-table1>-->
+      <div style="padding-left: 15px" *ngIf="template">
+        <label class="col-lg-12 col-md-12 col-sm-12" style="padding: 0px; margin: 30px 0px 10px 0px; font-size: 16px"><span style="border-bottom:3px solid #38A6F7;">LINE ITEMS</span></label>
+        <button class="btn btn-primary" (click)="addLineItem()">ADD</button>
+        <button class="btn btn-primary" (click)="removeLineItem()">REMOVE</button>
+        <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject && dataFieldConfiguration.length">
+          <app-data-table2 [dataObject]="dataObject" (triggerActions)="this[$event.action]($event)" [dataRowUpdated]="dataRowUpdated" [dataFieldsConfiguration]="dataFieldConfiguration"></app-data-table2>
+          <!--<app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height"></app-data-table1>-->
+        </div>
+        <div class="clearfix"></div>
+        <div class="page-header" *ngIf="!dataObject">
+          <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
+          <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to display.</div>
+        </div>
       </div>
-      <div class="clearfix"></div>
-      <div class="page-header" *ngIf="!dataObject">
-        <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
-        <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to display.</div>
-      </div>
     </div>
-    <div style="padding-left: 15px; margin-top: 20px" *ngIf="template">
+    <div style="margin-top: 20px" *ngIf="template">
       <button class="btn btn-primary">CANCEL</button>
       <!--[disabled]="form && !form.valid"-->
       <button class="btn btn-primary"
