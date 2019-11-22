@@ -484,20 +484,22 @@ export class UserManagementComponent implements OnInit  {
     }
 
     const popUpOptions = {
-      title: 'Set Password and Activate',
-      input: 'text',
-      text: "Please set a password (Atleast 8 chars, with lowercase, uppercase, a number and a special char).",
-      inputAttributes: {
-        autocapitalize: 'off'
-      },
+      title: 'Activate account?',
+      text: "Activate the account for the user?",
+      type: 'question',
+      // input: 'text',
+      // text: "Please set a password (Atleast 8 chars, with lowercase, uppercase, a number and a special char).",
+      // inputAttributes: {
+      //   autocapitalize: 'off'
+      // },
       showCloseButton: true,
       showCancelButton: true,
       confirmButtonText: 'Activate',
-      showLoaderOnConfirm: true,
-      preConfirm: (login) => {
-        data.credentials.password.value = login;
-        return this.apiCall( endPoint, data).toPromise();
-      },
+      // showLoaderOnConfirm: true,
+      // preConfirm: (login) => {
+      //   data.credentials.password.value = login;
+      //   return this.apiCall( endPoint, data).toPromise();
+      // },
     }
 
     const prom = this.popUp.showPopUp(popUpOptions);
