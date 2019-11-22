@@ -44,7 +44,7 @@
           <p class="sub-heading">Select Order Template</p>
         </div>
         <div class="col-xs-12 col-sm-10">
-          <p>Customize your form by drag and drop below fields in the 'Drop Here' area.</p>
+          <p>Customize the field(s) by drag and drop below fields in the 'Drop Here' area. Use <i class="fa fa-ellipsis-v dndHandle" style="font-size: 16px; margin: 0px 5px"></i> to rearrange. </p>
           <div class="order-container">
             <app-customformbuilder #orderForm [editTemplate]="editTemplate" [fieldData]="templateField.orderFields"></app-customformbuilder>
           </div>
@@ -58,7 +58,7 @@
           <p class="sub-heading">Select Line Item Template</p>
         </div>
         <div class="col-xs-12 col-sm-10">
-          <p>Customize your form by drag and drop below fields in the 'Drop Here' area.</p>
+          <p>Customize the field(s) by drag and drop below fields in the 'Drop Here' area. Use <i class="fa fa-ellipsis-v dndHandle" style="font-size: 16px; margin: 0px 5px"></i> to rearrange. </p>
           <div class="lineitem-container">
             <app-customformbuilder #lineItemForm [editTemplate]="editTemplate" [fieldData]="templateField.lineItems"></app-customformbuilder>
           </div>
@@ -67,7 +67,7 @@
       <!-- lineitem form builder end -->
       <div class="form-group-fields row">
         <div class="col-xs-12">
-          <button class="btn btn-primary" type="submit"  [disabled]="!templateForm.valid">Create</button>
+          <button class="btn btn-primary" type="submit"  [disabled]="!templateForm.valid"> {{editTemplate ? 'Update' : 'Create'}}</button>
           <button class="btn btn-primary" type="submit"  [disabled]="true">Publish</button>
         </div>
       </div>

@@ -84,23 +84,7 @@
       "title": "Orders",
       "selected": false,
       "id": "orders",
-      "url":"app/orders",
-      "submenu": [
-        {
-          "index": 1,
-          "name": "baseFields",
-          "title": "Configure Base Fields",
-          "id": "baseFields",
-          "url": "app/baseFields"
-        },
-        {
-          "index": 2,
-          "name": "ordertemplate",
-          "title": "Configure Template",
-          "id": "ordertemplate",
-          "url": "app/ordertemplate"
-        }
-      ]
+      "url":"app/orders"
     },
     {
       "index": 7,
@@ -109,14 +93,6 @@
       "selected": false,
       "id": "payments",
       "url":"app/payments"
-    },
-    {
-      "index": 8,
-      "name": "vendormanagement",
-      "title": "Vendor",
-      "selected": false,
-      "id": "vendormanagement",
-      "url": "app/vendormanagement"
     },
     {
       "index": 9,
@@ -134,11 +110,33 @@
           "url": "app/admin/usermanagement"
         },
         {
+          "index": 8,
+          "name": "vendormanagement",
+          "title": "Vendor Management",
+          "selected": false,
+          "id": "vendormanagement",
+          "url": "app/vendormanagement"
+        },
+        {
           "index": 2,
           "name": "support",
           "title": "Support",
           "id": "support",
           "url": "app/admin/support"
+        },
+        {
+          "index": 3,
+          "name": "baseFields",
+          "title": "Configure Base Fields",
+          "id": "baseFields",
+          "url": "app/baseFields"
+        },
+        {
+          "index": 4,
+          "name": "ordertemplate",
+          "title": "Configure Template",
+          "id": "ordertemplate",
+          "url": "app/ordertemplate"
         }
       ]
     }

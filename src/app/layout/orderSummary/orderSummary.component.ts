@@ -16,8 +16,8 @@ import { OktaAuthService } from '../../../services/okta.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
-  selector: 'app-target-aud',
-  templateUrl: './targetAud.component.html',
+  selector: 'app-order-summary',
+  templateUrl: './orderSummary.component.html',
   animations: [
     trigger('popOverState', [
       state('show', style({
@@ -34,7 +34,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
         animation { display: block; }
     `]
 })
-export class TargetAudComponent implements OnInit  {
+export class OrderSummaryComponent implements OnInit  {
 
   gridData: any;
   dataObject: any;
@@ -121,6 +121,6 @@ export class TargetAudComponent implements OnInit  {
   }
 
   OnSubmit() {
-    this.router.navigate(['/app/orderSummary']);
+    this.router.navigate(['/app/orderPayment']);
   }
 }

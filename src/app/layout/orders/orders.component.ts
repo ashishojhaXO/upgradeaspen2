@@ -37,7 +37,7 @@ export class OrdersComponent implements OnInit  {
     isDownload: true,
     isPageLength: true,
     isPagination: true,
-    isTree: true
+    isTree: false
   }];
   dashboard: any;
   api_fs: any;
@@ -170,6 +170,8 @@ export class OrdersComponent implements OnInit  {
   }
 
   handleCheckboxSelection(rowObj: any, rowData: any) {
+    console.log('this.selectedRow >>')
+    console.log(this.selectedRow);
     this.selectedRow = rowObj;
   }
 
