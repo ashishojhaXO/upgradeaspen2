@@ -72,10 +72,10 @@ export class UserManagementComponent implements OnInit  {
   widget: any;
 
   constructor(
-    private okta: OktaAuthService, 
-    private route: ActivatedRoute, 
-    private router: Router, 
-    private http: Http, 
+    private okta: OktaAuthService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private http: Http,
     private popUp: AppPopUpComponent
   ) {
 
@@ -220,7 +220,7 @@ export class UserManagementComponent implements OnInit  {
       this.selectedVendor = e.value;
     }
   }
-  
+
   handleRowSelection(rowObj: any, rowData: any) {
 
   }
@@ -458,6 +458,20 @@ export class UserManagementComponent implements OnInit  {
     this.popUp.showPopUp(popUpOptions);
   }
 
+  resendEmail() {
+    // TODO: To be completed still, waiting for API
+    const endPoint = `/users/${this.userID}/resend-activation-email`;
+    const data = {
+      // "vendor | f7 | thd", pine: vendor, aspen: f7
+      "source": "f7"
+    };
+
+    this.showSpinner = true;
+    // Pre AreUSure SweetAlert PopUp
+    // this.apiCall(endPoint, data).subscribe( this.successCallBack, this.errorCallBack(this.errorFunc) );
+    this.apiCall(endPoint, data).subscribe( this.successCallBack, this.errorCallBack );
+  }
+
   setPasswordAndActivate() {
     // const userID = localStorage.getItem('loggedInUserID') || '';
     const endPoint = `/users/${this.userID}/activate`;
@@ -470,20 +484,12 @@ export class UserManagementComponent implements OnInit  {
     }
 
     const popUpOptions = {
-      title: 'Set Password and Activate',
-      input: 'text',
-      text: "Please set a password (Atleast 8 chars, with lowercase, uppercase, a number and a special char).",
-      inputAttributes: {
-        autocapitalize: 'off'
-      },
+      title: 'Activate account?',
+      text: "Activate the account for the user?",
+      type: 'question',
       showCloseButton: true,
       showCancelButton: true,
       confirmButtonText: 'Activate',
-      showLoaderOnConfirm: true,
-      preConfirm: (login) => {
-        data.credentials.password.value = login;
-        return this.apiCall( endPoint, data).toPromise();
-      },
     }
 
     const prom = this.popUp.showPopUp(popUpOptions);
@@ -532,17 +538,6 @@ export class UserManagementComponent implements OnInit  {
       console.log("Error: Set password and activate: ", err);
     });
 
-  }
-
-  resendEmail() {
-    // TODO: To be completed still, waiting for API
-    const endPoint = `/users/${this.userID}/blah`;
-    const data = {};
-
-    this.showSpinner = true;
-    // Pre AreUSure SweetAlert PopUp
-    // this.apiCall(endPoint, data).subscribe( this.successCallBack, this.errorCallBack(this.errorFunc) );
-    this.apiCall(endPoint, data).subscribe( this.successCallBack, this.errorCallBack );
   }
 
   suspend() {
@@ -678,7 +673,7 @@ export class UserManagementComponent implements OnInit  {
     });
     // Post Success/Error SweetAlert PopUp
   }
-  
+
   handleActions(ev: any) {
     const action = $(ev.elem).data('action');
     this.userID = ev.data.data()[4];
