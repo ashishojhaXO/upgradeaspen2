@@ -170,6 +170,8 @@ export class OrdersComponent implements OnInit  {
   }
 
   handleCheckboxSelection(rowObj: any, rowData: any) {
+    console.log('this.selectedRow >>')
+    console.log(this.selectedRow);
     this.selectedRow = rowObj;
   }
 

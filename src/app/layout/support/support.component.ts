@@ -208,15 +208,16 @@ export class SupportComponent implements OnInit {
                         // This orderDetails will be used in HTML
                         this.orderDetails = resp;
                         // Orders
-                        if( resp.audit_orders)
-                            this.populateOrders(resp.audit_orders);
+                        const audit_orders = resp.audit_orders || [];
+                        this.populateOrders(audit_orders);
                         // Line-Items
+                        let line_items_data = []
                         if( resp.line_items && resp.line_items.length ) {
-                            const line_items_data = resp.line_items.map(
+                            line_items_data = resp.line_items.map(
                                 (v, k) =>  Object.assign( {}, {line_item_id: v.line_item_id}, v.ar_ap_transaction || {} )
                             );
-                            this.populatePayments(line_items_data);
                         }
+                        this.populatePayments(line_items_data);
                     }
                 },
                 err => {

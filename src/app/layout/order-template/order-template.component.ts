@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { OktaAuthService } from '../../../services/okta.service';
 import { Headers, RequestOptions, Http } from '@angular/http';
 import * as _ from 'lodash';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -24,8 +25,11 @@ export class OrderTemplateComponent implements OnInit {
   externalAuth: any;
   showSpinner: boolean;
   widget: any;
+  editTemplate: boolean = false;
+  templateId: any;
+  templateField = [];
 
-  constructor(private okta: OktaAuthService, private http: Http) { }
+  constructor(private okta: OktaAuthService, private http: Http,private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.showSpinner = true;
@@ -34,6 +38,16 @@ export class OrderTemplateComponent implements OnInit {
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
 
     this.getOrganizations();
+    this.route.params.subscribe(params => {
+      if (params['id']) {
+        this.templateId = {
+          "template_id": +params['id']
+        };
+        this.editTemplate = true;
+        this.getTemplate(this.templateId);
+      }
+    });
+
     this.formOnInIt();
   }
 
@@ -115,6 +129,27 @@ export class OrderTemplateComponent implements OnInit {
         this.lineItemForm.model.attributes.forEach(element => {
           lineItems.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'disable', 'validation']))
         });
+
+        // create flat array for validation properties
+          orderFields.forEach(function (ele) {
+              const validationArr = [];
+              for(const prop in ele.validation) {
+                  if(prop === 'required' && ele.validation[prop] === 1) {
+                      validationArr.push(prop);
+                  }
+              }
+              ele.validation = validationArr;
+          });
+          lineItems.forEach(function (ele) {
+              const validationArr = [];
+              for(const prop in ele.validation) {
+                  if(prop === 'required' && ele.validation[prop] === 1) {
+                      validationArr.push(prop);
+                  }
+              }
+              ele.validation = validationArr;
+          });
+
         this.templateResponse.orderTemplateData = {
           orderFields : orderFields,
           lineItems : lineItems
@@ -126,13 +161,13 @@ export class OrderTemplateComponent implements OnInit {
         if(!this.orderForm.model.attributes.length){
           Swal({
             title: 'Incomplete Template',
-            html: '<h5>Please make template for order!</h5>',
+            html: '<h5>Please add fields for order!</h5>',
             type: 'warning'
           })
         }else {
           Swal({
             title: 'Incomplete Template',
-            html: '<h5>Please make template for line item!</h5>',
+            html: '<h5>Please add fields for line item!</h5>',
             type: 'warning'
           })
         }
@@ -149,7 +184,7 @@ export class OrderTemplateComponent implements OnInit {
           response.message
           console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>', response.message);
           Swal({
-            title: 'Template generated',
+            title: 'Template successfully ' + this.editTemplate ? 'modified' : 'generated',
             text: response.message,
             type: 'success'
           })
@@ -189,8 +224,70 @@ export class OrderTemplateComponent implements OnInit {
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
+    template.template_id = this.editTemplate ? this.templateId.template_id : '';
     const data = JSON.stringify(template);
     var url = this.api_fs.api + '/api/orders/templates/create';
+    if(this.editTemplate) {
+      return this.http
+          .put(url, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    } else {
+      return this.http
+          .post(url, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    }
+  }
+
+
+  getTemplate(templateId){
+    this.getTemplateService(templateId).subscribe(
+      response => {
+        if (response && response.status == 200) {
+          console.log('template edit fields', response);
+          this.templateField = response.orderTemplateData;
+          console.log('template edit fields array', this.templateField);
+        }
+      },
+      err => {
+        if(err.status === 401) {
+          if(this.widget.tokenManager.get('accessToken')) {
+            this.widget.tokenManager.refresh('accessToken')
+                .then(function (newToken) {
+                  this.widget.tokenManager.add('accessToken', newToken);
+                  this.showSpinner = false;
+                  this.getTemplateService(templateId);
+                })
+                .catch(function (err) {
+                  console.log('error >>')
+                  console.log(err);
+                });
+          } else {
+            this.widget.signOut(() => {
+              this.widget.tokenManager.remove('accessToken');
+              window.location.href = '/login';
+            });
+          }
+        } else {
+          this.showSpinner = false;
+        }
+      }
+    );
+  }
+
+  getTemplateService(templateId) {
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    const data = JSON.stringify(templateId);
+    var url = this.api_fs.api + '/api/orders/form';
     return this.http
         .post(url, data, options)
         .map(res => {

@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { value, field } from "./customformbuilder.model";
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { field } from "./customformbuilder.model";
 import Swal from "sweetalert2";
 import { DndDropEvent, DropEffect } from 'ngx-drag-drop';
 import { Headers, RequestOptions, Http } from '@angular/http';
@@ -13,8 +13,8 @@ import { OktaAuthService } from '../../../../services/okta.service';
 export class CustomFormbuilderComponent implements OnInit {
 
   @Input() isBaseField: boolean;
-  @Input() orderTemplateAttribute;
-  attributesArray = [];
+  @Input('fieldData') fieldData;
+  @Input('editTemplate') editTemplate;
   api_fs: any;
   externalAuth: any;
   showSpinner: boolean;
@@ -24,7 +24,7 @@ export class CustomFormbuilderComponent implements OnInit {
     option: ""
   }
 
-  
+
   fieldModels: Array<field>=[];
   modelFields:Array<field>=[];
 
@@ -36,85 +36,132 @@ export class CustomFormbuilderComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.isBaseField) {
-      this.fieldModels = [
-        {
-          "id": "",
-          "dropType": "text",
-          "type": "varchar",
-          "icon": "fa-font",
-          "name": "text"
-        },
-        {
-          "id": "",
-          "dropType": "email",
-          "type": "text",
-          "icon": "fa-envelope",
-          "name": "email"
-        },
-        {
-          "id": "",
-          "dropType": "phone",
-          "type": "int",
-          "icon": "fa-phone",
-          "name": "phone"
-        },
-        {
-          "id": "",
-          "dropType": "number",
-          "type": "int",
-          "icon": "fa-html5",
-          "name": "number"
-        },
-        {
-          "id": "",
-          "dropType": "amount",
-          "type": "amount",
-          "icon": "fa-usd",
-          "name": "amount"
-        },
-        {
-          "id": "",
-          "dropType": "date",
-          "type": "date",
-          "icon":"fa-calendar",
-          "name": "date"
-        },
-        {
-          "id": "",
-          "dropType": "textarea",
-          "type": "text",
-          "icon":"fa-text-width",
-          "name": "textarea"
-        },
-        {
-          "id": "",
-          "dropType": "checkbox",
-          "type": "checkbox",
-          "icon":"fa-list",
-          "name": "checkbox"
-        },
-        {
-          "id": "",
-          "dropType": "radio",
-          "type": "radio",
-          "icon":"fa-list-ul",
-          "name": "radio"
-        },
-        {
-          "id": "",
-          "dropType": "autocomplete",
-          "type": "list",
-          "icon":"fa-bars",
-          "name": "List"
+      if (this.isBaseField) {
+        this.fieldModels = [
+          {
+            "id": "",
+            "dropType": "text",
+            "type": "varchar",
+            "icon": "fa-font",
+            "name": "text"
+          },
+          {
+            "id": "",
+            "dropType": "email",
+            "type": "text",
+            "icon": "fa-envelope",
+            "name": "email"
+          },
+          {
+            "id": "",
+            "dropType": "phone",
+            "type": "int",
+            "icon": "fa-phone",
+            "name": "phone"
+          },
+          {
+            "id": "",
+            "dropType": "number",
+            "type": "int",
+            "icon": "fa-html5",
+            "name": "number"
+          },
+          {
+            "id": "",
+            "dropType": "amount",
+            "type": "amount",
+            "icon": "fa-usd",
+            "name": "amount"
+          },
+          {
+            "id": "",
+            "dropType": "date",
+            "type": "date",
+            "icon":"fa-calendar",
+            "name": "date"
+          },
+          {
+            "id": "",
+            "dropType": "textarea",
+            "type": "text",
+            "icon":"fa-text-width",
+            "name": "textarea"
+          },
+          {
+            "id": "",
+            "dropType": "checkbox",
+            "type": "checkbox",
+            "icon":"fa-list",
+            "name": "checkbox"
+          },
+          {
+            "id": "",
+            "dropType": "radio",
+            "type": "radio",
+            "icon":"fa-list-ul",
+            "name": "radio"
+          },
+          {
+            "id": "",
+            "dropType": "autocomplete",
+            "type": "list",
+            "icon":"fa-bars",
+            "name": "List"
+          }
+        ];
+      } else{
+        this.showSpinner = true;
+        this.widget = this.okta.getWidget();
+        this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
+        this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
+        this.getAttributes();
+      }
+  }
+
+  ngOnChanges(changes: SimpleChanges){
+    if(this.editTemplate){
+      if(changes['fieldData']){
+        console.log('from custom field input >>', this.fieldData);
+        if(this.fieldData){
+          this.fieldData.forEach(element => {
+            if(element.type == 'varchar' || element.type == 'text' || element.type == 'string'){
+              element.dropType = 'text';
+              element.attr_list = "";
+              element.validation = {
+                required : element.validation == null ? 0 : element.validation.required
+              }
+            }else if(element.type == 'int' || element.type == "decimal"){
+              element.dropType = 'number';
+              element.attr_list = "";
+              element.validation = {
+                required : element.validation == null ? 0 : element.validation.required
+              }
+            }else if(element.type == 'list'){
+              element.dropType = 'autocomplete';
+              element.validation = {
+                required : element.validation == null ? 0 : element.validation.required
+              }
+            }else if(element.type == 'radio'){
+              element.dropType = 'radio';
+              element.validation = {
+                required : element.validation == null ? 0 : element.validation.required
+              }
+            }else if(element.type == 'checkbox'){
+              element.dropType = 'checkbox';
+              element.validation = {
+                required : element.validation == null ? 0 : element.validation.required
+              }
+            }else {
+              element.dropType = element.type;
+              element.validation = {
+                required : element.validation == null ? 0 : element.validation.required
+              }
+            }
+            this.model.attributes.push(element);
+          });
+          console.log('list>>>>>>>>>', this.model);
         }
-      ];
-    } else{
-      this.showSpinner = true;
-      this.widget = this.okta.getWidget();
-      this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
-      this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
-      this.getAttributes();
+      }
     }
   }
 

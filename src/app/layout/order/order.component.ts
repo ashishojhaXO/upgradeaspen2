@@ -63,6 +63,7 @@ export class OrderComponent implements OnInit  {
     format: "YYYY-MM-DD",
     showClear: true
   };
+  selectedRow: any;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder,) {
     this.formAttribute = fb;
@@ -101,7 +102,7 @@ export class OrderComponent implements OnInit  {
             }, this);
 
             if(this.templates.length) {
-              this.template = '1';
+              this.template = '41';
               this.searchTemplateDetails(this.template);
             }
           }
@@ -146,7 +147,7 @@ export class OrderComponent implements OnInit  {
                 name: ele.name,
                 type: ele.type,
                 validation : ele.validation,
-                value: ele.value || '',
+                value: ele.default_value || '',
                 disabled : ele.disable !== 0,
                 size: 40
               };
@@ -179,7 +180,7 @@ export class OrderComponent implements OnInit  {
                   name: ele.name,
                   type: ele.type,
                   validation : ele.validation,
-                  value: ele.value || '',
+                  value: ele.default_value || '',
                   disabled : ele.disable !== 0
                 };
 
@@ -290,7 +291,14 @@ export class OrderComponent implements OnInit  {
   }
 
   removeLineItem() {
-
+    if(this.selectedRow) {
+      this.dataRowUpdated = false;
+      const __this = this;
+      setTimeout(function () {
+        __this.dataObject.gridData.result.splice(__this.selectedRow.rowIndex, 1);
+        __this.dataRowUpdated = true;
+      }, 100)
+    }
   }
 
   OnTemplateChange(e) {
@@ -459,6 +467,16 @@ export class OrderComponent implements OnInit  {
     console.log(this.gridData);
     this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
     // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
+  }
+
+  handleCheckboxSelection(rowObj: any, rowData: any) {
+    console.log('this.selectedRow >>')
+    console.log(this.selectedRow);
+    this.selectedRow = rowObj;
+  }
+
+  handleUnCheckboxSelection(rowObj: any, rowData: any) {
+    this.selectedRow = null;
   }
 
   handleRowSelection(rowObj: any, rowData: any) {

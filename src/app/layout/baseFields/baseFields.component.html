@@ -12,9 +12,9 @@
           <p class="sub-heading">Select Base Fields</p>
         </div>
         <div class="col-xs-12 col-sm-10">
-          <p>Create base fields by drag and drop below fields in the 'Drop Here' area.</p>
+          <p>Create base field(s) by drag and drop below fields in the 'Drop Here' area.</p>
           <div class="order-container">
-            <app-customformbuilder [isBaseField]="true" #baseForm></app-customformbuilder>
+            <app-customformbuilder [isBaseField]="true" [editTemplate]="editTemplate" #baseForm></app-customformbuilder>
           </div>
         </div>
       </div>
