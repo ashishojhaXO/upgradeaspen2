@@ -95,7 +95,8 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
         isMultiple : this.filterConfig.isMultiSelect
       },
       isPageLength: true,
-      isPagination: true
+      isPagination: true,
+      sendResponseOnCheckboxClick: true
     };
 
     this.dataObject.gridData.headers = this.externalGridData ? this.externalGridData.headers : [

@@ -46,7 +46,8 @@ export class SupportComponent implements OnInit {
         isDownload: true,
         isRowSelection: null,
         isPageLength: true,
-        isPagination: true
+        isPagination: true,
+        sendResponseOnCheckboxClick: true
     }];
     api_fs: any;
     externalAuth: any;

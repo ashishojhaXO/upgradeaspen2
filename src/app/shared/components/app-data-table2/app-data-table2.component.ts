@@ -1268,15 +1268,13 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 console.log('__this.sendResponseOnCheckboxClick >>')
                 console.log(__this);
 
-                __this.triggerActions.emit({
-                    action: 'handleCheckboxSelection',
-                    data: __this.dataObject.gridData.result[indexes[0]],
-                    rowIndex: indexes[0]
-                });
-
-                // if (__this.sendResponseOnCheckboxClick) {
-                //
-                // }
+                if (__this.dataObject.gridData.options.sendResponseOnCheckboxClick) {
+                    __this.triggerActions.emit({
+                        action: 'handleCheckboxSelection',
+                        data: __this.dataObject.gridData.result[indexes[0]],
+                        rowIndex: indexes[0]
+                    });
+                }
             }
         });
     }
