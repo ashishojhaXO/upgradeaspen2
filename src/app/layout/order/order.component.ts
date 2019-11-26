@@ -181,6 +181,7 @@ export class OrderComponent implements OnInit  {
 
                 const obj: any = {
                   id: ele.id,
+                  default_value: ele.default_value,
                   label : ele.label,
                   name: ele.name,
                   type: ele.type,
@@ -216,6 +217,11 @@ export class OrderComponent implements OnInit  {
             this.buildTemplateForm();
             this.buildLineItem(this.dataFieldConfiguration);
           }
+
+
+          console.log('this.dataFieldConfiguration');
+          console.log(this.dataFieldConfiguration);
+
         },
         err => {
 

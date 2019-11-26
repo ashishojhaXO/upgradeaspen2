@@ -283,7 +283,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                                 field.value = __this.dataObject.gridData.result[index][field.name];
 
-                                if (field.type === 'text' || field.type === 'decimal' || field.type === 'varchar') {
+                                if (field.type === 'text' || field.type === 'decimal' || field.type === 'varchar' || field.type === 'string') {
                                     $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.label + '" class="inlineEditor" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
                                 } else if (field.type === 'int') {
                                     $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.label + '" class="inlineEditor" type="number" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
@@ -995,22 +995,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         $(this).next('.metric-details').removeClass('shown');
                         $(this).next('.metric-details').hide(500);
                     }
-
-            });
-
-            $(document).off('change', '.select-control');
-            $(document).on('change', '.select-control', function () {
-                console.log('id >');
-                 console.log(this.id);
-                 const row = this.id.split('_')[1];
-                 let column = this.id.split('_')[2];
-                // if (__this.dataObject.gridData.options.isRowSelection) {
-                //     column--;
-                // }
-
-                console.log('$(this).val()');
-                console.log(__this.dataObject.gridData);
-               // __this.dataObject.gridData.result[row][column] = $(this).val();
             });
         }
     }
