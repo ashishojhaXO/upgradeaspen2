@@ -5,11 +5,11 @@
   <p style="clear: both"></p>
   <div class="col-lg-2 col-md-2 col-sm-12" style="border: 1px solid #fff; background: #fff; border-radius: 4px">
    <ul style="list-style: none">
-     <li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:3px; left: -26px" class="fa fa-arrow-right"></i><a href="javascript:void(0)">Create Order</a></li>
+     <li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:3px; left: -26px" class="fa fa-arrow-right"></i><a style="font-size: 12px" href="javascript:void(0)">Create Order</a></li>
      <!--<li style="margin-top: 20px"><span>Configure AD</span></li>-->
-     <li style="margin-top: 20px"><span>Target Audience</span></li>
-     <li style="margin-top: 20px"><span>Summary</span></li>
-     <li style="margin-top: 20px"><span>Payment</span></li>
+     <li style="margin-top: 20px"><span style="font-size: 12px">Target Audience</span></li>
+     <li style="margin-top: 20px"><span style="font-size: 12px">Summary</span></li>
+     <li style="margin-top: 20px"><span style="font-size: 12px">Payment</span></li>
    </ul>
   </div>
   <div class="col-lg-10 col-md-10 col-sm-10">
@@ -17,7 +17,7 @@
       <label style="padding: 0px; margin: 10px 0px 20px 15px; font-size: 16px"><span style="border-bottom:3px solid #38A6F7;">ORDER</span></label>
       <div class="col-lg-12 col-md-12 col-sm-12" style="padding-bottom: 20px; margin-top: 15px ">
         <label class="col-lg-2 col-md-2 col-sm-12">Template</label>
-        <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -4px">
+        <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -4px;">
           <select2 *ngIf="templates.length" width="100%" placeholder="Select Template"
                    class="col-lg-4 col-md-4"
                    style="padding: 0px; line-height: 1.42857143; width: 160px"
@@ -61,7 +61,7 @@
                        [attr.disabled]="def.disabled ? 'disabled' : null"
                        style="padding: 0px; line-height: 1.42857143; width: 160px"
                        [value]="def.value"
-                       (valueChanged)="OnSelectValueChange($event, def);"
+                       (valueChanged)="OnSelectValueChange($event, def.name);"
                        [data]="def.options"></select2>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="FormModel.attributes[def.name] && FormModel.attributes[def.name].invalid && (FormModel.attributes[def.name].dirty || FormModel.attributes[def.name].touched)" class="alert alert-danger" style="display: inline-block; z-index: 10; margin-left: 15px">

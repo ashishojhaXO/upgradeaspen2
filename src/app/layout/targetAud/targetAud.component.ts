@@ -72,7 +72,6 @@ export class TargetAudComponent implements OnInit  {
   formAttribute: any;
   dataRowUpdated = false;
   minDate = new Date();
-  kpis = [1];
   lineItems = [];
   clickedItem: any = 0;
 

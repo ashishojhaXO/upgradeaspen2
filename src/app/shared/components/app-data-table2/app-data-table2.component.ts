@@ -280,6 +280,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 if (__this.dataObject.gridData.options.isRowSelection) {
                                     columnIndex++;
                                 }
+
+                                field.value = __this.dataObject.gridData.result[index][field.name];
+
                                 if (field.type === 'text' || field.type === 'decimal' || field.type === 'varchar') {
                                     $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.label + '" class="inlineEditor" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
                                 } else if (field.type === 'int') {
@@ -293,15 +296,17 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     if (field.name === 'ad_copy') {
                                         $('td', row).eq(columnIndex).html('<div><img class="display-ad" src="./../../../../assets/images/adCopy.png" style="width: 38px; cursor: pointer"/></div>');
                                     } else {
-                                        let options = '';
-                                        field.options.forEach(function (option, index) {
-                                            if(index == 0) {
-                                                options += '<option value="' + option.key + '">' + option.text + '</option>';
-                                            } else {
-                                                options += '<option value="' + option.key + '">' + option.text + '</option>';
+                                        console.log('field >>')
+                                        console.log(field);
+                                        let options = '<option value="">--Select--</option>';
+                                        field.options.forEach(function (option, index1) {
+                                            options += '<option value="' + option.key + '"';
+                                            if(option.key === field.value) {
+                                                options += ' selected ';
                                             }
+                                            options += '>' + option.text + '</option>';
                                         });
-                                        const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select class="form-control inlineEditor" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>'; // + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
+                                        const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select id="select_' + index + '_' + field.name + '" class="form-control inlineEditor" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 && !field.value ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
                                         $('td', row).eq(columnIndex).html(html);
                                     }
                                 }
@@ -963,12 +968,49 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                 let retHtml = '';
                 for (let i=0; i < adInfo.length; i++) {
-                    retHtml += '<div class="col-lg-6 col-md-6 col-sm-6"><div style="height: 130px; cursor: pointer"><img class="ad-image" width="200px" src="./../../../../assets/images/test_ad_' + (i+1) + '.jpeg"/><i class="fa fa-check-circle" style="font-size: 38px; position: absolute; left: 0px; color: green; display: none"></i></div><br/><div style="text-align: center"><span>Click to Select</span><br/><span>Placeholder : ' + adInfo[i].placeHolder + '</span><br/><span>Price : $' + adInfo[i].price + '/day</span></div></div>';
+                    retHtml += '<div class="col-lg-6 col-md-6 col-sm-6"><div style="cursor: pointer; height: 150px"><img class="ad-image" width="200px" src="./../../../../assets/images/test_ad_' + (i+1) + '.jpeg"/><i class="fa fa-check-circle" style="font-size: 38px; position: absolute; left: 0px; color: #5FA1DE; display: none"></i></div><div style="text-align: center;"><span>Click to Select</span><br/><span>Placeholder : ' + adInfo[i].placeHolder + '</span><br/><span>Price : $' + adInfo[i].price + '/day</span></div></div>';
+                    if(i % 2 !== 0) {
+                        retHtml += '<p style="clear:both"></p><p style="clear:both"></p>';
+                    }
                 }
 
-                $('#bootstrap-modal-header').text('Select Ad');
+                $('#bootstrap-modal-header').text('Select Inventory');
                 $('#bootstrap-modal-body').html('<div style="padding: 15px; width: 500px;">' + retHtml + '<div>');
                 $('#myModal').modal('show');
+            });
+
+            $(document).off('click', '.metric-info');
+            $(document).on('click', '.metric-info', function () {
+                const index1 = $('.metric-info').index(this);
+                    $('.metric-info').each(function (index) {
+                        if (index1 !== index && $(this).next('.metric-details').hasClass('shown')) {
+                            $(this).next('.metric-details').removeClass('shown');
+                            $(this).next('.metric-details').hide(500);
+                        }
+                    });
+                    if (!$(this).next('.metric-details').hasClass('shown')) {
+                        $(this).next('.metric-details').addClass('shown');
+                        $(this).next('.metric-details').show(500);
+                    } else {
+                        $(this).next('.metric-details').removeClass('shown');
+                        $(this).next('.metric-details').hide(500);
+                    }
+
+            });
+
+            $(document).off('change', '.select-control');
+            $(document).on('change', '.select-control', function () {
+                console.log('id >');
+                 console.log(this.id);
+                 const row = this.id.split('_')[1];
+                 let column = this.id.split('_')[2];
+                // if (__this.dataObject.gridData.options.isRowSelection) {
+                //     column--;
+                // }
+
+                console.log('$(this).val()');
+                console.log(__this.dataObject.gridData);
+               // __this.dataObject.gridData.result[row][column] = $(this).val();
             });
         }
     }
@@ -1018,6 +1060,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         if (start && end) {
                             const daysDiff = __this.getDaysBetweenDates(new Date(end), new Date(start));
                             $(this).closest('tr').find('td').last().find('input.inlineEditor').val((daysDiff + 1) * price);
+                            $(this).closest('tr').find('td').find('.alert-danger').hide();
                         }
                     }
                 });
@@ -1055,7 +1098,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         }
         if (isLineItem) {
             $div.append('<img class="adCopy" tooltip="View/Change AdCopy" style="width: 38px;position: relative;left: 10px;margin-left: 42px;margin-right: 12px;float: left; cursor: pointer; top: -4px" src="./../../../../assets/images/adCopy.png"/>');
-            $div.append('<div class="adDetails" style="position: absolute;left: 50px;z-index: 100;border: 1px solid;border-radius: 4px;margin: 4px;padding: 5px 10px;background: beige;top: -3px; display: none; width: 520px"><div><b style="font-size: 14px">Ad Details</b><i class="fa fa-times-circle closeAd" aria-hidden="true" style="float: right;font-size: 20px; cursor: pointer" ></i></div><div class="col-lg-6 col-md-6 col-sm-6"><div style="margin-top: 10px"><img style="width: 200px" src="../../../../assets/images/test_ad_1.jpeg"/></div><div style="margin-top: 10px"><label>Header</label><br><span style="white-space: pre-wrap">Samsung Galaxy S10 - 40% Off</span></div><div style="margin-top: 10px"><label>Description</label><br><span style="white-space: pre-wrap">For a limited time, get Samsung Galaxy S10 smart phone at just $649 </span></div></div>   <div class="col-lg-6 col-md-6 col-sm-6"><span><b>Targeting Parameters</b></span><div style="margin-top: 10px"><ul><li style="white-space: pre-wrap">Age : 17-25</li><li>Geo : North America</li><li>Geneder: Male</li><li>Education: College</li><li>Language: English</li><li>Interests: Consumer Electronics</li></ul></div></div> <div class="col-lg-6 col-md-6 col-sm-6"><span><b>First Party Data Plan : </b>Plan 1</span><div style="margin-top: 10px"></div></div>  <div class="col-lg-6 col-md-6 col-sm-6"><span><b>Summary ( As of '   +  (((new Date().getMonth() > 8) ? (new Date().getMonth() + 1) : ('0' + (new Date().getMonth() + 1))) + '/' + ((new Date().getDate() > 9) ? new Date().getDate() : ('0' + new Date().getDate())) + '/' + new Date().getFullYear())   +    ' )</b></span><div style="margin-top: 10px"><ul><li style="white-space: pre-wrap">Ad Copy displays on ' +  lineItemName  + ( lineItemName === "Google" ? " Search" : " News Feed" ) + '</li><li>Ad Reach : 20,000</li><li>ROAs : 40%</li><li>Revenue : $8,000</li><li>7-day attribution period</li></ul></div></div>');
+            $div.append('<div class="adDetails" style="position: absolute;left: 50px;z-index: 100;border: 1px solid;border-radius: 4px;margin: 4px;padding: 5px 10px;background: #f2f2f9;top: -3px; display: none; width: 540px"><div><b style="font-size: 14px">Ad Details</b><i class="fa fa-times-circle closeAd" aria-hidden="true" style="float: right;font-size: 20px; cursor: pointer" ></i></div><div class="col-lg-6 col-md-6 col-sm-6"><div style="margin-top: 10px"><img style="width: 200px" src="../../../../assets/images/test_ad_1.jpeg"/></div><div style="margin-top: 10px"><label>Header</label><br><span style="white-space: pre-wrap">Samsung Galaxy S10 - 40% Off</span></div><div style="margin-top: 10px"><label>Description</label><br><span style="white-space: pre-wrap">For a limited time, get Samsung Galaxy S10 smart phone at just $649 </span></div></div>   <div class="col-lg-6 col-md-6 col-sm-6"><span><b>Targeting Parameters</b></span><div style="margin-top: 10px"><ul><li style="white-space: pre-wrap">Age : 17-25</li><li>Geo : North America</li><li>Geneder: Male</li><li>Education: College</li><li>Language: English</li><li>Interests: Consumer Electronics</li></ul></div></div> <div class="col-lg-6 col-md-6 col-sm-6"><span><b>First Party Data Plan : </b>Plan 1</span><div style="margin-top: 10px"></div></div>  <div class="col-lg-6 col-md-6 col-sm-6"><span><b>Summary ( As of '   +  (((new Date().getMonth() > 8) ? (new Date().getMonth() + 1) : ('0' + (new Date().getMonth() + 1))) + '/' + ((new Date().getDate() > 9) ? new Date().getDate() : ('0' + new Date().getDate())) + '/' + new Date().getFullYear())   +    ' )</b></span><div style="margin-top: 10px"><ul><li style="white-space: pre-wrap">Ad Copy displays on ' +  lineItemName  + ( lineItemName === "Google" ? " Search" : " News Feed" ) + '</li><li>Ad Reach : 20,000</li><li>ROAS : 40%</li><li>Revenue : $8,000</li><li>7-day attribution period</li><li style="position: relative"><div style="display: inline-block; width: 80px">Impressions :</div><div class="metric-info" style="display: inline-block; margin-left: 10px; position: relative; top: 3px; cursor: pointer"><div style="width: 50px; height: 15px; border: 1px solid #7CCC71; border-right: 1px solid #989498; text-align: center; display: inline-block; background: #7CCC71; color: #fff"></div><div style="width: 30px; height: 15px; border: 1px solid #7CCC71; text-align: center; display: inline-block; background: #7CCC71; color: #fff"></div><div style="width: 20px; height: 15px; border: 1px solid #fff; text-align: center; display: inline-block; background: #fff"></div></div><div class="metric-details" style="background: #fff;position: absolute;top: 2px;left: 194px;z-index: 100;padding: 5px;border-radius: 4px; display: none"><label>Impressions</label><br>Target : 10,000<br>Actual : 12,000<br>Percentage : 120%<br><a href="/app/dashboards/spend">View details in dashboard</a></div></li><li style="position: relative"><div style="display: inline-block; width: 80px">Clicks :</div><div class="metric-info" style="display: inline-block; margin-left: 10px; position: relative; top: 3px; cursor: pointer"><div style="width: 20px; height: 15px; border: 1px solid #D54E56; text-align: center; display: inline-block; background: #D54E56; color: #fff"></div><div style="width: 30px; height: 15px; border-right: 1px solid #989498; text-align: center; display: inline-block; background: #fff; color: #fff"></div><div style="width: 50px; height: 15px; border: 1px solid #fff; text-align: center; display: inline-block; background: #fff"></div></div><div class="metric-details" style="background: #fff;position: absolute;top: 2px;left: 194px;z-index: 100;padding: 5px;border-radius: 4px; display: none"><label>Clicks</label><br>Target : 10,000<br>Actual : 4,000<br>Percentage : 40%<br><a href="/app/dashboards/spend">View details in dashboard</a></div></li><li style="position: relative"><div style="display: inline-block; width: 80px">Spend :</div><div class="metric-info" style="display: inline-block; margin-left: 10px; position: relative; top: 3px; cursor: pointer"><div style="width: 40px; height: 15px; border: 1px solid #F3A42B; text-align: center; display: inline-block; background: #F3A42B; color: #fff"></div><div style="width: 10px; height: 15px; border-right: 1px solid #989498; text-align: center; display: inline-block; background: #fff; color: #fff"></div><div style="width: 50px; height: 15px; border: 1px solid #fff; text-align: center; display: inline-block; background: #fff"></div></div><div class="metric-details" style="background: #fff;position: absolute;top: 2px;left: 194px;z-index: 100;padding: 5px;border-radius: 4px; display: none"><label>Spend</label><br>Target : $20,000<br>Actual : $16,000<br>Percentage : 80%<br><a href="/app/dashboards/spend">View details in dashboard</a></div></li><li style="position: relative"><div style="display: inline-block; width: 80px">ROAS :</div><div class="metric-info" style="display: inline-block; margin-left: 10px; position: relative; top: 3px; cursor: pointer"><div style="width: 20px; height: 15px; border: 1px solid #D54E56; text-align: center; display: inline-block; background: #D54E56; color: #fff"></div><div style="width: 30px; height: 15px; border-right: 1px solid #989498; text-align: center; display: inline-block; background: #fff; color: #fff"></div><div style="width: 50px; height: 15px; border: 1px solid #fff; text-align: center; display: inline-block; background: #fff"></div></div><div class="metric-details" style="background: #fff;position: absolute;top: 2px;left: 194px;z-index: 100;padding: 5px;border-radius: 4px; display: none"><label>ROAS</label><br>Target : $40,000<br>Actual : $16,000<br>Percentage : 40%<br><a href="/app/dashboards/spend">View details in dashboard</a></div></li><li style="position: relative"><div style="display: inline-block; width: 80px">Revenue :</div><div class="metric-info" style="display: inline-block; margin-left: 10px; position: relative; top: 3px; cursor: pointer"><div style="width: 5px; height: 15px; border: 1px solid #D54E56; text-align: center; display: inline-block; background: #D54E56; color: #fff"></div><div style="width: 45px; height: 15px; border-right: 1px solid #989498; text-align: center; display: inline-block; background: #fff; color: #fff"></div><div style="width: 50px; height: 15px; border: 1px solid #fff; text-align: center; display: inline-block; background: #fff"></div></div><div class="metric-details" style="background: #fff;position: absolute;top: 2px;left: 194px;z-index: 100;padding: 5px;border-radius: 4px; display: none;"><label>Revenue</label><br>Target : $20,000<br>Actual : $1,000<br>Percentage : 5%<br><a href="/app/dashboards/spend">View details in dashboard</a></div></li></ul></div></div>');
         }
         $div.append($ul);
         $mainDiv.append($div);
