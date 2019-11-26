@@ -37,7 +37,7 @@ export class OrdersComponent implements OnInit  {
     isDownload: true,
     isPageLength: true,
     isPagination: true,
-    isTree: true
+    sendResponseOnCheckboxClick: true
   }];
   dashboard: any;
   api_fs: any;

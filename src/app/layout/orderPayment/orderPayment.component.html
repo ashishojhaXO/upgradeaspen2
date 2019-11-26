@@ -5,24 +5,24 @@
     <p style="clear: both"></p>
     <div class="col-lg-2 col-md-2 col-sm-2" style="border: 1px solid #fff; background: #fff; border-radius: 4px">
         <ul style="list-style: none">
-            <li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:0px; left: -26px; font-size: 18px; color: #0777bc" class="fa fa-check-circle"></i><a href="javascript:void(0)" routerLink="/app/order">Create Order</a></li>
+            <li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:0px; left: -26px; font-size: 18px; color: #0777bc" class="fa fa-check-circle"></i><a style="font-size: 12px" href="javascript:void(0)" routerLink="/app/order">Create Order</a></li>
             <!--<li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:3px; left: -26px" class="fa fa-arrow-right"></i><a href="javascript:void(0)">Configure AD</a></li>-->
-            <li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:0px; left: -26px; font-size: 18px; color: #0777bc" class="fa fa-check-circle"></i><a href="javascript:void(0)" routerLink="/app/targetAud">Target Audience</a></li>
-            <li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:0px; left: -26px; font-size: 18px; color: #0777bc" class="fa fa-check-circle"></i><a href="javascript:void(0)" routerLink="/app/orderSummary">Summary</a></li>
-            <li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:3px; left: -26px" class="fa fa-arrow-right"></i><a href="javascript:void(0)">Payment</a></li>
+            <li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:0px; left: -26px; font-size: 18px; color: #0777bc" class="fa fa-check-circle"></i><a style="font-size: 12px" href="javascript:void(0)" routerLink="/app/targetAud">Target Audience</a></li>
+            <li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:0px; left: -26px; font-size: 18px; color: #0777bc" class="fa fa-check-circle"></i><a style="font-size: 12px" href="javascript:void(0)" routerLink="/app/orderSummary">Summary</a></li>
+            <li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:3px; left: -26px" class="fa fa-arrow-right"></i><a style="font-size: 12px" href="javascript:void(0)">Payment</a></li>
         </ul>
     </div>
     <div class="col-lg-9 col-md-9 col-sm-9" style="border-radius: 4px">
         <div style="background: #fff; padding: 10px 0px">
             <div style="margin-bottom: 10px; margin-left: 15px">
-                <input type="radio" name="payment" value="default" (change)="paymentTypeSelection('default')" style="margin-right: 10px"/> Pay By CC/ACH
+                <input type="radio" name="payment" value="default" (change)="paymentTypeSelection('default')" style="margin-right: 10px"/> Pay by CC/ACH
                 <div [hidden]="selectionType !== 'default'">
                     <div id="fs_widget">
                     </div>
                 </div>
             </div>
             <div style="margin-left: 15px">
-                <input type="radio" name="payment" value="loan" (change)="paymentTypeSelection('loan')" style="margin-right: 10px"/> Apply for business loan
+                <input type="radio" name="payment" value="loan" (change)="paymentTypeSelection('loan')" style="margin-right: 10px"/> Apply for Short Term Business Loan
                 <div [hidden]="selectionType !== 'loan'">
                     <div>
                         <label class="col-lg-2 col-md-2 col-sm-12" style="margin-top: 20px;">Personal Details</label>

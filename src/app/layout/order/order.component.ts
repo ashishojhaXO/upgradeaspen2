@@ -14,6 +14,7 @@ import {DataTableOptions} from '../../../models/dataTableOptions';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-order',
@@ -64,6 +65,7 @@ export class OrderComponent implements OnInit  {
     showClear: true
   };
   selectedRow: any;
+  originalResponseObj : any;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder,) {
     this.formAttribute = fb;
@@ -101,10 +103,10 @@ export class OrderComponent implements OnInit  {
               });
             }, this);
 
-            if(this.templates.length) {
-              this.template = '41';
-              this.searchTemplateDetails(this.template);
-            }
+            // if(this.templates.length) {
+            //   this.template = '41';
+            //   this.searchTemplateDetails(this.template);
+            // }
           }
         },
         err => {
@@ -139,10 +141,12 @@ export class OrderComponent implements OnInit  {
     this.dataFieldConfiguration = [];
     this.getTemplateDetails(templateID).subscribe(
         response => {
+          this.originalResponseObj = response;
           if (response && response.orderTemplateData && response.orderTemplateData.orderFields && response.orderTemplateData.orderFields.length) {
             response.orderTemplateData.orderFields.forEach(function (ele) {
 
               const obj: any = {
+                id: ele.id,
                 label : ele.label,
                 name: ele.name,
                 type: ele.type,
@@ -158,7 +162,7 @@ export class OrderComponent implements OnInit  {
                   ele.attr_list.options.forEach(function (option) {
                     for(const prop in option) {
                       obj.options.push({
-                        id : prop,
+                        id : option[prop], //  this needs to be the ID which is right now coming as 'option' for all
                         text: option[prop]
                       });
                     }
@@ -176,6 +180,8 @@ export class OrderComponent implements OnInit  {
               response.orderTemplateData.lineItems.forEach(function (ele) {
 
                 const obj: any = {
+                  id: ele.id,
+                  default_value: ele.default_value,
                   label : ele.label,
                   name: ele.name,
                   type: ele.type,
@@ -190,7 +196,7 @@ export class OrderComponent implements OnInit  {
                     ele.attr_list.options.forEach(function (option) {
                       for(const prop in option) {
                         obj.options.push({
-                          key : prop,
+                          key : option[prop], //  this needs to be the ID which is right now coming as 'option' for all
                           text: option[prop]
                         });
                       }
@@ -211,6 +217,11 @@ export class OrderComponent implements OnInit  {
             this.buildTemplateForm();
             this.buildLineItem(this.dataFieldConfiguration);
           }
+
+
+          console.log('this.dataFieldConfiguration');
+          console.log(this.dataFieldConfiguration);
+
         },
         err => {
 
@@ -278,13 +289,28 @@ export class OrderComponent implements OnInit  {
 
   addLineItem() {
 
+    console.log('__this.dataObject.gridData.result >>')
+    console.log(this.dataObject.gridData.result);
+
+    console.log('__this.dataFieldConfiguration >')
+    console.log(this.dataFieldConfiguration);
+
     this.dataRowUpdated = false;
     const __this = this;
     setTimeout(function () {
       const dataObj = {};
       __this.dataFieldConfiguration.forEach(function (conf) {
-        dataObj[conf.name] = '';
+
+        console.log('conf >>')
+        console.log(conf);
+
+        dataObj[conf.name] = conf.default_value ? conf.default_value : '';
       });
+
+
+      console.log('dataObj >>')
+      console.log(dataObj);
+
       __this.dataObject.gridData.result.push(dataObj);
       __this.dataRowUpdated = true;
     }, 100);
@@ -297,7 +323,7 @@ export class OrderComponent implements OnInit  {
       setTimeout(function () {
         __this.dataObject.gridData.result.splice(__this.selectedRow.rowIndex, 1);
         __this.dataRowUpdated = true;
-      }, 100)
+      }, 100);
     }
   }
 
@@ -308,9 +334,9 @@ export class OrderComponent implements OnInit  {
     }
   }
 
-  OnSelectValueChange(e, def) {
-    if (e.value && e.value !== def.value) {
-      def.value = e.value;
+  OnSelectValueChange(e, name) {
+    if (e.value && e.value !== this.FormModel.attributes[name].value) {
+      (<FormControl>this.form.controls[name]).setValue(e.value);
     }
   }
 
@@ -348,9 +374,13 @@ export class OrderComponent implements OnInit  {
     const headers = [];
 
     lineItemDef.forEach(function (key) {
+
+      console.log('key >>')
+      console.log(key);
+
       headers.push({
         key: key.name,
-        title: key.name.replace(/_/g,' ').toUpperCase(),
+        title: key.label.replace(/_/g,' ').toUpperCase() + ( key.validation && key.validation.length && key.validation.indexOf('required') !== -1 ? ' * ' : '' ),
         data: key.name,
         isFilterRequired: true,
         isCheckbox: false,
@@ -484,6 +514,109 @@ export class OrderComponent implements OnInit  {
   }
 
   OnSubmit() {
-    this.router.navigate(['/app/targetAud/']);
+
+    console.log('this.originalResponseObj >>')
+    console.log(this.originalResponseObj);
+
+    const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
+    const reqObj =  {
+      vendor_id: customerInfo.vendor.vendor_id,
+      template_id: this.originalResponseObj.orderTemplateData.template.template_id,
+      orderDetail: {
+        orderFields : [],
+        lineItems: []
+      }
+    }
+
+    this.data.controls.forEach(function (ele, index) {
+      const corr = this.form.controls[ele.name];
+      if (corr) {
+        if (ele.type === 'date' && this.form.controls[ele.name].value) {
+          ele.value = this.formatDate(new Date(this.form.controls[ele.name].value._d));
+        } else {
+          ele.value = corr.value;
+        }
+      }
+
+      reqObj.orderDetail.orderFields.push({
+        field_id: ele.id,
+        field_value: ele.value,
+        name: ele.name
+      });
+    }, this);
+
+    console.log('reqObj >>')
+    console.log(reqObj);
+
+    if (this.dataObject.gridData.result.length && this.originalResponseObj.orderTemplateData.lineItems && this.originalResponseObj.orderTemplateData.lineItems.length) {
+      this.dataObject.gridData.result.forEach(function (ele, index) {
+        const objArr = [];
+        for (const prop in ele) {
+          const obj: any = {};
+          const corr = this.originalResponseObj.orderTemplateData.lineItems.find(x=> x.name === prop);
+          if (corr) {
+            obj.field_id = corr.id;
+            obj.field_value = ele[prop];
+            obj.name = corr.name;
+          }
+          objArr.push(obj);
+        }
+        reqObj.orderDetail.lineItems.push(objArr);
+      }, this);
+    }
+
+    this.submitData(reqObj).subscribe(
+        response => {
+          if (response) {
+            console.log('response >>')
+            console.log(response);
+            Swal({
+              title: 'Success',
+              text: 'Order Successfully Created',
+              type: 'success'
+            });
+          }
+        },
+        err => {
+          Swal({
+            title: 'Error',
+            html: '<h5>An error occurred while submitting the order</h5>',
+            type: 'error'
+          });
+        }
+    );
+
+   // this.router.navigate(['/app/targetAud/']);
+  }
+
+  submitData(reqObj) {
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    const data = JSON.stringify(reqObj);
+    const url = this.api_fs.api + '/api/orders/create';
+    return this.http
+        .post(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
+   formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2)
+      month = '0' + month;
+    if (day.length < 2)
+      day = '0' + day;
+
+    return [year, month, day].join('-');
   }
 }

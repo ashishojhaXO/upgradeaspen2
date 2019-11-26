@@ -137,6 +137,13 @@
           "title": "Configure Template",
           "id": "ordertemplate",
           "url": "app/ordertemplate"
+        },
+        {
+          "index": 5,
+          "name": "order",
+          "title": "Create Order",
+          "id": "order",
+          "url": "app/order"
         }
       ]
     }

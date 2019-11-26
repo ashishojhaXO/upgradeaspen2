@@ -72,10 +72,10 @@ export class UserManagementComponent implements OnInit  {
   widget: any;
 
   constructor(
-    private okta: OktaAuthService, 
-    private route: ActivatedRoute, 
-    private router: Router, 
-    private http: Http, 
+    private okta: OktaAuthService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private http: Http,
     private popUp: AppPopUpComponent
   ) {
 
@@ -220,7 +220,7 @@ export class UserManagementComponent implements OnInit  {
       this.selectedVendor = e.value;
     }
   }
-  
+
   handleRowSelection(rowObj: any, rowData: any) {
 
   }
@@ -673,7 +673,7 @@ export class UserManagementComponent implements OnInit  {
     });
     // Post Success/Error SweetAlert PopUp
   }
-  
+
   handleActions(ev: any) {
     const action = $(ev.elem).data('action');
     this.userID = ev.data.data()[4];
