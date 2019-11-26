@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Common } from '../../shared/util/common';
+import { Http } from '@angular/http';
 
 @Component({
   selector: 'app-login-new',
@@ -14,7 +15,7 @@ export class LoginNewComponent implements OnInit {
   isForgotContainer: boolean = false;
   formError: string = null;
   
-  constructor(private common:Common) { }
+  constructor(private common:Common, private http: Http) { }
 
   ngOnInit() {
     this.formOnInit();
@@ -42,6 +43,14 @@ export class LoginNewComponent implements OnInit {
     };
   }
 
+  loginService() {
+
+    const url = "/api/login";
+    const body = {};
+
+    return this.http.post(url, body).share();
+  }
+
   onSubmitLoginForm(){
     if(this.loginForm.valid){
       let userData = this.loginForm.get('userData').value;
@@ -52,7 +61,14 @@ export class LoginNewComponent implements OnInit {
         const expdate = 365*24*60*60*1000;
         this.common.setLoginCookie('ln', userData.userEmail, expdate);
       }
+
       //login api comes here
+      this.loginService().subscribe( res => {
+
+      }, rej => {
+
+      });
+
       //this.formError //for error handling
       //this.loginForm.reset();
     }
