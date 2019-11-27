@@ -5,18 +5,20 @@
  * Date: 2019-02-27 14:54:37
  */
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
 import {Router, ActivatedRoute} from '@angular/router';
 import {DataTableOptions} from '../../../models/dataTableOptions';
 import {Http, Headers, RequestOptions} from '@angular/http';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormControl, FormGroup, Validators, FormArray, ValidatorFn} from '@angular/forms';
 import{PopUpModalComponent} from "../../shared/components/pop-up-modal/pop-up-modal.component";
 import { OktaAuthService } from '../../../services/okta.service';
 import { OrganizationService} from '../../../services';
 import * as _ from 'lodash';
+import { Observable } from 'rxjs/Observable';
+import swal from 'sweetalert2';
 
 @Component({
   selector: 'app-payments',
@@ -49,14 +51,25 @@ export class PaymentsComponent implements OnInit  {
   summary = [];
   widget: any;
   paymentForm:FormGroup;
+  newForm: boolean = false;
+  paymentFormNew:FormGroup;
   organizations = [];
+  payeeArr = [];
+  selectedPayee : any = '';
   selectedOrg : any;
   selectedVendor: any;
   vendors= [];
+  InvoiceArr = [];
+  selectedInvoice: any = '';
   selectedStatus: any;
   selectedPaymentMethod: any;
   error: any;
   paymentModel : any;
+  lineItemInvoice: any;
+  lineItemPartial = [];
+  totalPayment: number;
+  verifyLineAmount: number;
+  verifyLineAmountError: boolean = false;
   statusOptions = [
     {
       id: 'FAILED',
@@ -93,6 +106,11 @@ export class PaymentsComponent implements OnInit  {
         id: 'WIRE',
         text: 'WIRE'
       }];
+  //@ViewChild('searchField') searchField: ElementRef;
+  matchingResults = [];
+  inSearchMode: boolean = false;
+  dropList: boolean = false;
+  payeeObject: any;
 
 
 
@@ -105,6 +123,15 @@ export class PaymentsComponent implements OnInit  {
       invoiceRequestId: new FormControl(''),
       type: new FormControl('', Validators.required)
     });
+
+    this.paymentFormNew = new FormGroup({
+      payeeName: new FormControl('', Validators.required),
+      paymentInvoice: new FormControl('', Validators.required),
+      payPartialCheck: new FormControl(''),
+      payPartialInput: new FormControl('', [this.checkNegative, this.checkPartialPay(this.totalPayment,false).bind(this)]),
+      lineItemPartialInputArr: new FormArray([]),
+      searchcontentInput: new FormControl('')
+    })
     this.paymentModel= {
       memo: '',
       amount: '',
@@ -125,6 +152,51 @@ export class PaymentsComponent implements OnInit  {
     console.log(this.selectedStatus);
 
   }
+
+  onSearchChange(e){
+    //console.log('onSearchChange: ', e);
+    this.matchingResults = [];
+    this.inSearchMode = true;
+    this.dropList = true;
+    if (!e) {
+        this.inSearchMode = false;
+        return;
+    }
+    this.getFilteredInvoices(e).subscribe(
+      response => {
+          if (response && response.body && response.body.length) {
+              this.matchingResults = response.body;
+              //console.log('matching results>>>>>>>>', this.matchingResults);
+          }else{
+            this.matchingResults = [];
+          }
+          this.inSearchMode = false;
+      },
+      err => {
+      }
+    );
+  }
+
+  OnSearchSelect(e: any): void {
+
+    //console.log('OnSearchSelect: from selecting e >>>', e);
+    this.matchingResults = [];
+    this.dropList = false;
+    this.inSearchMode = false;
+    this.paymentFormNew.controls['searchcontentInput'].setValue(e.invoice_number);
+    const invoices= {
+      id : e.id,
+      text: e.invoice_number,
+      date: e.date,
+      tamount: e.total_amount,
+      lineItem: e.ap_invoice_line_items
+    };
+    this.getInvoiceItems(invoices);
+    const __this = this;
+    setTimeout(function () {
+        __this.showSpinner = false;
+    }, 100);
+}
 
   searchDataRequest() {
     return this.searchData().subscribe(
@@ -221,6 +293,7 @@ export class PaymentsComponent implements OnInit  {
   handleShowModal(modalComponent: PopUpModalComponent)
   {
     modalComponent.show();
+    this.getPayees();
   }
   handleCloseModal(modalComponent: PopUpModalComponent) {
     this.error = '';
@@ -305,10 +378,80 @@ export class PaymentsComponent implements OnInit  {
     );
   }
 
+  getPayees(){
+    this.getAllPayees().subscribe(
+      response => {
+        //console.log('getPayees: payeeresponse>>>>>>>', response)
+        if(response)
+        {
+          if(response.body.length > 0)
+          {
+            const payees = [];
+
+            _.forEach(response.body, payee => {
+
+              payees.push({
+                id : payee.id,
+                text: payee.name,
+                type: payee.type
+              }
+              );
+            });
+            this.payeeArr = _.sortBy(payees,'text');
+            //console.log('payeeArr: payee arr', this.payeeArr);
+          }
+          else{
+            this.payeeArr=[];
+          }
+        }
+      },
+      err => {
+
+        if(err.status === 401) {
+          if(this.widget.tokenManager.get('accessToken')) {
+            this.widget.tokenManager.refresh('accessToken')
+                .then(function (newToken) {
+                  this.widget.tokenManager.add('accessToken', newToken);
+                  this.showSpinner = false;
+                  this.getPayees();
+                })
+                .catch(function (err1) {
+                  console.log('error >>')
+                  console.log(err1);
+                });
+          } else {
+            this.widget.signOut(() => {
+              this.widget.tokenManager.remove('accessToken');
+              window.location.href = '/login';
+            });
+          }
+        } else {
+          this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
+          this.showSpinner = false;
+        }
+      }
+    );
+  }
+  getAllPayees(){
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/payments/payee';
+    return this.http
+      .get(url, options)
+      .map(res => {
+        return res.json();
+    }).share();
+  }
+
   getVendors(orgid: any){
    return this.getVendorsByOrg(orgid).subscribe(
       response => {
-        if(response)
+        if((response)&&(response.body)&&(response.body.data))
         {
           if(response.body.data.length > 0)
           {
@@ -353,6 +496,37 @@ export class PaymentsComponent implements OnInit  {
         }
       }
     );
+  }
+
+  getFilteredInvoices(match) {
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+        token = AccessToken.accessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/payments/invoices/search?invoice_number=' + match + '&payee_id=' + this.selectedPayee;
+    return this.http
+        .get(url, options)
+        .map(res => {
+            return res.json();
+        }).share();
+  }
+
+  getInvoiceItems(invoiceObj: any){
+    //console.log('getInvoiceItems: ',invoiceObj,'lineitempartial', this.lineItemPartial,"from here");
+    this.lineItemInvoice = invoiceObj;
+    this.totalPayment = +invoiceObj.tamount;
+    this.paymentFormNew.setControl('lineItemPartialInputArr', new FormArray([]));
+    this.lineItemPartial = invoiceObj.lineItem;
+    //console.log('getInvoiceItems: ',this.lineItemPartial, this.paymentFormNew.get('payPartialCheck').value, this.totalPayment)
+    for(let line of this.lineItemPartial){
+      //console.log('getInvoiceItems: line',line);
+      (<FormArray>this.paymentFormNew.get('lineItemPartialInputArr')).push(
+        new FormControl(null,[this.checkNegative, this.checkPartialPay(line.amount,true)])
+      )
+    }
   }
 
   getVendorsByOrg(orgid: any){
@@ -400,6 +574,19 @@ export class PaymentsComponent implements OnInit  {
       this.getVendors(this.selectedOrg);
     }
   }
+  OnPayeeChanged(e: any): void {
+    if (this.selectedPayee !== e.value ) {
+      this.paymentFormNew.controls['searchcontentInput'].setValue('');
+      this.clearSearch();
+      this.selectedPayee = e.value;
+      const payeeObject = this.payeeArr.find(x => x.id === +e.value);
+      this.payeeObject = {
+        id: payeeObject.id,
+        name: payeeObject.text,
+        type: payeeObject.type
+      }
+    }
+  }
 
   OnVendorChanged(e: any): void {
     if (this.selectedVendor !== e.value ) {
@@ -407,6 +594,15 @@ export class PaymentsComponent implements OnInit  {
 
     }
   }
+  // onInvoiceChange(e: any): void {
+  //   if(this.selectedInvoice !=e.value ){
+  //     this.selectedInvoice = e.value;
+  //     console.log('********selected invoice',this.selectedInvoice);
+  //     const invoice = _.find(this.InvoiceArr, { 'id' : +this.selectedInvoice});
+  //     this.getInvoiceItems(invoice);
+  //   }
+  // }
+
   OnStatusChanged(e: any): void {
     if (this.selectedStatus !== e.value ) {
       this.selectedStatus = e.value;
@@ -504,4 +700,169 @@ export class PaymentsComponent implements OnInit  {
 
   }
 
+  checkPartialPay(totalPayment: number, line: boolean): ValidatorFn {
+    return (control: FormControl): { [key: string]: boolean } | null => {
+      if(line){
+        if(totalPayment < control.value){
+          return  {'partialExceeds': true}
+        }
+      }
+      else{
+        if(this.totalPayment < control.value){
+          return  {'partialExceeds': true}
+        }
+      }
+    }
+  }
+
+  checkNegative(control: FormControl): {[s:string]:boolean} {
+    if(control.value < 0){
+      return {'negativeNumber': true}
+    }
+  }
+
+  newFormSubmit(modalComponent: PopUpModalComponent){
+    if(this.paymentFormNew.get('payPartialCheck').value){
+      this.verifyLineAmountError = false;
+      const formValue = this.paymentFormNew.value;
+      const lineItemPartial = []
+      this.verifyLineAmount = 0;
+      for(let i=0; i < this.lineItemPartial.length; i++){
+        lineItemPartial.push({
+          id : this.lineItemPartial[i].line_item_id,
+          amount : +formValue.lineItemPartialInputArr[i],
+          units: this.lineItemPartial[i].units,
+          quantity: this.lineItemPartial[i].quantity
+        })
+        this.verifyLineAmount += +formValue.lineItemPartialInputArr[i];
+      }
+      if(this.verifyLineAmount != +formValue.payPartialInput){
+        this.verifyLineAmountError = true;
+      }else{
+        const formData = {
+          payee: this.payeeObject,
+          invoice: {
+            number: this.lineItemInvoice.text,
+            date: this.lineItemInvoice.date.split("T")[0],
+            amount: this.paymentFormNew.get('payPartialInput').value
+          },
+          line_items: lineItemPartial
+        }
+        this.updateAp(formData, modalComponent);
+        // console.log('new form submit', formData);
+      }
+    }else{
+      const lineItemPartial = []
+      for(let i=0; i < this.lineItemPartial.length; i++){
+        lineItemPartial.push({
+          id : this.lineItemPartial[i].line_item_id,
+          amount : this.lineItemPartial[i].amount,
+          units: this.lineItemPartial[i].units,
+          quantity: this.lineItemPartial[i].quantity
+        })
+      }
+      const formData = {
+        payee: this.payeeObject,
+        invoice: {
+          number: this.lineItemInvoice.text,
+          date: this.lineItemInvoice.date.split("T")[0],
+          amount: this.lineItemInvoice.tamount
+        },
+        line_items: lineItemPartial
+      }
+      this.updateAp(formData, modalComponent);
+      //console.log('new form submit', formData);
+    }
+  }
+  clearSearch() {
+    this.paymentFormNew.controls['searchcontentInput'].setValue('');
+    this.paymentFormNew.controls['payPartialCheck'].setValue('');
+    this.paymentFormNew.controls['payPartialInput'].setValue('');
+    this.selectedPayee = null;
+    this.lineItemInvoice = null;
+    this.matchingResults = [];
+    this.inSearchMode = false;
+  }
+
+  updateAp(formData, modalComponent){
+    this.updateApService(formData).subscribe(
+      response => {
+        //console.log('updateAp: payeeresponse>>>>>>>', response)
+        if(response)
+        {
+          if(response.status === 200)
+          {
+            //console.log('success');
+            swal({
+              title: 'Success',
+              text: 'Transaction Successful',
+              type: 'success'
+            }).then( ()=> {
+              this.closeModal(modalComponent);
+              }
+            )
+          }
+          else{
+            swal({
+              title: 'Error',
+              text: response.errorMessage,
+              type: 'warning'
+            });
+            //console.log(response.errorMessage);
+          }
+        }
+      },
+      err => {
+        if(err.status === 401) {
+          if(this.widget.tokenManager.get('accessToken')) {
+            this.widget.tokenManager.refresh('accessToken')
+                .then(function (newToken) {
+                  this.widget.tokenManager.add('accessToken', newToken);
+                  this.showSpinner = false;
+                  this.updateApService(formData);
+                })
+                .catch(function (err1) {
+                  console.log('error >>')
+                  console.log(err1);
+                });
+          } else {
+            this.widget.signOut(() => {
+              this.widget.tokenManager.remove('accessToken');
+              window.location.href = '/login';
+            });
+          }
+        } else {
+          this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
+          swal({
+            title: 'Error',
+            text: this.error.message,
+            type: 'warning'
+          });
+          console.log(this.error);
+          this.showSpinner = false;
+        }
+      }
+    );
+  }
+  updateApService(formData){
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    const data = JSON.stringify(formData);
+    var url = this.api_fs.api + '/api/payments/transactions';
+    return this.http
+      .post(url, data, options)
+      .map(res => {
+        return res.json();
+    }).share();
+  }
+  closeModal(modalComponent: PopUpModalComponent){
+    this.clearSearch();
+    this.payeeArr = [];
+    modalComponent.hide();
+  }
 }

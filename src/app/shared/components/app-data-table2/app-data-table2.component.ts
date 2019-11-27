@@ -306,7 +306,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                             }
                                             options += '>' + option.text + '</option>';
                                         });
-                                        const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select id="select_' + index + '_' + field.name + '" class="form-control inlineEditor" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 && !field.value ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
+                                        const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class="form-control inlineEditor select-control" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
                                         $('td', row).eq(columnIndex).html(html);
                                     }
                                 }
@@ -995,6 +995,16 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         $(this).next('.metric-details').removeClass('shown');
                         $(this).next('.metric-details').hide(500);
                     }
+            });
+
+            $(document).off('change', '.select-control');
+            $(document).on('change', '.select-control', function () {
+                const required = $(this).data('validation');
+                if(!$(this).val() && required) {
+                   $(this).closest('td').find('div.alert-danger').show();
+                } else {
+                    $(this).closest('td').find('div.alert-danger').hide();
+                }
             });
         }
     }

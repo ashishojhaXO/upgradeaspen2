@@ -34,7 +34,8 @@
       </div>
       <div class="app-modal-body">
         <div class="content">
-          <form [formGroup]="paymentForm" novalidate (keydown.enter)="$event.preventDefault()">
+          <button type="button" class="btn btn-primary" (click)="newForm = !newForm" style="width: 170px"><span *ngIf="newForm">Old Form</span><span *ngIf="!newForm">New Form</span></button>
+          <form *ngIf="!newForm" [formGroup]="paymentForm" novalidate (keydown.enter)="$event.preventDefault()">
             <div class="form">
                 <div class="form-group-fields">
                     <label class="col-lg-4 col-md-4 ">Org : </label>
@@ -112,9 +113,132 @@
               </div>
             </div>
           </form>
+          <hr>
+          <form *ngIf="newForm" [formGroup]="paymentFormNew" novalidate (keydown.enter)="$event.preventDefault()">
+            <div class="form paymentFormNew">
+              <div class="form-group-fields">
+                <label class="col-lg-4 col-md-4 ">Payee : </label>
+                <select2 width="100%" class="col-lg-8 col-md-8 select2-field"
+                [value]="selectedPayee"
+                (valueChanged)="OnPayeeChanged($event);"
+                [data]="payeeArr"
+                ></select2>
+              </div>
+              <!-- <div class="form-group-fields" *ngIf="!InvoiceArr.length && selectedPayee"><label class="col-lg-4 col-md-4">No invoice present</label></div> -->
+              <div *ngIf="selectedPayee">
+                <!-- <div class="form-group-fields" >
+                  <label class="col-lg-4 col-md-4">Invoice : </label>
+                  <select2 width="100%" placeholder="Select" class="col-lg-8 col-md-8 select2-field"
+                  [value]="selectedInvoice"
+                  (valueChanged)="onInvoiceChange($event);"
+                  [data]="InvoiceArr"
+                  ></select2>
+                </div> -->
+                <div class="form-group-fields clearfix">
+                  <label class="col-lg-4 col-md-4">Invoice : </label>
+                  <div class="col-lg-8 col-md-8" style="position: relative; padding: 0;">
+                    <input type="text"
+                    class="form-field" style="Width: 100%"
+                    (keyup)="onSearchChange($event.target.value)"
+                    placeholder="Search"
+                    formControlName='searchcontentInput'>
+                    <span (click)="clearSearch()" class="clearSearch"><i class="fa fa-close"></i></span>
+                    <div *ngIf="matchingResults.length; else noMatch" style="position: absolute; height: 200px; overflow: scroll; background-color: white; width: 100%; z-index: 10000; border: 1px solid #cbcbcb; border-top: none">
+                      <ul style="list-style: none; padding-left: 5px">
+                        <li class="matching-results" *ngFor="let ele of matchingResults; let i = index;">
+                            <span style="display: block" (click)="OnSearchSelect(ele)">{{ele.invoice_number}}</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <ng-template #noMatch>
+                      <div *ngIf="(paymentFormNew.get('searchcontentInput').value && dropList)" style="position: absolute; height: 40px; overflow: scroll; background-color: white; width: 100%; z-index: 10000; margin-left: 0px; border: 1px solid #cbcbcb; border-top: none">
+                        <span *ngIf="!inSearchMode; else searching" style="font-size: 12px; padding-left: 5px">No Match Found</span>
+                        <ng-template #searching>
+                            <span style="font-size: 12px; padding-left: 5px">Searching ...</span>
+                        </ng-template>
+                      </div>
+                    </ng-template>
+                  </div>
+                </div>
+                <!--  -->
+                <div *ngIf="lineItemInvoice">
+                  <div class="form-group-fields">
+                    <div class="row margin0">
+                      <div class="col-sm-3"><label>Invoice Number</label></div>
+                      <div class="col-sm-3"><label>Amount Due</label></div>
+                      <div class="col-sm-3"><label>Partial Payment ?</label></div>
+                      <div class="col-sm-3" *ngIf="paymentFormNew.get('payPartialCheck').value"><label>Pay Amount</label></div>
+                    </div>
+                    <div class="row margin0">
+                      <div class="col-sm-3"><span class="paymentText">{{lineItemInvoice.text}}</span></div>
+                      <div class="col-sm-3"><span class="paymentText">{{totalPayment | currency:"USD":true:'1.0-0'}}</span></div>
+                      <div class="col-sm-3"><input type="checkbox" formControlName="payPartialCheck"></div>
+                      <div class="col-sm-3" *ngIf="paymentFormNew.get('payPartialCheck').value">
+                        <div class="input-group">
+                          <span class="input-group-addon">$</span>
+                          <input type="text" class="form-control" style="width:100%" formControlName="payPartialInput">
+                        </div>
+                        <div class="alert alert-danger" *ngIf="paymentFormNew.get('payPartialInput').invalid">
+                          <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                          <span *ngIf="paymentFormNew.get('payPartialInput').errors['partialExceeds']">
+                            Partial amount exceeds amount due.
+                          </span>
+                          <span *ngIf="paymentFormNew.get('payPartialInput').errors['negativeNumber']">
+                            Amount cannot be Negative.
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group-fields" *ngIf="paymentFormNew.get('payPartialCheck').value">
+                    <div class="row margin0">
+                      <div class="col-sm-4"><label>Line Item</label></div>
+                      <div class="col-sm-4"><label>Due Amount</label></div>
+                      <div class="col-sm-4"><label>Pay Amount</label></div>
+                    </div>
+                    <div formArrayName="lineItemPartialInputArr">
+                      <div class="row lineItemPartial" *ngFor="let control of paymentFormNew.get('lineItemPartialInputArr').controls; let i = index;" >
+                        <div class="col-sm-4"><span class="paymentText">{{lineItemPartial[i].line_item_id}}</span></div>
+                        <div class="col-sm-4"><span class="paymentText">{{lineItemPartial[i].amount | currency:"USD":true:'1.0-0'}}</span></div>
+                        <div class="col-sm-4">
+                          <div class="input-group">
+                            <span class="input-group-addon">$</span>
+                            <input type="text" class="form-control" style="width:100%" [formControlName]="i">
+                          </div>
+                          <div class="alert alert-danger" *ngIf="control.invalid">
+                            <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                            <span *ngIf="control.errors['partialExceeds']">
+                              Partial amount exceeds amount due.
+                            </span>
+                            <span *ngIf="control.errors['negativeNumber']">
+                              Amount cannot be Negative.
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group-fields">
+                <div class="alert alert-danger" *ngIf="verifyLineAmountError">
+                  <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                  <span>
+                    Total of line pay amount does not match total pay amount.
+                  </span>
+                </div>
+              </div>
+              <div class="form-group-fields">
+                <button class="action-btn" type="button" (click)="newFormSubmit(AddPayment)">submit</button>
+                <button type="button" class="inaction-btn" (click)="closeModal(AddPayment)">
+                  Close
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
-      <div class="app-modal-footer">
+      <div class="app-modal-footer" *ngIf="!newForm">
         <button type="button" class="action-btn" [disabled]="!paymentForm.valid" [style.cursor]="!paymentForm.valid ? 'not-allowed' : 'pointer'" (click)= "OnSubmit(AddPayment)">
           Add
         </button>
