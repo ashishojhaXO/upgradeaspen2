@@ -8,7 +8,9 @@ import Swal from 'sweetalert2';
 })
 export class AppPopUpComponent implements OnInit {
 
-  constructor() { }
+  constructor() { 
+    // super()
+  }
 
   ngOnInit() {
   }
