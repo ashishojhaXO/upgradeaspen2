@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Common } from '../../shared/util/common';
-import { Http } from '@angular/http';
+import { Http, Headers, RequestOptions } from '@angular/http';
+import { USER_CLIENT_NAME } from '../../../constants/organization';
 
 @Component({
   selector: 'app-login-new',
@@ -14,11 +15,17 @@ export class LoginNewComponent implements OnInit {
   forgotForm: FormGroup;
   isForgotContainer: boolean = false;
   formError: string = null;
+  api_fs: any;
   
   constructor(private common:Common, private http: Http) { }
 
   ngOnInit() {
     this.formOnInit();
+    this.initVars();
+  }
+
+  initVars() {
+    this.api_fs = JSON.parse(localStorage.getItem('apis_fs')) || ''; // or some url from config file
   }
   
   private formOnInit(){
@@ -45,10 +52,21 @@ export class LoginNewComponent implements OnInit {
 
   loginService() {
 
-    const url = "/api/login";
-    const body = {};
+    const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
 
-    return this.http.post(url, body).share();
+    const username: string = "ashish.ojha@xoriant.com";
+    const password: string = "ashXor12#";
+
+    const api_url_part = "/api";
+    const endPoint = "/users/token";
+    const url = this.api_fs.api + api_url_part + endPoint;
+    const body = {username: username, password: password};
+
+    return this.http.post(url, body).map(res => {
+      console.log("res: ", res);
+      return res.json()
+    }).share();
   }
 
   onSubmitLoginForm(){
@@ -64,9 +82,9 @@ export class LoginNewComponent implements OnInit {
 
       //login api comes here
       this.loginService().subscribe( res => {
-
+        console.log("lS: res: ", res);
       }, rej => {
-
+        console.log("lS: rej: ", rej);
       });
 
       //this.formError //for error handling
