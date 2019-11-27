@@ -129,14 +129,14 @@
           "name": "baseFields",
           "title": "Configure Base Fields",
           "id": "baseFields",
-          "url": "app/baseFields"
+          "url": "app/admin/baseFields"
         },
         {
           "index": 4,
           "name": "ordertemplate",
           "title": "Configure Template",
           "id": "ordertemplate",
-          "url": "app/ordertemplate"
+          "url": "app/admin/ordertemplate"
         },
         {
           "index": 5,

@@ -169,7 +169,7 @@ export class CustomFormbuilderComponent implements OnInit {
     this.getAttributeService().subscribe(
       response => {
         if (response && response.attributes) {
-          //console.log('response from get attributes', response.attributes);
+          console.log('response from get attributes', response.attributes);
           this.fieldModels = response.attributes;
           this.fieldModels.forEach(element => {
             element.validation = {required : false};
