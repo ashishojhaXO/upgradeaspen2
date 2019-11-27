@@ -27,7 +27,9 @@ export class OrderTemplateComponent implements OnInit {
   widget: any;
   editTemplate: boolean = false;
   templateId: any;
-  templateField = [];
+  templateField: any;
+  orderFieldsArr = [];
+  lineFieldsArr = [];
 
   constructor(private okta: OktaAuthService, private http: Http,private route: ActivatedRoute) { }
 
@@ -249,6 +251,10 @@ export class OrderTemplateComponent implements OnInit {
         if (response && response.status == 200) {
           console.log('template edit fields', response);
           this.templateField = response.orderTemplateData;
+          this.orderFieldsArr = this.templateField.orderFields;
+          this.lineFieldsArr = this.templateField.lineItems;
+          this.templateForm.controls['templateName'].setValue(this.templateField.template.template_name);
+          this.templateForm.controls['orgName'].setValue(this.templateField.organizaion.org_id);
           console.log('template edit fields array', this.templateField);
         }
       },

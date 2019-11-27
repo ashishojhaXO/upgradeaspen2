@@ -117,30 +117,6 @@ const routes: Routes = [
         },
       },
       {
-        path: 'baseFields',
-        component: BaseFieldsComponent,
-        data: {
-          breadcrumbs: true,
-          text: 'Base Fields'
-        },
-      },
-      {
-        path: 'ordertemplate',
-        component: OrderTemplateComponent,
-        data: {
-          breadcrumbs: true,
-          text: 'Order Template'
-        },
-      },
-      {
-        path: 'ordertemplate/:id',
-        component: OrderTemplateComponent,
-        data: {
-          breadcrumbs: true,
-          text: 'Modify Order Template'
-        },
-      },
-      {
         path: 'order/:id',
         component: OrderComponent,
         data: {
@@ -256,6 +232,30 @@ const routes: Routes = [
               text: 'Support'
             }
           },
+          {
+            path: 'baseFields',
+            component: BaseFieldsComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Base Fields'
+            },
+          },
+          {
+            path: 'ordertemplate',
+            component: OrderTemplateComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Order Template'
+            },
+          },
+          {
+            path: 'ordertemplate/:id',
+            component: OrderTemplateComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Modify Order Template'
+            },
+          }
         ]
       }
     ]
