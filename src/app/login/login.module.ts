@@ -12,6 +12,7 @@ import {
   OktaAuthGuard
 } from '@okta/okta-angular';
 import { LoginNewComponent } from './login-new/login-new.component';
+import { AppSpinnerModule } from '../shared';
 
 const config = {
   issuer: 'https://dev-256587.oktapreview.com/oauth2/default',
@@ -21,6 +22,7 @@ const config = {
 @NgModule({
   imports: [
     CommonModule,
+    AppSpinnerModule,
     LoginRoutingModule,
     FormsModule,
     ReactiveFormsModule
