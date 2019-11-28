@@ -496,9 +496,9 @@ export class UserManagementComponent implements OnInit  {
       // Resolve
       this.showSpinner = false;
       if(res) {
-        const str = res.value.body.error;
+        const str = res.body.status;
         const swalOptions = {
-          title: 'Error',
+          title: 'Success',
           text: str,
           type: 'success',
           showCloseButton: true,
@@ -512,7 +512,7 @@ export class UserManagementComponent implements OnInit  {
       if(rej) {
         const swalOptions = {
           title: 'Error',
-          text: 'Error while deactivating account',
+          text: rej.body.error.errorSummary,
           type: 'error',
           showCloseButton: true,
           confirmButtonText: "Ok",
