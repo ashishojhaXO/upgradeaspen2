@@ -486,11 +486,6 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   }
 
   logout() {
-    this.widget.signOut(() => {
-      this.widget.tokenManager.remove('accessToken');
-      this.changeDetectorRef.detectChanges();
-      window.location.href = '/login';
-    });
 
     return this.logoutService().subscribe( (res) => {
       console.log("Log out: suc", res);
