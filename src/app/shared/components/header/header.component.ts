@@ -1,5 +1,5 @@
 import { Component, OnInit, Directive, DoCheck, ViewChild, ChangeDetectorRef, HostListener } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { Common } from '../../util/common';
@@ -63,6 +63,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   constructor(
     private translate: TranslateService,
     public router: Router,
+    private route: ActivatedRoute,
     private location: Location,
     private common: Common,
     private auth: AuthService,
@@ -467,12 +468,37 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
     this.isMenuOpened = !this.isMenuOpened;
   }
 
+  logoutService() {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken.accessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    const idToken = localStorage.getItem('idToken') || '';
+    const url = this.api_fs.api + '/api/users/logout/' + idToken;
+    return this.http
+      .get(url, options)
+      .map(res => {
+        return res.json();
+      }).share();
+  }
+
   logout() {
     this.widget.signOut(() => {
       this.widget.tokenManager.remove('accessToken');
       this.changeDetectorRef.detectChanges();
       window.location.href = '/login';
     });
+
+    return this.logoutService().subscribe( (res) => {
+      console.log("Log out: suc", res);
+      localStorage.removeItem('accessToken');
+      this.router.navigate(['/login'], { relativeTo: this.route } );
+    }, (rej) => {
+      console.log("Log out: suc", rej);
+    })
   }
 
   resetPassword() {
