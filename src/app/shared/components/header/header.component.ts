@@ -497,7 +497,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
       localStorage.removeItem('accessToken');
       this.router.navigate(['/login'], { relativeTo: this.route } );
     }, (rej) => {
-      console.log("Log out: suc", rej);
+      console.log("Log out: rej", rej);
     })
   }
 
