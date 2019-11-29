@@ -116,7 +116,7 @@ export class LoginComponent implements OnInit {
         el: '#okta-signin-container'},
       (res) => {
         if (res.status === 'SUCCESS') {
-          this.widget.tokenManager.add('accessToken', res[1]);
+          localStorage.setItem('accessToken', res[1]);
           localStorage.setItem('loggedInUserName', res[0].claims.name);
           localStorage.setItem('loggedInUserID', res[0].claims.sub);
           this.changeDetectorRef.detectChanges();
@@ -162,10 +162,10 @@ export class LoginComponent implements OnInit {
       },
       err => {
         if(err.status === 401) {
-          if(this.widget.tokenManager.get('accessToken')) {
+          if(localStorage.getItem('accessToken')) {
             this.widget.tokenManager.refresh('accessToken')
                 .then(function (newToken) {
-                  this.widget.tokenManager.add('accessToken', newToken);
+                  localStorage.setItem('accessToken', newToken);
                   this.performActions();
                 })
                 .catch(function (err) {
@@ -174,7 +174,7 @@ export class LoginComponent implements OnInit {
                 });
           } else {
             this.widget.signOut(() => {
-              this.widget.tokenManager.remove('accessToken');
+              localStorage.removeItem('accessToken');
               window.location.href = '/login';
             });
           }
@@ -186,7 +186,7 @@ export class LoginComponent implements OnInit {
   }
 
   getCustomerInfo(): any {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
       token = AccessToken.accessToken;

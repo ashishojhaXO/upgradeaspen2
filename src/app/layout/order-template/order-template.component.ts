@@ -75,10 +75,10 @@ export class OrderTemplateComponent implements OnInit {
       },
       err => {
         if(err.status === 401) {
-          if(this.widget.tokenManager.get('accessToken')) {
+          if(localStorage.getItem('accessToken')) {
             this.widget.tokenManager.refresh('accessToken')
                 .then(function (newToken) {
-                  this.widget.tokenManager.add('accessToken', newToken);
+                  localStorage.setItem('accessToken', newToken);
                   this.showSpinner = false;
                   this.getOrganizations();
                 })
@@ -88,7 +88,7 @@ export class OrderTemplateComponent implements OnInit {
                 });
           } else {
             this.widget.signOut(() => {
-              this.widget.tokenManager.remove('accessToken');
+              localStorage.removeItem('accessToken');
               window.location.href = '/login';
             });
           }
@@ -100,7 +100,7 @@ export class OrderTemplateComponent implements OnInit {
   }
 
   getOrganizationService() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
       token = AccessToken.accessToken;
@@ -192,10 +192,10 @@ export class OrderTemplateComponent implements OnInit {
       },
       err => {
         if(err.status === 401) {
-          if(this.widget.tokenManager.get('accessToken')) {
+          if(localStorage.getItem('accessToken')) {
             this.widget.tokenManager.refresh('accessToken')
                 .then(function (newToken) {
-                  this.widget.tokenManager.add('accessToken', newToken);
+                  localStorage.setItem('accessToken', newToken);
                   this.showSpinner = false;
                   this.createTemplateService(template);
                 })
@@ -205,7 +205,7 @@ export class OrderTemplateComponent implements OnInit {
                 });
           } else {
             this.widget.signOut(() => {
-              this.widget.tokenManager.remove('accessToken');
+              localStorage.removeItem('accessToken');
               window.location.href = '/login';
             });
           }
@@ -217,7 +217,7 @@ export class OrderTemplateComponent implements OnInit {
   }
 
   createTemplateService(template){
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
       token = AccessToken.accessToken;
@@ -254,10 +254,10 @@ export class OrderTemplateComponent implements OnInit {
       },
       err => {
         if(err.status === 401) {
-          if(this.widget.tokenManager.get('accessToken')) {
+          if(localStorage.getItem('accessToken')) {
             this.widget.tokenManager.refresh('accessToken')
                 .then(function (newToken) {
-                  this.widget.tokenManager.add('accessToken', newToken);
+                  localStorage.setItem('accessToken', newToken);
                   this.showSpinner = false;
                   this.getTemplateService(templateId);
                 })
@@ -267,7 +267,7 @@ export class OrderTemplateComponent implements OnInit {
                 });
           } else {
             this.widget.signOut(() => {
-              this.widget.tokenManager.remove('accessToken');
+              localStorage.removeItem('accessToken');
               window.location.href = '/login';
             });
           }
@@ -279,7 +279,7 @@ export class OrderTemplateComponent implements OnInit {
   }
 
   getTemplateService(templateId) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
       token = AccessToken.accessToken;

@@ -105,7 +105,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       });
     }
 
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
       token = AccessToken.accessToken;
@@ -336,7 +336,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
   getSeedData() {
 
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
       token = AccessToken.accessToken;
@@ -352,7 +352,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
   getSeedDashboard() {
 
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
       token = AccessToken.accessToken;
@@ -745,7 +745,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }
 
   getFilter(dashboardType): any {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
       token = AccessToken.accessToken;
@@ -861,10 +861,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         err => {
 
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
+            if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
                     this.getSearchDataRequest(dataObj);
                   })
@@ -874,7 +874,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
                   });
             } else {
               this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
+                localStorage.removeItem('accessToken');
                 window.location.href = '/login';
               });
             }
@@ -886,7 +886,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }
 
   getSearchData(dataObj) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
       token = AccessToken.accessToken;

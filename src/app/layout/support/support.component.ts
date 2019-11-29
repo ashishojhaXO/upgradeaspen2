@@ -323,7 +323,7 @@ export class SupportComponent implements OnInit {
     }
 
     getOrdersDataByVendorID(vendorID) {
-        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
             token = AccessToken.accessToken;
@@ -339,7 +339,7 @@ export class SupportComponent implements OnInit {
     }
 
     getFilteredVendors(match) {
-        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
             token = AccessToken.accessToken;
@@ -355,7 +355,7 @@ export class SupportComponent implements OnInit {
     }
 
     getFilteredOrders(match) {
-        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
             token = AccessToken.accessToken;
@@ -371,7 +371,7 @@ export class SupportComponent implements OnInit {
     }
 
     getOrderDetails(orderID) {
-        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
             token = AccessToken.accessToken;
@@ -387,7 +387,7 @@ export class SupportComponent implements OnInit {
     }
 
     getPaymentsData() {
-        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
             token = AccessToken.accessToken;
@@ -407,7 +407,7 @@ export class SupportComponent implements OnInit {
     }
 
     searchVendorData() {
-        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
             token = AccessToken.accessToken;
@@ -425,7 +425,7 @@ export class SupportComponent implements OnInit {
 
     getVendorPaymentMethods() {
 
-        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
             token = AccessToken.accessToken;
@@ -523,7 +523,7 @@ export class SupportComponent implements OnInit {
     }
 
     getOrdersService( ) {
-        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
             token = AccessToken.accessToken;
@@ -574,7 +574,7 @@ export class SupportComponent implements OnInit {
     }
 
     postRetryOrderService(data) {
-        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
             token = AccessToken.accessToken;

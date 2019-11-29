@@ -83,6 +83,10 @@ export class LoginNewComponent implements OnInit {
 
       //login api comes here
       this.loginService(userData).subscribe( res => {
+        // Setting required data here
+        localStorage.setItem('accessToken', res.accessToken);
+        localStorage.setItem('idToken', res.idToken);
+
         this.router.navigate(['/app/dashboards/'], { relativeTo: this.route } ).then( res => {
           this.showSpinner = false;
         });

@@ -469,7 +469,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
 
   logout() {
     this.widget.signOut(() => {
-      this.widget.tokenManager.remove('accessToken');
+      localStorage.removeItem('accessToken');
       this.changeDetectorRef.detectChanges();
       window.location.href = '/login';
     });
@@ -504,7 +504,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   }
 
   performPasswordReset(dataObj) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
       token = AccessToken.accessToken;

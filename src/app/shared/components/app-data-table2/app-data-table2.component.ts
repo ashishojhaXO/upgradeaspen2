@@ -1242,7 +1242,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
     getSearchData(vendorID, orgID ) {
 
-        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
             token = AccessToken.accessToken;
