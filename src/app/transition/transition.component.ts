@@ -160,14 +160,18 @@ export class TransitionComponent implements OnInit {
   }
 
   getCustomerInfo(): any {
-    const AccessToken: any = localStorage.getItem('accessToken');
+    const AccessToken: any = JSON.parse( localStorage.getItem('accessToken') );
+    console.log("Transition component ACCC: ", AccessToken)
     let token = '';
     if (AccessToken) {
       token = AccessToken.accessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
+
+    // TODO: no UserId getting sent by the server yet, so it's empty.
     const urserID = localStorage.getItem('loggedInUserID') || '';
+
     const url = this.api_fs.api + '/api/users/' + urserID + '/external';
     return this.http
         .get(url, options)

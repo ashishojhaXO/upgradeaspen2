@@ -186,7 +186,7 @@ export class LoginComponent implements OnInit {
   }
 
   getCustomerInfo(): any {
-    const AccessToken: any = localStorage.getItem('accessToken');
+    const AccessToken: any = JSON.parse( localStorage.getItem('accessToken') ) ;
     let token = '';
     if (AccessToken) {
       token = AccessToken.accessToken;
