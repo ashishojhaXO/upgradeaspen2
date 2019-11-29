@@ -493,10 +493,11 @@ export class UserManagementComponent implements OnInit  {
       }
     })
     .then((res)=>{
+      console.log("res: ", res);
       // Resolve
       this.showSpinner = false;
       if(res) {
-        const str = res.body.status;
+        const str = res.message;
         const swalOptions = {
           title: 'Success',
           text: str,
@@ -510,9 +511,10 @@ export class UserManagementComponent implements OnInit  {
     }, (rej) => {
       this.showSpinner = false;
       if(rej) {
+        console.log("rej : ", JSON.parse(rej._body).message);
         const swalOptions = {
           title: 'Error',
-          text: rej.body.error.errorSummary,
+          text: JSON.parse(rej._body).message,
           type: 'error',
           showCloseButton: true,
           confirmButtonText: "Ok",
