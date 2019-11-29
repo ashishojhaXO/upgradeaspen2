@@ -127,34 +127,52 @@ export class CustomFormbuilderComponent implements OnInit {
             if(element.type == 'varchar' || element.type == 'text' || element.type == 'string'){
               element.dropType = 'text';
               element.attr_list = "";
-              element.validation = {
-                required : element.validation == null ? 0 : element.validation.required
+              if(element.validation == null){
+                element.validation = [];
               }
+              // element.validation = {
+              //   required : element.validation == null ? 0 : element.validation.required
+              // }
             }else if(element.type == 'int' || element.type == "decimal"){
               element.dropType = 'number';
               element.attr_list = "";
-              element.validation = {
-                required : element.validation == null ? 0 : element.validation.required
+              // element.validation = {
+              //   required : element.validation == null ? 0 : element.validation.required
+              // }
+              if(element.validation == null){
+                element.validation = [];
               }
             }else if(element.type == 'list'){
               element.dropType = 'autocomplete';
-              element.validation = {
-                required : element.validation == null ? 0 : element.validation.required
+              // element.validation = {
+              //   required : element.validation == null ? 0 : element.validation.required
+              // }
+              if(element.validation == null){
+                element.validation = [];
               }
             }else if(element.type == 'radio'){
               element.dropType = 'radio';
-              element.validation = {
-                required : element.validation == null ? 0 : element.validation.required
+              // element.validation = {
+              //   required : element.validation == null ? 0 : element.validation.required
+              // }
+              if(element.validation == null){
+                element.validation = [];
               }
             }else if(element.type == 'checkbox'){
               element.dropType = 'checkbox';
-              element.validation = {
-                required : element.validation == null ? 0 : element.validation.required
+              // element.validation = {
+              //   required : element.validation == null ? 0 : element.validation.required
+              // }
+              if(element.validation == null){
+                element.validation = [];
               }
             }else {
               element.dropType = element.type;
-              element.validation = {
-                required : element.validation == null ? 0 : element.validation.required
+              // element.validation = {
+              //   required : element.validation == null ? 0 : element.validation.required
+              // }
+              if(element.validation == null){
+                element.validation = [];
               }
             }
             this.model.attributes.push(element);
@@ -172,8 +190,9 @@ export class CustomFormbuilderComponent implements OnInit {
           console.log('response from get attributes', response.attributes);
           this.fieldModels = response.attributes;
           this.fieldModels.forEach(element => {
-            element.validation = {required : false};
+            element.validation = [];
             element.disable = 0;
+            element.editable = 0;
             if(element.type == 'varchar' || element.type == 'text' || element.type == 'string'){
               element.dropType = 'text';
               element.attr_list = "";
@@ -333,4 +352,11 @@ export class CustomFormbuilderComponent implements OnInit {
     });
   }
 
+  validationRequired(value:boolean, item){
+    if(value){
+      item.validation.push('required')
+    }else{
+      item.validation.splice(item.validation.indexOf('required'), 1)
+    }
+  }
 }
