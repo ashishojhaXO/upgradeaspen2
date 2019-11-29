@@ -116,7 +116,7 @@ export class LoginComponent implements OnInit {
         el: '#okta-signin-container'},
       (res) => {
         if (res.status === 'SUCCESS') {
-          localStorage.setItem('accessToken', res[1]);
+          localStorage.setItem('accessToken', JSON.stringify(res[1]) );
           localStorage.setItem('loggedInUserName', res[0].claims.name);
           localStorage.setItem('loggedInUserID', res[0].claims.sub);
           this.changeDetectorRef.detectChanges();
