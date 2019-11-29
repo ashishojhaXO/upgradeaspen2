@@ -421,7 +421,7 @@ export class UserManagementComponent implements OnInit  {
     if (res.status = 200) {
       popUpOptions = {
         title: "Email sent",
-        text: "Email has been sent to your registered account.",
+        text: res.message,
         type: 'success',
         cancelButtonText: "Cancel",
       }
@@ -450,7 +450,7 @@ export class UserManagementComponent implements OnInit  {
     this.showSpinner = false;
     const popUpOptions = {
       title: "Error",
-      text: "Some error occured while calling server.",
+      text: JSON.parse(err._body).message,
       type: 'error',
       cancelButtonText: "Cancel",
     }
@@ -496,7 +496,7 @@ export class UserManagementComponent implements OnInit  {
       // Resolve
       this.showSpinner = false;
       if(res) {
-        const str = res.body.status;
+        const str = res.message;
         const swalOptions = {
           title: 'Success',
           text: str,
@@ -512,7 +512,7 @@ export class UserManagementComponent implements OnInit  {
       if(rej) {
         const swalOptions = {
           title: 'Error',
-          text: rej.body.error.errorSummary,
+          text: JSON.parse(rej._body).message,
           type: 'error',
           showCloseButton: true,
           confirmButtonText: "Ok",
