@@ -62,7 +62,9 @@ export class VisDashboardComponent implements OnInit  {
   widget: any;
   show = false;
 
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
+  constructor(
+    private okta: OktaAuthService, 
+    private route: ActivatedRoute, private router: Router, private http: Http) {
   }
 
   ngOnInit() {

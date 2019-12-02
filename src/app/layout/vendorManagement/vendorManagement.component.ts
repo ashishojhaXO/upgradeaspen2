@@ -54,7 +54,9 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   editID: any;
   resultStatus: any;
 
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager) {
+  constructor(
+    private okta: OktaAuthService, 
+    private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager) {
 
     this.vendorForm = new FormGroup({
       external_vendor_id: new FormControl('', Validators.required),

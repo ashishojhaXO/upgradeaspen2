@@ -32,7 +32,9 @@ export class CustomFormbuilderComponent implements OnInit {
     attributes:this.modelFields
   };
 
-  constructor( private okta: OktaAuthService, private http: Http) {
+  constructor( 
+    private okta: OktaAuthService, 
+    private http: Http) {
   }
 
   ngOnInit() {

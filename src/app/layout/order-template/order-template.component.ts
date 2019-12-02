@@ -29,11 +29,14 @@ export class OrderTemplateComponent implements OnInit {
   templateId: any;
   templateField = [];
 
-  constructor(private okta: OktaAuthService, private http: Http,private route: ActivatedRoute) { }
+  constructor(
+    // private okta: OktaAuthService, 
+    private http: Http,private route: ActivatedRoute) { }
 
   ngOnInit() {
+    console.log("ordTEMP ngOI: ")
     this.showSpinner = true;
-    this.widget = this.okta.getWidget();
+    // this.widget = this.okta.getWidget();
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
 
@@ -76,21 +79,24 @@ export class OrderTemplateComponent implements OnInit {
       err => {
         if(err.status === 401) {
           if(localStorage.getItem('accessToken')) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  localStorage.setItem('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.getOrganizations();
-                })
-                .catch(function (err) {
-                  console.log('error >>')
-                  console.log(err);
-                });
+            console.log("ord-temp no okt if")
+            // this.widget.tokenManager.refresh('accessToken')
+            //     .then(function (newToken) {
+            //       localStorage.setItem('accessToken', newToken);
+            //       this.showSpinner = false;
+            //       this.getOrganizations();
+            //     })
+            //     .catch(function (err) {
+            //       console.log('error >>')
+            //       console.log(err);
+            //     });
           } else {
-            this.widget.signOut(() => {
-              localStorage.removeItem('accessToken');
-              window.location.href = '/login';
-            });
+            console.log("ord-temp no okt else")
+            // this.widget.tokenManager.refresh('accessToken')
+            // this.widget.signOut(() => {
+            //   localStorage.removeItem('accessToken');
+            //   window.location.href = '/login';
+            // });
           }
         } else {
           this.showSpinner = false;

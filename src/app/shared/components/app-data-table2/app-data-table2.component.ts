@@ -19,7 +19,7 @@ import * as common from '../../../../constants/common';
 // import {ModalDirective} from 'ngx-bootstrap/modal';
 import {Headers, Http, RequestOptions} from '@angular/http';
 import { DatePipe } from '@angular/common';
-import { OktaAuthService } from '../../../../services/okta.service';
+// import { OktaAuthService } from '../../../../services/okta.service';
 import set = Reflect.set;
 
 declare var $: any;
@@ -37,7 +37,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     @Output() triggerActions: EventEmitter<any> = new EventEmitter<any>();
     loaded = false;
     @Input() sendResponseOnCheckboxClick?: any;
-    widget: any;
+    // widget: any;
     api_fs: any;
     tableId = 'example';
     @Input() dataFieldsConfiguration: any;
@@ -53,11 +53,12 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         private dataTableService: DataTableService,
         private http: Http,
         private datePipe: DatePipe,
-        private okta: OktaAuthService) {
+        // private okta: OktaAuthService
+        ) {
     }
 
     ngOnInit(): void {
-        this.widget = this.okta.getWidget();
+        // this.widget = this.okta.getWidget();
         this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
         // console.log('this.externalTableId >>>@@@')
         // console.log(this.externalTableId);

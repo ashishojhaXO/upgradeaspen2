@@ -12,7 +12,7 @@ import 'bootstrap';
 import {Router, ActivatedRoute} from '@angular/router';
 import {DataTableOptions} from '../../../models/dataTableOptions';
 import {Http, Headers, RequestOptions} from '@angular/http';
-import { OktaAuthService } from '../../../services/okta.service';
+// import { OktaAuthService } from '../../../services/okta.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import Swal from 'sweetalert2';
 
@@ -67,14 +67,16 @@ export class OrderComponent implements OnInit  {
   selectedRow: any;
   originalResponseObj : any;
 
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder,) {
+  constructor(
+    // private okta: OktaAuthService, 
+    private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder,) {
     this.formAttribute = fb;
   }
 
   ngOnInit() {
 
     this.showSpinner = true;
-    this.widget = this.okta.getWidget();
+    // this.widget = this.okta.getWidget();
 
     this.height = '50vh';
 
@@ -113,21 +115,23 @@ export class OrderComponent implements OnInit  {
 
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchTemplates();
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
+              console.log("ord no okt if")
+              // this.widget.tokenManager.refresh('accessToken')
+              //     .then(function (newToken) {
+              //       localStorage.setItem('accessToken', newToken);
+              //       this.showSpinner = false;
+              //       this.searchTemplates();
+              //     })
+              //     .catch(function (err) {
+              //       console.log('error >>')
+              //       console.log(err);
+              //     });
             } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
+              console.log("ord no okt else")
+              // this.widget.signOut(() => {
+              //   localStorage.removeItem('accessToken');
+              //   window.location.href = '/login';
+              // });
             }
           } else {
             this.showSpinner = false;

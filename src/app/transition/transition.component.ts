@@ -11,7 +11,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import {finalize, map} from 'rxjs/operators';
 import { DomSanitizer} from '@angular/platform-browser';
-import { OktaAuthService } from '../../../src/services/okta.service';
+// import { OktaAuthService } from '../../../src/services/okta.service';
 
 @Component({
   selector: 'app-transition',
@@ -26,7 +26,9 @@ export class TransitionComponent implements OnInit {
   showSpinner: any;
   widget;
 
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http, private sanitizer: DomSanitizer, private changeDetectorRef: ChangeDetectorRef) {
+  constructor(
+    // private okta: OktaAuthService, 
+    private route: ActivatedRoute, private router: Router, private http: Http, private sanitizer: DomSanitizer, private changeDetectorRef: ChangeDetectorRef) {
     this.showSpinner = false;
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
@@ -38,7 +40,7 @@ export class TransitionComponent implements OnInit {
 
   performActions() {
     this.showSpinner = true;
-    this.widget = this.okta.getWidget();
+    // this.widget = this.okta.getWidget();
     this.getCustomerInfoRequest();
   }
 

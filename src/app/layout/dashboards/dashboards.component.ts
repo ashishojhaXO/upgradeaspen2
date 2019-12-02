@@ -14,7 +14,7 @@ import {DataTableOptions} from '../../../models/dataTableOptions';
 import * as chartConfig from './chartConfig.json';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import {PopupDataAction} from '../../shared/components/app-popup-button/popup-data-action';
-import { OktaAuthService } from '../../../services/okta.service';
+// import { OktaAuthService } from '../../../services/okta.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -75,9 +75,12 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     isPagination: true
   }];
   dashboard: any;
-  widget: any;
+  // widget: any;
 
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
+  constructor(
+    // private okta: OktaAuthService,
+    private route: ActivatedRoute, private router: Router, private http: Http) {
+    console.log("dashb const")
     this.showSpinner = false;
   }
 
@@ -108,7 +111,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
@@ -291,7 +294,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
   ngOnInit() {
 
-    this.widget = this.okta.getWidget();
+    console.log("NGONINTI")
+
+    // this.widget = this.okta.getWidget();
     this.showSpinner = true;
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
@@ -300,6 +305,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     this.height = '50vh';
     this.dashboardConfig = {};
     this.dashboardConfig.filterProps = JSON.parse(JSON.stringify(this.defaultFilters));
+
+    console.log("ngONIN dash", this.dashboardType)
     if (this.dashboardType === 'pacing' || this.dashboardType === 'spend') {
       this
         .getFilter(this.dashboardType)
@@ -316,6 +323,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               this.getSeedDashboard()
                   .then(
                       response2 => {
+                        console.log("getSEEDDash resp2: ", response2)
                         this.showSpinner = false;
                         this.populateChart(response2);
                         this.populateDataTable(response2);
@@ -323,6 +331,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             }
           },
           error => {
+            console.log("error: ", error)
             this.showSpinner = false;
           });
 
@@ -339,7 +348,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
@@ -354,8 +363,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
+      console.log("gsd accTO", AccessToken)
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
@@ -366,8 +377,14 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       clientCode: 'homd'
     };
 
+
     const dataObj = JSON.stringify(obj);
-    return this.http.post(this.api_fs.api + '/api/reports/org/homd/seed-dashboard/v1', dataObj, options).toPromise()
+    console.log("gsD: dO opt: ", dataObj, options)
+    return this.http.post(
+      this.api_fs.api + '/api/reports/org/homd/seed-dashboard/v1', 
+      dataObj, 
+      options
+    ).toPromise()
         .then(data => data.json())
         .catch();
   }
@@ -748,7 +765,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      token = AccessToken;
     }
 
     console.log('token >>>>')
@@ -838,10 +855,20 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
   }
 
+  refreshToken() {
+    // Refresh token api
+    return this.http.get("/users/token").toPromise()
+    //  map( (res) => {
+    //   return res.json();
+    // })
+  }
+
   getSearchDataRequest(dataObj) {
     this.showSpinner = true;
+    console.log("gSDR enter dataObj: ", dataObj);
     this.getSearchData(dataObj).subscribe(
         response => {
+          console.log("gSDR: ", response)
           if(response) {
 
             console.log('chart response >>')
@@ -859,11 +886,15 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           }
         },
         err => {
+          console.log("gSDR: ", err);
 
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
+              // this.widget.tokenManager.refresh('accessToken')
+                  this.refreshToken()
+                  .then(function (res: any) {
+                    const newToken = res.newToken;
+
                     localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
                     this.getSearchDataRequest(dataObj);
@@ -873,10 +904,11 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
                     console.log(err);
                   });
             } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
+              console.log("Token Sign OUt")
+              // this.widget.signOut(() => {
+              //   localStorage.removeItem('accessToken');
+              //   window.location.href = '/login';
+              // });
             }
           } else {
             this.showSpinner = false;
@@ -889,7 +921,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
