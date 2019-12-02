@@ -5,6 +5,14 @@ import { Common } from '../../shared/util/common';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { USER_CLIENT_NAME } from '../../../constants/organization';
 
+// interface User {
+//   body: Object({
+//     data: Object({
+//       access_token: String
+//     })
+//   })
+// };
+
 @Component({
   selector: 'app-login-new',
   templateUrl: './login-new.component.html',
@@ -57,18 +65,31 @@ export class LoginNewComponent implements OnInit {
     };
   }
 
-  loginService(userData: Object) {
+  loginService(body: Object) {
     const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
     const api_url_part = "/api";
     const endPoint = "/users/token";
     const url = this.api_fs.api + api_url_part + endPoint;
-    // const body = {username: username, password: password};
 
     this.showSpinner = true;
-    return this.http.post(url, userData, options).map(res => {
+    return this.http.post(url, body, options).map(res => {
       return res.json()
     }).share();
+  }
+
+  saveUser(res: any) {
+    console.log("saveUSER RES: ", res);
+    localStorage.setItem('accessToken', res.body.data.access_token);
+    // localStorage.setItem('accessToken', res.body.data);
+    localStorage.setItem('idToken', res.body.data.id_token);
+
+  }
+
+  compileBody(userData){
+    console.log("UD: ", userData);
+      const body = {username: userData.userEmail, password: userData.password};
+      return body;
   }
 
   onSubmitLoginForm(){
@@ -81,16 +102,21 @@ export class LoginNewComponent implements OnInit {
         this.common.setLoginCookie('ln', userData.userEmail, expdate);
       }
 
-      //login api comes here
-      this.loginService(userData).subscribe( res => {
-        // Setting required data here
-        localStorage.setItem('accessToken', res.accessToken);
-        localStorage.setItem('idToken', res.idToken);
+      const body = this.compileBody(userData)
 
+      //login api comes here
+      this.loginService(body).subscribe( res => {
+        console.log("res: ", res)
+        this.saveUser(res);
         this.router.navigate(['/app/dashboards/'], { relativeTo: this.route } ).then( res => {
+          console.log("res NAV: ", res)
           this.showSpinner = false;
         });
+        //   this.showSpinner = false;
+        // window.location.href = "/app/dashboards/";
+
       }, rej => {
+        console.log("rej: ", rej)
         //this.loginForm.reset();
         this.showSpinner = false;
         this.formError = rej.statusText; //for error handling
