@@ -67,8 +67,13 @@
       <!-- lineitem form builder end -->
       <div class="form-group-fields row">
         <div class="col-xs-12 col-sm-10 col-sm-offset-2">
-          <button class="btn btn-primary" type="submit"  [disabled]="!templateForm.valid"> {{editTemplate ? 'Save' : 'Save'}}</button>
-          <button *ngIf="false" class="btn btn-primary" type="submit"  [disabled]="true">Publish</button>
+          <div *ngIf="!isPublished">
+            <button class="btn btn-primary" type="submit"  [disabled]="!templateForm.valid"> Save </button>
+            <button *ngIf="editTemplate" class="btn btn-primary" type="button" [disabled]="!templateForm.valid" (click)="onPublishForm()"> Publish </button>
+          </div>
+          <div *ngIf="isPublished">
+            <button class="btn btn-primary" type="button"  [disabled]="!templateForm.valid" (click)="cloneForm()"> Clone </button>
+          </div>
         </div>
       </div>
     </form>

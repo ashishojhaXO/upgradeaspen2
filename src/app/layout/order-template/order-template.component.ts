@@ -30,6 +30,7 @@ export class OrderTemplateComponent implements OnInit {
   templateField: any;
   orderFieldsArr = [];
   lineFieldsArr = [];
+  isPublished:boolean = false;
 
   constructor(private okta: OktaAuthService, private http: Http,private route: ActivatedRoute) { }
 
@@ -123,6 +124,11 @@ export class OrderTemplateComponent implements OnInit {
         this.templateResponse.template_id = "";
         this.templateResponse.template_name = this.templateForm.value.templateName;
         this.templateResponse.org_id = this.templateForm.value.orgName;
+        if (this.isPublished){
+          this.templateResponse.isPublish = true;
+        }else {
+          this.templateResponse.isPublish = false;
+        }
         let orderFields = [];
         let lineItems = [];
         this.orderForm.model.attributes.forEach(element => {
@@ -175,6 +181,13 @@ export class OrderTemplateComponent implements OnInit {
         }
       }
     }
+  }
+
+  onPublishForm(){
+    if(this.templateForm.valid){
+      this.isPublished = true;
+    }
+    this.onSubmitTemplate();
   }
 
   createTemplate(template){
@@ -253,6 +266,7 @@ export class OrderTemplateComponent implements OnInit {
           this.templateField = response.orderTemplateData;
           this.orderFieldsArr = this.templateField.orderFields;
           this.lineFieldsArr = this.templateField.lineItems;
+          //this.isPublished = this.templateField.isPublish;
           this.templateForm.controls['templateName'].setValue(this.templateField.template.template_name);
           this.templateForm.controls['orgName'].setValue(this.templateField.organizaion.org_id);
           console.log('template edit fields array', this.templateField);
@@ -299,5 +313,12 @@ export class OrderTemplateComponent implements OnInit {
         .map(res => {
           return res.json();
         }).share();
+  }
+
+  cloneForm(){
+    this.isPublished = false;
+    this.editTemplate = false;
+    this.templateResponse.template_id = "";
+    this.templateForm.controls['templateName'].setValue(this.templateField.template.template_name + '_clone');
   }
 }
