@@ -79,7 +79,6 @@ export class LoginNewComponent implements OnInit {
   }
 
   saveUser(res: any) {
-    console.log("saveUSER RES: ", res);
     localStorage.setItem('accessToken', res.body.access_token);
     // localStorage.setItem('accessToken', res.body.data);
     localStorage.setItem('idToken', res.body.id_token);
@@ -87,7 +86,6 @@ export class LoginNewComponent implements OnInit {
   }
 
   compileBody(userData){
-    console.log("UD: ", userData);
       const body = {username: userData.userEmail, password: userData.password};
       return body;
   }
@@ -106,17 +104,14 @@ export class LoginNewComponent implements OnInit {
 
       //login api comes here
       this.loginService(body).subscribe( res => {
-        console.log("res: ", res)
         this.saveUser(res);
         this.router.navigate(['/app/dashboards/'], { relativeTo: this.route } ).then( res => {
-          console.log("res NAV: ", res)
           this.showSpinner = false;
         });
         //   this.showSpinner = false;
         // window.location.href = "/app/dashboards/";
 
       }, rej => {
-        console.log("rej: ", rej)
         //this.loginForm.reset();
         this.showSpinner = false;
         this.formError = rej.statusText; //for error handling

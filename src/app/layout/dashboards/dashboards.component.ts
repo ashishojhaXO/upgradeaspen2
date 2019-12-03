@@ -80,7 +80,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   constructor(
     // private okta: OktaAuthService,
     private route: ActivatedRoute, private router: Router, private http: Http) {
-    console.log("dashb const")
     this.showSpinner = false;
   }
 
@@ -294,8 +293,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
   ngOnInit() {
 
-    console.log("NGONINTI")
-
     // this.widget = this.okta.getWidget();
 
     this.showSpinner = true;
@@ -307,7 +304,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     this.dashboardConfig = {};
     this.dashboardConfig.filterProps = JSON.parse(JSON.stringify(this.defaultFilters));
 
-    console.log("ngONIN dash", this.dashboardType)
     if (this.dashboardType === 'pacing' || this.dashboardType === 'spend') {
       this
         .getFilter(this.dashboardType)
@@ -324,7 +320,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               this.getSeedDashboard()
                   .then(
                       response2 => {
-                        console.log("getSEEDDash resp2: ", response2)
                         this.showSpinner = false;
                         this.populateChart(response2);
                         this.populateDataTable(response2);
@@ -364,7 +359,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
-      console.log("gsd accTO", AccessToken)
     if (AccessToken) {
       // // token = AccessToken.accessToken;
       token = AccessToken;
@@ -380,7 +374,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
 
     const dataObj = JSON.stringify(obj);
-    console.log("gsD: dO opt: ", dataObj, options)
     return this.http.post(
       this.api_fs.api + '/api/reports/org/homd/seed-dashboard/v1', 
       dataObj, 
@@ -866,10 +859,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
   getSearchDataRequest(dataObj) {
     this.showSpinner = true;
-    console.log("gSDR enter dataObj: ", dataObj);
     this.getSearchData(dataObj).subscribe(
         response => {
-          console.log("gSDR: ", response)
           if(response) {
 
             console.log('chart response >>')
@@ -887,8 +878,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           }
         },
         err => {
-          console.log("gSDR: ", err);
-
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
               this.widget.refresh('accessToken')

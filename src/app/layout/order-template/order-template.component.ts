@@ -35,7 +35,6 @@ export class OrderTemplateComponent implements OnInit {
   constructor(private okta: OktaAuthService, private http: Http,private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
-    console.log("ordTEMP ngOI: ")
     this.showSpinner = true;
     // this.widget = this.okta.getWidget();
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
