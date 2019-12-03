@@ -190,7 +190,7 @@ export class LoginComponent implements OnInit {
     let token = '';
     if (AccessToken) {
       // token = AccessToken.accessToken;
-token = AccessToken;
+      token = AccessToken;
     }
 
     console.log('token >>>')

@@ -327,7 +327,7 @@ export class SupportComponent implements OnInit {
         let token = '';
         if (AccessToken) {
             // token = AccessToken.accessToken;
-token = AccessToken;
+            token = AccessToken;
         }
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
         const options = new RequestOptions({headers: headers});
@@ -344,7 +344,7 @@ token = AccessToken;
         let token = '';
         if (AccessToken) {
             // token = AccessToken.accessToken;
-token = AccessToken;
+            token = AccessToken;
         }
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
         const options = new RequestOptions({headers: headers});
@@ -361,7 +361,7 @@ token = AccessToken;
         let token = '';
         if (AccessToken) {
             // token = AccessToken.accessToken;
-token = AccessToken;
+            token = AccessToken;
         }
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
         const options = new RequestOptions({headers: headers});
@@ -378,7 +378,7 @@ token = AccessToken;
         let token = '';
         if (AccessToken) {
             // token = AccessToken.accessToken;
-token = AccessToken;
+            token = AccessToken;
         }
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
         const options = new RequestOptions({headers: headers});
@@ -395,7 +395,7 @@ token = AccessToken;
         let token = '';
         if (AccessToken) {
             // token = AccessToken.accessToken;
-token = AccessToken;
+            token = AccessToken;
         }
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
         const options = new RequestOptions({headers: headers});
@@ -416,7 +416,7 @@ token = AccessToken;
         let token = '';
         if (AccessToken) {
             // token = AccessToken.accessToken;
-token = AccessToken;
+            token = AccessToken;
         }
 
         const headers = new Headers({'Content-Type': 'application/json', 'token': token, 'callingapp': 'aspen'});
@@ -435,7 +435,7 @@ token = AccessToken;
         let token = '';
         if (AccessToken) {
             // token = AccessToken.accessToken;
-token = AccessToken;
+            token = AccessToken;
         }
 
         console.log('this.selectedVendor >>')
@@ -534,7 +534,7 @@ token = AccessToken;
         let token = '';
         if (AccessToken) {
             // token = AccessToken.accessToken;
-token = AccessToken;
+            token = AccessToken;
         }
 
         const headers = new Headers({'Content-Type': 'application/json', 'callingapp': 'pine', 'token': token});
@@ -586,7 +586,7 @@ token = AccessToken;
         let token = '';
         if (AccessToken) {
             // token = AccessToken.accessToken;
-token = AccessToken;
+            token = AccessToken;
         }
 
         const dataObj = data;

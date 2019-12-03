@@ -119,7 +119,7 @@ export class OrdersComponent implements OnInit  {
     let token = '';
     if (AccessToken) {
       // token = AccessToken.accessToken;
-token = AccessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});

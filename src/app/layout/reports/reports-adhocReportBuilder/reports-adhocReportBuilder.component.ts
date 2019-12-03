@@ -714,7 +714,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     let token = '';
     if (AccessToken) {
       // token = AccessToken.accessToken;
-token = AccessToken;
+      token = AccessToken;
     }
 
     console.log('token >>')
@@ -795,7 +795,7 @@ token = AccessToken;
     let token = '';
     if (AccessToken) {
       // token = AccessToken.accessToken;
-token = AccessToken;
+      token = AccessToken;
     }
 
     console.log('token >>')
@@ -1097,7 +1097,7 @@ token = AccessToken;
     let token = '';
     if (AccessToken) {
       // token = AccessToken.accessToken;
-token = AccessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
@@ -1386,7 +1386,7 @@ token = AccessToken;
     let token = '';
     if (AccessToken) {
       // token = AccessToken.accessToken;
-token = AccessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -1625,7 +1625,7 @@ token = AccessToken;
     let token = '';
     if (AccessToken) {
       // token = AccessToken.accessToken;
-token = AccessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});

@@ -259,7 +259,7 @@ export class OrderComponent implements OnInit  {
     let token = '';
     if (AccessToken) {
       // token = AccessToken.accessToken;
-token = AccessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
@@ -276,7 +276,7 @@ token = AccessToken;
     let token = '';
     if (AccessToken) {
       // token = AccessToken.accessToken;
-token = AccessToken;
+      token = AccessToken;
     }
 
     const data = {
@@ -450,7 +450,7 @@ token = AccessToken;
     let token = '';
     if (AccessToken) {
       // token = AccessToken.accessToken;
-token = AccessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
@@ -601,7 +601,7 @@ token = AccessToken;
     let token = '';
     if (AccessToken) {
       // token = AccessToken.accessToken;
-token = AccessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});

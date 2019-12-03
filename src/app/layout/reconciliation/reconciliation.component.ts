@@ -130,7 +130,6 @@ export class ReconciliationComponent implements OnInit  {
     let token = '';
     if (AccessToken) {
       // // token = AccessToken.accessToken;
-token = AccessToken;
       token = AccessToken;
     }
 
