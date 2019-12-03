@@ -26,9 +26,14 @@ export class OktaAuthService {
 
 
 
-  widget = new Promise( function (resolve, reject ) {
-    setTimeout( () => resolve("done"), 1000);
-  })
+  widget() {
+    return new Promise( function (resolve, reject ) {
+      setTimeout( () => resolve("done"), 1000);
+    })
+  }
+
+
+  // tokendMan.refere = /api/user/revf
 
   getWidget() {
     console.log("getWidget: ")

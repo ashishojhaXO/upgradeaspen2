@@ -129,7 +129,9 @@ export class ReconciliationComponent implements OnInit  {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // // token = AccessToken.accessToken;
+token = AccessToken;
+      token = AccessToken;
     }
 
     const dataObj = {

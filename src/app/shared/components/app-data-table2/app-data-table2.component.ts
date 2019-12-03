@@ -1246,7 +1246,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
-            token = AccessToken.accessToken;
+            // token = AccessToken.accessToken;
+token = AccessToken;
         }
 
         const dataObj = JSON.stringify({

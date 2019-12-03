@@ -189,7 +189,8 @@ export class LoginComponent implements OnInit {
     const AccessToken: any = JSON.parse( localStorage.getItem('accessToken') ) ;
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+token = AccessToken;
     }
 
     console.log('token >>>')

@@ -45,7 +45,7 @@ import { OrderSummaryComponent } from './orderSummary/orderSummary.component';
 
 // providers
 import { AuthGuard } from './../shared';
-// import { OktaAuthService } from './../../services/okta.service';
+import { OktaAuthService } from './../../services/okta.service';
 import { OrganizationService } from './../../services/organization.service';
 import { CustomFormBuilderModule } from '../shared/components/customformbuilder/customformbuilder.module';
 
@@ -102,8 +102,8 @@ import { CustomFormBuilderModule } from '../shared/components/customformbuilder/
         OrderSummaryComponent
     ],
     providers: [
-        // AuthGuard, 
-        // OktaAuthService, 
+        AuthGuard, 
+        OktaAuthService, 
         OrganizationService],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA

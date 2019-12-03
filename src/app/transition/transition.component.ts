@@ -162,11 +162,11 @@ export class TransitionComponent implements OnInit {
   }
 
   getCustomerInfo(): any {
-    const AccessToken: any = JSON.parse( localStorage.getItem('accessToken') );
-    console.log("Transition component ACCC: ", AccessToken)
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});

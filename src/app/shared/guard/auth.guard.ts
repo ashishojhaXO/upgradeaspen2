@@ -25,15 +25,24 @@ export class AuthGuard implements CanActivate {
   // });
 
   widget = new Promise( function (resolve, reject ) {
+    console.log("authGuard widget")
     setTimeout( () => resolve("done"), 1000);
   })
     constructor( private router: Router, private common: Common ) {
+      console.log("authGuard construcotr")
     }
 
      canActivate(): any {
+       console.log("canACT")
       // get session Info
        return new Promise((resolve, reject) => {
-         return this.widget
+          console.log("canAct promoise")
+
+         
+      
+         return true
+        //  this.widget
+
         //  .session.get((response) => {
         //    if (response.status !== 'INACTIVE') {
         //      resolve(true);

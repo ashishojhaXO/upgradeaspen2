@@ -326,7 +326,8 @@ export class SupportComponent implements OnInit {
         const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
-            token = AccessToken.accessToken;
+            // token = AccessToken.accessToken;
+token = AccessToken;
         }
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
         const options = new RequestOptions({headers: headers});
@@ -342,7 +343,8 @@ export class SupportComponent implements OnInit {
         const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
-            token = AccessToken.accessToken;
+            // token = AccessToken.accessToken;
+token = AccessToken;
         }
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
         const options = new RequestOptions({headers: headers});
@@ -358,7 +360,8 @@ export class SupportComponent implements OnInit {
         const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
-            token = AccessToken.accessToken;
+            // token = AccessToken.accessToken;
+token = AccessToken;
         }
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
         const options = new RequestOptions({headers: headers});
@@ -374,7 +377,8 @@ export class SupportComponent implements OnInit {
         const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
-            token = AccessToken.accessToken;
+            // token = AccessToken.accessToken;
+token = AccessToken;
         }
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
         const options = new RequestOptions({headers: headers});
@@ -390,7 +394,8 @@ export class SupportComponent implements OnInit {
         const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
-            token = AccessToken.accessToken;
+            // token = AccessToken.accessToken;
+token = AccessToken;
         }
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
         const options = new RequestOptions({headers: headers});
@@ -410,7 +415,8 @@ export class SupportComponent implements OnInit {
         const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
-            token = AccessToken.accessToken;
+            // token = AccessToken.accessToken;
+token = AccessToken;
         }
 
         const headers = new Headers({'Content-Type': 'application/json', 'token': token, 'callingapp': 'aspen'});
@@ -428,7 +434,8 @@ export class SupportComponent implements OnInit {
         const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
-            token = AccessToken.accessToken;
+            // token = AccessToken.accessToken;
+token = AccessToken;
         }
 
         console.log('this.selectedVendor >>')
@@ -526,7 +533,8 @@ export class SupportComponent implements OnInit {
         const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
-            token = AccessToken.accessToken;
+            // token = AccessToken.accessToken;
+token = AccessToken;
         }
 
         const headers = new Headers({'Content-Type': 'application/json', 'callingapp': 'pine', 'token': token});
@@ -577,7 +585,8 @@ export class SupportComponent implements OnInit {
         const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
-            token = AccessToken.accessToken;
+            // token = AccessToken.accessToken;
+token = AccessToken;
         }
 
         const dataObj = data;

@@ -75,7 +75,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     isPagination: true
   }];
   dashboard: any;
-  // widget: any;
+  widget: any;
 
   constructor(
     // private okta: OktaAuthService,
@@ -297,6 +297,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     console.log("NGONINTI")
 
     // this.widget = this.okta.getWidget();
+
     this.showSpinner = true;
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
@@ -365,7 +366,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     let token = '';
       console.log("gsd accTO", AccessToken)
     if (AccessToken) {
-      // token = AccessToken.accessToken;
+      // // token = AccessToken.accessToken;
+token = AccessToken;
       token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
@@ -890,8 +892,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              // this.widget.tokenManager.refresh('accessToken')
-                  this.refreshToken()
+              this.widget.refresh('accessToken')
+                  // this.refreshToken()
                   .then(function (res: any) {
                     const newToken = res.newToken;
 

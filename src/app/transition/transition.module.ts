@@ -15,7 +15,7 @@ import { OktaAuthService } from '../../../src/services/okta.service';
     AppSpinnerModule
   ],
   declarations: [TransitionComponent],
-  // providers: [OktaAuthService]
+  providers: [OktaAuthService]
 })
 
 export class TransitionModule { }
