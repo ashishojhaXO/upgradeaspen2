@@ -137,6 +137,7 @@ export class TransitionComponent implements OnInit {
     }
 
     if (!access) {
+      console.log("!access logout")
       this.logout();
     } else {
       this.router.navigate(['./app/dashboards']);

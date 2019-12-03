@@ -1,5 +1,5 @@
 import { Component, OnInit, Directive, DoCheck, ViewChild, ChangeDetectorRef, HostListener } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { Common } from '../../util/common';
@@ -11,6 +11,7 @@ import * as OktaSignIn from '@okta/okta-signin-widget/dist/js/okta-sign-in-no-jq
 import {PopUpModalComponent} from '../pop-up-modal/pop-up-modal.component';
 import {FormControl, FormGroup, FormArray, Validators} from '@angular/forms';
 import {Http, Headers, RequestOptions} from '@angular/http';
+// import { OktaAuthService } from '@okta/okta-angular';
 
 @Component({
   selector: 'app-header',
@@ -61,8 +62,10 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   resetModel: any;
 
   constructor(
+    // private okta: OktaAuthService, 
     private translate: TranslateService,
     public router: Router,
+    private route: ActivatedRoute,
     private location: Location,
     private common: Common,
     private auth: AuthService,
@@ -464,12 +467,40 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
     this.isMenuOpened = !this.isMenuOpened;
   }
 
-  logout() {
-    this.widget.signOut(() => {
+  logOutTokenService() {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken;
+    }
+    const headers = new Headers ({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions ({headers: headers});
+    const idToken = localStorage.getItem('idToken') || '';
+    const url = this.api_fs.api + '/api/users/logout/' + idToken;
+    return this.http
+      .get(url, options)
+      .map(res => {
+        return res.json();
+      })
+      .share();
+  }
+
+  deleteUser() {
       localStorage.removeItem('accessToken');
-      this.changeDetectorRef.detectChanges();
-      window.location.href = '/login';
-    });
+      localStorage.removeItem('idToken');
+      localStorage.removeItem('loggedInUserName');
+      localStorage.removeItem('loggedInUserID');
+  }
+
+  logout() {
+    console.log("header logout")
+    return this.logOutTokenService().subscribe( (res) => {
+      console.log("Log out: suc", res);
+      this.deleteUser();
+      this.router.navigate(['/loginnew'] );
+    }, (rej) => {
+      console.log("Log out: rej", rej);
+    })
   }
 
   resetPassword() {

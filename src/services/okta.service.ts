@@ -2,14 +2,19 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import * as OktaSignIn from '@okta/okta-signin-widget/dist/js/okta-sign-in-no-jquery';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Http, Headers, RequestOptions } from '@angular/http';
 
 @Injectable()
 export class OktaAuthService {
 
+  api_fs: any;
+
   constructor(
-    private route: ActivatedRoute, private router: Router
+    private route: ActivatedRoute, private router: Router,
+    private http: Http
   ) {
 
+    this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
   }
 
   // widget = new OktaSignIn({
@@ -31,10 +36,7 @@ export class OktaAuthService {
   //   }
   // });
 
-  logOutService() {
-    console.log("lOSERV remove all localSTOR")
-    return this.router.navigate(['/loginnew']);
-  }
+
 
   signOut() {
     // TODO: SignOut to be implemented
@@ -42,20 +44,6 @@ export class OktaAuthService {
   }
 
 
-  logOut(accessToken) {
-
-    console.log("acccc: logOUT", accessToken)
-    const self = this;
-
-    return new Promise( function (resolve, reject ) {
-      console.log("inside resolver", self, this)
-      self.logOutService().then( () => {
-        console.log("logOUSERV.then resovl")
-        return resolve(localStorage.getItem('accessToken')) 
-        }
-      )
-    })
-  }
 
   refresh(accessToken){
     console.log("acccc: refresh", accessToken)
@@ -86,6 +74,25 @@ export class OktaAuthService {
     console.log("getWidget: ")
     return this.widget();
     // return 
+  }
+
+  logOutService() {
+    console.log("lOSERV remove all localSTOR")
+    return this.router.navigate(['/loginnew']);
+  }
+
+  logOut(accessToken) {
+    console.log("acccc: logOUT", accessToken)
+    const self = this;
+
+    return new Promise( function (resolve, reject ) {
+      console.log("inside resolver", self, this)
+      self.logOutService().then( () => {
+        console.log("logOUSERV.then resovl")
+        return resolve(localStorage.getItem('accessToken')) 
+        }
+      )
+    })
   }
 
   getWidgetConfig() {
