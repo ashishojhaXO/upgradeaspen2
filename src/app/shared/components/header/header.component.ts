@@ -11,7 +11,7 @@ import * as OktaSignIn from '@okta/okta-signin-widget/dist/js/okta-sign-in-no-jq
 import {PopUpModalComponent} from '../pop-up-modal/pop-up-modal.component';
 import {FormControl, FormGroup, FormArray, Validators} from '@angular/forms';
 import {Http, Headers, RequestOptions} from '@angular/http';
-import { OktaAuthService } from '@okta/okta-angular';
+// import { OktaAuthService } from '@okta/okta-angular';
 
 @Component({
   selector: 'app-header',
@@ -62,7 +62,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   resetModel: any;
 
   constructor(
-    private okta: OktaAuthService, 
+    // private okta: OktaAuthService, 
     private translate: TranslateService,
     public router: Router,
     private route: ActivatedRoute,
@@ -493,10 +493,11 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   }
 
   logout() {
+    console.log("header logout")
     return this.logOutTokenService().subscribe( (res) => {
       console.log("Log out: suc", res);
       this.deleteUser();
-      this.router.navigate(['/login'], { relativeTo: this.route } );
+      this.router.navigate(['/loginnew'] );
     }, (rej) => {
       console.log("Log out: rej", rej);
     })
