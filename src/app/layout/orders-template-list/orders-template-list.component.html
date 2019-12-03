@@ -1,0 +1,21 @@
+<div>
+  <div class="col-lg-12 col-md-12">
+    <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">ORDER TEMPLATE LIST</p>
+  </div>
+  <div class="">
+    <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject.isDataAvailable">
+      <app-data-table2 identity="orders"
+       height="600"
+      [dataObject]="dataObject"
+      [sendResponseOnCheckboxClick]=true
+      (triggerActions)="handleRow($event)">
+    </app-data-table2>
+    </div>
+    <div class="clearfix"></div>
+    <div class="page-header" *ngIf="!dataObject.isDataAvailable">
+      <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
+      <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to display.</div>
+    </div>
+  </div>
+</div>
+

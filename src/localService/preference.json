@@ -139,6 +139,13 @@
         },
         {
           "index": 6,
+          "name": "ordertemplatelist",
+          "title": "Template List",
+          "id": "ordertemplatelist",
+          "url": "app/admin/ordertemplatelist"
+        },
+        {
+          "index": 7,
           "name": "order",
           "title": "Create Order",
           "id": "order",

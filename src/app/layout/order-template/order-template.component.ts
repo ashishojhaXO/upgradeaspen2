@@ -40,7 +40,6 @@ export class OrderTemplateComponent implements OnInit {
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
 
-    this.getOrganizations();
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.templateId = {
@@ -48,6 +47,8 @@ export class OrderTemplateComponent implements OnInit {
         };
         this.editTemplate = true;
         this.getTemplate(this.templateId);
+      } else {
+        this.getOrganizations();
       }
     });
 
@@ -73,7 +74,8 @@ export class OrderTemplateComponent implements OnInit {
               text: ele.org_name
             });
           }, this);
-          console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>', this.organizations)
+          console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>', this.organizations);
+          this.showSpinner = false;
         }
       },
       err => {
@@ -212,11 +214,10 @@ export class OrderTemplateComponent implements OnInit {
             title: 'Template successfully ' + status,
             text: response.message,
             type: 'success'
-          })
-          
-          // .then(
-          //   this.router.navigate['/orderTemplatelist'];
-          // )
+          }).then( () => {
+              this.router.navigate(['/app/admin/ordertemplatelist']);
+            }
+          )
         }
       },
       err => {
@@ -276,6 +277,7 @@ export class OrderTemplateComponent implements OnInit {
     this.getTemplateService(templateId).subscribe(
       response => {
         if (response && response.status == 200) {
+          this.showSpinner = false;
           console.log('template edit fields', response);
           this.templateField = response.orderTemplateData;
           this.orderFieldsArr = this.templateField.orderFields;
@@ -288,6 +290,18 @@ export class OrderTemplateComponent implements OnInit {
           this.templateForm.controls['templateName'].setValue(this.templateField.template.template_name);
           this.templateForm.controls['orgName'].setValue(this.templateField.organizaion.org_id);
           console.log('template edit fields array', this.templateField);
+          this.getOrganizations();
+        }
+        else{
+          this.showSpinner = false;
+          Swal({
+            title: 'Error Occured',
+            text: response.message,
+            type: 'warning'
+          }).then( () => {
+              this.router.navigate(['/app/admin/ordertemplatelist']);
+            }
+          )
         }
       },
       err => {

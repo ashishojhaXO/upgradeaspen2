@@ -20,6 +20,7 @@ import { OrderTemplateComponent } from './order-template/order-template.componen
 import { ConfigureAdComponent } from './configureAd/configureAd.component';
 import { TargetAudComponent } from './targetAud/targetAud.component';
 import { OrderSummaryComponent } from './orderSummary/orderSummary.component';
+import { OrdersTemplateListComponent } from './orders-template-list/orders-template-list.component';
 
 const routes: Routes = [
   {
@@ -254,6 +255,14 @@ const routes: Routes = [
             data: {
               breadcrumbs: true,
               text: 'Modify Order Template'
+            },
+          },
+          {
+            path: 'ordertemplatelist',
+            component: OrdersTemplateListComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Order Template List'
             },
           }
         ]

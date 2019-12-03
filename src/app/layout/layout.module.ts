@@ -48,6 +48,7 @@ import { AuthGuard } from './../shared';
 import { OktaAuthService } from './../../services/okta.service';
 import { OrganizationService } from './../../services/organization.service';
 import { CustomFormBuilderModule } from '../shared/components/customformbuilder/customformbuilder.module';
+import { OrdersTemplateListComponent } from './orders-template-list/orders-template-list.component';
 
 @NgModule({
     imports: [
@@ -86,6 +87,7 @@ import { CustomFormBuilderModule } from '../shared/components/customformbuilder/
         FooterComponent,
         DashboardsComponent,
         OrdersComponent,
+        OrdersTemplateListComponent,
         PaymentsComponent,
         VendorManagementComponent,
         ReconciliationComponent,
