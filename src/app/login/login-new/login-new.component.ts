@@ -80,9 +80,9 @@ export class LoginNewComponent implements OnInit {
 
   saveUser(res: any) {
     console.log("saveUSER RES: ", res);
-    localStorage.setItem('accessToken', res.body.data.access_token);
+    localStorage.setItem('accessToken', res.body.access_token);
     // localStorage.setItem('accessToken', res.body.data);
-    localStorage.setItem('idToken', res.body.data.id_token);
+    localStorage.setItem('idToken', res.body.id_token);
 
   }
 
