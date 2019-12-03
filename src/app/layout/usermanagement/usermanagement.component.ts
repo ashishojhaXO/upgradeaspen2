@@ -134,10 +134,10 @@ export class UserManagementComponent implements OnInit  {
                   err1 => {
 
                     if(err1.status === 401) {
-                      if(this.widget.tokenManager.get('accessToken')) {
+                      if(localStorage.getItem('accessToken')) {
                         this.widget.tokenManager.refresh('accessToken')
                             .then(function (newToken) {
-                              this.widget.tokenManager.add('accessToken', newToken);
+                              localStorage.setItem('accessToken', newToken);
                               this.showSpinner = false;
                               return this.getVendors().subscribe(
                                   response2 => {
@@ -170,7 +170,7 @@ export class UserManagementComponent implements OnInit  {
                             });
                       } else {
                         this.widget.signOut(() => {
-                          this.widget.tokenManager.remove('accessToken');
+                          localStorage.removeItem('accessToken');
                           window.location.href = '/login';
                         });
                       }
@@ -185,10 +185,10 @@ export class UserManagementComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
+            if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
                     this.searchDataRequest();
                   })
@@ -198,7 +198,7 @@ export class UserManagementComponent implements OnInit  {
                   });
             } else {
               this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
+                localStorage.removeItem('accessToken');
                 window.location.href = '/login';
               });
             }
@@ -226,10 +226,11 @@ export class UserManagementComponent implements OnInit  {
   }
 
   getVendors() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token , 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -242,10 +243,11 @@ export class UserManagementComponent implements OnInit  {
   }
 
   searchData() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -318,10 +320,10 @@ export class UserManagementComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
+            if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
                     this.performUserAdditionRequest(dataObj);
                   })
@@ -331,7 +333,7 @@ export class UserManagementComponent implements OnInit  {
                   });
             } else {
               this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
+                localStorage.removeItem('accessToken');
                 window.location.href = '/login';
               });
             }
@@ -344,10 +346,11 @@ export class UserManagementComponent implements OnInit  {
   }
 
   performUserAddition(dataObj) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -398,10 +401,11 @@ export class UserManagementComponent implements OnInit  {
 
   apiCall(endPoint, dataObj) {
     // TODO: FTM: All calls are Post, change it to be generic
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const api_url_part = '/api';
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});

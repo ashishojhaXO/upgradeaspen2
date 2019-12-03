@@ -17,7 +17,7 @@ const routes: Routes = [
       {
         path: 'reportsSummary',
         component: ReportsSummaryComponent,
-        canActivate: [AuthGuard],
+        // canActivate: [AuthGuard],
         data: {
           breadcrumbs: true,
           text: 'Summary'
@@ -26,7 +26,7 @@ const routes: Routes = [
       {
         path: 'adHocReportBuilder',
         component: AdhocReportBuilderComponent,
-        canActivate: [AuthGuard],
+        // canActivate: [AuthGuard],
         data: {
           breadcrumbs: true,
           text: 'AdHoc Report Builder'
@@ -35,7 +35,7 @@ const routes: Routes = [
       {
         path: 'adHocReportBuilder/:id',
         component: AdhocReportBuilderComponent,
-        canActivate: [AuthGuard],
+        // canActivate: [AuthGuard],
         data: {
           breadcrumbs: true,
           text: 'AdHoc Report Builder'
@@ -44,7 +44,7 @@ const routes: Routes = [
       {
         path: 'alertNotification',
         component: AlertNoticationdashboardsComponent,
-        canActivate: [AuthGuard],
+        // canActivate: [AuthGuard],
         data: {
           breadcrumbs: true,
           text: 'Alert Notification'

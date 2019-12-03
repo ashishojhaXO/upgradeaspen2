@@ -103,7 +103,10 @@ import { OrdersTemplateListComponent } from './orders-template-list/orders-templ
         TargetAudComponent,
         OrderSummaryComponent
     ],
-    providers: [AuthGuard, OktaAuthService, OrganizationService],
+    providers: [
+        AuthGuard, 
+        OktaAuthService, 
+        OrganizationService],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA
     ]

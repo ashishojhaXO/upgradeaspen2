@@ -85,9 +85,6 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   }
 
   ngOnInit() {
-
-    console.log('header')
-
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
 
@@ -469,7 +466,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
 
   logout() {
     this.widget.signOut(() => {
-      this.widget.tokenManager.remove('accessToken');
+      localStorage.removeItem('accessToken');
       this.changeDetectorRef.detectChanges();
       window.location.href = '/login';
     });
@@ -504,10 +501,11 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   }
 
   performPasswordReset(dataObj) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});

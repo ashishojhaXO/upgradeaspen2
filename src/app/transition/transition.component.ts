@@ -11,7 +11,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import {finalize, map} from 'rxjs/operators';
 import { DomSanitizer} from '@angular/platform-browser';
-import { OktaAuthService } from '../../../src/services/okta.service';
+// import { OktaAuthService } from '../../../src/services/okta.service';
 
 @Component({
   selector: 'app-transition',
@@ -26,7 +26,9 @@ export class TransitionComponent implements OnInit {
   showSpinner: any;
   widget;
 
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http, private sanitizer: DomSanitizer, private changeDetectorRef: ChangeDetectorRef) {
+  constructor(
+    // private okta: OktaAuthService, 
+    private route: ActivatedRoute, private router: Router, private http: Http, private sanitizer: DomSanitizer, private changeDetectorRef: ChangeDetectorRef) {
     this.showSpinner = false;
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
@@ -38,7 +40,7 @@ export class TransitionComponent implements OnInit {
 
   performActions() {
     this.showSpinner = true;
-    this.widget = this.okta.getWidget();
+    // this.widget = this.okta.getWidget();
     this.getCustomerInfoRequest();
   }
 
@@ -74,10 +76,10 @@ export class TransitionComponent implements OnInit {
           console.log(err);
 
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
+            if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
                     this.getCustomerInfoRequest();
                   })
@@ -87,7 +89,7 @@ export class TransitionComponent implements OnInit {
                   });
             } else {
               this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
+                localStorage.removeItem('accessToken');
                 window.location.href = '/login';
               });
             }
@@ -132,7 +134,7 @@ export class TransitionComponent implements OnInit {
 
   logout() {
     this.widget.signOut(() => {
-      this.widget.tokenManager.remove('accessToken');
+      localStorage.removeItem('accessToken');
       this.changeDetectorRef.detectChanges();
      // this.router.navigate(['./login'],{ queryParams: { error: '401' } });
       window.location.href = '/login?error=401';
@@ -160,14 +162,18 @@ export class TransitionComponent implements OnInit {
   }
 
   getCustomerInfo(): any {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
+
+    // TODO: no UserId getting sent by the server yet, so it's empty.
     const urserID = localStorage.getItem('loggedInUserID') || '';
+
     const url = this.api_fs.api + '/api/users/' + urserID + '/external';
     return this.http
         .get(url, options)

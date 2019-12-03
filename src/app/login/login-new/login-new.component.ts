@@ -1,6 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import {Router, ActivatedRoute} from '@angular/router';
 import { Common } from '../../shared/util/common';
+import { Http, Headers, RequestOptions } from '@angular/http';
+import { USER_CLIENT_NAME } from '../../../constants/organization';
+
+// interface User {
+//   body: Object({
+//     data: Object({
+//       access_token: String
+//     })
+//   })
+// };
 
 @Component({
   selector: 'app-login-new',
@@ -13,11 +24,23 @@ export class LoginNewComponent implements OnInit {
   forgotForm: FormGroup;
   isForgotContainer: boolean = false;
   formError: string = null;
+  api_fs: any;
+  showSpinner: boolean;
   
-  constructor(private common:Common) { }
+  constructor(
+    private common:Common, 
+    private http: Http, 
+    private route: ActivatedRoute, 
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.formOnInit();
+    this.initVars();
+  }
+
+  initVars() {
+    this.api_fs = JSON.parse(localStorage.getItem('apis_fs')) || ''; // or some url from config file
   }
   
   private formOnInit(){
@@ -42,29 +65,89 @@ export class LoginNewComponent implements OnInit {
     };
   }
 
+  loginService(body: Object) {
+    const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    const api_url_part = "/api";
+    const endPoint = "/users/token";
+    const url = this.api_fs.api + api_url_part + endPoint;
+
+    this.showSpinner = true;
+    return this.http.post(url, body, options).map(res => {
+      return res.json()
+    }).share();
+  }
+
+  saveUser(res: any) {
+    localStorage.setItem('accessToken', res.body.access_token);
+    // localStorage.setItem('accessToken', res.body.data);
+    localStorage.setItem('idToken', res.body.id_token);
+
+  }
+
+  compileBody(userData){
+      const body = {username: userData.userEmail, password: userData.password};
+      return body;
+  }
+
   onSubmitLoginForm(){
     if(this.loginForm.valid){
       let userData = this.loginForm.get('userData').value;
       let saveLogin = this.loginForm.get('saveLogin').value;
-      //console.log('user data:', userData);
       //setting remember me coookie
       if(saveLogin){
         const expdate = 365*24*60*60*1000;
         this.common.setLoginCookie('ln', userData.userEmail, expdate);
       }
+
+      const body = this.compileBody(userData)
+
       //login api comes here
-      //this.formError //for error handling
-      //this.loginForm.reset();
+      this.loginService(body).subscribe( res => {
+        this.saveUser(res);
+        this.router.navigate(['/app/dashboards/'], { relativeTo: this.route } ).then( res => {
+          this.showSpinner = false;
+        });
+        //   this.showSpinner = false;
+        // window.location.href = "/app/dashboards/";
+
+      }, rej => {
+        //this.loginForm.reset();
+        this.showSpinner = false;
+        this.formError = rej.statusText; //for error handling
+      });
     }
+  }
+  
+  forgotPasswordService(forgotObj: Object) {
+
+    const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+
+    const api_url_part = "/api";
+    const endPoint = "/users/token";
+    const url = this.api_fs.api + api_url_part + endPoint;
+    // const body = {username: username, password: password};
+
+    this.showSpinner = true;
+    return this.http.post(url, forgotObj, options).map(res => {
+      return res.json()
+    }).share();
   }
 
   onSubmitForgotForm(){
     if(this.forgotForm.valid){
       let forgotEmail = this.forgotForm.get('forgotEmail').value;
-      //console.log('forgot Email:', forgotEmail)
       //forgot api comes here
-      //this.formError //for error handling
-      this.isForgotContainer = false;
+      const forgotObj = {"email": forgotEmail};
+      this.forgotPasswordService(forgotObj).subscribe( res => {
+        this.showSpinner = false;
+        this.formError = res.statusText;
+      }, rej => {
+        //this.loginForm.reset();
+        this.showSpinner = false;
+        this.formError = rej.statusText; //for error handling
+      });
     }
   }
 

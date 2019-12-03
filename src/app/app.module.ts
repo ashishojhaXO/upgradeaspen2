@@ -49,7 +49,10 @@ export function HttpLoaderFactory(http: Http) {
         Ng2MultiSelectDropDownModule.forRoot(),
         ConfirmationPopoverModule.forRoot(),
     ],
-    providers: [AuthGuard, Validator, Common, Title],
+    providers: [
+        // AuthGuard, 
+        Validator, Common, Title
+    ],
     bootstrap: [AppComponent]
 })
 
