@@ -13,6 +13,7 @@ export class field {
     attr_list?: any;
     validation?: any;
     disable?: any;
+    editable?: any;
 }
 
 export class value {

@@ -575,12 +575,13 @@ export class OrderComponent implements OnInit  {
     this.submitData(reqObj).subscribe(
         response => {
           if (response) {
-            console.log('response >>')
-            console.log(response);
             Swal({
               title: 'Success',
               text: 'Order Successfully Created',
               type: 'success'
+            }).then(() => {
+             // this.router.navigate(['/app/targetAud/']);
+              this.router.navigate(['/app/orderPayment']);
             });
           }
         },
@@ -592,8 +593,6 @@ export class OrderComponent implements OnInit  {
           });
         }
     );
-
-   // this.router.navigate(['/app/targetAud/']);
   }
 
   submitData(reqObj) {

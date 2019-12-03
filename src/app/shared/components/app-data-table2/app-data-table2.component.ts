@@ -94,6 +94,21 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         }
     }
 
+    attachEvents(row) {
+        const __this = this;
+        $(".api-action")
+        .on('click', function($event){
+            const elem = this;
+            // __this.triggerActions.emit($event);
+            __this.triggerActions.emit({
+                action: 'handleActions',
+                elem: elem,
+                data: row
+            }
+            );
+        });
+    }
+
     initializeTable() {
         const __this = this;
 
@@ -307,7 +322,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                             }
                                             options += '>' + option.text + '</option>';
                                         });
-                                        const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select id="select_' + index + '_' + field.name + '" class="form-control inlineEditor" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 && !field.value ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
+                                        const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class="form-control inlineEditor select-control" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
                                         $('td', row).eq(columnIndex).html(html);
                                     }
                                 }
@@ -352,7 +367,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             // Apply selected class when a row is clicked
             $('#' + this.tableId + ' tbody').on('click', 'tr', function () {
-                console.log(__this.dataObject.gridData.options);
                 if (__this.dataObject.gridData.options.isRowHighlight) {
                     $(this).toggleClass('selected');
                 } else {
@@ -569,37 +583,40 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 );
                             } else if (__this.identity === 'usermanagement') {
                                 const retHtml = `<div>
-                                        <button 
-                                            class="btn action-btn api-action" 
-                                            data-action="setPasswordAndActivate"
-                                            style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
-                                        >
-                                            <span style="margin-right: 5px; position: relative;">
-                                            <i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i>
-                                            <i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i>
-                                            </span>Set Password & Activate
-                                        </button>
-                                        <button 
-                                            class="btn action-btn api-action" 
-                                            data-action="resendEmail"
-                                            style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
-                                        >
+                                    <button 
+                                        class="btn action-btn api-action" 
+                                        data-action="resendEmail"
+                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
+                                    >
                                         <span style="margin-right: 5px; position: relative;">
-                                        <i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i>
-                                        <i class="fa fa-arrow-right" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i>
-                                        </span>Resend Activation Email
-                                        </button>
-                                        <div class="dropdown">
-                                        <button class="btn action-btn dropdown-toggle" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; line-height: 1.7; font-weight: 600;" type="button" id="menu1" data-toggle="dropdown">
-                                            More Actions
-                                            <span class="caret" style="margin-left: 5px"></span>
-                                        </button>
-                                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                                            <li role="presentation" style="margin: 5px 0px"><i class="fa fa-recycle" style="font-size: 20px; margin-left: 10px" aria-hidden="true"></i><a role="menuitem" tabindex="-1" style="line-height: 1.5; cursor: pointer; font-weight: 600; font-size: 12px; padding-left: 5px; display: inline-block; position: relative; top: -2px">RESET MULTIFACTOR</a></li>
-                                            <li role="presentation" class="api-action" data-action="suspend" style="margin: 5px 0px"><span style="position: relative; margin-left: 13px"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-pause" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span><a role="menuitem" tabindex="-1" style="line-height: 1.5; cursor: pointer; font-weight: 600; font-size: 12px; padding-left: 6px; display: inline-block; position: relative; top: -2px">SUSPEND</a></li>
-                                            <li role="presentation" class="api-action" data-action="deactivate" style="margin: 5px 0px"><span style="position: relative; margin-left: 13px"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-times" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span><a role="menuitem" tabindex="-1" style="line-height: 1.5; cursor: pointer; font-weight: 600; font-size: 12px; padding-left: 6px; display: inline-block; position: relative; top: -2px">DEACTIVATE</a></li>
-                                        </ul></div>
-                                    </div>`;
+                                            <i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i>
+                                            <i class="fa fa-arrow-right" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i>
+                                        </span>
+                                        Resend Activation Email
+                                    </button>
+                                    <button 
+                                        class="btn action-btn api-action" 
+                                        data-action="deactivate"
+                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
+                                    >
+                                        <span style="margin-right: 5px; position: relative;">
+                                            <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i>
+                                            <i class="fa fa-times" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i>
+                                        </span>
+                                        DEACTIVATE
+                                    </button>
+                                    <button
+                                        class="btn action-btn api-action"
+                                        data-action="unlock"
+                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
+                                    >
+                                        <span style="margin-right: 5px; position: relative;">
+                                            <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i>
+                                            <i class="fa fa-unlock" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i>
+                                        </span>
+                                        Unlock and Resend Activation email
+                                    </button>
+                                </div>`;
                                 row.child(retHtml).show();
                                 __this.attachEvents(row);
                                 tr.addClass('shown');
@@ -736,36 +753,40 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 );
                             } else if (__this.identity === 'usermanagement') {
                                 const retHtml = `<div>
-                                        <button 
-                                            class="btn action-btn api-action" 
-                                            data-action="setPasswordAndActivate"
-                                            style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
-                                        >
-                                            <span style="margin-right: 5px; position: relative;">
-                                            <i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i>
-                                            <i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i>
-                                            </span>Set Password & Activate
-                                        </button>
-                                        <button 
-                                            class="btn action-btn api-action" 
-                                            data-action="resendEmail"
-                                            style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
-                                        >
+                                    <button
+                                        class="btn action-btn api-action"
+                                        data-action="resendEmail"
+                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
+                                    >
                                         <span style="margin-right: 5px; position: relative;">
-                                        <i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i>
-                                        <i class="fa fa-arrow-right" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i>
-                                        </span>Resend Activation Email
-                                        </button>
-                                        <div class="dropdown">
-                                        <button class="btn action-btn dropdown-toggle" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; line-height: 1.7; font-weight: 600;" type="button" id="menu1" data-toggle="dropdown">
-                                            More Actions
-                                            <span class="caret" style="margin-left: 5px"></span>
-                                        </button>
-                                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                                            <li role="presentation" style="margin: 5px 0px"><i class="fa fa-recycle" style="font-size: 20px; margin-left: 10px" aria-hidden="true"></i><a role="menuitem" tabindex="-1" style="line-height: 1.5; cursor: pointer; font-weight: 600; font-size: 12px; padding-left: 5px; display: inline-block; position: relative; top: -2px">RESET MULTIFACTOR</a></li>
-                                            <li role="presentation" class="api-action" data-action="suspend" style="margin: 5px 0px"><span style="position: relative; margin-left: 13px"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-pause" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span><a role="menuitem" tabindex="-1" style="line-height: 1.5; cursor: pointer; font-weight: 600; font-size: 12px; padding-left: 6px; display: inline-block; position: relative; top: -2px">SUSPEND</a></li>
-                                            <li role="presentation" class="api-action" data-action="deactivate" style="margin: 5px 0px"><span style="position: relative; margin-left: 13px"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-times" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span><a role="menuitem" tabindex="-1" style="line-height: 1.5; cursor: pointer; font-weight: 600; font-size: 12px; padding-left: 6px; display: inline-block; position: relative; top: -2px">DEACTIVATE</a></li>
-                                        </ul></div>
+                                            <i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i>
+                                            <i class="fa fa-arrow-right" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i>
+                                        </span>
+                                        Resend Activation Email
+                                    </button>
+                                    <button
+                                        class="btn action-btn api-action"
+                                        data-action="deactivate"
+                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
+                                    >
+                                        <span style="margin-right: 5px; position: relative;">
+                                            <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i>
+                                            <i class="fa fa-times" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i>
+                                        </span>
+                                        DEACTIVATE
+                                    </button>
+                                    <button
+                                        class="btn action-btn api-action"
+                                        data-action="unlock"
+                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
+                                    >
+                                        <span style="margin-right: 5px; position: relative;">
+                                            <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i>
+                                            <i class="fa fa-unlock" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i>
+                                        </span>
+                                        Unlock and Resend Activation email
+                                    </button>
+
                                     </div>`;
                                 row.child(retHtml).show();
                                 __this.attachEvents(row);
@@ -997,24 +1018,18 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         $(this).next('.metric-details').hide(500);
                     }
             });
+
+            $(document).off('change', '.select-control');
+            $(document).on('change', '.select-control', function () {
+                const required = $(this).data('validation');
+                if(!$(this).val() && required) {
+                   $(this).closest('td').find('div.alert-danger').show();
+                } else {
+                    $(this).closest('td').find('div.alert-danger').hide();
+                }
+            });
         }
     }
-
-    attachEvents(row) {
-        const __this = this;
-        $(".api-action")
-            .on('click', function($event){
-                const elem = this;
-                // __this.triggerActions.emit($event);
-                __this.triggerActions.emit({
-                        action: 'handleActions',
-                        elem: elem,
-                        data: row
-                    }
-                );
-            });
-    }
-
 
     handleModalSave() {
         const __this = this;

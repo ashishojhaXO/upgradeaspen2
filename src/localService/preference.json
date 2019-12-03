@@ -110,36 +110,42 @@
           "url": "app/admin/usermanagement"
         },
         {
-          "index": 8,
+          "index": 2,
           "name": "vendormanagement",
           "title": "Vendor Management",
-          "selected": false,
           "id": "vendormanagement",
           "url": "app/vendormanagement"
         },
         {
-          "index": 2,
+          "index": 3,
           "name": "support",
           "title": "Support",
           "id": "support",
           "url": "app/admin/support"
         },
         {
-          "index": 3,
+          "index": 4,
           "name": "baseFields",
           "title": "Configure Base Fields",
           "id": "baseFields",
-          "url": "app/baseFields"
-        },
-        {
-          "index": 4,
-          "name": "ordertemplate",
-          "title": "Configure Template",
-          "id": "ordertemplate",
-          "url": "app/ordertemplate"
+          "url": "app/admin/baseFields"
         },
         {
           "index": 5,
+          "name": "ordertemplate",
+          "title": "Configure Template",
+          "id": "ordertemplate",
+          "url": "app/admin/ordertemplate"
+        },
+        {
+          "index": 6,
+          "name": "ordertemplatelist",
+          "title": "Template List",
+          "id": "ordertemplatelist",
+          "url": "app/admin/ordertemplatelist"
+        },
+        {
+          "index": 7,
           "name": "order",
           "title": "Create Order",
           "id": "order",
