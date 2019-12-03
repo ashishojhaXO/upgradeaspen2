@@ -121,7 +121,7 @@ export class CustomFormbuilderComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges){
     if(this.editTemplate){
       if(changes['fieldData']){
-        console.log('from custom field input >>', this.fieldData);
+        //console.log('from custom field input >>', this.fieldData);
         if(this.fieldData){
           this.fieldData.forEach(element => {
             if(element.type == 'varchar' || element.type == 'text' || element.type == 'string'){
@@ -187,12 +187,10 @@ export class CustomFormbuilderComponent implements OnInit {
     this.getAttributeService().subscribe(
       response => {
         if (response && response.attributes) {
-          console.log('response from get attributes', response.attributes);
+          //console.log('response from get attributes', response.attributes);
           this.fieldModels = response.attributes;
           this.fieldModels.forEach(element => {
             element.validation = [];
-            element.disable = 0;
-            element.editable = 0;
             if(element.type == 'varchar' || element.type == 'text' || element.type == 'string'){
               element.dropType = 'text';
               element.attr_list = "";
@@ -352,11 +350,11 @@ export class CustomFormbuilderComponent implements OnInit {
     });
   }
 
-  validationRequired(value:boolean, item){
+  validationSet(field: string, value:boolean, item){
     if(value){
-      item.validation.push('required')
+      item.validation.push(field)
     }else{
-      item.validation.splice(item.validation.indexOf('required'), 1)
+      item.validation.splice(item.validation.indexOf(field), 1)
     }
   }
 }

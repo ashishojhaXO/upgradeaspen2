@@ -134,31 +134,11 @@ export class OrderTemplateComponent implements OnInit {
         let orderFields = [];
         let lineItems = [];
         this.orderForm.model.attributes.forEach(element => {
-          orderFields.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'disable', 'validation', 'editable']))
+          orderFields.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation']))
         });
         this.lineItemForm.model.attributes.forEach(element => {
-          lineItems.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'disable', 'validation', 'editable']))
+          lineItems.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation']))
         });
-
-        // create flat array for validation properties
-          // orderFields.forEach(function (ele) {
-          //     const validationArr = [];
-          //     for(const prop in ele.validation) {
-          //         if(prop === 'required' && ele.validation[prop] === 1) {
-          //             validationArr.push(prop);
-          //         }
-          //     }
-          //     ele.validation = validationArr;
-          // });
-          // lineItems.forEach(function (ele) {
-          //     const validationArr = [];
-          //     for(const prop in ele.validation) {
-          //         if(prop === 'required' && ele.validation[prop] === 1) {
-          //             validationArr.push(prop);
-          //         }
-          //     }
-          //     ele.validation = validationArr;
-          // });
 
         this.templateResponse.orderTemplateData = {
           orderFields : orderFields,
