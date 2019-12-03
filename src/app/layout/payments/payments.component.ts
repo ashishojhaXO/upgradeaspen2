@@ -218,10 +218,10 @@ export class PaymentsComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
+            if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
                     this.searchDataRequest();
                   })
@@ -231,7 +231,7 @@ export class PaymentsComponent implements OnInit  {
                   });
             } else {
               this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
+                localStorage.removeItem('accessToken');
                 window.location.href = '/login';
               });
             }
@@ -243,10 +243,11 @@ export class PaymentsComponent implements OnInit  {
   }
 
   searchData() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -353,10 +354,10 @@ export class PaymentsComponent implements OnInit  {
       err => {
 
         if(err.status === 401) {
-          if(this.widget.tokenManager.get('accessToken')) {
+          if(localStorage.getItem('accessToken')) {
             this.widget.tokenManager.refresh('accessToken')
                 .then(function (newToken) {
-                  this.widget.tokenManager.add('accessToken', newToken);
+                  localStorage.setItem('accessToken', newToken);
                   this.showSpinner = false;
                   this.getOrganizations();
                 })
@@ -366,7 +367,7 @@ export class PaymentsComponent implements OnInit  {
                 });
           } else {
             this.widget.signOut(() => {
-              this.widget.tokenManager.remove('accessToken');
+              localStorage.removeItem('accessToken');
               window.location.href = '/login';
             });
           }
@@ -473,10 +474,10 @@ export class PaymentsComponent implements OnInit  {
       },
       err => {
         if(err.status === 401) {
-          if(this.widget.tokenManager.get('accessToken')) {
+          if(localStorage.getItem('accessToken')) {
             this.widget.tokenManager.refresh('accessToken')
                 .then(function (newToken) {
-                  this.widget.tokenManager.add('accessToken', newToken);
+                  localStorage.setItem('accessToken', newToken);
                   this.showSpinner = false;
                   this.getVendors(orgid);
                 })
@@ -486,7 +487,7 @@ export class PaymentsComponent implements OnInit  {
                 });
           } else {
             this.widget.signOut(() => {
-              this.widget.tokenManager.remove('accessToken');
+              localStorage.removeItem('accessToken');
               window.location.href = '/login';
             });
           }
@@ -530,10 +531,11 @@ export class PaymentsComponent implements OnInit  {
   }
 
   getVendorsByOrg(orgid: any){
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
 
     console.log('AccessToken >>>')
@@ -550,10 +552,11 @@ export class PaymentsComponent implements OnInit  {
   }
 
   getAllOrganizations(){
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
 
     console.log('AccessToken >>>')
@@ -654,10 +657,10 @@ export class PaymentsComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
+            if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
                     this.createTransactionRequest(dataObj);
                   })
@@ -667,7 +670,7 @@ export class PaymentsComponent implements OnInit  {
                   });
             } else {
               this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
+                localStorage.removeItem('accessToken');
                 window.location.href = '/login';
               });
             }
@@ -680,10 +683,11 @@ export class PaymentsComponent implements OnInit  {
   }
 
   createTransaction(dataObj) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});

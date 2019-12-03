@@ -12,7 +12,7 @@ import 'bootstrap';
 import {Router, ActivatedRoute} from '@angular/router';
 import {DataTableOptions} from '../../../models/dataTableOptions';
 import {Http, Headers, RequestOptions} from '@angular/http';
-import { OktaAuthService } from '../../../services/okta.service';
+// import { OktaAuthService } from '../../../services/okta.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import Swal from 'sweetalert2';
 
@@ -67,14 +67,16 @@ export class OrderComponent implements OnInit  {
   selectedRow: any;
   originalResponseObj : any;
 
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder,) {
+  constructor(
+    // private okta: OktaAuthService, 
+    private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder,) {
     this.formAttribute = fb;
   }
 
   ngOnInit() {
 
     this.showSpinner = true;
-    this.widget = this.okta.getWidget();
+    // this.widget = this.okta.getWidget();
 
     this.height = '50vh';
 
@@ -112,22 +114,24 @@ export class OrderComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchTemplates();
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
+            if(localStorage.getItem('accessToken')) {
+              console.log("ord no okt if")
+              // this.widget.tokenManager.refresh('accessToken')
+              //     .then(function (newToken) {
+              //       localStorage.setItem('accessToken', newToken);
+              //       this.showSpinner = false;
+              //       this.searchTemplates();
+              //     })
+              //     .catch(function (err) {
+              //       console.log('error >>')
+              //       console.log(err);
+              //     });
             } else {
-              this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
-                window.location.href = '/login';
-              });
+              console.log("ord no okt else")
+              // this.widget.signOut(() => {
+              //   localStorage.removeItem('accessToken');
+              //   window.location.href = '/login';
+              // });
             }
           } else {
             this.showSpinner = false;
@@ -226,10 +230,10 @@ export class OrderComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
+            if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
                     this.getTemplateDetails(templateID);
                   })
@@ -239,7 +243,7 @@ export class OrderComponent implements OnInit  {
                   });
             } else {
               this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
+                localStorage.removeItem('accessToken');
                 window.location.href = '/login';
               });
             }
@@ -251,10 +255,11 @@ export class OrderComponent implements OnInit  {
   }
 
   getTemplates() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
@@ -267,10 +272,11 @@ export class OrderComponent implements OnInit  {
   }
 
   getTemplateDetails(templateID) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
 
     const data = {
@@ -415,10 +421,10 @@ export class OrderComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
+            if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
                     this.searchDataRequest();
                   })
@@ -428,7 +434,7 @@ export class OrderComponent implements OnInit  {
                   });
             } else {
               this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
+                localStorage.removeItem('accessToken');
                 window.location.href = '/login';
               });
             }
@@ -440,10 +446,11 @@ export class OrderComponent implements OnInit  {
   }
 
   searchData() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
@@ -589,10 +596,11 @@ export class OrderComponent implements OnInit  {
   }
 
   submitData(reqObj) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});

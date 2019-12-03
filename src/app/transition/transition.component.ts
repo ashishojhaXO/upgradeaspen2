@@ -26,7 +26,9 @@ export class TransitionComponent implements OnInit {
   showSpinner: any;
   widget;
 
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http, private sanitizer: DomSanitizer, private changeDetectorRef: ChangeDetectorRef) {
+  constructor(
+    private okta: OktaAuthService, 
+    private route: ActivatedRoute, private router: Router, private http: Http, private sanitizer: DomSanitizer, private changeDetectorRef: ChangeDetectorRef) {
     this.showSpinner = false;
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
@@ -42,9 +44,7 @@ export class TransitionComponent implements OnInit {
     this.getCustomerInfoRequest();
   }
 
-  getCustomerInfoRequest() {
-    return this.getCustomerInfo().subscribe(
-        responseDetails => {
+  getCutomerInfoSuccess(responseDetails) {
           this.showSpinner = false;
 
           if (responseDetails.body && responseDetails.body) {
@@ -68,16 +68,19 @@ export class TransitionComponent implements OnInit {
             this.error = 'No User details found. Please contact administrator';
             console.log('No Vendor details found');
           }
-        },
-        err => {
+  }
+
+  getCutomerInfoError(err){
           console.log('err >>>')
           console.log(err);
-
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
+            if(localStorage.getItem('accessToken')) {
+              const self = this;
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
+                    // TODO: this is undefined here, check
+                    console.log("THIS:: this: ", this, " self: ", self)
                     this.showSpinner = false;
                     this.getCustomerInfoRequest();
                   })
@@ -85,9 +88,10 @@ export class TransitionComponent implements OnInit {
                     console.log('error >>')
                     console.log(err1);
                   });
-            } else {
+            } 
+            else {
               this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
+                localStorage.removeItem('accessToken');
                 window.location.href = '/login';
               });
             }
@@ -95,6 +99,15 @@ export class TransitionComponent implements OnInit {
             this.showSpinner = false;
             this.error = err;
           }
+  }
+
+  getCustomerInfoRequest() {
+    return this.getCustomerInfo().subscribe(
+        responseDetails => {
+          this.getCutomerInfoSuccess(responseDetails);
+        },
+        err => {
+          this.getCutomerInfoError(err)
         }
     );
   }
@@ -124,6 +137,7 @@ export class TransitionComponent implements OnInit {
     }
 
     if (!access) {
+      console.log("!access logout")
       this.logout();
     } else {
       this.router.navigate(['./app/dashboards']);
@@ -132,7 +146,7 @@ export class TransitionComponent implements OnInit {
 
   logout() {
     this.widget.signOut(() => {
-      this.widget.tokenManager.remove('accessToken');
+      localStorage.removeItem('accessToken');
       this.changeDetectorRef.detectChanges();
      // this.router.navigate(['./login'],{ queryParams: { error: '401' } });
       window.location.href = '/login?error=401';
@@ -160,14 +174,18 @@ export class TransitionComponent implements OnInit {
   }
 
   getCustomerInfo(): any {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
+
+    // TODO: no UserId getting sent by the server yet, so it's empty.
     const urserID = localStorage.getItem('loggedInUserID') || '';
+
     const url = this.api_fs.api + '/api/users/' + urserID + '/external';
     return this.http
         .get(url, options)

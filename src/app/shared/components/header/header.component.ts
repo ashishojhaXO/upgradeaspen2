@@ -11,6 +11,7 @@ import * as OktaSignIn from '@okta/okta-signin-widget/dist/js/okta-sign-in-no-jq
 import {PopUpModalComponent} from '../pop-up-modal/pop-up-modal.component';
 import {FormControl, FormGroup, FormArray, Validators} from '@angular/forms';
 import {Http, Headers, RequestOptions} from '@angular/http';
+import { OktaAuthService } from '@okta/okta-angular';
 
 @Component({
   selector: 'app-header',
@@ -61,6 +62,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   resetModel: any;
 
   constructor(
+    private okta: OktaAuthService, 
     private translate: TranslateService,
     public router: Router,
     private route: ActivatedRoute,
@@ -86,9 +88,6 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   }
 
   ngOnInit() {
-
-    console.log('header')
-
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
 
@@ -468,28 +467,35 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
     this.isMenuOpened = !this.isMenuOpened;
   }
 
-  logoutService() {
+  logOutTokenService() {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
       token = AccessToken;
     }
-    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
-    const options = new RequestOptions({headers: headers});
+    const headers = new Headers ({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions ({headers: headers});
     const idToken = localStorage.getItem('idToken') || '';
     const url = this.api_fs.api + '/api/users/logout/' + idToken;
     return this.http
       .get(url, options)
       .map(res => {
         return res.json();
-      }).share();
+      })
+      .share();
+  }
+
+  deleteUser() {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('idToken');
+      localStorage.removeItem('loggedInUserName');
+      localStorage.removeItem('loggedInUserID');
   }
 
   logout() {
-
-    return this.logoutService().subscribe( (res) => {
+    return this.logOutTokenService().subscribe( (res) => {
       console.log("Log out: suc", res);
-      localStorage.removeItem('accessToken');
+      this.deleteUser();
       this.router.navigate(['/login'], { relativeTo: this.route } );
     }, (rej) => {
       console.log("Log out: rej", rej);
@@ -525,10 +531,11 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   }
 
   performPasswordReset(dataObj) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});

@@ -1,26 +1,18 @@
-/**
- * Copyright 2018. FusionSeven Inc. All rights reserved.
- *
- * Author: Dinesh Yadav
- * Date: 2019-02-27 14:54:37
- */
-
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
 import {Router, ActivatedRoute} from '@angular/router';
-import {DataTableOptions} from '../../../models/dataTableOptions';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 
 @Component({
-  selector: 'app-orders',
-  templateUrl: './orders.component.html',
-  styleUrls: ['./orders.component.scss']
+  selector: 'app-orders-template-list',
+  templateUrl: './orders-template-list.component.html',
+  styleUrls: ['./orders-template-list.component.scss']
 })
-export class OrdersComponent implements OnInit  {
+export class OrdersTemplateListComponent implements OnInit  {
 
   gridData: any;
   dataObject: any = {};
@@ -29,7 +21,7 @@ export class OrdersComponent implements OnInit  {
   options: Array<any> = [{
     isSearchColumn: true,
     isTableInfo: true,
-    isEditOption: false,
+    isEditOption: true,
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
@@ -39,7 +31,6 @@ export class OrdersComponent implements OnInit  {
     isPagination: true,
     sendResponseOnCheckboxClick: true
   }];
-  dashboard: any;
   api_fs: any;
   externalAuth: any;
   showSpinner: boolean;
@@ -70,10 +61,10 @@ export class OrdersComponent implements OnInit  {
     console.warn("Not Implemented: Call to Cancel service yet to be implemented...");
   }
 
-  redirectToModifyOrderPage() {
-    if(this.selectedRow && this.selectedRow.rowIndex) {
-      const pageId = this.selectedRow.rowIndex;
-      this.router.navigate([`../order/${pageId}`], { relativeTo: this.route } );
+  redirectToModifyOrderTemplatePage() {
+    if(this.selectedRow && this.selectedRow.data) {
+      const pageId = this.selectedRow.data.id;
+      this.router.navigate([`../ordertemplate/${pageId}`], { relativeTo: this.route } );
     }
   }
 
@@ -81,8 +72,8 @@ export class OrdersComponent implements OnInit  {
     return this.searchData().subscribe(
         response => {
           if (response) {
-            if (response) {
-              this.populateDataTable(response, true);
+            if (response.orgTemplates) {
+              this.populateDataTable(response.orgTemplates.templates, true);
               this.showSpinner = false;
             }
           }
@@ -90,10 +81,10 @@ export class OrdersComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
+            if(this.widget.tokenManager.get('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
+                    this.widget.tokenManager.add('accessToken', newToken);
                     this.showSpinner = false;
                     this.searchDataRequest();
                   })
@@ -103,7 +94,7 @@ export class OrdersComponent implements OnInit  {
                   });
             } else {
               this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
+                this.widget.tokenManager.remove('accessToken');
                 window.location.href = '/login';
               });
             }
@@ -115,15 +106,14 @@ export class OrdersComponent implements OnInit  {
   }
 
   searchData() {
-    const AccessToken: any = localStorage.getItem('accessToken');
+    const AccessToken: any = this.widget.tokenManager.get('accessToken');
     let token = '';
     if (AccessToken) {
-      // token = AccessToken.accessToken;
-      token = AccessToken;
+      token = AccessToken.accessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/orders/line-items';
+    var url = this.api_fs.api + '/api/orders/templates';
     return this.http
         .get(url, options)
         .map(res => {
@@ -147,7 +137,7 @@ export class OrdersComponent implements OnInit  {
           isFilterRequired: true,
           isCheckbox: false,
           class: 'nocolvis',
-          editButton: false,
+          editButton: true,
           width: '150'
         });
       }
@@ -156,14 +146,6 @@ export class OrdersComponent implements OnInit  {
     this.gridData['result'] = tableData;
     this.gridData['headers'] = headers;
     this.gridData['options'] = this.options[0];
-    this.gridData.columnsToColor = [
-      { index: 11, name: 'MERCHANT PROCESSING FEE', color: 'rgb(47,132,234,0.2)'},
-      { index: 15, name: 'LINE ITEM MEDIA BUDGET', color: 'rgb(47,132,234,0.2)'},
-      { index: 16, name: 'KENSHOO FEE', color: 'rgb(47,132,234,0.2)'},
-      { index: 17, name: 'THD FEE', color: 'rgb(47,132,234,0.2)'},
-      { index: 10, name: 'LINE ITEM TOTAL BUDGET', color: 'rgb(47,132,234,0.4)'}
-    ];
-    this.dashboard = 'paymentGrid';
     this.dataObject.gridData = this.gridData;
     console.log(this.gridData);
     this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
@@ -172,8 +154,9 @@ export class OrdersComponent implements OnInit  {
 
   handleCheckboxSelection(rowObj: any, rowData: any) {
     console.log('this.selectedRow >>')
-    console.log(this.selectedRow);
     this.selectedRow = rowObj;
+    console.log(this.selectedRow.data.id);
+    this.redirectToModifyOrderTemplatePage();
   }
 
   handleUnCheckboxSelection(rowObj: any, rowData: any) {

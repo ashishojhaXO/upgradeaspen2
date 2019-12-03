@@ -134,10 +134,10 @@ export class UserManagementComponent implements OnInit  {
                   err1 => {
 
                     if(err1.status === 401) {
-                      if(this.widget.tokenManager.get('accessToken')) {
+                      if(localStorage.getItem('accessToken')) {
                         this.widget.tokenManager.refresh('accessToken')
                             .then(function (newToken) {
-                              this.widget.tokenManager.add('accessToken', newToken);
+                              localStorage.setItem('accessToken', newToken);
                               this.showSpinner = false;
                               return this.getVendors().subscribe(
                                   response2 => {
@@ -170,7 +170,7 @@ export class UserManagementComponent implements OnInit  {
                             });
                       } else {
                         this.widget.signOut(() => {
-                          this.widget.tokenManager.remove('accessToken');
+                          localStorage.removeItem('accessToken');
                           window.location.href = '/login';
                         });
                       }
@@ -185,10 +185,10 @@ export class UserManagementComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
+            if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
                     this.searchDataRequest();
                   })
@@ -198,7 +198,7 @@ export class UserManagementComponent implements OnInit  {
                   });
             } else {
               this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
+                localStorage.removeItem('accessToken');
                 window.location.href = '/login';
               });
             }
@@ -226,10 +226,11 @@ export class UserManagementComponent implements OnInit  {
   }
 
   getVendors() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token , 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -242,10 +243,11 @@ export class UserManagementComponent implements OnInit  {
   }
 
   searchData() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -318,10 +320,10 @@ export class UserManagementComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
+            if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
                     this.performUserAdditionRequest(dataObj);
                   })
@@ -331,7 +333,7 @@ export class UserManagementComponent implements OnInit  {
                   });
             } else {
               this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
+                localStorage.removeItem('accessToken');
                 window.location.href = '/login';
               });
             }
@@ -344,10 +346,11 @@ export class UserManagementComponent implements OnInit  {
   }
 
   performUserAddition(dataObj) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -398,10 +401,11 @@ export class UserManagementComponent implements OnInit  {
 
   apiCall(endPoint, dataObj) {
     // TODO: FTM: All calls are Post, change it to be generic
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const api_url_part = '/api';
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
@@ -421,7 +425,7 @@ export class UserManagementComponent implements OnInit  {
     if (res.status = 200) {
       popUpOptions = {
         title: "Email sent",
-        text: "Email has been sent to your registered account.",
+        text: res.message,
         type: 'success',
         cancelButtonText: "Cancel",
       }
@@ -450,7 +454,7 @@ export class UserManagementComponent implements OnInit  {
     this.showSpinner = false;
     const popUpOptions = {
       title: "Error",
-      text: "Some error occured while calling server.",
+      text: JSON.parse(err._body).message,
       type: 'error',
       cancelButtonText: "Cancel",
     }
@@ -496,7 +500,7 @@ export class UserManagementComponent implements OnInit  {
       // Resolve
       this.showSpinner = false;
       if(res) {
-        const str = res.body.status;
+        const str = res.message;
         const swalOptions = {
           title: 'Success',
           text: str,
@@ -512,7 +516,7 @@ export class UserManagementComponent implements OnInit  {
       if(rej) {
         const swalOptions = {
           title: 'Error',
-          text: rej.body.error.errorSummary,
+          text: JSON.parse(rej._body).message,
           type: 'error',
           showCloseButton: true,
           confirmButtonText: "Ok",

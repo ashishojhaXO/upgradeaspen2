@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import { OktaAuthService } from '../../../services/okta.service';
 import { Headers, RequestOptions, Http } from '@angular/http';
 import * as _ from 'lodash';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -30,16 +30,16 @@ export class OrderTemplateComponent implements OnInit {
   templateField: any;
   orderFieldsArr = [];
   lineFieldsArr = [];
+  isPublished:boolean = false;
 
-  constructor(private okta: OktaAuthService, private http: Http,private route: ActivatedRoute) { }
+  constructor(private okta: OktaAuthService, private http: Http,private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
     this.showSpinner = true;
-    this.widget = this.okta.getWidget();
+    // this.widget = this.okta.getWidget();
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
 
-    this.getOrganizations();
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.templateId = {
@@ -47,6 +47,8 @@ export class OrderTemplateComponent implements OnInit {
         };
         this.editTemplate = true;
         this.getTemplate(this.templateId);
+      } else {
+        this.getOrganizations();
       }
     });
 
@@ -72,27 +74,31 @@ export class OrderTemplateComponent implements OnInit {
               text: ele.org_name
             });
           }, this);
-          console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>', this.organizations)
+          console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>', this.organizations);
+          this.showSpinner = false;
         }
       },
       err => {
         if(err.status === 401) {
-          if(this.widget.tokenManager.get('accessToken')) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  this.widget.tokenManager.add('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.getOrganizations();
-                })
-                .catch(function (err) {
-                  console.log('error >>')
-                  console.log(err);
-                });
+          if(localStorage.getItem('accessToken')) {
+            console.log("ord-temp no okt if")
+            // this.widget.tokenManager.refresh('accessToken')
+            //     .then(function (newToken) {
+            //       localStorage.setItem('accessToken', newToken);
+            //       this.showSpinner = false;
+            //       this.getOrganizations();
+            //     })
+            //     .catch(function (err) {
+            //       console.log('error >>')
+            //       console.log(err);
+            //     });
           } else {
-            this.widget.signOut(() => {
-              this.widget.tokenManager.remove('accessToken');
-              window.location.href = '/login';
-            });
+            console.log("ord-temp no okt else")
+            // this.widget.tokenManager.refresh('accessToken')
+            // this.widget.signOut(() => {
+            //   localStorage.removeItem('accessToken');
+            //   window.location.href = '/login';
+            // });
           }
         } else {
           this.showSpinner = false;
@@ -102,10 +108,11 @@ export class OrderTemplateComponent implements OnInit {
   }
 
   getOrganizationService() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
@@ -123,34 +130,19 @@ export class OrderTemplateComponent implements OnInit {
         this.templateResponse.template_id = "";
         this.templateResponse.template_name = this.templateForm.value.templateName;
         this.templateResponse.org_id = this.templateForm.value.orgName;
+        if (this.isPublished){
+          this.templateResponse.isPublish = 1;
+        }else {
+          this.templateResponse.isPublish = 0;
+        }
         let orderFields = [];
         let lineItems = [];
         this.orderForm.model.attributes.forEach(element => {
-          orderFields.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'disable', 'validation', 'editable']))
+          orderFields.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation']))
         });
         this.lineItemForm.model.attributes.forEach(element => {
-          lineItems.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'disable', 'validation', 'editable']))
+          lineItems.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation']))
         });
-
-        // create flat array for validation properties
-          // orderFields.forEach(function (ele) {
-          //     const validationArr = [];
-          //     for(const prop in ele.validation) {
-          //         if(prop === 'required' && ele.validation[prop] === 1) {
-          //             validationArr.push(prop);
-          //         }
-          //     }
-          //     ele.validation = validationArr;
-          // });
-          // lineItems.forEach(function (ele) {
-          //     const validationArr = [];
-          //     for(const prop in ele.validation) {
-          //         if(prop === 'required' && ele.validation[prop] === 1) {
-          //             validationArr.push(prop);
-          //         }
-          //     }
-          //     ele.validation = validationArr;
-          // });
 
         this.templateResponse.orderTemplateData = {
           orderFields : orderFields,
@@ -177,6 +169,13 @@ export class OrderTemplateComponent implements OnInit {
     }
   }
 
+  onPublishForm(){
+    if(this.templateForm.valid){
+      this.isPublished = true;
+    }
+    this.onSubmitTemplate();
+  }
+
   createTemplate(template){
     this.createTemplateService(template).subscribe(
       response => {
@@ -185,19 +184,32 @@ export class OrderTemplateComponent implements OnInit {
         if (response && response.status == 200) {
           response.message
           console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>', response.message);
+          let status;
+          if(this.isPublished){
+            status = "published"
+          }else{
+            if(this.editTemplate){
+              status = "modified"
+            }else{
+              status = "generated"
+            }
+          }
           Swal({
-            title: 'Template successfully ' + this.editTemplate ? 'modified' : 'generated',
+            title: 'Template successfully ' + status,
             text: response.message,
             type: 'success'
-          })
+          }).then( () => {
+              this.router.navigate(['/app/admin/ordertemplatelist']);
+            }
+          )
         }
       },
       err => {
         if(err.status === 401) {
-          if(this.widget.tokenManager.get('accessToken')) {
+          if(localStorage.getItem('accessToken')) {
             this.widget.tokenManager.refresh('accessToken')
                 .then(function (newToken) {
-                  this.widget.tokenManager.add('accessToken', newToken);
+                  localStorage.setItem('accessToken', newToken);
                   this.showSpinner = false;
                   this.createTemplateService(template);
                 })
@@ -207,7 +219,7 @@ export class OrderTemplateComponent implements OnInit {
                 });
           } else {
             this.widget.signOut(() => {
-              this.widget.tokenManager.remove('accessToken');
+              localStorage.removeItem('accessToken');
               window.location.href = '/login';
             });
           }
@@ -219,10 +231,11 @@ export class OrderTemplateComponent implements OnInit {
   }
 
   createTemplateService(template){
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
@@ -249,21 +262,39 @@ export class OrderTemplateComponent implements OnInit {
     this.getTemplateService(templateId).subscribe(
       response => {
         if (response && response.status == 200) {
+          this.showSpinner = false;
           console.log('template edit fields', response);
           this.templateField = response.orderTemplateData;
           this.orderFieldsArr = this.templateField.orderFields;
           this.lineFieldsArr = this.templateField.lineItems;
+          if(this.templateField.template.hasOwnProperty('isPublish')){
+            this.isPublished = this.templateField.template.isPublish;
+          } else {
+            this.isPublished = false;
+          }
           this.templateForm.controls['templateName'].setValue(this.templateField.template.template_name);
           this.templateForm.controls['orgName'].setValue(this.templateField.organizaion.org_id);
           console.log('template edit fields array', this.templateField);
+          this.getOrganizations();
+        }
+        else{
+          this.showSpinner = false;
+          Swal({
+            title: 'Error Occured',
+            text: response.message,
+            type: 'warning'
+          }).then( () => {
+              this.router.navigate(['/app/admin/ordertemplatelist']);
+            }
+          )
         }
       },
       err => {
         if(err.status === 401) {
-          if(this.widget.tokenManager.get('accessToken')) {
+          if(localStorage.getItem('accessToken')) {
             this.widget.tokenManager.refresh('accessToken')
                 .then(function (newToken) {
-                  this.widget.tokenManager.add('accessToken', newToken);
+                  localStorage.setItem('accessToken', newToken);
                   this.showSpinner = false;
                   this.getTemplateService(templateId);
                 })
@@ -273,7 +304,7 @@ export class OrderTemplateComponent implements OnInit {
                 });
           } else {
             this.widget.signOut(() => {
-              this.widget.tokenManager.remove('accessToken');
+              localStorage.removeItem('accessToken');
               window.location.href = '/login';
             });
           }
@@ -285,10 +316,11 @@ export class OrderTemplateComponent implements OnInit {
   }
 
   getTemplateService(templateId) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
@@ -299,5 +331,12 @@ export class OrderTemplateComponent implements OnInit {
         .map(res => {
           return res.json();
         }).share();
+  }
+
+  cloneForm(){
+    this.isPublished = false;
+    this.editTemplate = false;
+    this.templateResponse.template_id = "";
+    this.templateForm.controls['templateName'].setValue(this.templateField.template.template_name + '_clone');
   }
 }

@@ -3031,6 +3031,8 @@ div.modal-dialog {
         font-size: 12px;
         margin: 5px 5px 0 0;
         text-transform: uppercase;
+        position: relative;
+        top: -1px;
       }
       .breadcrumbList {
         float: left;
@@ -3041,7 +3043,6 @@ div.modal-dialog {
           padding: 0 12px 0 0;
           text-decoration: none;
           text-transform: uppercase;
-          border-right: 1px solid #888;
           font-weight: bold;
           .breadcrumbValue {
             color: #656565;
@@ -3050,6 +3051,9 @@ div.modal-dialog {
             text-transform: uppercase;
           }
         }
+        //.breadcrumblabel:not(:last-child) {
+        //  border-right: 1px solid #888;
+        //}
       }
     }
   }
@@ -3071,6 +3075,7 @@ div.modal-dialog {
   top: -10px;
   text-transform: uppercase;
   margin-right: 30px;
+  h3 { font-size: 15px; }
 }
 
 .sidebar-content {
@@ -3087,7 +3092,7 @@ div.modal-dialog {
   margin: 10px 0px;
   .title {
     color: #878787;
-    font-size: 15px;
+    font-size: 12px;
     margin-bottom: 9px;
     text-transform: capitalize;
     margin: 0 0 10px;
@@ -3262,6 +3267,7 @@ table.dataTable.display tbody tr.even>.sorting_1, table.dataTable.order-column.s
 
 div.dataTables_wrapper div.dataTables_info {
   padding-top: 11px !important;
+  font-size: 12px !important;
 }
 
 div.dataTables_wrapper div.dataTables_paginate {
@@ -3512,6 +3518,42 @@ div.crumbs-main {
 
 .active.accordion-header::before {
   background-color: #FC6468;
+}
+
+
+
+
+.breadcrumb {
+  margin-bottom: 0px;
+}
+.dataTables_info {
+  position: relative;
+  top: 2px;
+}
+
+.paginate_button.previous {
+  font-size: 12px;
+  position: relative;
+  top: -4px;
+}
+.paginate_button.next {
+  font-size: 12px;
+  position: relative;
+  top: -3px;
+}
+.dataTables_length {
+  font-size: 12px;
+  position: relative;
+  top: -4px;
+  select {
+    margin-bottom: 4px
+  }
+}
+
+.paginate_button  {
+  position: relative;
+  top: -2px;
+  > a { font-size: 12px; }
 }
 
 
