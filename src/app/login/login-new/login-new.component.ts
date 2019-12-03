@@ -82,7 +82,8 @@ export class LoginNewComponent implements OnInit {
     localStorage.setItem('accessToken', res.body.access_token);
     // localStorage.setItem('accessToken', res.body.data);
     localStorage.setItem('idToken', res.body.id_token);
-
+    localStorage.setItem('loggedInUserName', res.body.first_name.trim() + " " + res.body.last_name.trim());
+    localStorage.setItem('loggedInUserID', res.body.id);
   }
 
   compileBody(userData){

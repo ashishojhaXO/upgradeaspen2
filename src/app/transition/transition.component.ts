@@ -11,7 +11,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import {finalize, map} from 'rxjs/operators';
 import { DomSanitizer} from '@angular/platform-browser';
-// import { OktaAuthService } from '../../../src/services/okta.service';
+import { OktaAuthService } from '../../../src/services/okta.service';
 
 @Component({
   selector: 'app-transition',
@@ -27,7 +27,7 @@ export class TransitionComponent implements OnInit {
   widget;
 
   constructor(
-    // private okta: OktaAuthService, 
+    private okta: OktaAuthService, 
     private route: ActivatedRoute, private router: Router, private http: Http, private sanitizer: DomSanitizer, private changeDetectorRef: ChangeDetectorRef) {
     this.showSpinner = false;
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
@@ -40,13 +40,11 @@ export class TransitionComponent implements OnInit {
 
   performActions() {
     this.showSpinner = true;
-    // this.widget = this.okta.getWidget();
+    this.widget = this.okta.getWidget();
     this.getCustomerInfoRequest();
   }
 
-  getCustomerInfoRequest() {
-    return this.getCustomerInfo().subscribe(
-        responseDetails => {
+  getCutomerInfoSuccess(responseDetails) {
           this.showSpinner = false;
 
           if (responseDetails.body && responseDetails.body) {
@@ -70,16 +68,19 @@ export class TransitionComponent implements OnInit {
             this.error = 'No User details found. Please contact administrator';
             console.log('No Vendor details found');
           }
-        },
-        err => {
+  }
+
+  getCutomerInfoError(err){
           console.log('err >>>')
           console.log(err);
-
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
+              const self = this;
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
                     localStorage.setItem('accessToken', newToken);
+                    // TODO: this is undefined here, check
+                    console.log("THIS:: this: ", this, " self: ", self)
                     this.showSpinner = false;
                     this.getCustomerInfoRequest();
                   })
@@ -87,7 +88,8 @@ export class TransitionComponent implements OnInit {
                     console.log('error >>')
                     console.log(err1);
                   });
-            } else {
+            } 
+            else {
               this.widget.signOut(() => {
                 localStorage.removeItem('accessToken');
                 window.location.href = '/login';
@@ -97,6 +99,15 @@ export class TransitionComponent implements OnInit {
             this.showSpinner = false;
             this.error = err;
           }
+  }
+
+  getCustomerInfoRequest() {
+    return this.getCustomerInfo().subscribe(
+        responseDetails => {
+          this.getCutomerInfoSuccess(responseDetails);
+        },
+        err => {
+          this.getCutomerInfoError(err)
         }
     );
   }
