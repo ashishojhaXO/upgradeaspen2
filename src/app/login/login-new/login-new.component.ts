@@ -4,6 +4,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import { Common } from '../../shared/util/common';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { USER_CLIENT_NAME } from '../../../constants/organization';
+import {ENV} from '../../../constants/env';
 
 // interface User {
 //   body: Object({
@@ -40,7 +41,10 @@ export class LoginNewComponent implements OnInit {
   }
 
   initVars() {
-    this.api_fs = JSON.parse(localStorage.getItem('apis_fs')) || ''; // or some url from config file
+    if( !localStorage.getItem('apis_fs') )
+      localStorage.setItem('apis_fs', JSON.stringify(ENV.apis_fs));
+    // or some url from config file
+    this.api_fs = JSON.parse(localStorage.getItem('apis_fs')) || ENV.apis_fs; 
   }
   
   private formOnInit(){
