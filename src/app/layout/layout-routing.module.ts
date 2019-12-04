@@ -21,6 +21,7 @@ import { ConfigureAdComponent } from './configureAd/configureAd.component';
 import { TargetAudComponent } from './targetAud/targetAud.component';
 import { OrderSummaryComponent } from './orderSummary/orderSummary.component';
 import { OrdersTemplateListComponent } from './orders-template-list/orders-template-list.component';
+import { OrdersListComponent } from './orders-list/orders-list.component';
 
 const routes: Routes = [
   {
@@ -263,6 +264,14 @@ const routes: Routes = [
             data: {
               breadcrumbs: true,
               text: 'Order Template List'
+            },
+          },
+          {
+            path: 'orderslist',
+            component: OrdersListComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Orders List'
             },
           }
         ]

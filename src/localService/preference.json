@@ -150,6 +150,13 @@
           "title": "Create Order",
           "id": "order",
           "url": "app/order"
+        },
+        {
+          "index": 8,
+          "name": "orderList",
+          "title": "Orders List",
+          "id": "orderList",
+          "url": "app/admin/orderslist"
         }
       ]
     }

@@ -8,11 +8,11 @@ import { OktaAuthService } from '../../../services/okta.service';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 
 @Component({
-  selector: 'app-orders-template-list',
-  templateUrl: './orders-template-list.component.html',
-  styleUrls: ['./orders-template-list.component.scss']
+  selector: 'app-orders-list',
+  templateUrl: './orders-list.component.html',
+  styleUrls: ['./orders-list.component.scss']
 })
-export class OrdersTemplateListComponent implements OnInit  {
+export class OrdersListComponent implements OnInit  {
 
   gridData: any;
   dataObject: any = {};
@@ -22,6 +22,7 @@ export class OrdersTemplateListComponent implements OnInit  {
     isSearchColumn: true,
     isTableInfo: true,
     isEditOption: true,
+    isPlayOption: true,
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
@@ -35,7 +36,10 @@ export class OrdersTemplateListComponent implements OnInit  {
   externalAuth: any;
   showSpinner: boolean;
   widget: any;
-  pageId = '';
+  templateValue = 'all';
+  templateArr = [];
+  editID = '';
+  payID = '';
 
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
@@ -53,7 +57,8 @@ export class OrdersTemplateListComponent implements OnInit  {
 
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
-    this.searchDataRequest();
+    this.getTemplates();
+    this.searchDataRequest(this.templateValue);
   }
 
   cancelOrder() {
@@ -62,21 +67,24 @@ export class OrdersTemplateListComponent implements OnInit  {
     console.warn("Not Implemented: Call to Cancel service yet to be implemented...");
   }
 
-  redirectToModifyOrderTemplatePage() {}
-
-  handleEdit(dataObj: any){
-    console.log('rowData >>>')
-    console.log(dataObj.data);
-    this.pageId = dataObj.data.id;
-    this.router.navigate([`../ordertemplate/${this.pageId}`], { relativeTo: this.route } );
+  redirectToModifyOrderTemplatePage() {
+    if(this.selectedRow && this.selectedRow.data) {
+      const pageId = this.selectedRow.data.id;
+      this.router.navigate([`../ordertemplate/${pageId}`], { relativeTo: this.route } );
+    }
   }
 
-  searchDataRequest() {
-    return this.searchData().subscribe(
+  searchDataRequest(templateValue) {
+    return this.searchData(templateValue).subscribe(
         response => {
           if (response) {
-            if (response.orgTemplates) {
-              this.populateDataTable(response.orgTemplates.templates, true);
+            if (response.orders) {
+              let orders = [];
+              response.orders.forEach(element => {
+                orders.push(element.order);
+              });
+              console.log('from orders', orders);
+              this.populateDataTable(orders, true);
               this.showSpinner = false;
             }
           }
@@ -87,9 +95,9 @@ export class OrdersTemplateListComponent implements OnInit  {
             if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
-                    this.searchDataRequest();
+                    this.searchDataRequest(templateValue);
                   })
                   .catch(function (err) {
                     console.log('error >>')
@@ -108,17 +116,26 @@ export class OrdersTemplateListComponent implements OnInit  {
     );
   }
 
-  searchData() {
+  searchData(templateValue) {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
       token = AccessToken;
     }
+    let template;
+    if(templateValue == 'all'){
+       template = '';
+    }else{
+      template = {
+        "template_id": templateValue
+      }
+    }
+    const data = JSON.stringify(template);
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/orders/templates';
+    var url = this.api_fs.api + '/api/orders/list';
     return this.http
-        .get(url, options)
+        .post(url, data, options)
         .map(res => {
           return res.json();
         }).share();
@@ -169,6 +186,85 @@ export class OrdersTemplateListComponent implements OnInit  {
   handleRow(rowObj: any, rowData: any) {
     if(this[rowObj.action])
       this[rowObj.action](rowObj);
+  }
+
+  handleEdit(dataObj: any) {
+    console.log('rowData >>>')
+    console.log(dataObj.data);
+    this.editID = dataObj.data.id;
+    this.router.navigate(['/app/order/', this.editID]);
+  }
+
+  handleRun(dataObj: any){
+    console.log('rowData >>>')
+    console.log(dataObj.data);
+    this.payID = dataObj.data.id;
+    this.router.navigate(['/app/orderPayment/', this.payID]);
+  }
+
+  getTemplates(){
+    this.getTemplateService().subscribe(
+      response => {
+        console.log('response >>')
+        console.log(response);
+        if (response && response.orgTemplates) {
+          response.orgTemplates.templates.forEach(function (ele) {
+            this.templateArr.push({
+              id: ele.id,
+              text: ele.name
+            });
+          }, this);
+          console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>', this.templateArr);
+          this.showSpinner = false;
+        }
+      },
+      err => {
+        if(err.status === 401) {
+          if(localStorage.getItem('accessToken')) {
+            console.log("ord-temp no okt if")
+            this.widget.tokenManager.refresh('accessToken')
+                .then(function (newToken) {
+                  localStorage.setItem('accessToken', newToken);
+                  this.showSpinner = false;
+                  this.getOrganizations();
+                })
+                .catch(function (err) {
+                  console.log('error >>')
+                  console.log(err);
+                });
+          } else {
+            console.log("ord-temp no okt else")
+            this.widget.tokenManager.refresh('accessToken')
+            this.widget.signOut(() => {
+              localStorage.removeItem('accessToken');
+              window.location.href = '/login';
+            });
+          }
+        } else {
+          this.showSpinner = false;
+        }
+      }
+    );
+  }
+
+  getTemplateService() {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/orders/org-templates';
+    return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
+  templateChange(value){
+    this.searchDataRequest(value)
   }
 
 }
