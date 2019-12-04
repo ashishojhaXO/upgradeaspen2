@@ -14,7 +14,7 @@ import {DataTableOptions} from '../../../models/dataTableOptions';
 import * as chartConfig from './chartConfig.json';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import {PopupDataAction} from '../../shared/components/app-popup-button/popup-data-action';
-// import { OktaAuthService } from '../../../services/okta.service';
+import { OktaAuthService } from '../../../services/okta.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -78,7 +78,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   widget: any;
 
   constructor(
-    // private okta: OktaAuthService,
+    private okta: OktaAuthService,
     private route: ActivatedRoute, private router: Router, private http: Http) {
     this.showSpinner = false;
   }
@@ -293,7 +293,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
   ngOnInit() {
 
-    // this.widget = this.okta.getWidget();
+    this.widget = this.okta.getWidget();
 
     this.showSpinner = true;
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
@@ -320,9 +320,13 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               this.getSeedDashboard()
                   .then(
                       response2 => {
+                        console.log("gSD resp2")
                         this.showSpinner = false;
                         this.populateChart(response2);
                         this.populateDataTable(response2);
+                      }, rej => {
+                        console.log("gSD rej", rej)
+
                       });
             }
           },
@@ -356,6 +360,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }
 
   getSeedDashboard() {
+    console.log("gSD")
 
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
@@ -379,8 +384,15 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       dataObj, 
       options
     ).toPromise()
-        .then(data => data.json())
-        .catch();
+        .then(
+          data => data.json(), 
+          rej => {
+            console.log("inside gSD: ", rej)
+          }
+        )
+        .catch( rej => {
+          console.log("CATCH REj", rej)
+        });
   }
 
   populateFilters(filterResponse, seedResponse) {

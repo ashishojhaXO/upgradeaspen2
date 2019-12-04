@@ -500,6 +500,11 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
       this.router.navigate(['/loginnew'] );
     }, (rej) => {
       console.log("Log out: rej", rej);
+      if(rej.status == 401) {
+        this.deleteUser();
+        this.router.navigate(['/loginnew'] );
+      }
+
     })
   }
 
