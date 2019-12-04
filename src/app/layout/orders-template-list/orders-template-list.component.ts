@@ -81,7 +81,7 @@ export class OrdersTemplateListComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
+            if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
                     this.widget.tokenManager.add('accessToken', newToken);
@@ -106,7 +106,7 @@ export class OrdersTemplateListComponent implements OnInit  {
   }
 
   searchData() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
       token = AccessToken.accessToken;

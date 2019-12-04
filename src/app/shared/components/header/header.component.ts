@@ -91,9 +91,9 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
 
-    this.widget = new OktaSignIn({
-      baseUrl: this.externalAuth.api
-    });
+    // this.widget = new OktaSignIn({
+    //   baseUrl: this.externalAuth.api
+    // });
 
     this.localData = this.auth.getIdentityInfo('org-context');
     this.loggedInUser = this.auth.getIdentityInfo('loggedInUserName');
@@ -158,12 +158,13 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   }
 
   onLoggedOut(v) {
-    if (v === 'logout') {
-      this.widget.signOut(() => {
-        this.changeDetectorRef.detectChanges();
-        window.location.href = '/login';
-      });
-    }
+    console.log("onLogOut")
+    // if (v === 'logout') {
+    //   this.widget.signOut(() => {
+    //     this.changeDetectorRef.detectChanges();
+    //     window.location.href = '/login';
+    //   });
+    // }
   }
 
   changeLang(language: string) {
@@ -497,7 +498,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
     return this.logOutTokenService().subscribe( (res) => {
       console.log("Log out: suc", res);
       this.deleteUser();
-      this.router.navigate(['/loginnew'] );
+      this.router.navigate(['/login'] );
     }, (rej) => {
       console.log("Log out: rej", rej);
       if(rej.status == 401) {
