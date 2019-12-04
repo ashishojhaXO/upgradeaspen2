@@ -503,7 +503,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
       console.log("Log out: rej", rej);
       if(rej.status == 401) {
         this.deleteUser();
-        this.router.navigate(['/loginnew'] );
+        this.router.navigate(['/login'] );
       }
 
     })
