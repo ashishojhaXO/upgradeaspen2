@@ -88,6 +88,8 @@ export class LoginNewComponent implements OnInit {
     localStorage.setItem('idToken', res.body.id_token);
     localStorage.setItem('loggedInUserName', res.body.first_name.trim() + " " + res.body.last_name.trim());
     localStorage.setItem('loggedInUserID', res.body.id);
+    localStorage.setItem('loggedInUserGroup', JSON.stringify([res.body.user_role.name.toUpperCase()] ) );
+    localStorage.setItem('loggedInOrg', res.body.org && res.body.org.org_name ? res.body.org.org_name : 'Home Depot');
   }
 
   compileBody(userData){
