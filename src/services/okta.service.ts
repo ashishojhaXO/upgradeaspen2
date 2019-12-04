@@ -64,6 +64,7 @@ export class OktaAuthService {
     //   setTimeout( () => resolve("done"), 1000);
     // })
 
+
     return this;
   }
 
@@ -72,13 +73,22 @@ export class OktaAuthService {
 
   getWidget() {
     console.log("getWidget: ")
+
+    // Return widget only if the person is logged in and accesToken exists, else logout
+    if(!localStorage.getItem('accessToken')) {
+      return this.logOut(localStorage.getItem('accessToken'))
+    }
+
+    // Return widget only if the person is logged in and accesToken exists, else logout
     return this.widget();
     // return 
   }
 
   logOutService() {
     console.log("lOSERV remove all localSTOR")
-    return this.router.navigate(['/login']);
+    localStorage.removeItem('accessToken');
+
+    return this.router.navigate(['login']);
   }
 
   logOut(accessToken) {
@@ -90,8 +100,12 @@ export class OktaAuthService {
       self.logOutService().then( () => {
         console.log("logOUSERV.then resovl")
         return resolve(localStorage.getItem('accessToken')) 
-        }
-      )
+      }, rej => {
+        console.log("louOutServ rej: ", rej);
+      }
+      ).catch(err => {
+        console.log("louOutServ err: ", err);
+      })
     })
   }
 
