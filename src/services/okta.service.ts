@@ -78,7 +78,7 @@ export class OktaAuthService {
 
   logOutService() {
     console.log("lOSERV remove all localSTOR")
-    return this.router.navigate(['/loginnew']);
+    return this.router.navigate(['/login']);
   }
 
   logOut(accessToken) {

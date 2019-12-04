@@ -8,5 +8,11 @@ let path = '';
  path = 'https://aspen-dev.fusionseven.net';
 
 export const ENV = {
-  path : path
+  path : path,
+  apis_fs: {
+    api: "https://plazo-dev.fusionseven.net",
+    redirectUrl: "http://localhost:4300",
+    staticBaseUrl: "https://static.fusionseven.net",
+    termsFile: "DynamicMediaTermsAndConditions.pdf"
+  },
 }

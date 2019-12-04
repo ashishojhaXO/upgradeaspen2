@@ -4,6 +4,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import { Common } from '../../shared/util/common';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { USER_CLIENT_NAME } from '../../../constants/organization';
+import {ENV} from '../../../constants/env';
 
 // interface User {
 //   body: Object({
@@ -40,7 +41,10 @@ export class LoginNewComponent implements OnInit {
   }
 
   initVars() {
-    this.api_fs = JSON.parse(localStorage.getItem('apis_fs')) || ''; // or some url from config file
+    if( !localStorage.getItem('apis_fs') )
+      localStorage.setItem('apis_fs', JSON.stringify(ENV.apis_fs));
+    // or some url from config file
+    this.api_fs = JSON.parse(localStorage.getItem('apis_fs')) || ENV.apis_fs; 
   }
   
   private formOnInit(){
@@ -84,6 +88,8 @@ export class LoginNewComponent implements OnInit {
     localStorage.setItem('idToken', res.body.id_token);
     localStorage.setItem('loggedInUserName', res.body.first_name.trim() + " " + res.body.last_name.trim());
     localStorage.setItem('loggedInUserID', res.body.id);
+    localStorage.setItem('loggedInUserGroup', JSON.stringify([res.body.user_role.name.toUpperCase()] ) );
+    localStorage.setItem('loggedInOrg', res.body.org && res.body.org.org_name ? res.body.org.org_name : 'Home Depot');
   }
 
   compileBody(userData){
