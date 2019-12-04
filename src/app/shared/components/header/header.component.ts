@@ -498,7 +498,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
     return this.logOutTokenService().subscribe( (res) => {
       console.log("Log out: suc", res);
       this.deleteUser();
-      this.router.navigate(['/loginnew'] );
+      this.router.navigate(['/login'] );
     }, (rej) => {
       console.log("Log out: rej", rej);
     })
