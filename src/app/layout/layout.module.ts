@@ -50,6 +50,7 @@ import { OrganizationService } from './../../services/organization.service';
 import { CustomFormBuilderModule } from '../shared/components/customformbuilder/customformbuilder.module';
 import { OrdersTemplateListComponent } from './orders-template-list/orders-template-list.component';
 import { OrdersListComponent } from './orders-list/orders-list.component';
+import { NumericDirective } from '../shared/directives/Numeric.directive';
 
 @NgModule({
     imports: [
@@ -103,7 +104,8 @@ import { OrdersListComponent } from './orders-list/orders-list.component';
         OrderTemplateComponent,
         ConfigureAdComponent,
         TargetAudComponent,
-        OrderSummaryComponent
+        OrderSummaryComponent,
+        NumericDirective
     ],
     providers: [
         AuthGuard, 
