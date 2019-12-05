@@ -87,7 +87,7 @@ export class OrdersTemplateListComponent implements OnInit  {
             if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
                     this.searchDataRequest();
                   })

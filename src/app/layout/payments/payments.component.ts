@@ -51,7 +51,7 @@ export class PaymentsComponent implements OnInit  {
   summary = [];
   widget: any;
   paymentForm:FormGroup;
-  newForm: boolean = false;
+  newForm: boolean = true;
   paymentFormNew:FormGroup;
   organizations = [];
   payeeArr = [];
@@ -150,7 +150,19 @@ export class PaymentsComponent implements OnInit  {
     this.searchDataRequest();
     this.getOrganizations();
     console.log(this.selectedStatus);
-
+    this.paymentFormNew.controls['payPartialCheck'].valueChanges.subscribe(change => {
+      console.log('tick change', change);
+      if(change === false){
+        this.paymentFormNew.controls['payPartialInput'].setValue('');
+        this.verifyLineAmountError = false;
+        const control = <FormArray>this.paymentFormNew.controls['lineItemPartialInputArr'];
+        for(let i = control.length-1; i >= 0; i--) {
+            control.removeAt(i);
+        } 
+      }else if(change){
+        this.getInvoiceItems(this.selectedInvoice);
+      }
+    });
   }
 
   onSearchChange(e){
@@ -191,6 +203,7 @@ export class PaymentsComponent implements OnInit  {
       tamount: e.total_amount,
       lineItem: e.ap_invoice_line_items
     };
+    this.selectedInvoice = invoices;
     this.getInvoiceItems(invoices);
     const __this = this;
     setTimeout(function () {
@@ -246,7 +259,7 @@ export class PaymentsComponent implements OnInit  {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      // token = AccessToken.accessToken;
+      // token = AccessToken;
       token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
@@ -409,10 +422,10 @@ export class PaymentsComponent implements OnInit  {
       err => {
 
         if(err.status === 401) {
-          if(this.widget.tokenManager.get('accessToken')) {
+          if(localStorage.getItem('accessToken')) {
             this.widget.tokenManager.refresh('accessToken')
                 .then(function (newToken) {
-                  this.widget.tokenManager.add('accessToken', newToken);
+                  localStorage.setItem('accessToken', newToken);
                   this.showSpinner = false;
                   this.getPayees();
                 })
@@ -434,10 +447,10 @@ export class PaymentsComponent implements OnInit  {
     );
   }
   getAllPayees(){
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -500,10 +513,10 @@ export class PaymentsComponent implements OnInit  {
   }
 
   getFilteredInvoices(match) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-        token = AccessToken.accessToken;
+        token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -534,12 +547,12 @@ export class PaymentsComponent implements OnInit  {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      // token = AccessToken.accessToken;
+      // token = AccessToken;
       token = AccessToken;
     }
 
     console.log('AccessToken >>>')
-    console.log(AccessToken.accessToken);
+    console.log(AccessToken);
 
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -555,12 +568,12 @@ export class PaymentsComponent implements OnInit  {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      // token = AccessToken.accessToken;
+      // token = AccessToken;
       token = AccessToken;
     }
 
     console.log('AccessToken >>>')
-    console.log(AccessToken.accessToken);
+    console.log(AccessToken);
 
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -686,7 +699,7 @@ export class PaymentsComponent implements OnInit  {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      // token = AccessToken.accessToken;
+      // token = AccessToken;
       token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
@@ -760,7 +773,7 @@ export class PaymentsComponent implements OnInit  {
       for(let i=0; i < this.lineItemPartial.length; i++){
         lineItemPartial.push({
           id : this.lineItemPartial[i].line_item_id,
-          amount : this.lineItemPartial[i].amount,
+          amount : +this.lineItemPartial[i].amount,
           units: this.lineItemPartial[i].units,
           quantity: this.lineItemPartial[i].quantity
         })
@@ -818,10 +831,10 @@ export class PaymentsComponent implements OnInit  {
       },
       err => {
         if(err.status === 401) {
-          if(this.widget.tokenManager.get('accessToken')) {
+          if(localStorage.getItem('accessToken')) {
             this.widget.tokenManager.refresh('accessToken')
                 .then(function (newToken) {
-                  this.widget.tokenManager.add('accessToken', newToken);
+                  localStorage.setItem('accessToken', newToken);
                   this.showSpinner = false;
                   this.updateApService(formData);
                 })
@@ -849,10 +862,10 @@ export class PaymentsComponent implements OnInit  {
     );
   }
   updateApService(formData){
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
