@@ -8,6 +8,7 @@ import { VendorManagementComponent } from './../layout/vendorManagement/vendorMa
 import { DashboardsComponent } from './../layout/dashboards/dashboards.component';
 import { OrdersComponent } from './orders/orders.component';
 import { OrderComponent } from './order/order.component';
+import { OrderPaymentComponent } from './orderPayment/orderPayment.component';
 import { PaymentsComponent } from './payments/payments.component';
 import { ReconciliationComponent } from './reconciliation/reconciliation.component';
 import { SupportComponent } from './support/support.component';
@@ -15,6 +16,13 @@ import { TasksComponent } from './tasks/tasks.component';
 import { UserManagementComponent } from './usermanagement/usermanagement.component';
 import { VisDashboardComponent } from './visDashboard/visDashboard.component';
 import { OrdersProcessedComponent } from './orders-processed/orders-processed.component';
+import { BaseFieldsComponent } from './baseFields/baseFields.component';
+import { OrderTemplateComponent } from './order-template/order-template.component';
+import { ConfigureAdComponent } from './configureAd/configureAd.component';
+import { TargetAudComponent } from './targetAud/targetAud.component';
+import { OrderSummaryComponent } from './orderSummary/orderSummary.component';
+import { OrdersTemplateListComponent } from './orders-template-list/orders-template-list.component';
+import { OrdersListComponent } from './orders-list/orders-list.component';
 
 const routes: Routes = [
   {
@@ -120,6 +128,70 @@ const routes: Routes = [
         },
       },
       {
+        path: 'configureAd',
+        component: ConfigureAdComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Configure AD'
+        },
+      },
+      {
+        path: 'configureAd/:id',
+        component: ConfigureAdComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Modify AD'
+        },
+      },
+      {
+        path: 'targetAud',
+        component: TargetAudComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Configure Target Audience'
+        },
+      },
+      {
+        path: 'targetAud/:id',
+        component: TargetAudComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Modify Target Audience'
+        },
+      },
+      {
+        path: 'orderSummary',
+        component: OrderSummaryComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Order Summary'
+        },
+      },
+      {
+        path: 'orderSummary/:id',
+        component: OrderSummaryComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Order Summary'
+        },
+      },
+      {
+        path: 'orderPayment',
+        component: OrderPaymentComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Configure Order Payment'
+        },
+      },
+      {
+        path: 'orderPayment/:id',
+        component: OrderPaymentComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Modify Order Payment'
+        },
+      },
+      {
         path: 'payments',
         component: PaymentsComponent
       },
@@ -171,6 +243,46 @@ const routes: Routes = [
               text: 'Orders Processed'
             }
           },
+          {
+            path: 'baseFields',
+            component: BaseFieldsComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Base Fields'
+            },
+          },
+          {
+            path: 'ordertemplate',
+            component: OrderTemplateComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Order Template'
+            },
+          },
+          {
+            path: 'ordertemplate/:id',
+            component: OrderTemplateComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Modify Order Template'
+            },
+          },
+          {
+            path: 'ordertemplatelist',
+            component: OrdersTemplateListComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Order Template List'
+            },
+          },
+          {
+            path: 'orderslist',
+            component: OrdersListComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Orders List'
+            },
+          }
         ]
       }
     ]

@@ -1,0 +1,63 @@
+.highcharts-title tspan {
+  padding-bottom: 30px;
+}
+
+.app-container .dashboardTitle {
+  color: #0777bc;
+  font-size: 15px;
+  display: inline;
+}
+
+.page-header {
+  margin: 0px 20px;
+}
+.payment-modal-header{
+  margin: 15px 0px 0px 10px;
+}
+.form-field {
+  display: block;
+  /* width: 100%; */
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+.checkbox-field{
+  display: block;
+  /* width: 100%; */
+  height: 34px;
+  padding: 0px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+}
+
+.form-group-fields {
+  position: relative;
+  transition: all 2s;
+  -webkit-transition: all 2s;
+  margin: 20px;
+  padding-bottom: 25px;
+}
+
+.success {
+  color: green;
+}
+.fail {
+  color: red;
+}
+.select2-field
+{
+  padding: 0px; 
+  line-height: 1.42857143
+}
+

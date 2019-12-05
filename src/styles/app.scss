@@ -81,3 +81,8 @@ a[href^="tel"]{
     font-weight: inherit;
   }
 }
+
+/* to make sweetalert visible above modals */
+.swal2-container {
+  z-index: 10600 !important;
+}

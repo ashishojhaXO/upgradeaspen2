@@ -18,6 +18,19 @@ label {
   }
 }
 
+.datepicker-icon {
+  position: relative !important;
+  left: -62px !important;
+  border-right: 0px !important;
+}
+
+.datepicker.datepicker-dropdown {
+  z-index: 10000 !important;
+}
+
+ //Following style is used for setting z-index on angular directive for eonasdan-bootstrap-datetimepicker
+.usetwentyfour{z-index:100000 !important}
+
 .page-content {
   background: #ededed;
 }
@@ -3018,6 +3031,8 @@ div.modal-dialog {
         font-size: 12px;
         margin: 5px 5px 0 0;
         text-transform: uppercase;
+        position: relative;
+        top: -1px;
       }
       .breadcrumbList {
         float: left;
@@ -3028,7 +3043,6 @@ div.modal-dialog {
           padding: 0 12px 0 0;
           text-decoration: none;
           text-transform: uppercase;
-          border-right: 1px solid #888;
           font-weight: bold;
           .breadcrumbValue {
             color: #656565;
@@ -3037,6 +3051,9 @@ div.modal-dialog {
             text-transform: uppercase;
           }
         }
+        //.breadcrumblabel:not(:last-child) {
+        //  border-right: 1px solid #888;
+        //}
       }
     }
   }
@@ -3058,6 +3075,7 @@ div.modal-dialog {
   top: -10px;
   text-transform: uppercase;
   margin-right: 30px;
+  h3 { font-size: 15px; }
 }
 
 .sidebar-content {
@@ -3074,7 +3092,7 @@ div.modal-dialog {
   margin: 10px 0px;
   .title {
     color: #878787;
-    font-size: 15px;
+    font-size: 12px;
     margin-bottom: 9px;
     text-transform: capitalize;
     margin: 0 0 10px;
@@ -3203,9 +3221,10 @@ table.dataContainer tbody td {
   white-space: pre-wrap;
 }
 
-.dataTables_scrollBody {
-  height: 320px !important;
-}
+//.dataTables_scrollBody {
+//  height: 320px !important;
+//}
+
 
 table.dataContainer tbody tr.selected {
   background: #0085c7 !important;
@@ -3248,6 +3267,7 @@ table.dataTable.display tbody tr.even>.sorting_1, table.dataTable.order-column.s
 
 div.dataTables_wrapper div.dataTables_info {
   padding-top: 11px !important;
+  font-size: 12px !important;
 }
 
 div.dataTables_wrapper div.dataTables_paginate {
@@ -3277,3 +3297,266 @@ div.dataTables_wrapper div.dataTables_paginate {
   background-clip: padding-box;
   border-radius: 4px;
 }
+
+// Smart Steps starts here
+div.steps-main {
+  position: relative;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border-radius: .25rem !important;
+
+  > ul.step-anchor {
+    position: relative;
+    background: #fff;
+    border: 0px solid #ccc !important;
+    list-style: none;
+
+    > li {
+      border: none;
+
+      > a {
+        position: relative;
+        text-align: center;
+        border: none !important;
+      }
+
+      > a:before {
+        content: ' ';
+        position: absolute;
+        bottom: 2px;
+        left: 40%;
+        margin-top: 10px;
+        display: block;
+        border-radius: 50%;
+        color: #428bca;
+        background: #f5f5f5;
+        border: none;
+        width: 0px;
+        height: 30px;
+        text-decoration: none;
+        z-index: 98;
+      }
+    }
+
+    > li.current > a {
+      color: orange;
+    }
+
+    > li.current > a:after {
+      content: ' ';
+      position: relative;
+      left: 43%;
+      bottom: 2px;
+      margin-top: 10px;
+      display: block;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      z-index: 99;
+      background: orange
+    }
+
+    > li.done > a {
+      color: #5cb85c;
+    }
+
+    > li.done > a:after {
+      content: ' ';
+      position: relative;
+      left: 43%;
+      bottom: 2px;
+      margin-top: 10px;
+      display: block;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      z-index: 99;
+      background: #5cb85c
+    }
+
+    > li.invalid > a {
+      color: #ccc;
+    }
+
+    > li.invalid > a:after {
+      content: ' ';
+      position: relative;
+      left: 43%;
+      bottom: 2px;
+      margin-top: 10px;
+      display: block;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      z-index: 99;
+      background: #ccc
+    }
+  }
+  > ul.step-anchor:before {
+    content: " ";
+    position: absolute;
+    top: 59px;
+    bottom: 17px;
+    width: 100%;
+    height: 0px;
+    background-color: lightgray;
+    /* border-radius: 3px; */
+    z-order: 0;
+    z-index: 95;
+  }
+}
+
+div.crumbs-main {
+
+  .crumb-trail {
+    //background-color: #CCD2D8;
+    color: #62717C;
+    list-style: none;
+    padding: 0px;
+    margin: auto;
+    width: 80%;
+    border-radius: 4px;
+  }
+
+  .crumb {
+    padding: 1px 16px 2px 25px;
+    position: relative;
+  }
+
+  .crumb.done {
+    background: #0084c7 !important;
+    color: #fff !important;
+  }
+
+  .crumb.current {
+    background: #5bc0de !important;
+    color: #fff !important;
+  }
+
+  .crumb.invalid {
+    background: #CCD2D8 !important;
+  }
+
+  .crumb:not(:last-child):before, .crumb:not(:last-child):after{
+    content:"";
+    position:absolute;
+    //width:20px;
+    //height:50%;
+    width:10px;
+    height:25%;
+    left:100%;
+    z-index: 1;
+  }
+
+  .crumb:after {
+    //bottom:0;
+    bottom:6px;
+    background: linear-gradient(to right bottom, #fff 33%, transparent 50%) // linear-gradient(to right bottom, #fff 50%, transparent 50%);
+  }
+  .crumb:before {
+    //top:0;
+    top:9px;
+    background: linear-gradient(to right top, #fff 50%, transparent 50%);
+  }
+
+}
+
+// smart steps ends here
+
+.accordion {
+  background: linear-gradient(to bottom right, white, #F8F8F8);
+  max-width: 700px;
+  background: white;
+  box-shadow: 0 15px 20px -15px rgba(0, 0, 0, 0.3), 0 35px 50px -25px rgba(0, 0, 0, 0.3), 0 85px 60px -25px rgba(0, 0, 0, 0.1);
+}
+
+.accordion-header {
+  //border-bottom: 1px solid #DDE0E7;
+  //color: #2a313a;
+  //cursor: pointer;
+  //font-weight: 700;
+  //padding: 1.5rem;
+
+  border-bottom: 1px solid #DDE0E7;
+  color: #2a313a;
+  cursor: pointer;
+  font-weight: 700;
+  /* padding: 1.3rem; */
+  padding-top: 14px;
+  padding-left: 5px;
+  /* position: relative; */
+  /* top: -5px; */
+  /* padding-bottom: 10px; */
+  font-size: 10px;
+}
+
+.accordion-header:hover {
+  background: #F6F7F9;
+}
+
+.accordion-content {
+  display: none;
+  border-bottom: 1px solid #DDE0E7;
+  background: #F6F7F9;
+  padding: 1.5rem;
+  color: #4a5666;
+}
+
+.accordion-header::before {
+  content: '';
+  vertical-align: middle;
+  display: inline-block;
+  width: .75rem;
+  height: .75rem;
+  border-radius: 50%;
+  background-color: #B1B5BE;
+  margin-right: .75rem;
+  position: relative;
+  top: -5px;
+}
+
+.active.accordion-header::before {
+  background-color: #FC6468;
+}
+
+
+
+
+.breadcrumb {
+  margin-bottom: 0px;
+}
+.dataTables_info {
+  position: relative;
+  top: 2px;
+}
+
+.paginate_button.previous {
+  font-size: 12px;
+  position: relative;
+  top: -4px;
+}
+.paginate_button.next {
+  font-size: 12px;
+  position: relative;
+  top: -3px;
+}
+.dataTables_length {
+  font-size: 12px;
+  position: relative;
+  top: -4px;
+  select {
+    margin-bottom: 4px
+  }
+}
+
+.paginate_button  {
+  position: relative;
+  top: -2px;
+  > a { font-size: 12px; }
+}
+
+
+
+
+

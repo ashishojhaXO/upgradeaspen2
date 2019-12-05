@@ -21,6 +21,8 @@ import { FooterComponent } from '../shared';
 import {CheckboxSwitchModule} from './../shared/components/app-checkbox-switch/app-checkbox-switch.module';
 import {MultiSelectDropdownModule} from './../shared/components/multiselect-dropdown/multiselect-dropdown.module';
 import { DatepickerModule, BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { AppScriptEmbedderModule} from './../shared/components/app-script-embedder/app-script-embedder.module';
+import {A2Edatetimepicker} from 'ng2-eonasdan-datetimepicker';
 
 //declarations
 import { DashboardsComponent } from './dashboards/dashboards.component';
@@ -33,12 +35,22 @@ import { TasksComponent } from './tasks/tasks.component';
 import { UserManagementComponent } from './usermanagement/usermanagement.component';
 import { VisDashboardComponent } from './visDashboard/visDashboard.component';
 import { OrderComponent } from './order/order.component';
+import { OrderPaymentComponent } from './orderPayment/orderPayment.component';
+import { ConfigureAdComponent } from './configureAd/configureAd.component';
+import { TargetAudComponent } from './targetAud/targetAud.component';
+import { BaseFieldsComponent } from './baseFields/baseFields.component';
+import { OrderTemplateComponent } from './order-template/order-template.component';
+import { OrderSummaryComponent } from './orderSummary/orderSummary.component';
+
 
 // providers
 import { AuthGuard } from './../shared';
 import { OktaAuthService } from './../../services/okta.service';
 import { OrganizationService } from './../../services/organization.service';
 import { OrdersProcessedComponent } from './orders-processed/orders-processed.component';
+import { CustomFormBuilderModule } from '../shared/components/customformbuilder/customformbuilder.module';
+import { OrdersTemplateListComponent } from './orders-template-list/orders-template-list.component';
+import { OrdersListComponent } from './orders-list/orders-list.component';
 
 @NgModule({
     imports: [
@@ -65,7 +77,10 @@ import { OrdersProcessedComponent } from './orders-processed/orders-processed.co
         CheckboxSwitchModule,
         MultiSelectDropdownModule,
         BsDatepickerModule.forRoot(),
-        DatepickerModule.forRoot()
+        DatepickerModule.forRoot(),
+        AppScriptEmbedderModule,
+        CustomFormBuilderModule,
+        A2Edatetimepicker
     ],
     declarations: [
         LayoutComponent,
@@ -74,6 +89,8 @@ import { OrdersProcessedComponent } from './orders-processed/orders-processed.co
         FooterComponent,
         DashboardsComponent,
         OrdersComponent,
+        OrdersTemplateListComponent,
+        OrdersListComponent,
         PaymentsComponent,
         VendorManagementComponent,
         ReconciliationComponent,
@@ -82,9 +99,18 @@ import { OrdersProcessedComponent } from './orders-processed/orders-processed.co
         UserManagementComponent,
         VisDashboardComponent,
         OrderComponent,
-        OrdersProcessedComponent
+        OrdersProcessedComponent,
+        OrderPaymentComponent,
+        BaseFieldsComponent,
+        OrderTemplateComponent,
+        ConfigureAdComponent,
+        TargetAudComponent,
+        OrderSummaryComponent
     ],
-    providers: [AuthGuard, OktaAuthService, OrganizationService],
+    providers: [
+        AuthGuard, 
+        OktaAuthService, 
+        OrganizationService],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA
     ]

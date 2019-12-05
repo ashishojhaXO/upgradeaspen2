@@ -1,5 +1,5 @@
 <div>
-  <div class="col-lg-12 col-md-12" style="margin: 0px 0px 20px">
+  <div class="col-lg-12 col-md-12">
     <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">USER MANAGEMENT</p>
     <div class="alert-btn type-create pull-right">
       <a title="create" class="button btn btn-success" (click)="handleShowModal(AddUser)" href="javascript:void(0)">CREATE NEW USER</a>
@@ -7,7 +7,11 @@
   </div>
   <div class="">
     <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject.isDataAvailable">
-      <app-data-table2 [dataObject]="dataObject" identity="usermanagement" (triggerActions)="this[$event.action]($event)"></app-data-table2>
+      <app-data-table2
+        [dataObject]="dataObject"
+        identity="usermanagement"
+        (triggerActions)="this[$event.action]($event)">
+      </app-data-table2>
       <!--<app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height"></app-data-table1>-->
     </div>
     <div class="clearfix"></div>

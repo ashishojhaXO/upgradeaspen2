@@ -95,14 +95,6 @@
       "url":"app/payments"
     },
     {
-      "index": 8,
-      "name": "vendormanagement",
-      "title": "Vendor",
-      "selected": false,
-      "id": "vendormanagement",
-      "url": "app/vendormanagement"
-    },
-    {
       "index": 9,
       "name": "admin",
       "title": "Admin",
@@ -119,10 +111,52 @@
         },
         {
           "index": 2,
+          "name": "vendormanagement",
+          "title": "Vendor Management",
+          "id": "vendormanagement",
+          "url": "app/vendormanagement"
+        },
+        {
+          "index": 3,
           "name": "support",
           "title": "Support",
           "id": "support",
           "url": "app/admin/support"
+        },
+        {
+          "index": 4,
+          "name": "baseFields",
+          "title": "Configure Base Fields",
+          "id": "baseFields",
+          "url": "app/admin/baseFields"
+        },
+        {
+          "index": 5,
+          "name": "ordertemplate",
+          "title": "Configure Template",
+          "id": "ordertemplate",
+          "url": "app/admin/ordertemplate"
+        },
+        {
+          "index": 6,
+          "name": "ordertemplatelist",
+          "title": "Template List",
+          "id": "ordertemplatelist",
+          "url": "app/admin/ordertemplatelist"
+        },
+        {
+          "index": 7,
+          "name": "order",
+          "title": "Create Order",
+          "id": "order",
+          "url": "app/order"
+        },
+        {
+          "index": 8,
+          "name": "orderList",
+          "title": "Orders List",
+          "id": "orderList",
+          "url": "app/admin/orderslist"
         }
       ]
     }

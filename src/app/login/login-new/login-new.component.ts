@@ -1,6 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import {Router, ActivatedRoute} from '@angular/router';
 import { Common } from '../../shared/util/common';
+import { Http, Headers, RequestOptions } from '@angular/http';
+import { USER_CLIENT_NAME } from '../../../constants/organization';
+import {ENV} from '../../../constants/env';
+
+// interface User {
+//   body: Object({
+//     data: Object({
+//       access_token: String
+//     })
+//   })
+// };
 
 @Component({
   selector: 'app-login-new',
@@ -13,13 +25,28 @@ export class LoginNewComponent implements OnInit {
   forgotForm: FormGroup;
   isForgotContainer: boolean = false;
   formError: string = null;
-  
-  constructor(private common:Common) { }
+  api_fs: any;
+  showSpinner: boolean;
+
+  constructor(
+    private common:Common,
+    private http: Http,
+    private route: ActivatedRoute,
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.formOnInit();
+    this.initVars();
   }
-  
+
+  initVars() {
+    if( !localStorage.getItem('apis_fs') )
+      localStorage.setItem('apis_fs', JSON.stringify(ENV.apis_fs));
+    // or some url from config file
+    this.api_fs = JSON.parse(localStorage.getItem('apis_fs')) || ENV.apis_fs;
+  }
+
   private formOnInit(){
     this.loginForm = new FormGroup({
       'userData': new FormGroup({
@@ -42,29 +69,138 @@ export class LoginNewComponent implements OnInit {
     };
   }
 
+  loginService(body: Object) {
+    const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    const api_url_part = "/api";
+    const endPoint = "/users/token";
+    const url = this.api_fs.api + api_url_part + endPoint;
+
+    this.showSpinner = true;
+    return this.http.post(url, body, options).map(res => {
+      return res.json()
+    }).share();
+  }
+
+  saveUser(res: any) {
+
+    console.log('res >>')
+    console.log(res);
+
+    localStorage.setItem('accessToken', res.body.access_token);
+    localStorage.setItem('idToken', res.body.id_token);
+    localStorage.setItem('loggedInUserName', res.body.first_name.trim() + " " + res.body.last_name.trim());
+    localStorage.setItem('loggedInUserID', res.body.external_id);
+    localStorage.setItem('loggedInUserGroup', JSON.stringify([res.body.user_role.name.toUpperCase()] ) );
+    localStorage.setItem('loggedInOrg', res.body.org && res.body.org.org_name ? res.body.org.org_name : 'Home Depot');
+  }
+
+  compileBody(userData){
+      const body = {username: userData.userEmail, password: userData.password};
+      return body;
+  }
+
   onSubmitLoginForm(){
     if(this.loginForm.valid){
       let userData = this.loginForm.get('userData').value;
       let saveLogin = this.loginForm.get('saveLogin').value;
-      //console.log('user data:', userData);
       //setting remember me coookie
       if(saveLogin){
         const expdate = 365*24*60*60*1000;
         this.common.setLoginCookie('ln', userData.userEmail, expdate);
       }
+
+      const body = this.compileBody(userData)
+
       //login api comes here
-      //this.formError //for error handling
-      //this.loginForm.reset();
+      this.loginService(body).subscribe( res => {
+        this.saveUser(res);
+        this.getCustomerInfo().subscribe(
+            responseDetails => {
+
+              console.log('responseDetails >>>')
+              console.log(responseDetails);
+
+              if (responseDetails.body && responseDetails.body) {
+                localStorage.setItem('customerInfo', JSON.stringify(responseDetails.body));
+                this.router.navigate(['/app/dashboards/'], { relativeTo: this.route } ).then( res => {
+                  this.showSpinner = false;
+                });
+              } else {
+                this.formError = 'No User details found. Please contact administrator';
+                console.log('No Vendor details found');
+              }
+            },
+            err => {
+              if (err.status === 401) {
+                if (localStorage.getItem('accessToken')) {
+
+                } else {
+
+                }
+              } else {
+
+              }
+            }
+        );
+      }, rej => {
+        //this.loginForm.reset();
+        this.showSpinner = false;
+        this.formError = rej.statusText; //for error handling
+      });
     }
+  }
+
+  getCustomerInfo(): any {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken;
+    }
+
+    console.log('token >>>')
+    console.log(token);
+
+    const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen', 'token' : token});
+    const options = new RequestOptions({headers: headers});
+    const urserID = localStorage.getItem('loggedInUserID') || '';
+    const url = this.api_fs.api + '/api/users/' + urserID + '/external';
+    return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
+  forgotPasswordService(forgotObj: Object) {
+
+    const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+
+    const api_url_part = "/api";
+    const endPoint = "/users/token";
+    const url = this.api_fs.api + api_url_part + endPoint;
+    // const body = {username: username, password: password};
+
+    this.showSpinner = true;
+    return this.http.post(url, forgotObj, options).map(res => {
+      return res.json()
+    }).share();
   }
 
   onSubmitForgotForm(){
     if(this.forgotForm.valid){
       let forgotEmail = this.forgotForm.get('forgotEmail').value;
-      //console.log('forgot Email:', forgotEmail)
       //forgot api comes here
-      //this.formError //for error handling
-      this.isForgotContainer = false;
+      const forgotObj = {"email": forgotEmail};
+      this.forgotPasswordService(forgotObj).subscribe( res => {
+        this.showSpinner = false;
+        this.formError = res.statusText;
+      }, rej => {
+        //this.loginForm.reset();
+        this.showSpinner = false;
+        this.formError = rej.statusText; //for error handling
+      });
     }
   }
 

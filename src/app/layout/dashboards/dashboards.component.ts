@@ -77,7 +77,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   dashboard: any;
   widget: any;
 
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
+  constructor(
+    private okta: OktaAuthService,
+    private route: ActivatedRoute, private router: Router, private http: Http) {
     this.showSpinner = false;
   }
 
@@ -105,10 +107,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       });
     }
 
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
@@ -292,6 +294,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   ngOnInit() {
 
     this.widget = this.okta.getWidget();
+
     this.showSpinner = true;
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
@@ -300,6 +303,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     this.height = '50vh';
     this.dashboardConfig = {};
     this.dashboardConfig.filterProps = JSON.parse(JSON.stringify(this.defaultFilters));
+
     if (this.dashboardType === 'pacing' || this.dashboardType === 'spend') {
       this
         .getFilter(this.dashboardType)
@@ -316,13 +320,18 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               this.getSeedDashboard()
                   .then(
                       response2 => {
+                        console.log("gSD resp2")
                         this.showSpinner = false;
                         this.populateChart(response2);
                         this.populateDataTable(response2);
+                      }, rej => {
+                        console.log("gSD rej", rej)
+
                       });
             }
           },
           error => {
+            console.log("error: ", error)
             this.showSpinner = false;
           });
 
@@ -336,10 +345,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
   getSeedData() {
 
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
@@ -351,11 +360,13 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }
 
   getSeedDashboard() {
+    console.log("gSD")
 
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
@@ -366,10 +377,22 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       clientCode: 'homd'
     };
 
+
     const dataObj = JSON.stringify(obj);
-    return this.http.post(this.api_fs.api + '/api/reports/org/homd/seed-dashboard/v1', dataObj, options).toPromise()
-        .then(data => data.json())
-        .catch();
+    return this.http.post(
+      this.api_fs.api + '/api/reports/org/homd/seed-dashboard/v1', 
+      dataObj, 
+      options
+    ).toPromise()
+        .then(
+          data => data.json(), 
+          rej => {
+            console.log("inside gSD: ", rej)
+          }
+        )
+        .catch( rej => {
+          console.log("CATCH REj", rej)
+        });
   }
 
   populateFilters(filterResponse, seedResponse) {
@@ -462,16 +485,23 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     }
   }
 
+  setChartConfig(response, dataPoints: Array<Number> = []) {
+    const num = this.dashboardType == 'spend' ? 4 : 3;
+    const dataPointsLength = dataPoints.length || 1;
+    this.chartConfig.barWidth = 3000 / (response.chartData.data.length * dataPointsLength * num ) ;
+  }
+
   populateChart(response) {
 
     console.log('chart response >>>')
     console.log(response.chartData);
 
     this.chartConfig = JSON.parse(JSON.stringify(chartConfig));
-    if (response.chartData && response.chartData.length) {
+    if (response.chartData && response.chartData.data && response.chartData.data.length) {
 
       console.log('response.chartData >>><<')
       console.log(response.chartData);
+
 
       if(this.dashboardType === 'pacing') {
 
@@ -480,7 +510,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         this.chartConfig.isStacked = true;
 
         if (this.selectedView === 'Monthly') {
-          response.chartData.forEach(function (x) {
+          response.chartData.data.forEach(function (x) {
             x['date'] = this.getMonthName(x['Month']) + ' ' + x['Year'];
           }, this);
 
@@ -491,25 +521,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             unitType: ''
           });
 
-          this.chartConfig.barWidth = (700 / (20 * response.chartData.length));
-
-          // this.chartConfig.dataPoints = [
-          //   {
-          //     propertyName: 'Monthly Spend',
-          //     type: 'column',
-          //     color: 'rgb(56, 199, 224)'
-          //   },
-          //   {
-          //     propertyName: 'Cumulative Spend',
-          //     type: 'column',
-          //     color: 'rgb(80, 130, 186)'
-          //   },
-          //   {
-          //     propertyName: 'Line Item Budget',
-          //     type: 'line',
-          //     color: 'rgb(253, 8, 0)'
-          //   }
-          // ];
         } else {
 
           this.chartConfig.XAxis.labelName = '';
@@ -519,41 +530,23 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             unitType: '',
             // tickIntervalType: 'logarithmic'
           });
-          this.chartConfig.dataPoints = [
-            {
-              propertyName: 'Daily Spend',
-              type: 'column',
-              color: 'rgb(56, 199, 224)'
-            },
-            {
-              propertyName: 'Monthly Cumulative Spend',
-              type: 'column',
-              color: 'rgb(80, 130, 186)'
-            },
-            {
-              propertyName: 'Line Item Monthly Budget',
-              type: 'line',
-              color: 'rgb(253, 8, 0)'
-            }
-          ];
         }
 
         // Chart Labels configured dynamically
-        this.chartConfig.dataPoints = [];
-        const colors = ['rgb(56, 199, 224)', 'rgb(80, 130, 186)', 'rgb(253, 8, 0)', 'rgb(151, 160, 169)', 'rgb(223, 142, 145)', 'rgb(253, 8, 0)'];
-        let i = 0;
-        for(const prop in response.chartData[0]) {
-          if (prop != 'Date') {
-            this.chartConfig.dataPoints.push({
-              propertyName: prop,
-              type: prop === 'Line Item Monthly Budget' ? 'line' : 'column',
-              color: colors[i]
-            });
-          }
-          i++;
-        }
+        const dataPoints = [];
+        response.chartData.meta.forEach(function (meta) {
+          dataPoints.push({
+            propertyName: meta.label,
+            type: meta.chart_type,
+            color: meta.color
+          });
+        });
+        this.chartConfig.dataPoints = dataPoints;
 
-        this.chartConfig.data = response.chartData;
+        this.chartConfig.data = response.chartData.data;
+
+        // Set Dynamic Chart configs here
+        this.setChartConfig(response, dataPoints);
 
         console.log('this.chartConfig.data >>')
         console.log(this.chartConfig.data);
@@ -571,14 +564,12 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
         if (this.selectedView === 'Monthly') {
 
-          response.chartData.forEach(function (x) {
+          response.chartData.data.forEach(function (x) {
             x['date'] = this.getMonthName(x['Month']) + ' ' + x['Year'];
           }, this);
 
           this.chartConfig.XAxis.labelName = '';
           this.chartConfig.XAxis.dataPropertyName = 'date';
-
-          this.chartConfig.barWidth = (700 / (20 * response.chartData.length));
 
           this.chartConfig.YAxis.data.push({
             labelName: '',
@@ -681,25 +672,21 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           // ];
         }
 
-        this.chartConfig.barWidth = (700 / (20 * response.chartData.length));
-
         // Chart Labels configured dynamically
-        this.chartConfig.dataPoints = [];
-        const colors = ['rgb(56, 199, 224)', 'rgb(80, 130, 186)', 'rgb(253, 8, 0)', 'rgb(151, 160, 169)', 'rgb(223, 142, 145)', 'rgb(253, 8, 0)'];
-        let i = 0;
-        for(const prop in response.chartData[0]) {
-          if (prop != 'Date') {
-            this.chartConfig.dataPoints.push({
-              propertyName: prop,
-              type: prop === 'Line Item Daily Budget' ? 'line' : 'column',
-              color: colors[i],
-              YaxisAssociation : ''
-            });
-          }
-          i++;
-        }
+        const dataPoints = [];
+        response.chartData.meta.forEach(function (meta) {
+          dataPoints.push({
+            propertyName: meta.label,
+            type: meta.chart_type,
+            color: meta.color
+          });
+        });
+        this.chartConfig.dataPoints = dataPoints;
 
-        this.chartConfig.data = response.chartData ; //response.chartData;
+        this.chartConfig.data = response.chartData.data;
+
+        // Set Dynamic Chart configs here
+        this.setChartConfig(response, dataPoints);
 
         console.log('this.chartConfig.data >>')
         console.log(this.chartConfig.data);
@@ -710,6 +697,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         //   }
         // });
       }
+
     }
   }
 
@@ -780,10 +768,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }
 
   getFilter(dashboardType): any {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      token = AccessToken;
     }
 
     console.log('token >>>>')
@@ -873,6 +861,14 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
   }
 
+  refreshToken() {
+    // Refresh token api
+    return this.http.get("/users/token").toPromise()
+    //  map( (res) => {
+    //   return res.json();
+    // })
+  }
+
   getSearchDataRequest(dataObj) {
     this.showSpinner = true;
     this.getSearchData(dataObj).subscribe(
@@ -894,12 +890,14 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           }
         },
         err => {
-
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+            if(localStorage.getItem('accessToken')) {
+              this.widget.refresh('accessToken')
+                  // this.refreshToken()
+                  .then(function (res: any) {
+                    const newToken = res.newToken;
+
+                    localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
                     this.getSearchDataRequest(dataObj);
                   })
@@ -908,10 +906,11 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
                     console.log(err);
                   });
             } else {
-              this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
-                window.location.href = '/login';
-              });
+              console.log("Token Sign OUt")
+              // this.widget.signOut(() => {
+              //   localStorage.removeItem('accessToken');
+              //   window.location.href = '/login';
+              // });
             }
           } else {
             this.showSpinner = false;
@@ -921,10 +920,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }
 
   getSearchData(dataObj) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});

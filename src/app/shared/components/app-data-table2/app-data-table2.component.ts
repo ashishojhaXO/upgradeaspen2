@@ -19,7 +19,8 @@ import * as common from '../../../../constants/common';
 // import {ModalDirective} from 'ngx-bootstrap/modal';
 import {Headers, Http, RequestOptions} from '@angular/http';
 import { DatePipe } from '@angular/common';
-import { OktaAuthService } from '../../../../services/okta.service';
+// import { OktaAuthService } from '../../../../services/okta.service';
+import set = Reflect.set;
 
 declare var $: any;
 
@@ -36,13 +37,14 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     @Output() triggerActions: EventEmitter<any> = new EventEmitter<any>();
     loaded = false;
     @Input() sendResponseOnCheckboxClick?: any;
-    widget: any;
+    // widget: any;
     api_fs: any;
     tableId = 'example';
     @Input() dataFieldsConfiguration: any;
     table: any;
     @Input() dataRowUpdated: boolean;
     @Input() identity: any;
+    @Input() height: any;
 
     constructor(
         public toastr: ToastsManager,
@@ -51,11 +53,12 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         private dataTableService: DataTableService,
         private http: Http,
         private datePipe: DatePipe,
-        private okta: OktaAuthService) {
+        // private okta: OktaAuthService
+        ) {
     }
 
     ngOnInit(): void {
-        this.widget = this.okta.getWidget();
+        // this.widget = this.okta.getWidget();
         this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
         // console.log('this.externalTableId >>>@@@')
         // console.log(this.externalTableId);
@@ -67,6 +70,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes['dataObject'] || changes['dataRowUpdated']) {
+
             console.log('dataObject >>>');
             console.log(this.dataObject);
 
@@ -88,6 +92,21 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             }, 0);
             // this.initializeTable();
         }
+    }
+
+    attachEvents(row) {
+        const __this = this;
+        $(".api-action")
+        .on('click', function($event){
+            const elem = this;
+            // __this.triggerActions.emit($event);
+            __this.triggerActions.emit({
+                action: 'handleActions',
+                elem: elem,
+                data: row
+            }
+            );
+        });
     }
 
     initializeTable() {
@@ -143,8 +162,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 if (this.dataObject.gridData.options.isEditOption) {
                     columnButtonDefs += '<a class="fa fa-pencil fa-action-view editLink" style="margin-right: 15px; cursor: pointer">';
                 }
-                if (this.dataObject.gridData.options.isPlayOption) {
-                    columnButtonDefs += '<a class="fa fa-play fa-action-view playLink" style="margin-right: 15px; cursor: pointer">';
+                if (this.dataObject.gridData.options.isPlayOption && this.dataObject.gridData.options.isPlayOption.value) {
+                    const iconClass = this.dataObject.gridData.options.isPlayOption.icon ? this.dataObject.gridData.options.isPlayOption.icon : 'fa-play';
+                    columnButtonDefs += '<a class="fa ' + iconClass  + ' fa-action-view playLink" style="margin-right: 15px; cursor: pointer">';
                 }
                 if (this.dataObject.gridData.options.isDownloadOption) {
                     columnButtonDefs += '<a class="fa fa-download fa-action-view downloadLink" style="margin-right: 15px; cursor: pointer">';
@@ -196,6 +216,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     gridButtons.push({
                         extend: 'csv',
                         text: '<span><i class="fa fa-download fa-Idown" aria-hidden="true"></i></span>',
+                        exportOptions: {
+                            columns: ":visible"
+                        }
                     });
                 }
 
@@ -230,7 +253,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             }
 
             const dataTableOptions = {
-                scrollY: 200,
+                scrollY: this.height ? this.height : 320,
                 scrollX: true,
                 retrieve: true,
                 columns: columns,
@@ -277,22 +300,35 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 if (__this.dataObject.gridData.options.isRowSelection) {
                                     columnIndex++;
                                 }
-                                if (field.type === 'text' || field.type === 'decimal') {
-                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.name + '" class="inlineEditor" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.name  + ' is required</div></div>');
-                                } else if (field.type === 'number') {
-                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.name + '" class="inlineEditor" type="number" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.name  + ' is required</div></div>');
+
+                                field.value = __this.dataObject.gridData.result[index][field.name];
+
+                                if (field.type === 'text' || field.type === 'decimal' || field.type === 'varchar' || field.type === 'string') {
+                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.label + '" class="inlineEditor" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
+                                } else if (field.type === 'int') {
+                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.label + '" class="inlineEditor" type="number" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
                                 } else if (field.type === 'amount') {
-                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '">' + (field.includeCurrency ? '<select style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>' : '') + '<input placeholder="Select ' + field.name + '" class="inlineEditor" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.name  + ' is required</div></div>');
+                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '">' + (field.includeCurrency ? '<select style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>' : '<select style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>') + '<input placeholder="Select ' + field.label + '" class="inlineEditor" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
                                 } else if (field.type === 'date') {
-                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div class="input-group date datepicker"><input placeholder="Select ' + field.name + '" type="text" class="form-control inlineEditor" style="border-radius: 4px; font-size: 12px" value="' + $('td', row).eq(columnIndex).text()  + '" /> <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span></div></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.name  + ' is required</div></div>';
+                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div class="input-group date datepicker"><input placeholder="Select ' + field.label + '" type="text" class="form-control inlineEditor" style="border-radius: 4px; font-size: 12px" value="' + $('td', row).eq(columnIndex).text()  + '" /> <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span></div></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
                                     $('td', row).eq(columnIndex).html(html);
-                                } else if (field.type === 'select') {
-                                    let options = '';
-                                    field.options.forEach(function (option) {
-                                        options += '<option value="' + option.key +  '">' + option.text  + '</option>';
-                                    });
-                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select class="form-control inlineEditor" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px;">' + options  + '</select></div><div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.name  + ' is required</div></div';
-                                    $('td', row).eq(columnIndex).html(html);
+                                } else if (field.type === 'list') {
+                                    if (field.name === 'ad_copy') {
+                                        $('td', row).eq(columnIndex).html('<div><img class="display-ad" src="./../../../../assets/images/adCopy.png" style="width: 38px; cursor: pointer"/></div>');
+                                    } else {
+                                        console.log('field >>')
+                                        console.log(field);
+                                        let options = '<option value="">--Select--</option>';
+                                        field.options.forEach(function (option, index1) {
+                                            options += '<option value="' + option.key + '"';
+                                            if(option.key === field.value) {
+                                                options += ' selected ';
+                                            }
+                                            options += '>' + option.text + '</option>';
+                                        });
+                                        const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class="form-control inlineEditor select-control" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
+                                        $('td', row).eq(columnIndex).html(html);
+                                    }
                                 }
                             }
                         });
@@ -337,6 +373,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             $('#' + this.tableId + ' tbody').on('click', 'tr', function () {
                 if (__this.dataObject.gridData.options.isRowHighlight) {
                     $(this).toggleClass('selected');
+                } else {
+                    $(this).removeClass('selected');
                 }
             });
 
@@ -444,13 +482,13 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 }
 
                 // Highlight selected rows
-                // if ($(this).is(':checked')) {
-                //   if (!$(this).closest('tr').hasClass('selected')) {
-                //     $(this).closest('tr').addClass('selected');
-                //   }
-                // } else {
-                //   $(this).closest('tr').removeClass('selected');
-                // }
+                if ($(this).is(':checked')) {
+                    if (!$(this).closest('tr').hasClass('selected')) {
+                        $(this).closest('tr').addClass('selected');
+                    }
+                } else {
+                    $(this).closest('tr').removeClass('selected');
+                }
             });
 
             // Handle table draw event ( like pagination, sorting )
@@ -558,9 +596,141 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     }
                                 );
                             } else if (__this.identity === 'usermanagement') {
-                                const retHtml = '<div><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Set Password & Activate</button><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-arrow-right" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Resend Activatation Email</button><div class="dropdown"><button class="btn action-btn dropdown-toggle" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; line-height: 1.7; font-weight: 600;" type="button" id="menu1" data-toggle="dropdown">More Actions<span class="caret" style="margin-left: 5px"></span></button><ul class="dropdown-menu" role="menu" aria-labelledby="menu1"><li role="presentation" style="margin: 5px 0px"><i class="fa fa-recycle" style="font-size: 20px; margin-left: 10px" aria-hidden="true"></i><a role="menuitem" tabindex="-1" style="line-height: 1.5; cursor: pointer; font-weight: 600; font-size: 12px; padding-left: 5px; display: inline-block; position: relative; top: -2px" href="#">RESET MULTIFACTOR</a></li><li role="presentation" style="margin: 5px 0px"><span style="position: relative; margin-left: 13px"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-pause" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span><a role="menuitem" tabindex="-1" style="line-height: 1.5; cursor: pointer; font-weight: 600; font-size: 12px; padding-left: 6px; display: inline-block; position: relative; top: -2px" href="#">SUSPEND</a></li><li role="presentation" style="margin: 5px 0px"><span style="position: relative; margin-left: 13px"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-times" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span><a role="menuitem" tabindex="-1" style="line-height: 1.5; cursor: pointer; font-weight: 600; font-size: 12px; padding-left: 6px; display: inline-block; position: relative; top: -2px" href="#">DEACTIVATE</a></li></ul></div></div>';
+                                const retHtml = `<div>
+                                    <button 
+                                        class="btn action-btn api-action" 
+                                        data-action="resendEmail"
+                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
+                                    >
+                                        <span style="margin-right: 5px; position: relative;">
+                                            <i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i>
+                                            <i class="fa fa-arrow-right" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i>
+                                        </span>
+                                        Resend Activation Email
+                                    </button>
+                                    <button 
+                                        class="btn action-btn api-action" 
+                                        data-action="deactivate"
+                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
+                                    >
+                                        <span style="margin-right: 5px; position: relative;">
+                                            <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i>
+                                            <i class="fa fa-times" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i>
+                                        </span>
+                                        DEACTIVATE
+                                    </button>
+                                    <button
+                                        class="btn action-btn api-action"
+                                        data-action="unlock"
+                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
+                                    >
+                                        <span style="margin-right: 5px; position: relative;">
+                                            <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i>
+                                            <i class="fa fa-unlock" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i>
+                                        </span>
+                                        Unlock and Resend Activation email
+                                    </button>
+                                </div>`;
+                                row.child(retHtml).show();
+                                __this.attachEvents(row);
+                                tr.addClass('shown');
+                            } else if (__this.identity === 'orders') {
+                                let retHtml = '';
+                                const orderSteps = [];
+                                orderSteps.push({
+                                    title: 'Order Started',
+                                    subTitle: '10/01/2019',
+                                    state : 'done',
+                                    description: 'Order details during started'
+                                });
+                                orderSteps.push({
+                                    title: 'Payment Received',
+                                    subTitle: '10/01/2019',
+                                    state : 'done',
+                                    description: 'Order details during payment received'
+                                });
+                                orderSteps.push({
+                                    title: 'Payment Processed',
+                                    subTitle: '10/04/2019',
+                                    state : 'done',
+                                    description: 'Payment Processing Completed'
+                                });
+                                orderSteps.push({
+                                    title: 'Order In Progress',
+                                    subTitle: '10/07/2019',
+                                    state : 'current',
+                                    description: 'Order details during started'
+                                });
+                                const id = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
+                                retHtml += __this.smartSteps1(id, orderSteps);
+                                //  retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="width: 450px; border-radius: 4px; overflow-y: scroll;"><h4>Order History</h4><ul></ul><li>10/03/2019 - Order Modified</li><li>10/01/2019 - Payment Received - AMEX xxxx0747 </li><li>10/01/2019 - Order Created</li></div>';
+                                retHtml += '<p style="clear: both">';
+                                retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-bottom: 20px"><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600; padding: 4px; font-size: 10px"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 15px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Extend</button></div>';
+                                retHtml += '<p style="clear: both">';
+                                // retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" id="' + accordian + '" style="width: 700px; height: 50px; background: lavender; margin-left: 15px"><h5 style="margin-top: 17px">Line Item 1</h5><div><p>Some Details</p></div><h5 style="margin-top: 17px">Line Item 2</h5><div><p>Some Details</p></div><h5 style="margin-top: 17px">Line Item 3</h5><div><p>Some Details</p></div></div>';
+                                const items = [];
+                                items.push({
+                                    header: 'Google',
+                                    content: 'Line Item 1 details goes here',
+                                    steps : [{
+                                        title: 'Campaign Start',
+                                        subTitle: '10/01/2019',
+                                        state : 'done',
+                                        description: 'Information on Line Item 1 start'
+                                    },{
+                                        title: 'Campaign End',
+                                        subTitle: '10/31/2019',
+                                        state : 'done'
+                                    }],
+                                    actions : [
+                                        'Extend','Refund','RollOver'
+                                    ],
+                                    adGroup : 'North America'
+                                });
+                                items.push({
+                                    header: 'Facebook',
+                                    content: 'Line Item 2 details goes here',
+                                    steps : [{
+                                        title: 'Campaign Start',
+                                        subTitle: '11/01/2019',
+                                        state : 'done',
+                                        description: 'Information on Line Item 2 start'
+                                    },{
+                                        title: 'Campaign End',
+                                        subTitle: '11/30/2019',
+                                        state : 'invalid'
+                                    }],
+                                    actions : [
+                                        'Extend', 'Cancel'
+                                    ],
+                                    adGroup : 'Europe'
+                                });
+                                items.push({
+                                    header: 'Pinterest',
+                                    content: 'Line Item 3 details goes here',
+                                    steps : [{
+                                        title: 'Campaign Start',
+                                        subTitle: '12/01/2019',
+                                        state : 'invalid'
+                                    },{
+                                        title: 'Campaign End',
+                                        subTitle: '12/31/2019',
+                                        state : 'invalid'
+                                    }],
+                                    actions : [
+                                        'Extend', 'Cancel', ' Refund', 'Modify'
+                                    ],
+                                    adGroup : 'Asia'
+                                });
+                                retHtml += __this.lineItemDetails(items);
+
                                 row.child(retHtml).show();
                                 tr.addClass('shown');
+
+                                // Register Accordian click event
+                                $('.accordion .accordion-header').on('click', function() {
+                                    $(this).toggleClass('active').next().slideToggle();
+                                });
                             }
                             // row.child(__this.format(rowData)).show();
                             // tr.addClass('shown');
@@ -596,9 +766,142 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     }
                                 );
                             } else if (__this.identity === 'usermanagement') {
-                                const retHtml = '<div><button class="btn action-btn" style="width: auto">Set Password & Activate</button><button class="btn action-btn" style="width: auto">Resend Activation Email</button></div>';
+                                const retHtml = `<div>
+                                    <button
+                                        class="btn action-btn api-action"
+                                        data-action="resendEmail"
+                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
+                                    >
+                                        <span style="margin-right: 5px; position: relative;">
+                                            <i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i>
+                                            <i class="fa fa-arrow-right" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i>
+                                        </span>
+                                        Resend Activation Email
+                                    </button>
+                                    <button
+                                        class="btn action-btn api-action"
+                                        data-action="deactivate"
+                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
+                                    >
+                                        <span style="margin-right: 5px; position: relative;">
+                                            <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i>
+                                            <i class="fa fa-times" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i>
+                                        </span>
+                                        DEACTIVATE
+                                    </button>
+                                    <button
+                                        class="btn action-btn api-action"
+                                        data-action="unlock"
+                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
+                                    >
+                                        <span style="margin-right: 5px; position: relative;">
+                                            <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i>
+                                            <i class="fa fa-unlock" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i>
+                                        </span>
+                                        Unlock and Resend Activation email
+                                    </button>
+
+                                    </div>`;
+                                row.child(retHtml).show();
+                                __this.attachEvents(row);
+                                tr.addClass('shown');
+                            } else if (__this.identity === 'orders') {
+                                let retHtml = '';
+                                const orderSteps = [];
+                                orderSteps.push({
+                                    title: 'Order Started',
+                                    subTitle: '10/01/2019',
+                                    state : 'done',
+                                    description: 'Order details during started'
+                                });
+                                orderSteps.push({
+                                    title: 'Payment Received',
+                                    subTitle: '10/01/2019',
+                                    state : 'done',
+                                    description: 'Order details during payment received'
+                                });
+                                orderSteps.push({
+                                    title: 'Payment Processed',
+                                    subTitle: '10/04/2019',
+                                    state : 'done',
+                                    description: 'Payment Processing Completed'
+                                });
+                                orderSteps.push({
+                                    title: 'Order In Progress',
+                                    subTitle: '10/07/2019',
+                                    state : 'current',
+                                    description: 'Order details during started'
+                                });
+                                const id = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
+                                retHtml += __this.smartSteps1(id, orderSteps);
+                                //  retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="width: 450px; border-radius: 4px; overflow-y: scroll;"><h4>Order History</h4><ul></ul><li>10/03/2019 - Order Modified</li><li>10/01/2019 - Payment Received - AMEX xxxx0747 </li><li>10/01/2019 - Order Created</li></div>';
+                                retHtml += '<p style="clear: both">';
+                                retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-bottom: 20px"><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600; padding: 4px; font-size: 10px"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 15px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Extend</button></div>';
+                                retHtml += '<p style="clear: both">';
+                                // retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" id="' + accordian + '" style="width: 700px; height: 50px; background: lavender; margin-left: 15px"><h5 style="margin-top: 17px">Line Item 1</h5><div><p>Some Details</p></div><h5 style="margin-top: 17px">Line Item 2</h5><div><p>Some Details</p></div><h5 style="margin-top: 17px">Line Item 3</h5><div><p>Some Details</p></div></div>';
+                                const items = [];
+                                items.push({
+                                    header: 'Google',
+                                    content: 'Line Item 1 details goes here',
+                                    steps : [{
+                                        title: 'Campaign Start',
+                                        subTitle: '10/01/2019',
+                                        state : 'done',
+                                        description: 'Information on Line Item 1 start'
+                                    },{
+                                        title: 'Campaign End',
+                                        subTitle: '10/31/2019',
+                                        state : 'done'
+                                    }],
+                                    actions : [
+                                        'Extend','Refund','RollOver'
+                                    ],
+                                    adGroup : 'North America'
+                                });
+                                items.push({
+                                    header: 'Facebook',
+                                    content: 'Line Item 2 details goes here',
+                                    steps : [{
+                                        title: 'Campaign Start',
+                                        subTitle: '11/01/2019',
+                                        state : 'done',
+                                        description: 'Information on Line Item 2 start'
+                                    },{
+                                        title: 'Campaign End',
+                                        subTitle: '11/30/2019',
+                                        state : 'invalid'
+                                    }],
+                                    actions : [
+                                        'Extend', 'Cancel'
+                                    ],
+                                    adGroup : 'Europe'
+                                });
+                                items.push({
+                                    header: 'Pinterest',
+                                    content: 'Line Item 3 details goes here',
+                                    steps : [{
+                                        title: 'Campaign Start',
+                                        subTitle: '12/01/2019',
+                                        state : 'invalid'
+                                    },{
+                                        title: 'Campaign End',
+                                        subTitle: '12/31/2019',
+                                        state : 'invalid'
+                                    }],
+                                    actions : [
+                                        'Extend', 'Cancel', ' Refund', 'Modify'
+                                    ],
+                                    adGroup : 'Asia'
+                                });
+                                retHtml += __this.lineItemDetails(items);
+
                                 row.child(retHtml).show();
                                 tr.addClass('shown');
+
+                                // Register Accordian click event
+                                $('.accordion .accordion-header').on('click', function() {
+                                    $(this).toggleClass('active').next().slideToggle();
+                                });
                             }
 
                             // row.child(__this.format(rowData)).show();
@@ -613,13 +916,13 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             $('.datepicker').datepicker({
                 format: 'yyyy-mm-dd',
                 clearBtn: true,
-                todayBtn: true,
-                autoclose: true
+                // todayBtn: true,
+                autoclose: true,
+                todayHighlight: true
             });
 
             // Register change event on inline edit fields
             $('.inlineEditor').on('change', function () {
-                console.log('$(this).closest(\'.form-group\')')
                 const rowIndex = $(this).closest('.form-group').attr('rowIndex');
                 let columnIndex = $(this).closest('.form-group').attr('columnIndex');
                 console.log($(this).closest('.form-group').attr('rowIndex'));
@@ -637,7 +940,304 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 console.log('__this.dataObject.gridData.result >>>')
                 console.log(__this.dataObject.gridData);
             });
+
+            $(document).on('click', '.step-nav', function() {
+                const id = $(this).attr('id').replace('#','');
+                $(this).closest('div.steps-main').find('div.step-container').find('.step-content').removeClass('active');
+                $(this).closest('div.steps-main').find('div.step-container').find('.step-content').each(function () {
+                    if($(this).attr('id') === id) {
+                        $(this).addClass('active');
+                    }
+                });
+            });
+
+            // Register ad events
+            $(document).off('click', '.adCopy');
+            $(document).on('click', '.adCopy', function() {
+                console.log('$thid')
+                console.log($(this).next('.adDetails'));
+                $(this).next('.adDetails').show(500);
+            });
+
+            $(document).off('click', '.closeAd');
+            $(document).on('click', '.closeAd', function() {
+                $(this).closest('.adDetails').hide(500);
+            });
+
+            // Initiate ad image click
+            $(document).off('click', '.ad-image');
+            $(document).on('click', '.ad-image', function () {
+
+                // remove existing
+                $('i.fa-check-circle.visible').hide();
+                $('.ad-image').removeClass('visible');
+                $('i.fa-check-circle.visible').removeClass('visible');
+
+                if (!$(this).hasClass('visible')) {
+                    $(this).addClass('visible');
+                    $(this).next('i.fa-check-circle').addClass('visible');
+                    $(this).next('i.fa-check-circle').show(500);
+                } else {
+                    $(this).removeClass('visible');
+                    $(this).next('i.fa-check-circle').removeClass('visible');
+                    $(this).next('i.fa-check-circle').hide(500);
+                }
+            });
+
+            $(document).off('click', '.display-ad');
+            $(document).on('click', '.display-ad', function () {
+
+                $(this).addClass('selected');
+                const adInfo = [{
+                    placeHolder : 'News Feed',
+                    price: 25
+                },{
+                    placeHolder : 'Shopping',
+                    price: 15
+                },{
+                    placeHolder: 'Messenger',
+                    price: 10
+                },{
+                    placeHolder:  'Group',
+                    price: 5
+                }];
+
+                let retHtml = '';
+                for (let i=0; i < adInfo.length; i++) {
+                    retHtml += '<div class="col-lg-6 col-md-6 col-sm-6"><div style="cursor: pointer; height: 150px"><img class="ad-image" width="200px" src="./../../../../assets/images/test_ad_' + (i+1) + '.jpeg"/><i class="fa fa-check-circle" style="font-size: 38px; position: absolute; left: 0px; color: #5FA1DE; display: none"></i></div><div style="text-align: center;"><span>Click to Select</span><br/><span>Placeholder : ' + adInfo[i].placeHolder + '</span><br/><span>Price : $' + adInfo[i].price + '/day</span></div></div>';
+                    if(i % 2 !== 0) {
+                        retHtml += '<p style="clear:both"></p><p style="clear:both"></p>';
+                    }
+                }
+
+                $('#bootstrap-modal-header').text('Select Inventory');
+                $('#bootstrap-modal-body').html('<div style="padding: 15px; width: 500px;">' + retHtml + '<div>');
+                $('#myModal').modal('show');
+            });
+
+            $(document).off('click', '.metric-info');
+            $(document).on('click', '.metric-info', function () {
+                const index1 = $('.metric-info').index(this);
+                    $('.metric-info').each(function (index) {
+                        if (index1 !== index && $(this).next('.metric-details').hasClass('shown')) {
+                            $(this).next('.metric-details').removeClass('shown');
+                            $(this).next('.metric-details').hide(500);
+                        }
+                    });
+                    if (!$(this).next('.metric-details').hasClass('shown')) {
+                        $(this).next('.metric-details').addClass('shown');
+                        $(this).next('.metric-details').show(500);
+                    } else {
+                        $(this).next('.metric-details').removeClass('shown');
+                        $(this).next('.metric-details').hide(500);
+                    }
+            });
+
+            $(document).off('change', '.select-control');
+            $(document).on('change', '.select-control', function () {
+                const required = $(this).data('validation');
+                if(!$(this).val() && required) {
+                   $(this).closest('td').find('div.alert-danger').show();
+                } else {
+                    $(this).closest('td').find('div.alert-danger').hide();
+                }
+            });
         }
+    }
+
+    handleModalSave() {
+        const __this = this;
+        $('.ad-image').each(function () {
+            if ($(this).hasClass('visible')) {
+                const index = $('.ad-image').index(this);
+                const adInfo = [{
+                    placeHolder : 'News Feed',
+                    price: 25
+                }, {
+                    placeHolder : 'Shopping',
+                    price: 15
+                }, {
+                    placeHolder: 'Messenger',
+                    price: 10
+                }, {
+                    placeHolder:  'Group',
+                    price: 5
+                }];
+                const price = adInfo[index].price;
+                const imageIndex = (index + 1);
+                $('.display-ad').each(function () {
+                    if ($(this).hasClass('selected')) {
+                        $(this).attr('src','./../../../../assets/images/test_ad_' + imageIndex + '.jpeg');
+                        $(this).css('width', '100px');
+                        const start = $(this).closest('tr').find('td').eq(1).find('input.inlineEditor').val();
+                        const end = $(this).closest('tr').find('td').eq(2).find('input.inlineEditor').val();
+                        if (start && end) {
+                            const daysDiff = __this.getDaysBetweenDates(new Date(end), new Date(start));
+                            $(this).closest('tr').find('td').last().find('input.inlineEditor').val((daysDiff + 1) * price);
+                            $(this).closest('tr').find('td').find('.alert-danger').hide();
+                        }
+                    }
+                });
+                $('.display-ad').removeClass('selected');
+            }
+        });
+        $('#myModal').modal('hide');
+    }
+
+    smartSteps1(id, steps, isLineItem = false, lineItemName = null) {
+        const $mainDiv = $('<div/>', {
+            'class': 'col-lg-6 col-md-6 col-sm-12',
+            css : {
+                'width' : isLineItem ? '800px' : '700px',
+                'margin-bottom' : '20px'
+            }
+        });
+        const $div = $('<div/>', {
+            id: id,
+            class: 'crumbs-main',
+            css : {
+                'position' : 'relative',
+                'left' : isLineItem ? '-77px' : '-67px'
+            }
+        });
+        const $ul = $('<ul/>', {
+            class : 'crumb-trail clearfix'
+        });
+        for (let i=0; i < steps.length; i++) {
+            if(i === 0 && isLineItem) {
+                $ul.append(this.getLineItemWidth(i, steps));
+            } else {
+                $ul.append('<li class="crumb pull-left ' + steps[i].state + '"><div><span style="font-size: 10px">' + steps[i].title + '</span><p style="clear:both"></p><small style="position: absolute;top: 20px; font-size: 8px">' +  steps[i].subTitle +  '</small></div></li>');
+            }
+        }
+        if (isLineItem) {
+            $div.append('<img class="adCopy" tooltip="View/Change AdCopy" style="width: 38px;position: relative;left: 10px;margin-left: 42px;margin-right: 12px;float: left; cursor: pointer; top: -4px" src="./../../../../assets/images/adCopy.png"/>');
+            $div.append('<div class="adDetails" style="position: absolute;left: 50px;z-index: 100;border: 1px solid;border-radius: 4px;margin: 4px;padding: 5px 10px;background: #f2f2f9;top: -3px; display: none; width: 540px"><div><b style="font-size: 14px">Ad Details</b><i class="fa fa-times-circle closeAd" aria-hidden="true" style="float: right;font-size: 20px; cursor: pointer" ></i></div><div class="col-lg-6 col-md-6 col-sm-6"><div style="margin-top: 10px"><img style="width: 200px" src="../../../../assets/images/test_ad_1.jpeg"/></div><div style="margin-top: 10px"><label>Header</label><br><span style="white-space: pre-wrap">Samsung Galaxy S10 - 40% Off</span></div><div style="margin-top: 10px"><label>Description</label><br><span style="white-space: pre-wrap">For a limited time, get Samsung Galaxy S10 smart phone at just $649 </span></div></div>   <div class="col-lg-6 col-md-6 col-sm-6"><span><b>Targeting Parameters</b></span><div style="margin-top: 10px"><ul><li style="white-space: pre-wrap">Age : 17-25</li><li>Geo : North America</li><li>Geneder: Male</li><li>Education: College</li><li>Language: English</li><li>Interests: Consumer Electronics</li></ul></div></div> <div class="col-lg-6 col-md-6 col-sm-6"><span><b>First Party Data Plan : </b>Plan 1</span><div style="margin-top: 10px"></div></div>  <div class="col-lg-6 col-md-6 col-sm-6"><span><b>Summary ( As of '   +  (((new Date().getMonth() > 8) ? (new Date().getMonth() + 1) : ('0' + (new Date().getMonth() + 1))) + '/' + ((new Date().getDate() > 9) ? new Date().getDate() : ('0' + new Date().getDate())) + '/' + new Date().getFullYear())   +    ' )</b></span><div style="margin-top: 10px"><ul><li style="white-space: pre-wrap">Ad Copy displays on ' +  lineItemName  + ( lineItemName === "Google" ? " Search" : " News Feed" ) + '</li><li>Ad Reach : 20,000</li><li>ROAS : 40%</li><li>Revenue : $8,000</li><li>7-day attribution period</li><li style="position: relative"><div style="display: inline-block; width: 80px">Impressions :</div><div class="metric-info" style="display: inline-block; margin-left: 10px; position: relative; top: 3px; cursor: pointer"><div style="width: 50px; height: 15px; border: 1px solid #7CCC71; border-right: 1px solid #989498; text-align: center; display: inline-block; background: #7CCC71; color: #fff"></div><div style="width: 30px; height: 15px; border: 1px solid #7CCC71; text-align: center; display: inline-block; background: #7CCC71; color: #fff"></div><div style="width: 20px; height: 15px; border: 1px solid #fff; text-align: center; display: inline-block; background: #fff"></div></div><div class="metric-details" style="background: #fff;position: absolute;top: 2px;left: 194px;z-index: 100;padding: 5px;border-radius: 4px; display: none"><label>Impressions</label><br>Target : 10,000<br>Actual : 12,000<br>Percentage : 120%<br><a href="/app/dashboards/spend">View details in dashboard</a></div></li><li style="position: relative"><div style="display: inline-block; width: 80px">Clicks :</div><div class="metric-info" style="display: inline-block; margin-left: 10px; position: relative; top: 3px; cursor: pointer"><div style="width: 20px; height: 15px; border: 1px solid #D54E56; text-align: center; display: inline-block; background: #D54E56; color: #fff"></div><div style="width: 30px; height: 15px; border-right: 1px solid #989498; text-align: center; display: inline-block; background: #fff; color: #fff"></div><div style="width: 50px; height: 15px; border: 1px solid #fff; text-align: center; display: inline-block; background: #fff"></div></div><div class="metric-details" style="background: #fff;position: absolute;top: 2px;left: 194px;z-index: 100;padding: 5px;border-radius: 4px; display: none"><label>Clicks</label><br>Target : 10,000<br>Actual : 4,000<br>Percentage : 40%<br><a href="/app/dashboards/spend">View details in dashboard</a></div></li><li style="position: relative"><div style="display: inline-block; width: 80px">Spend :</div><div class="metric-info" style="display: inline-block; margin-left: 10px; position: relative; top: 3px; cursor: pointer"><div style="width: 40px; height: 15px; border: 1px solid #F3A42B; text-align: center; display: inline-block; background: #F3A42B; color: #fff"></div><div style="width: 10px; height: 15px; border-right: 1px solid #989498; text-align: center; display: inline-block; background: #fff; color: #fff"></div><div style="width: 50px; height: 15px; border: 1px solid #fff; text-align: center; display: inline-block; background: #fff"></div></div><div class="metric-details" style="background: #fff;position: absolute;top: 2px;left: 194px;z-index: 100;padding: 5px;border-radius: 4px; display: none"><label>Spend</label><br>Target : $20,000<br>Actual : $16,000<br>Percentage : 80%<br><a href="/app/dashboards/spend">View details in dashboard</a></div></li><li style="position: relative"><div style="display: inline-block; width: 80px">ROAS :</div><div class="metric-info" style="display: inline-block; margin-left: 10px; position: relative; top: 3px; cursor: pointer"><div style="width: 20px; height: 15px; border: 1px solid #D54E56; text-align: center; display: inline-block; background: #D54E56; color: #fff"></div><div style="width: 30px; height: 15px; border-right: 1px solid #989498; text-align: center; display: inline-block; background: #fff; color: #fff"></div><div style="width: 50px; height: 15px; border: 1px solid #fff; text-align: center; display: inline-block; background: #fff"></div></div><div class="metric-details" style="background: #fff;position: absolute;top: 2px;left: 194px;z-index: 100;padding: 5px;border-radius: 4px; display: none"><label>ROAS</label><br>Target : $40,000<br>Actual : $16,000<br>Percentage : 40%<br><a href="/app/dashboards/spend">View details in dashboard</a></div></li><li style="position: relative"><div style="display: inline-block; width: 80px">Revenue :</div><div class="metric-info" style="display: inline-block; margin-left: 10px; position: relative; top: 3px; cursor: pointer"><div style="width: 5px; height: 15px; border: 1px solid #D54E56; text-align: center; display: inline-block; background: #D54E56; color: #fff"></div><div style="width: 45px; height: 15px; border-right: 1px solid #989498; text-align: center; display: inline-block; background: #fff; color: #fff"></div><div style="width: 50px; height: 15px; border: 1px solid #fff; text-align: center; display: inline-block; background: #fff"></div></div><div class="metric-details" style="background: #fff;position: absolute;top: 2px;left: 194px;z-index: 100;padding: 5px;border-radius: 4px; display: none;"><label>Revenue</label><br>Target : $20,000<br>Actual : $1,000<br>Percentage : 5%<br><a href="/app/dashboards/spend">View details in dashboard</a></div></li></ul></div></div>');
+        }
+        $div.append($ul);
+        $mainDiv.append($div);
+
+        return $mainDiv[0].outerHTML;
+    }
+
+    getLineItemWidth(i, steps) {
+        const d = new Date();
+        let retHtml = '';
+        if (d.getTime() <= new Date(steps[1].subTitle).getTime() && d.getTime() >= new Date(steps[0].subTitle).getTime()) {
+            const daysLeft = this.getDaysBetweenDates(new Date(steps[1].subTitle), new Date()) + 1;
+            const totaldays = (this.getDaysBetweenDates(new Date(steps[1].subTitle), new Date(steps[0].subTitle))) + 1;
+            const markerPointLeft = 128.28 + ((485 / (totaldays)) * (totaldays - (daysLeft + 1)));
+            retHtml += '<li class="crumb pull-left done" style="width: ' + markerPointLeft + 'px"><div><span style="font-size: 10px">' + steps[i].title + '</span><p style="clear:both"></p><small style="position: absolute;top: 20px; font-size: 8px">' +  steps[i].subTitle +  '</small></div></li>';
+            retHtml += '<li><span style="position: absolute; top: -22px; left: '  + (markerPointLeft + 21)  + 'px; border: 1px solid #5bc0de; padding: 4px; background: #5bc0de; color: white; border-radius: 4px; font-size: 9px ">In Progress (' + (daysLeft) + ' days left)</span></li>';
+            // retHtml += '<li><span style="position: absolute; top: -6px; z-index: 100; left: ' + markerPointLeft + 'px; color: #5bc0de">|</span></li>';
+        } else if (d.getTime() >= new Date(steps[1].subTitle).getTime()) {
+            retHtml += '<li class="crumb pull-left done" style="width: 485px"><div><span style="font-size: 10px">' + steps[i].title + '</span><p style="clear:both"></p><small style="position: absolute;top: 20px; font-size: 8px">' +  steps[i].subTitle +  '</small></div></li>';
+            retHtml += '<li><span style="position: absolute; top: -22px; left: '  + (485 + 48)  + 'px; border: 1px solid #5bc0de; padding: 4px; background: #5bc0de; color: white; border-radius: 4px; font-size: 9px ">Completed</span></li>';
+        } else {
+            retHtml += '<li class="crumb pull-left invalid"><div><span style="font-size: 10px">' + steps[i].title + '</span><p style="clear:both"></p><small style="position: absolute;top: 20px; font-size: 8px">' +  steps[i].subTitle +  '</small></div></li>';
+            retHtml += '<li><span style="position: absolute; top: -22px; left: '  + (170)  + 'px; border: 1px solid #5bc0de; padding: 4px; background: #5bc0de; color: white; border-radius: 4px; font-size: 9px ">Not Started</span></li>';
+        }
+
+        return retHtml;
+    }
+
+    smartSteps(id, steps, isLineItem = false) {
+        const $mainDiv = $('<div/>', {
+            'class': 'col-lg-6 col-md-6 col-sm-12',
+            css : {
+                'width' : isLineItem ? '600px' : '700px',
+                'margin' : '20px 0px'
+            }
+        });
+        const $div = $('<div/>', {
+            id: id,
+            class: 'steps-main'
+        });
+        const $ul = $('<ul/>', {
+            class : 'step-anchor nav nav-tabs'
+        });
+        const $divDetails = $('<div/>', {
+            class : 'step-container tab-content',
+            css : {
+                'min-height' : '37px'
+            }
+        });
+        for (let i=0; i < steps.length; i++) {
+            $ul.append('<li class="' + (steps[i].state === 'invalid' ? (steps[i].state + ' nav-item disabled') : (steps[i].state + ' nav-item')) + '"><a href="javascript:void(0)" style="padding-right: ' + (i === 0 && isLineItem ? '334px' : '0px')  +  '" class="step-nav nav-item nav-link" id="#step-' + i + '">' + steps[i].title + '<br/><small>'  + steps[i].subTitle + '</small></a></li>');
+            if(i === 0 && isLineItem && this.displayTag(steps, true)) {
+                const daysLeft = this.getDaysBetweenDates(new Date(steps[1].subTitle), new Date()) + 1;
+                const totaldays = (this.getDaysBetweenDates(new Date(steps[1].subTitle), new Date(steps[0].subTitle))) + 1;
+                const markerPointLeft = -378 + ((429 / (totaldays)) * (totaldays - (daysLeft + 1)));
+                // px point between 2 line items = 429 ( -378 - 0 - 51 ). Ex: with 30 days, each px is 14.33 , so the logic has to start from -378 + (429/no_of_days);
+                $ul.append('<li><span style="position: absolute; top: 64px; left: '  + (markerPointLeft - 32)  + 'px; border: 1px solid #5bc0de; padding: 4px; background: #5bc0de; color: white; border-radius: 4px; ">' + (daysLeft) + ' days left</span></li>');
+                $ul.append('<li><span style="position: absolute; top: 50px; z-index: 100; left: ' + markerPointLeft + 'px; color: #5bc0de">|</span></li>');
+            }
+            $divDetails.append('<div class="'  + (steps[i].state === 'current' ? 'tab-pane step-content active' : 'tab-pane step-content') +  '" style="margin-top: 20px" id="step-' + i + '">' + (steps[i].description || 'No Description Available') + '</div>');
+        }
+        if(this.displayTag(steps, true)) {
+
+            $divDetails.append('<div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: 20px"></div>');
+        }
+        $div.append($ul);
+        $div.append($divDetails);
+        $mainDiv.append($div);
+
+        // setTimeout(function () {
+        //     $('#' + id).smartWizard({
+        //         theme: 'dots',
+        //         keyNavigation: false,
+        //         enableFinishButton: false,
+        //         showStepURLhash: false,
+        //         enableAll: true,
+        //         anchorSettings: {
+        //             anchorClickable: true, // Enable/Disable anchor navigation
+        //             enableAllAnchors: false, // Activates all anchors clickable all times
+        //             //  markDoneStep: false, // add done css
+        //             //  enableAnchorOnDoneStep: false // Enable/Disable the done steps navigation
+        //         }
+        //     });
+        //
+        //     $('#' + id).smartWizard("stepState", [1], "enable");
+        //
+        // }, 100);
+
+        return $mainDiv[0].outerHTML;
+    }
+
+    displayTag(steps, isLineItem) {
+        let ret = false;
+        if (isLineItem) {
+            const d = new Date();
+            if (d.getTime() <= new Date(steps[1].subTitle).getTime() && d.getTime() >= new Date(steps[0].subTitle).getTime()) {
+                ret = true;
+            }
+        }
+        return ret;
+    }
+
+    getDaysBetweenDates(second, first) {
+        return Math.round((second - first) / (1000 * 60 * 60 * 24));
+    }
+
+    lineItemDetails(items) {
+        const $mainDiv = $('<div/>', {
+            'class': 'accordion',
+            css : {
+                'margin-top' : '-20px'
+            }
+        });
+        for (let i=0; i < items.length; i++) {
+            const id = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
+            $mainDiv.append('<div class="accordion-header"><span style="position: relative; top: -5px">' + items[i].header + '</span></div>');
+            if(items[i].actions) {
+                let buttons = '';
+                items[i].actions.forEach(function (action) {
+                    buttons += '<button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600; padding: 4px; font-size: 10px"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 15px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>' + action  + '</button>';
+                });
+                $mainDiv.append('<div class="accordion-content">' + this.smartSteps1(id, items[i].steps, true, items[i].header) + '<p style="clear: both"></p><div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-bottom: 20px; margin-left: 15px">' + buttons + '</div><p style="clear: both"></p><div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-left: 15px"><span>Ad Group : ' + items[i].adGroup + '</span></div></div>');
+            }
+        }
+        return $mainDiv[0].outerHTML;
     }
 
     format(row) {
@@ -672,10 +1272,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
     getSearchData(vendorID, orgID ) {
 
-        const AccessToken: any = this.widget.tokenManager.get('accessToken');
+        const AccessToken: any = localStorage.getItem('accessToken');
         let token = '';
         if (AccessToken) {
-            token = AccessToken.accessToken;
+            // token = AccessToken.accessToken;
+            token = AccessToken;
         }
 
         const dataObj = JSON.stringify({
@@ -702,30 +1303,37 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         table.on('select', function (e, dt, type, indexes) {
             if (__this.dataObject.gridData.options.isRowSelection && !__this.dataObject.gridData.options.isRowSelection.isMultiple) {
                 $('input.check-row-selection').prop('checked', false);
-                $('#example tbody tr').removeClass('selected');
+                if (__this.dataObject.gridData.options.isRowHighlight) {
+                    $('#example tbody tr').removeClass('selected');
+                }
             }
-            // if (table[type]) {
-            // TODO : need to expose another property to do this
-            table[type](indexes).nodes().to$().find('td input.check-row-selection').prop('checked', true);
-            table[type](indexes).nodes().to$().addClass('selected');
-            // if (__this.dataObject.gridData.options.isRowHighlight) {
-            //    table[type](indexes).nodes().to$().find('td input.check-row-selection').prop('checked', true);
-            //    table[type](indexes).nodes().to$().addClass('selected');
-            // } else {
-            //     table[type](indexes).nodes().to$().removeClass('selected');
-            // }
+            if (table[type]) {
 
-            console.log('indexes >>')
-            console.log(indexes)
+                table[type](indexes).nodes().to$().find('td input.check-row-selection').prop('checked', true);
+                if (__this.dataObject.gridData.options.isRowHighlight) {
+                    table[type](indexes).nodes().to$().addClass('selected');
+                }
 
-            if (__this.sendResponseOnCheckboxClick) {
-                __this.triggerActions.emit({
-                    action: 'handleCheckboxSelection',
-                    data: __this.dataObject.gridData.result[indexes[0]],
-                    rowIndex: indexes[0]
-                });
+                if (__this.dataObject.gridData.options.isRowHighlight) {
+                    table[type](indexes).nodes().to$().find('td input.check-row-selection').prop('checked', true);
+                    table[type](indexes).nodes().to$().addClass('selected');
+                } else {
+                    table[type](indexes).nodes().to$().removeClass('selected');
+                }
+
+                console.log('indexes >>')
+                console.log(indexes)
+                console.log('__this.sendResponseOnCheckboxClick >>')
+                console.log(__this);
+
+                if (__this.dataObject.gridData.options.sendResponseOnCheckboxClick) {
+                    __this.triggerActions.emit({
+                        action: 'handleCheckboxSelection',
+                        data: __this.dataObject.gridData.result[indexes[0]],
+                        rowIndex: indexes[0]
+                    });
+                }
             }
-            //}
         });
     }
 

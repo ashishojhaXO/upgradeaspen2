@@ -15,11 +15,13 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-modal.component';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { OktaAuthService } from '../../../services/okta.service';
+import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up.component';
 
 @Component({
   selector: 'app-usermanagement',
   templateUrl: './usermanagement.component.html',
-  styleUrls: ['./usermanagement.component.scss']
+  styleUrls: ['./usermanagement.component.scss'],
+  providers: [AppPopUpComponent]
 })
 export class UserManagementComponent implements OnInit  {
 
@@ -50,6 +52,7 @@ export class UserManagementComponent implements OnInit  {
   selectedVendor: any;
   error: any;
   showSpinner: boolean;
+  userID: string;
 
   sourceOptions = [
     {
@@ -68,7 +71,13 @@ export class UserManagementComponent implements OnInit  {
   vendorOptions = [];
   widget: any;
 
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
+  constructor(
+    private okta: OktaAuthService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private http: Http,
+    private popUp: AppPopUpComponent
+  ) {
 
     this.userForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
@@ -125,10 +134,10 @@ export class UserManagementComponent implements OnInit  {
                   err1 => {
 
                     if(err1.status === 401) {
-                      if(this.widget.tokenManager.get('accessToken')) {
+                      if(localStorage.getItem('accessToken')) {
                         this.widget.tokenManager.refresh('accessToken')
                             .then(function (newToken) {
-                              this.widget.tokenManager.add('accessToken', newToken);
+                              localStorage.setItem('accessToken', newToken);
                               this.showSpinner = false;
                               return this.getVendors().subscribe(
                                   response2 => {
@@ -161,7 +170,7 @@ export class UserManagementComponent implements OnInit  {
                             });
                       } else {
                         this.widget.signOut(() => {
-                          this.widget.tokenManager.remove('accessToken');
+                          localStorage.removeItem('accessToken');
                           window.location.href = '/login';
                         });
                       }
@@ -176,10 +185,10 @@ export class UserManagementComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
+            if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
                     this.searchDataRequest();
                   })
@@ -189,7 +198,7 @@ export class UserManagementComponent implements OnInit  {
                   });
             } else {
               this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
+                localStorage.removeItem('accessToken');
                 window.location.href = '/login';
               });
             }
@@ -217,10 +226,11 @@ export class UserManagementComponent implements OnInit  {
   }
 
   getVendors() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token , 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -233,10 +243,11 @@ export class UserManagementComponent implements OnInit  {
   }
 
   searchData() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -309,10 +320,10 @@ export class UserManagementComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
+            if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
                     this.performUserAdditionRequest(dataObj);
                   })
@@ -322,7 +333,7 @@ export class UserManagementComponent implements OnInit  {
                   });
             } else {
               this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
+                localStorage.removeItem('accessToken');
                 window.location.href = '/login';
               });
             }
@@ -335,10 +346,11 @@ export class UserManagementComponent implements OnInit  {
   }
 
   performUserAddition(dataObj) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -375,4 +387,177 @@ export class UserManagementComponent implements OnInit  {
   handleShowModal(modalComponent: PopUpModalComponent) {
     modalComponent.show();
   }
+
+  // Started
+
+  showError() {
+    console.log("Some error occured while catching data from child component");
+  }
+
+  handleRow(rowObj: any, rowData: any) {
+    // If this.rowObj.action func exists then run that function
+    const func = this[rowObj.action] ? this[rowObj.action] : this.showError();
+  }
+
+  apiCall(endPoint, dataObj) {
+    // TODO: FTM: All calls are Post, change it to be generic
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+    const api_url_part = '/api';
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    const data = JSON.stringify(dataObj);
+    const url = this.api_fs.api + api_url_part + endPoint;
+    return this.http
+      .post(url, data, options)
+      .map(res => {
+        return res.json();
+      }).share();
+  }
+
+  successCallBack = (res) => {
+    this.showSpinner = false;
+    let popUpOptions = {};
+    if (res.status = 200) {
+      popUpOptions = {
+        title: "Email sent",
+        text: res.message,
+        type: 'success',
+        cancelButtonText: "Cancel",
+      }
+
+    } else if (res.status == 400) {
+      popUpOptions = {
+        title: "Error in sending Email",
+        text: "Error while sending email.",
+        type: 'error',
+        cancelButtonText: "Cancel",
+      }
+
+    } else {
+      popUpOptions = {
+        title: "Error",
+        text: "Some error in sending email.",
+        type: 'error',
+        cancelButtonText: "Cancel",
+      }
+
+    }
+    this.popUp.showPopUp(popUpOptions);
+  }
+
+  errorCallBack = (err) => {
+    this.showSpinner = false;
+    const popUpOptions = {
+      title: "Error",
+      text: JSON.parse(err._body).message,
+      type: 'error',
+      cancelButtonText: "Cancel",
+    }
+
+    this.popUp.showPopUp(popUpOptions);
+  }
+
+  resendEmail() {
+    // TODO: To be completed still, waiting for API
+    const endPoint = `/users/${this.userID}/resend-activation-email`;
+    const data = {
+      // "vendor | f7 | thd", pine: vendor, aspen: f7
+      "source": "f7"
+    };
+
+    this.showSpinner = true;
+    // Pre AreUSure SweetAlert PopUp
+    this.apiCall(endPoint, data).subscribe( this.successCallBack, this.errorCallBack );
+  }
+
+  deactivate() {
+    const endPoint = `/users/${this.userID}/deactivate`;
+    const data = {};
+
+    const popUpOptions = {
+      title: "Deactivate?",
+      text: "Are you sure you want to deactivate the account?",
+      type: 'question',
+      showCloseButton: true,
+      showCancelButton: true,
+      reverseButtons: true,
+    }
+
+    const prom = this.popUp.showPopUp(popUpOptions);
+    prom
+    .then((res) => {
+      if(res && res.value) {
+        this.showSpinner = true;
+        return this.apiCall(endPoint, data).toPromise()
+      }
+    })
+    .then((res)=>{
+      // Resolve
+      this.showSpinner = false;
+      if(res) {
+        const str = res.message;
+        const swalOptions = {
+          title: 'Success',
+          text: str,
+          type: 'success',
+          showCloseButton: true,
+          confirmButtonText: "Ok",
+        };
+        return this.popUp.showPopUp(swalOptions)
+      }
+      return null;
+    }, (rej) => {
+      this.showSpinner = false;
+      if(rej) {
+        const swalOptions = {
+          title: 'Error',
+          text: JSON.parse(rej._body).message,
+          type: 'error',
+          showCloseButton: true,
+          confirmButtonText: "Ok",
+        };
+        this.popUp.showPopUp(swalOptions)
+        throw new Error("Rejected");
+      }
+      return null;
+    })
+    .then((ok) => {
+      // On Resolve Call getRetryOrders
+      if(ok && ok.value) {
+        this.showSpinner = true; // true here & then when getRetryOrders pulled, false spinner
+        return this.searchDataRequest();
+      }
+      return null;
+    })
+    .catch((err)=>{
+      // if (err instanceof ApiError)
+      this.showSpinner = false;
+      console.log("Error: Deactivating account: ", err);
+    });
+    // Post Success/Error SweetAlert PopUp
+  }
+
+  handleActions(ev: any) {
+    const action = $(ev.elem).data('action');
+    this.userID = ev.data.data()[4];
+
+    if(this[action]) {
+      // const func = this[action];
+      // func();
+      this[action]();
+    } else {
+      // Some problem
+      // Function does not exists in this class, if data-action string is correct
+      // Else if all functions exists, then, data-action string coming from html is not correct
+      console.log(`Error: Problem executing function: ${action}`)
+    }
+  }
+
+  // Started/
+
 }

@@ -8,11 +8,13 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import { OrdersComponent } from '../orders/orders.component';
+import { GenericService } from '../../../services/generic.service';
 
 @Component({
   selector: 'app-orders-processed',
   templateUrl: './orders-processed.component.html',
-  styleUrls: ['./orders-processed.component.css']
+  styleUrls: ['./orders-processed.component.css'],
+  providers: [GenericService]
 })
 export class OrdersProcessedComponent extends OrdersComponent {
 
@@ -24,9 +26,14 @@ export class OrdersProcessedComponent extends OrdersComponent {
     }
   };
 
-  columnsToShow: string[] = ["Vendor", "Order ID", "End Date", "Created At (GMT)"];
+  columnsToShow: string[] = [
+    "Vendor_Name", "Vendor_Id", "Order_Id", "Line_Item_End_Date", "Order_Created_On_GMT"
+  ];
 
-  constructor(okta: OktaAuthService, route: ActivatedRoute, router: Router, http: Http) { 
+  constructor(
+    okta: OktaAuthService, route: ActivatedRoute, router: Router, http: Http,
+    private genericService: GenericService
+  ) { 
     super(okta, route, router, http)
 
     // Initializing some data
@@ -40,7 +47,9 @@ export class OrdersProcessedComponent extends OrdersComponent {
       isRowHighlight: false,
       isRowSelection: false,
       isEmailOption: true,
-      isPlayOption: true,
+      isPlayOption: {
+        value: true,
+      },
       isDownloadOption: true,
     }
 
@@ -53,13 +62,19 @@ export class OrdersProcessedComponent extends OrdersComponent {
   }
 
   populateDataTable(response, initialLoad) {
+    console.log("resP: ", response)
     const tableData = response;
     this.gridData = {};
     this.gridData['result'] = [];
     const headers = [];
 
+    console.log("resP: ", response, " TABL: ", tableData)
+
     if (tableData.length) {
       const keys = Object.keys(tableData[0]);
+      
+      console.log("IF TAB len keys", keys)
+
       for (let i = 0; i < keys.length; i++) {
         if ( this.columnsToShow.indexOf(keys[i]) !== -1 ) {
           headers.push({
@@ -75,6 +90,8 @@ export class OrdersProcessedComponent extends OrdersComponent {
         }
 
       }
+      
+      console.log("IF TAB len header", headers)
 
     }
 
@@ -85,15 +102,17 @@ export class OrdersProcessedComponent extends OrdersComponent {
     this.dashboard = 'paymentGrid';
     this.dataObject.gridData = this.gridData;
     this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
+
+    console.log("griDATA: ", this.gridData, " dataOBJ: ", this.dataObject);
     // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
 
   }
 
   compileHeaderData() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -111,25 +130,30 @@ export class OrdersProcessedComponent extends OrdersComponent {
     const options = this.compileHeaderData();
     const data = {};
 
-    // var url = this.api_fs.api + this.config.urls.sendEmail;
-    // return this.http.get(url, options)
-    //   .map(res => {
-    //     return res.json();
-    //   }).share();
+    // this.genericService.postOrdersProcessedReportEmail(data).subscribe(
+    //   (res) => {
+
+    //   },
+    //   (rej) => {
+
+    //   }
+    // )
   }
 
   handleRun(dataObj: any) {
-    console.log("Trigger Execute/Run API")
+    console.log("Trigger Execute/Run API", dataObj)
     
     const options = this.compileHeaderData();
     const data = {};
 
-    // var url = this.api_fs.api + this.config.urls.executeJob;
-    // return this.http.post(url, data, options)
-    //   .map(res => {
-    //     return res.json();
-    // }).share();
+    // this.genericService.postOrdersProcessedReportRun(data).subscribe(
+    //   (res) => {
 
+    //   },
+    //   (rej) => {
+
+    //   }
+    // )
   }
 
   beforeRunReport() {
@@ -162,16 +186,20 @@ export class OrdersProcessedComponent extends OrdersComponent {
 
 
   handleDownload(dataObj: any) {
-    console.log("Trigger Download API");
+    console.log("Trigger Download API: ", dataObj);
 
-    const options = this.compileHeaderData();
+    // const options = this.compileHeaderData();
     const data = {};
 
-    // var url = this.api_fs.api + this.config.urls.downloadJob
-    // return this.http.get(url, options)
-    //   .map(res => {
-    //     return res.json();
-    // }).share();
+    // this.genericService.postOrdersProcessedReportDownload(data).subscribe(
+    //   (res) => {
+
+    //   },
+    //   (rej) => {
+
+    //   }
+    // )
+
   }
 
 }

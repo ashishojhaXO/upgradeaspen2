@@ -1,11 +1,13 @@
 <div>
-    <div class="col-lg-12 col-md-12" style="margin: 0px 0px 20px">
+    <div class="col-lg-12 col-md-12">
         <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">Support</p>
     </div>
     <div class="col-lg-12 cold-md-12 col-sm-12">
         <div style="margin-left: 19px; padding-bottom: 20px">
             <label>Search By </label>
-            <div style="display: inline-block; position: relative; top: 9px">
+            <div
+                style="display: inline-block; position: relative; top: 9px"
+            >
                 <select2 *ngIf="searchOptions.length" width="50%" placeholder="Select Type"
                 class="col-lg-4 col-md-4"
                 style="padding: 0px; line-height: 1.42857143"
@@ -13,13 +15,16 @@
                 (valueChanged)="OnSearchChange($event);"
                 [data]="searchOptions"></select2>
             </div>
-            <input style="width: 60%; padding-left: 5px; padding-right: 20px"
-                   type="text"
-                   class="form-fields adhoc-report-input-box"
-                   #searchField
-                   placeholder="Search"
-                   [(ngModel)]='searchcontent'>
-            <span (click)="clearSearch()" style="position: relative; left: -20px; cursor: pointer"><i class="fa fa-close"></i></span>
+                <input style="width: 60%; padding-left: 5px; padding-right: 20px"
+                    type="text"
+                    class="form-fields adhoc-report-input-box"
+                    #searchField
+                    placeholder="Search"
+                    [attr.disabled]="searchType === 'retry' ? '' : null"
+                    [(ngModel)]='searchcontent'>
+                <span (click)="clearSearch()" style="position: relative; left: -20px; cursor: pointer"><i class="fa fa-close"></i></span>
+
+
             <div *ngIf="matchingResults.length; else noMatch" style="position: absolute; height: 200px; overflow: scroll; background-color: white; width: 57.1%; z-index: 10000; margin-left: 167px; border: 1px solid #cbcbcb; border-top: none">
                         <ul style="list-style: none; padding-left: 5px">
                           <li class="matching-results" *ngFor="let ele of matchingResults; let i = index;">
@@ -81,12 +86,33 @@
             </div>
             <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
                 <label class="col-lg-3 col-md-3">Selected Line Item ID : </label>
-                <span class="col-lg-9 col-md-9">{{selectedOrderLineItemID}}</span>
+            <span class="col-lg-9 col-md-9">{{selectedOrderLineItemID}}</span>
+        </div>
+        <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
+            <label class="col-lg-3 col-md-3">Selected Channel : </label>
+            <span class="col-lg-9 col-md-9">{{selectedOrderChannel}}</span>
+        </div>
+
+        <div *ngIf="searchType === 'order' && orderDetails">
+            <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
+                <label class="col-lg-3 col-md-3">Order Status: </label>
+                <span class="col-lg-9 col-md-9">{{orderDetails.order_status}}</span>
+            </div>
+            <!-- Start3Div, These 3 can be looped though -->
+            <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
+                <label class="col-lg-3 col-md-3">Order Creation Date: </label>
+                <span class="col-lg-9 col-md-9">{{orderDetails.order_creation_date | date:'MM/dd/yyyy'}}</span>
             </div>
             <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
-                <label class="col-lg-3 col-md-3">Selected Channel : </label>
-                <span class="col-lg-9 col-md-9">{{selectedOrderChannel}}</span>
+                <label class="col-lg-3 col-md-3">Order Updated At: </label>
+                <span class="col-lg-9 col-md-9">{{orderDetails.order_updated_at | date:'MM/dd/yyyy'}}</span>
             </div>
+            <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
+                <label class="col-lg-3 col-md-3">Order Cancellation Date: </label>
+                <span class="col-lg-9 col-md-9">{{orderDetails.order_cancellation_date | date:'MM/dd/yyyy'}}</span>
+            </div>
+            <!-- Start3Div/ -->
+        </div>
             <!--<div style="padding-left: 0px" class="col-lg-12 col-md-12">-->
                 <!--<label class="col-lg-3 col-md-3">Payment Methods : </label>-->
                 <!--<div class="col-lg-9 col-md-9" *ngIf="paymentMethods.length; else noPayments">-->
@@ -104,8 +130,8 @@
             <!--</div>-->
         </div>
         <p style="clear: both"></p>
-        <div style="padding-left: 0px" class="col-lg-4 col-md-4" *ngIf="searchType === 'vendor'">
-            <span>Orders</span>
+        <div style="padding-left: 0px" [class]="searchType === 'order' ? 'col-lg-6 col-md-6' : 'col-lg-4 col-md-4'" *ngIf="searchType === 'vendor' || searchType === 'order'">
+            <span>{{searchType === 'order' ? 'Order History' : 'Orders'}}</span>
             <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectOrders.isDataAvailable">
                 <app-data-table2 [dataObject]="dataObjectOrders"
                                  (triggerActions)="this[$event.action]($event)"></app-data-table2>
@@ -128,7 +154,7 @@
                 </div>
             </div>
         </div>
-        <div style="padding-left: 0px" class="col-lg-4 col-md-4" *ngIf="searchType === 'vendor'">
+        <div style="padding-left: 0px" [class]="searchType === 'order' ? 'col-lg-6 col-md-6' : 'col-lg-4 col-md-4'" *ngIf="searchType === 'vendor' || searchType === 'order'">
             <span>Transactions</span>
             <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectPayments.isDataAvailable">
                 <app-data-table2 [dataObject]="dataObjectPayments"
@@ -140,6 +166,34 @@
                 </div>
             </div>
         </div>
+
+        <!-- Retry Orders -->
+        <div style="padding-left: 0px"
+            *ngIf="searchType === 'retry'"
+        >
+            <span>Failed Orders</span>
+            <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectRetryOrders.isDataAvailable">
+                <button class="btn active-btn"
+                    (click)="retrySubmitBtn($event)"
+                    (cancel)="cancel($event)"
+                    (confirm)="retrySubmitBtn($event)"
+                    [attr.disabled]="selectedRowLength > 0 ? null : ''"
+                >
+                    Retry
+                </button>
+                <app-data-table2
+                    [dataObject]="dataObjectRetryOrders"
+                    [sendResponseOnCheckboxClick]=true
+                    (triggerActions)="handleRow($event)"
+                ></app-data-table2>
+            </div>
+            <div class="page-header" style="margin-left: 0px" *ngIf="!dataObjectRetryOrders.isDataAvailable">
+                <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to
+                    display.
+                </div>
+            </div>
+        </div>
+
         <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
     </div>
 </div>

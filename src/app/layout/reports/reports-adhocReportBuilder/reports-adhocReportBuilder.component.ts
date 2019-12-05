@@ -686,10 +686,10 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
 
     }, error => {
       if(error.status === 401) {
-        if(this.widget.tokenManager.get('accessToken')) {
+        if(localStorage.getItem('accessToken')) {
           this.widget.tokenManager.refresh('accessToken')
               .then(function (newToken) {
-                this.widget.tokenManager.add('accessToken', newToken);
+                localStorage.setItem('accessToken', newToken);
                 this.showSpinner = false;
                 this.getEmailRequest();
               })
@@ -699,7 +699,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
               });
         } else {
           this.widget.signOut(() => {
-            this.widget.tokenManager.remove('accessToken');
+            localStorage.removeItem('accessToken');
             window.location.href = '/login';
           });
         }
@@ -710,10 +710,11 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   }
 
   getEmails() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
 
     console.log('token >>')
@@ -790,10 +791,11 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   }
 
   getReportTemplateData() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
 
     console.log('token >>')
@@ -1091,10 +1093,11 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     console.log('applyFilter >>')
     console.log(applyFilter);
 
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
@@ -1353,10 +1356,10 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
         err => {
 
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
+            if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
                     this.handleSubmit(null,null);
                   })
@@ -1366,7 +1369,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
                   });
             } else {
               this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
+                localStorage.removeItem('accessToken');
                 window.location.href = '/login';
               });
             }
@@ -1379,10 +1382,11 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   }
 
   submitFormData(dataObj) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -1587,10 +1591,10 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
             err => {
 
               if(err.status === 401) {
-                if(this.widget.tokenManager.get('accessToken')) {
+                if(localStorage.getItem('accessToken')) {
                   this.widget.tokenManager.refresh('accessToken')
                       .then(function (newToken) {
-                        this.widget.tokenManager.add('accessToken', newToken);
+                        localStorage.setItem('accessToken', newToken);
                         this.showSpinner = false;
                         this.fetchReportData();
                       })
@@ -1600,7 +1604,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
                       });
                 } else {
                   this.widget.signOut(() => {
-                    this.widget.tokenManager.remove('accessToken');
+                    localStorage.removeItem('accessToken');
                     window.location.href = '/login';
                   });
                 }
@@ -1617,10 +1621,11 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   }
 
   getReportSummaryDataByID() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});

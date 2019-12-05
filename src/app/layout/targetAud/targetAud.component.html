@@ -1,0 +1,135 @@
+<div>
+  <div class="col-lg-12 col-md-12">
+    <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">{{isExistingOrder ? 'MODIFY ' : 'CONFIGURE '}} TARGET AUDIENCES</p>
+  </div>
+  <p style="clear: both"></p>
+  <div class="col-lg-2 col-md-2 col-sm-2" style="border: 1px solid #fff; background: #fff">
+    <ul style="list-style: none">
+      <li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:0px; left: -26px; font-size: 18px; color: #0777bc" class="fa fa-check-circle"></i><a style="font-size: 12px" href="javascript:void(0)" routerLink="/app/order">Create Order</a></li>
+      <!--<li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:3px; left: -26px" class="fa fa-arrow-right"></i><a href="javascript:void(0)">Configure AD</a></li>-->
+      <li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:3px; left: -26px" class="fa fa-arrow-right"></i><a style="font-size: 12px" href="javascript:void(0)">Target Audience</a></li>
+      <li style="margin-top: 20px"><span style="font-size: 12px">Summary</span></li>
+      <li style="margin-top: 20px"><span style="font-size: 12px">Payment</span></li>
+    </ul>
+  </div>
+  <div class="col-lg-10 col-md-10 col-sm-10" style="margin-top: 5px">
+    <div *ngFor="let item of lineItems; let i = index;">
+      <div class="col-lg-12 col-md-12 col-sm-12" [style.background]="item.show ? '#0777bc' : (i % 2 === 0 ? '#EBE8EB' : '#EBE8EB')" style="height: 50px; margin-bottom: 5px; cursor: pointer" (click)="toggle(i)">
+        <label [style.color]="item.show ? '#fff' : '#000'" style="position: relative; top: 15px; font-size: 14px;">Line Item {{i+1}}</label><span style="float: right; position: relative; top: 12px; font-size: 18px; cursor: pointer"><i [class]="item.show ? 'fa fa-minus' : 'fa fa-plus'" [style.color]="item.show ? '#fff' : '#000'"></i></span>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12" [style.display]="item.show ? 'block' : 'none'" style="background: #fff">
+        <div style="margin-top: 10px">
+          <label class="col-lg-2 col-md-2 col-sm-12">CHANNEL</label>
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <span style="margin-left: 10px">{{item.name}}</span>
+          </div>
+        </div>
+        <p style="clear: both"></p>
+        <label class="col-lg-2 col-md-2 col-sm-12" style="margin-top: 20px;">DEMOGRAPHICS</label>
+        <div class="col-lg-12 col-md-12 col-sm-12" style="padding-bottom: 20px; margin-top: 20px">
+          <div>
+            <label class="col-lg-2 col-md-2 col-sm-12">Age</label>
+            <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+              <input type="number" class="input-form-control" style="height: 29px"/>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 20px">
+          <div>
+            <label class="col-lg-2 col-md-2 col-sm-12">Location</label>
+            <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+              <select2 width="100%" placeholder="Select"
+                       class="col-lg-4 col-md-4"
+                       style="padding: 0px; line-height: 1.42857143; width: 160px"
+                       [data]="[{id: '1', text: 'North East'}, {id: '2', text: 'South West'}]"></select2>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 20px">
+          <div>
+            <label class="col-lg-2 col-md-2 col-sm-12">Gender</label>
+            <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+              <select2 width="100%" placeholder="Select"
+                       class="col-lg-4 col-md-4"
+                       style="padding: 0px; line-height: 1.42857143; width: 160px"
+                       [data]="[{id: '1', text: 'Male'}, {id: '2', text: 'Female'}]"></select2>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 20px">
+          <div>
+            <label class="col-lg-2 col-md-2 col-sm-12">Education</label>
+            <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+              <input type="text" class="input-form-control" style="height: 29px"/>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 20px">
+          <div>
+            <label class="col-lg-2 col-md-2 col-sm-12">Language</label>
+            <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+              <select2 width="100%" placeholder="Select"
+                       class="col-lg-4 col-md-4"
+                       style="padding: 0px; line-height: 1.42857143; width: 160px"
+                       [data]="[{id: '1', text: 'English'}, {id: '2', text: 'Spanish'}]"></select2>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 20px">
+          <div>
+            <label class="col-lg-2 col-md-2 col-sm-12">Interest</label>
+            <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+              <input type="text" class="input-form-control" style="height: 29px"/>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 20px">
+          <div>
+            <label class="col-lg-2 col-md-2 col-sm-12">Target Email List</label>
+            <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">
+              <input type="file" class="input-form-control" style="height: 29px"/>
+            </div>
+          </div>
+        </div>
+        <label class="col-lg-2 col-md-2 col-sm-12" style="margin-top: 20px;">PLANS</label>
+        <div class="col-lg-12 col-md-12 col-sm-12" style="padding-bottom: 20px; margin-top: 20px; margin-left: 10px">
+          <div class="">
+            <input type="radio" name="payment" value="plan1" style="margin-right: 10px"/> First Party Data Plan 1 ( $3,000 )
+          </div>
+          <div>
+            <input type="radio" name="payment" value="plan2" style="margin-right: 10px"/> First Party Data Plan 2 ( $4,000 )
+          </div>
+        </div>
+        <label class="col-lg-2 col-md-2 col-sm-12" style="margin-top: 20px;">CAMPAIGN GOAL</label>
+        <div class="col-lg-12 col-md-12 col-sm-12" style="padding-bottom: 20px; margin-top: 20px">
+          <div>
+            <!--<label class="col-lg-2 col-md-2 col-sm-12">KPI</label>-->
+            <p style="clear: both"></p>
+            <p style="clear: both"></p>
+            <div class="col-lg-10 col-md-10 col-sm-12" style="position: relative; top: -8px">
+              <div *ngFor="let item of lineItems[i].kpis; let j = index;">
+                <select2 width="100%" placeholder="Select"
+                         class="col-lg-4 col-md-4"
+                         style="padding: 0px; line-height: 1.42857143; width: 160px; margin-right: 10px"
+                         [data]="[{id: '1', text: 'Impressions'}, {id: '2', text: 'Clicks'}]"></select2>
+                <select2 width="100%" placeholder="Select"
+                         class="col-lg-4 col-md-4"
+                         style="padding: 0px; line-height: 1.42857143; width: 160px; margin-right: 10px"
+                         [data]="[{id: '1', text: 'Units'}, {id: '2', text: '%'}]"></select2>
+                <input placeholder="value" type="text" class="input-form-control" style="height: 29px"/>
+
+
+              </div>
+            </div><button style="position: relative; left: -320px; top: -8px;" class="btn btn-info" (click)="addKpi(i)">ADD</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p style="clear: both"></p>
+    <div>
+      <button class="btn btn-primary">CANCEL</button>
+      <button class="btn btn-primary" style="text-transform: none" (click)="OnSubmit()">
+        SAVE
+      </button>
+    </div>
+  </div>

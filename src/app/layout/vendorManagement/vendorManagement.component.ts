@@ -54,7 +54,9 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   editID: any;
   resultStatus: any;
 
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager) {
+  constructor(
+    private okta: OktaAuthService, 
+    private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager) {
 
     this.vendorForm = new FormGroup({
       external_vendor_id: new FormControl('', Validators.required),
@@ -113,10 +115,10 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
         err => {
 
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
+            if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
                     this.searchDataRequest();
                   })
@@ -126,7 +128,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
                   });
             } else {
               this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
+                localStorage.removeItem('accessToken');
                 window.location.href = '/login';
               });
             }
@@ -138,10 +140,11 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   }
 
   searchData() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
 
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
@@ -296,10 +299,10 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
         },
         err => {
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
+            if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
                     this.performVendorAdditionRequest(dataObj);
                   })
@@ -309,7 +312,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
                   });
             } else {
               this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
+                localStorage.removeItem('accessToken');
                 window.location.href = '/login';
               });
             }
@@ -322,10 +325,11 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   }
 
   performVendorAddition(dataObj) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -358,10 +362,10 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
         },
         err => {
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
+            if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
                     this.performVendorDeletionRequest(id);
                   })
@@ -371,7 +375,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
                   });
             } else {
               this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
+                localStorage.removeItem('accessToken');
                 window.location.href = '/login';
               });
             }
@@ -384,10 +388,11 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   }
 
   performVendorDeletion(id) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});

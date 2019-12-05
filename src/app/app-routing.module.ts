@@ -6,7 +6,7 @@ const routes: Routes = [
   {
     path: 'app',
     loadChildren: './layout/layout.module#LayoutModule',
-    canActivate: [AuthGuard]
+    // canActivate: [AuthGuard]
   },
   {
     path: '',
@@ -19,7 +19,7 @@ const routes: Routes = [
   {
     path: 'selectorganization',
     loadChildren: './select-organization/select-organization.module#SelectOrganizationModule',
-    canActivate: [AuthGuard]
+    // canActivate: [AuthGuard]
   },
   {
     path: 'transition',

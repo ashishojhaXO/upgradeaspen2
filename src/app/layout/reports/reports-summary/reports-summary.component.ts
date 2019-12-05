@@ -43,7 +43,9 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
     isPagination: true,
     isTree: true,
     inheritHeadersForTree: true,
-    isPlayOption: true,
+    isPlayOption: {
+      value : true
+    },
     isDownloadOption: true,
   }];
   dashboard: any;
@@ -212,11 +214,11 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
         err => {
 
           if(err.status === 401) {
-            if(this.widget.tokenManager.get('accessToken')) {
+            if(localStorage.getItem('accessToken')) {
               this.widget.tokenManager.refresh('accessToken')
                   .then(function (newToken) {
                     this.showSpinner = false;
-                    this.widget.tokenManager.add('accessToken', newToken);
+                    localStorage.setItem('accessToken', newToken);
                     this.populateReportDataTable();
                   })
                   .catch(function (err) {
@@ -225,7 +227,7 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
                   });
             } else {
               this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
+                localStorage.removeItem('accessToken');
                 window.location.href = '/login';
               });
             }
@@ -237,10 +239,11 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
   }
 
   getReportData() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
 
     console.log('token >>')
@@ -272,10 +275,11 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
   }
 
   runReport(reportId) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});

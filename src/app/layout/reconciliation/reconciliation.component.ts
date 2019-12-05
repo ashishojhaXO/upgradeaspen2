@@ -112,7 +112,7 @@ export class ReconciliationComponent implements OnInit  {
           if(err.status === 401) {
             this.widget.tokenManager.refresh('accessToken')
                 .then(function (newToken) {
-                  this.widget.tokenManager.add('accessToken', newToken);
+                  localStorage.setItem('accessToken', newToken);
                   this.showSpinner = false;
                   this.searchDataRequest();
                 });
@@ -126,10 +126,11 @@ export class ReconciliationComponent implements OnInit  {
   }
 
   searchData() {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      // // token = AccessToken.accessToken;
+      token = AccessToken;
     }
 
     const dataObj = {
