@@ -42,7 +42,6 @@ export class OrderPaymentComponent {
         window['fs_widget_config'].org_id = customerInfo.org.org_id;
 
         // Temp assignment FOR TESTING:
-
         // window['fs_widget_config'].vendor_id = '592f94f3-e2b1-4621-b1c0-c795ee2a1814'
         // this.vendorId = '592f94f3-e2b1-4621-b1c0-c795ee2a1814';
     }
@@ -53,7 +52,11 @@ export class OrderPaymentComponent {
     // set Pay by CC/ACH by default
     this.selectionType = 'default';
     if ( this.selectionType == 'default') {
-      this.postPaymentMethods(1);
+      // Introduce a timeout to sync between newly created account to be displayed in the existing payments list
+      const __this = this;
+      setTimeout(function () {
+        __this.postPaymentMethods(1);
+      }, 1000);
     }
   }
 
