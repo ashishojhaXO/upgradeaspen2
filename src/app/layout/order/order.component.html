@@ -82,7 +82,6 @@
         </div>
         <div class="clearfix"></div>
         <div class="page-header" *ngIf="!dataObject">
-          <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
           <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to display.</div>
         </div>
       </div>
@@ -95,6 +94,7 @@
         SAVE
       </button>
     </div>
+    <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
   </div>
 </div>
 

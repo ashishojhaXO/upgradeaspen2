@@ -94,6 +94,10 @@ export class OrderComponent implements OnInit  {
   searchTemplates() {
     this.getTemplates().subscribe(
         response => {
+
+
+          this.showSpinner = false;
+
           console.log('response >>')
           console.log(response);
 
@@ -525,6 +529,8 @@ export class OrderComponent implements OnInit  {
     console.log('this.originalResponseObj >>')
     console.log(this.originalResponseObj);
 
+    this.showSpinner = true;
+
     const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
     const reqObj =  {
       vendor_id: customerInfo.vendor.vendor_id,
@@ -575,17 +581,19 @@ export class OrderComponent implements OnInit  {
     this.submitData(reqObj).subscribe(
         response => {
           if (response) {
+            this.showSpinner = false;
             Swal({
               title: 'Order Successfully Submitted',
               text: 'Your order was successfully submitted. You will now be directed to payment page where you will be able to choose from any existing payment methods on file or can add a new payment method',
               type: 'success'
             }).then(() => {
              // this.router.navigate(['/app/targetAud/']);
-              this.router.navigate(['/app/orderPayment/' + response.id]);
+              this.router.navigate(['/app/orderPayment/' + response.order_id]);
             });
           }
         },
         err => {
+          this.showSpinner = false;
           Swal({
             title: 'Order Submission Failed',
             html: 'An error occurred while submitting the order. Please try again',

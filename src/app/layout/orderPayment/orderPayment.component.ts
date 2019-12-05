@@ -26,6 +26,7 @@ export class OrderPaymentComponent {
   paymentOptions: any;
   orderId: string;
   vendorId: string;
+  showSpinner: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -37,9 +38,13 @@ export class OrderPaymentComponent {
       console.log(window['fs_widget_config']);
         const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
         window['fs_widget_config'].vendor_id = this.vendorId = customerInfo.vendor.vendor_id;
-       // this.vendorId = '592f94f3-e2b1-4621-b1c0-c795ee2a1814';
         window['fs_widget_config'].api_key = customerInfo.org.x_api_key;
         window['fs_widget_config'].org_id = customerInfo.org.org_id;
+
+        // Temp assignment :
+
+        // window['fs_widget_config'].vendor_id = '592f94f3-e2b1-4621-b1c0-c795ee2a1814'
+        // this.vendorId = '592f94f3-e2b1-4621-b1c0-c795ee2a1814';
     }
   }
 
@@ -98,21 +103,24 @@ export class OrderPaymentComponent {
   paymentsMethodsData: any;
   paymentsChargeData: any;
 
-  setPaymentsMethodsData(option) {
+  setPaymentsMethodsData() {
     this.paymentsMethodsData = { vendor_id : this.vendorId } ;
   }
 
   postPaymentMethods(option) {
-    this.setPaymentsMethodsData(1)
+    this.showSpinner = true;
+    this.setPaymentsMethodsData()
 
     return this.genericService
       .postPaymentsMethods(this.paymentsMethodsData)
       .subscribe(
         (res) => {
+          this.showSpinner = false;
           // this.successCB.apply(this, [res])
           this.successCB(res)
         },
         (rej) => {
+          this.showSpinner = false;
           this.errorCB(rej)
         }
       )
@@ -130,14 +138,14 @@ export class OrderPaymentComponent {
   }
 
   postPaymentsCharge(option) {
-
-    const dataObj = { vendor_id : this.vendorId };
-
     this.setPaymentsChargeData(option);
 
-   this.genericService
+    this.showSpinner = true;
+
+    this.genericService
       .postPaymentsCharge(this.paymentsChargeData)
       .subscribe( (res) => {
+            this.showSpinner = false;
             Swal({
               title: 'Payment Successfully Charged',
               text: 'Your payment for the order ' + this.orderId + ' was successfully charged',
@@ -147,6 +155,7 @@ export class OrderPaymentComponent {
                 });
       },
       (rej) => {
+          this.showSpinner = false;
           Swal({
             title: 'Payment Charge Failed',
             text: 'We are having trouble charging for the order ' + this.orderId + ' using the selected payment type. Please try again',
@@ -155,4 +164,7 @@ export class OrderPaymentComponent {
           this.errorCB.apply(this, [rej])
         });
   }
+
+
+
 }
