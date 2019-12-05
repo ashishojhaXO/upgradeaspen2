@@ -84,7 +84,23 @@
       "title": "Orders",
       "selected": false,
       "id": "orders",
-      "url":"app/orders"
+      "url":"app/orders",
+      "submenu" : [
+        {
+          "index": 7,
+          "name": "order",
+          "title": "Create Order",
+          "id": "order",
+          "url": "app/order"
+        },
+        {
+          "index": 8,
+          "name": "orderList",
+          "title": "Orders List",
+          "id": "orderList",
+          "url": "app/admin/orderslist"
+        }
+      ]
     },
     {
       "index": 7,
@@ -143,20 +159,6 @@
           "title": "Template List",
           "id": "ordertemplatelist",
           "url": "app/admin/ordertemplatelist"
-        },
-        {
-          "index": 7,
-          "name": "order",
-          "title": "Create Order",
-          "id": "order",
-          "url": "app/order"
-        },
-        {
-          "index": 8,
-          "name": "orderList",
-          "title": "Orders List",
-          "id": "orderList",
-          "url": "app/admin/orderslist"
         }
       ]
     }
