@@ -50,6 +50,11 @@ export class OrderPaymentComponent {
 
   ngOnInit() {
     this.initVars();
+    // set Pay by CC/ACH by default
+    this.selectionType = 'default';
+    if ( this.selectionType == 'default') {
+      this.postPaymentMethods(1);
+    }
   }
 
   initVars() {

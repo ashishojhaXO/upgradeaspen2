@@ -26,6 +26,7 @@
                         type="radio"
                         name="payment"
                         value="default"
+                        [checked]="selectionType === 'default'"
                         (change)="paymentTypeSelection('default')"
                         style="margin-right: 10px"
                 /> Pay by CC/ACH
