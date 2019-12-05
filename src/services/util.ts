@@ -26,6 +26,9 @@ export class Service {
     const Data = data;
     const Options = this.getHeaders();
 
+    console.log('Options >>');
+    console.log(Options);
+
     switch (Method) {
 
       case 'post': {
@@ -63,8 +66,8 @@ export class Service {
       case 'delete': {
 
         // const token = localStorage.getItem('token');
-        const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1YWRkYjAxODA4MzZjMDA5ODRiY2UyN2UiLCJlbWFpbCI6ImZ1c2lvbnNldmVuLmlvK2J0aWxAZ21haWwuY29tIiwibmFtZSI6IkRFVl9CVElMIiwiY2xpZW50Q29kZSI6ImJ0aWwiLCJleHAiOjE1NTAxNDA4NjUsImlhdCI6MTU0OTUzNjA2NX0.nNwbKih3u9Yby4hlV0gXW7qXWs22V5Gq6QaB5aRjhCg";
-        const headers = new Headers({ 'Content-Type': 'application/json', Authorization: 'Bearer ' + token });
+        const token = localStorage.getItem('accessToken'); // "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1YWRkYjAxODA4MzZjMDA5ODRiY2UyN2UiLCJlbWFpbCI6ImZ1c2lvbnNldmVuLmlvK2J0aWxAZ21haWwuY29tIiwibmFtZSI6IkRFVl9CVElMIiwiY2xpZW50Q29kZSI6ImJ0aWwiLCJleHAiOjE1NTAxNDA4NjUsImlhdCI6MTU0OTUzNjA2NX0.nNwbKih3u9Yby4hlV0gXW7qXWs22V5Gq6QaB5aRjhCg";
+        const headers = new Headers({ 'Content-Type': 'application/json', token : token, callingapp : 'aspen' });
 
         return this.http
           .delete(Url, new RequestOptions({
@@ -87,9 +90,9 @@ export class Service {
    * @returns Header Object
    */
   getHeaders() {
-    const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1YWRkYjAxODA4MzZjMDA5ODRiY2UyN2UiLCJlbWFpbCI6ImZ1c2lvbnNldmVuLmlvK2J0aWxAZ21haWwuY29tIiwibmFtZSI6IkRFVl9CVElMIiwiY2xpZW50Q29kZSI6ImJ0aWwiLCJleHAiOjE1NTAxNDA4NjUsImlhdCI6MTU0OTUzNjA2NX0.nNwbKih3u9Yby4hlV0gXW7qXWs22V5Gq6QaB5aRjhCg";
+    const token = localStorage.getItem('accessToken'); // "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1YWRkYjAxODA4MzZjMDA5ODRiY2UyN2UiLCJlbWFpbCI6ImZ1c2lvbnNldmVuLmlvK2J0aWxAZ21haWwuY29tIiwibmFtZSI6IkRFVl9CVElMIiwiY2xpZW50Q29kZSI6ImJ0aWwiLCJleHAiOjE1NTAxNDA4NjUsImlhdCI6MTU0OTUzNjA2NX0.nNwbKih3u9Yby4hlV0gXW7qXWs22V5Gq6QaB5aRjhCg";
     // const token = localStorage.getItem('token')
-    const headers = new Headers({ 'Content-Type': 'application/json', Authorization: 'Bearer ' + token });
+    const headers = new Headers({ 'Content-Type': 'application/json', token: token, callingapp : 'aspen' });
     return new RequestOptions({ headers: headers });
   }
 

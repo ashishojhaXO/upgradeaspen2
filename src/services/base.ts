@@ -7,6 +7,10 @@ export class BaseService {
 
   REPORT_SERVICE_API_GATEWAY_URL = 'https://plazo-dev.fusionseven.net';
 
+  API = '/api';
+  POST_PAYMENTS_METHODS_ENDPOINT = '/payments/methods';
+  POST_PAYMENTS_CHARGE_ENDPOINT = '/payments/charge';
+
   LOGIN_URL = this.BASE_URL + '/v4/login';
 
   ORGANIZATION_BASE_URL = this.BASE_URL + '/usermgmt/organization';

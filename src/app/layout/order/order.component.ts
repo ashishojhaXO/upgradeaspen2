@@ -68,7 +68,7 @@ export class OrderComponent implements OnInit  {
   originalResponseObj : any;
 
   constructor(
-    // private okta: OktaAuthService, 
+    // private okta: OktaAuthService,
     private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder,) {
     this.formAttribute = fb;
   }
@@ -576,19 +576,19 @@ export class OrderComponent implements OnInit  {
         response => {
           if (response) {
             Swal({
-              title: 'Success',
-              text: 'Order Successfully Created',
+              title: 'Order Successfully Submitted',
+              text: 'Your order was successfully submitted. You will now be directed to payment page where you will be able to choose from any existing payment methods on file or can add a new payment method',
               type: 'success'
             }).then(() => {
              // this.router.navigate(['/app/targetAud/']);
-              this.router.navigate(['/app/orderPayment']);
+              this.router.navigate(['/app/orderPayment/' + response.id]);
             });
           }
         },
         err => {
           Swal({
-            title: 'Error',
-            html: '<h5>An error occurred while submitting the order</h5>',
+            title: 'Order Submission Failed',
+            html: 'An error occurred while submitting the order. Please try again',
             type: 'error'
           });
         }

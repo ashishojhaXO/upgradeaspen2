@@ -43,7 +43,9 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
     isPagination: true,
     isTree: true,
     inheritHeadersForTree: true,
-    isPlayOption: true,
+    isPlayOption: {
+      value : true
+    },
     isDownloadOption: true,
   }];
   dashboard: any;

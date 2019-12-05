@@ -27,7 +27,7 @@ const config = {
     FormsModule,
     ReactiveFormsModule
   ],
-  declarations: [LoginComponent, LoginNewComponent],
+  declarations: [LoginNewComponent],
   providers: [OktaAuthService]
 })
 export class LoginModule { }

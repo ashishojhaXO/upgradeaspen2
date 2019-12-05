@@ -22,7 +22,10 @@ export class OrdersListComponent implements OnInit  {
     isSearchColumn: true,
     isTableInfo: true,
     isEditOption: true,
-    isPlayOption: true,
+    isPlayOption: {
+      value : true,
+      icon : 'fa-dollar',
+    },
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
@@ -75,11 +78,19 @@ export class OrdersListComponent implements OnInit  {
   }
 
   searchDataRequest(templateValue) {
-    return this.searchData(templateValue).subscribe(
+    this.dataObject.isDataAvailable = false;
+    const __this = this;
+    setTimeout(function () {
+      __this.processDataRequest(templateValue);
+    }, 0);
+  }
+
+  processDataRequest(templateValue) {
+    this.searchData(templateValue).subscribe(
         response => {
           if (response) {
             if (response.orders) {
-              let orders = [];
+              const orders = [];
               response.orders.forEach(element => {
                 orders.push(element.order);
               });

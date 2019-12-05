@@ -162,8 +162,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 if (this.dataObject.gridData.options.isEditOption) {
                     columnButtonDefs += '<a class="fa fa-pencil fa-action-view editLink" style="margin-right: 15px; cursor: pointer">';
                 }
-                if (this.dataObject.gridData.options.isPlayOption) {
-                    columnButtonDefs += '<a class="fa fa-play fa-action-view playLink" style="margin-right: 15px; cursor: pointer">';
+                if (this.dataObject.gridData.options.isPlayOption && this.dataObject.gridData.options.isPlayOption.value) {
+                    const iconClass = this.dataObject.gridData.options.isPlayOption.icon ? this.dataObject.gridData.options.isPlayOption.icon : 'fa-play';
+                    columnButtonDefs += '<a class="fa ' + iconClass  + ' fa-action-view playLink" style="margin-right: 15px; cursor: pointer">';
                 }
                 if (this.dataObject.gridData.options.isDownloadOption) {
                     columnButtonDefs += '<a class="fa fa-download fa-action-view downloadLink" style="margin-right: 15px; cursor: pointer">';

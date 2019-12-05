@@ -27,11 +27,11 @@ export class LoginNewComponent implements OnInit {
   formError: string = null;
   api_fs: any;
   showSpinner: boolean;
-  
+
   constructor(
-    private common:Common, 
-    private http: Http, 
-    private route: ActivatedRoute, 
+    private common:Common,
+    private http: Http,
+    private route: ActivatedRoute,
     private router: Router
   ) { }
 
@@ -44,9 +44,9 @@ export class LoginNewComponent implements OnInit {
     if( !localStorage.getItem('apis_fs') )
       localStorage.setItem('apis_fs', JSON.stringify(ENV.apis_fs));
     // or some url from config file
-    this.api_fs = JSON.parse(localStorage.getItem('apis_fs')) || ENV.apis_fs; 
+    this.api_fs = JSON.parse(localStorage.getItem('apis_fs')) || ENV.apis_fs;
   }
-  
+
   private formOnInit(){
     this.loginForm = new FormGroup({
       'userData': new FormGroup({
@@ -83,11 +83,14 @@ export class LoginNewComponent implements OnInit {
   }
 
   saveUser(res: any) {
+
+    console.log('res >>')
+    console.log(res);
+
     localStorage.setItem('accessToken', res.body.access_token);
-    // localStorage.setItem('accessToken', res.body.data);
     localStorage.setItem('idToken', res.body.id_token);
     localStorage.setItem('loggedInUserName', res.body.first_name.trim() + " " + res.body.last_name.trim());
-    localStorage.setItem('loggedInUserID', res.body.id);
+    localStorage.setItem('loggedInUserID', res.body.external_id);
     localStorage.setItem('loggedInUserGroup', JSON.stringify([res.body.user_role.name.toUpperCase()] ) );
     localStorage.setItem('loggedInOrg', res.body.org && res.body.org.org_name ? res.body.org.org_name : 'Home Depot');
   }
@@ -112,12 +115,34 @@ export class LoginNewComponent implements OnInit {
       //login api comes here
       this.loginService(body).subscribe( res => {
         this.saveUser(res);
-        this.router.navigate(['/app/dashboards/'], { relativeTo: this.route } ).then( res => {
-          this.showSpinner = false;
-        });
-        //   this.showSpinner = false;
-        // window.location.href = "/app/dashboards/";
+        this.getCustomerInfo().subscribe(
+            responseDetails => {
 
+              console.log('responseDetails >>>')
+              console.log(responseDetails);
+
+              if (responseDetails.body && responseDetails.body) {
+                localStorage.setItem('customerInfo', JSON.stringify(responseDetails.body));
+                this.router.navigate(['/app/dashboards/'], { relativeTo: this.route } ).then( res => {
+                  this.showSpinner = false;
+                });
+              } else {
+                this.formError = 'No User details found. Please contact administrator';
+                console.log('No Vendor details found');
+              }
+            },
+            err => {
+              if (err.status === 401) {
+                if (localStorage.getItem('accessToken')) {
+
+                } else {
+
+                }
+              } else {
+
+              }
+            }
+        );
       }, rej => {
         //this.loginForm.reset();
         this.showSpinner = false;
@@ -125,7 +150,28 @@ export class LoginNewComponent implements OnInit {
       });
     }
   }
-  
+
+  getCustomerInfo(): any {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken;
+    }
+
+    console.log('token >>>')
+    console.log(token);
+
+    const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen', 'token' : token});
+    const options = new RequestOptions({headers: headers});
+    const urserID = localStorage.getItem('loggedInUserID') || '';
+    const url = this.api_fs.api + '/api/users/' + urserID + '/external';
+    return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
   forgotPasswordService(forgotObj: Object) {
 
     const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen' });
