@@ -72,9 +72,8 @@
                                         <input
                                                 type="radio"
                                                 name="default"
-                                                (change)="setPaymentsChargeData(option)"
+                                                (change)="setDefaultPaymentMethod(option)"
                                                 [checked]="option.is_default == '1' ? true : false"
-                                                disabled="disabled"
                                         />
                                         <!--[disabled]="option.status.toUpperCase() !== 'PAYMENT SETUP COMPLETED'"-->
                                     </td>

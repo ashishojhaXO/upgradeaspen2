@@ -41,7 +41,7 @@ export class OrderPaymentComponent {
         window['fs_widget_config'].api_key = customerInfo.org.x_api_key;
         window['fs_widget_config'].org_id = customerInfo.org.org_id;
 
-        // Temp assignment :
+        // Temp assignment FOR TESTING:
 
         // window['fs_widget_config'].vendor_id = '592f94f3-e2b1-4621-b1c0-c795ee2a1814'
         // this.vendorId = '592f94f3-e2b1-4621-b1c0-c795ee2a1814';
@@ -124,6 +124,36 @@ export class OrderPaymentComponent {
           this.errorCB(rej)
         }
       )
+  }
+
+  setDefaultPaymentMethod(option) {
+    console.log('option >>')
+    console.log(option);
+    const obj = {
+      vendor_id : this.vendorId,
+      paymentmethodid : option.paymentmethodid
+    }
+    this.genericService
+        .setDefaultPaymentMethod(obj)
+        .subscribe( (res) => {
+              this.showSpinner = false;
+              Swal({
+                title: 'Default Payment Method Successfully Changed',
+                text: 'Your default payment method for future payments has been changed successfully',
+                type: 'success'
+              }).then( () => {
+
+              });
+            },
+            (rej) => {
+              this.showSpinner = false;
+              Swal({
+                title: 'Default Payment Method Change Failed',
+                text: 'We are having trouble changing the default payment method. Please try again',
+                type: 'error'
+              }).then( () => {})
+
+            });
   }
 
   setPaymentsChargeData(option) {

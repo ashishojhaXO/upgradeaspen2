@@ -27,15 +27,15 @@ export class GenericService {
    * @param dataObj
    */
   public postPaymentsMethods(dataObj: any) {
-    
+
     const data = JSON.stringify(dataObj);
     console.log("dataObj: ", dataObj, " data; ", data);
 
     return this.service.Call(
-      'post', 
+      'post',
       this.base.REPORT_SERVICE_API_GATEWAY_URL +
-      this.base.API + 
-      this.base.POST_PAYMENTS_METHODS_ENDPOINT, 
+      this.base.API +
+      this.base.POST_PAYMENTS_METHODS_ENDPOINT,
       data
     );
   }
@@ -45,16 +45,34 @@ export class GenericService {
    * @param dataObj
    */
   public postPaymentsCharge(dataObj: any) {
-    
+
     const data = JSON.stringify(dataObj);
     console.log("dataObj: ", dataObj, " data; ", data);
 
     return this.service.Call(
-      'post', 
+      'post',
       this.base.REPORT_SERVICE_API_GATEWAY_URL +
-      this.base.API + 
-      this.base.POST_PAYMENTS_CHARGE_ENDPOINT, 
+      this.base.API +
+      this.base.POST_PAYMENTS_CHARGE_ENDPOINT,
       data
+    );
+  }
+
+  /**
+   * PUT Set Default Payment method
+   * @param dataObj
+   */
+  public setDefaultPaymentMethod(dataObj: any) {
+
+    const data = JSON.stringify(dataObj);
+    console.log("dataObj: ", dataObj, " data; ", data);
+
+    return this.service.Call(
+        'put',
+        this.base.REPORT_SERVICE_API_GATEWAY_URL +
+        this.base.API +
+        this.base.PUT_DEFAULT_PAYMENTS_METHOD,
+        data
     );
   }
 

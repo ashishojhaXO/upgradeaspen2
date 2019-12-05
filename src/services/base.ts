@@ -10,6 +10,7 @@ export class BaseService {
   API = '/api';
   POST_PAYMENTS_METHODS_ENDPOINT = '/payments/methods';
   POST_PAYMENTS_CHARGE_ENDPOINT = '/payments/charge';
+  PUT_DEFAULT_PAYMENTS_METHOD = '/payments/methods/default';
 
   LOGIN_URL = this.BASE_URL + '/v4/login';
 
