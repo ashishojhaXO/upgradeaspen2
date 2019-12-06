@@ -3,18 +3,17 @@ import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
 import {Router, ActivatedRoute} from '@angular/router';
-import {DataTableOptions} from '../../../models/dataTableOptions';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
-import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import { OrdersComponent } from '../orders/orders.component';
 import { GenericService } from '../../../services/generic.service';
+import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up.component';
 
 @Component({
   selector: 'app-orders-processed',
   templateUrl: './orders-processed.component.html',
   styleUrls: ['./orders-processed.component.css'],
-  providers: [GenericService]
+  providers: [GenericService, AppPopUpComponent]
 })
 export class OrdersProcessedComponent extends OrdersComponent {
 
@@ -27,11 +26,13 @@ export class OrdersProcessedComponent extends OrdersComponent {
   };
 
   columnsToShow: string[] = [
-    "Vendor_Name", "Vendor_Id", "Order_Id", "Line_Item_End_Date", "Order_Created_On_GMT"
+    "Vendor_Name", "Order_Id",
   ];
 
   constructor(
-    okta: OktaAuthService, route: ActivatedRoute, router: Router, http: Http,
+    okta: OktaAuthService, 
+    route: ActivatedRoute, router: Router, http: Http,
+    private popUp: AppPopUpComponent,
     private genericService: GenericService
   ) { 
     super(okta, route, router, http)
@@ -123,39 +124,7 @@ export class OrdersProcessedComponent extends OrdersComponent {
   random() {
 
   }
-
-  handleEmail(dataObj: any) {
-    console.log("Trigger Email API");
-
-    const options = this.compileHeaderData();
-    const data = {};
-
-    // this.genericService.postOrdersProcessedReportEmail(data).subscribe(
-    //   (res) => {
-
-    //   },
-    //   (rej) => {
-
-    //   }
-    // )
-  }
-
-  handleRun(dataObj: any) {
-    console.log("Trigger Execute/Run API", dataObj)
-    
-    const options = this.compileHeaderData();
-    const data = {};
-
-    // this.genericService.postOrdersProcessedReportRun(data).subscribe(
-    //   (res) => {
-
-    //   },
-    //   (rej) => {
-
-    //   }
-    // )
-  }
-
+  
   beforeRunReport() {
     // const reportId = dataObj.data.id;
     // this.runReport(reportId).subscribe(response => {
@@ -184,22 +153,138 @@ export class OrdersProcessedComponent extends OrdersComponent {
     //     .post(url, data, options);
   }
 
+  // Swal's here
+  onHandleRunError(rej) {
+    const swalOptions = {
+      title: "Job execution failed!",
+      text: rej.message,
+      type: 'error',
+      showCloseButton: true,
+      cancelButtonText: "Cancel",
+    }
+    this.popUp.showPopUp(swalOptions )
+  }
+
+  onHandleRunSuccess(res) {
+    const swalOptions = {
+      title: "Job executed successfully",
+      text: res.message,
+      type: 'success',
+      showCloseButton: true,
+      cancelButtonText: "Cancel",
+    }
+    this.popUp.showPopUp(swalOptions )
+  }
+  // Swal's here/
+
+  handleRun(dataObj: any) {
+    console.log("Trigger Execute/Run API", dataObj)
+    this.showSpinner = true;
+    
+    const options = this.compileHeaderData();
+    const data = {
+      "job_id": dataObj.data.job_id || dataObj.data.Order_Id,
+      "action": ["execute"]
+    };
+
+    this.showSpinner = true;
+    this.genericService.ordersProcessedReportRun(data).subscribe(
+      (res) => {
+        this.showSpinner = false;
+        this.onHandleRunSuccess(res)
+      },
+      (rej) => {
+        this.showSpinner = false;
+        this.onHandleRunError(rej)
+      }
+    )
+  }
+  
+  onHandleDownloadError(rej) {
+    const swalOptions = {
+      title: "Download failed!",
+      text: rej.message,
+      type: 'error',
+      showCloseButton: true,
+      cancelButtonText: "Cancel",
+    }
+    this.popUp.showPopUp(swalOptions )
+  }
+
+  onHandleDownloadSuccess(res) {
+    const swalOptions = {
+      title: "Download",
+      text: res.message,
+      type: 'success',
+      showCloseButton: true,
+      cancelButtonText: "Cancel",
+    }
+    this.popUp.showPopUp(swalOptions )
+  }
+
 
   handleDownload(dataObj: any) {
     console.log("Trigger Download API: ", dataObj);
 
     // const options = this.compileHeaderData();
-    const data = {};
+    const data = {
+      "job_id": dataObj.data.job_id || dataObj.data.Order_Id,
+    };
+    this.showSpinner = true;
 
-    // this.genericService.postOrdersProcessedReportDownload(data).subscribe(
-    //   (res) => {
-
-    //   },
-    //   (rej) => {
-
-    //   }
-    // )
+    this.genericService.ordersProcessedReportDownload(data).subscribe(
+      (res) => {
+        // Show download Link
+        this.onHandleDownloadSuccess(res)
+      },
+      (rej) => {
+        this.onHandleDownloadError(rej)
+      }
+    )
 
   }
+
+  onHandleEmailError(rej) {
+    const swalOptions = {
+      title: "Email sending failed!",
+      text: rej.message,
+      type: 'error',
+      showCloseButton: true,
+      cancelButtonText: "Cancel",
+    }
+    this.popUp.showPopUp(swalOptions )
+  }
+
+  onHandleEmailSuccess(res) {
+    const swalOptions = {
+      title: "Email sent!",
+      text: res.message,
+      type: 'success',
+      showCloseButton: true,
+      cancelButtonText: "Cancel",
+    }
+    this.popUp.showPopUp(swalOptions )
+  }
+
+  handleEmail(dataObj: any) {
+    console.log("Trigger Email API");
+
+    const options = this.compileHeaderData();
+    const data = {
+      "job_id": dataObj.data.job_id || dataObj.data.Order_Id,
+      "action": ["email"]
+    };
+
+    this.genericService.ordersProcessedReportEmail(data).subscribe(
+      (res) => {
+        this.onHandleEmailSuccess(res)
+      },
+      (rej) => {
+        this.onHandleEmailError(rej)
+      }
+    )
+
+  }
+
 
 }

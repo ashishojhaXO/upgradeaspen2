@@ -61,7 +61,7 @@ export class GenericService {
    * POST OrdersProcessedReportDownload
    * @param dataObj
    */
-  postOrdersProcessedReportDownload(dataObj) {
+  ordersProcessedReportDownload(dataObj) {
     const data = JSON.stringify(dataObj);
     console.log("dataObj: ", dataObj, " data; ", data);
 
@@ -69,7 +69,7 @@ export class GenericService {
       'post', 
       this.base.REPORT_SERVICE_API_GATEWAY_URL +
       this.base.API + 
-      this.base.postOrdersProcessedReportDownload,
+      this.base.ADMIN_REPORT_DOWNLOAD,
       data
     );
 
@@ -79,7 +79,7 @@ export class GenericService {
    * POST postOrdersProcessedReportEmail
    * @param dataObj
    */
-  postOrdersProcessedReportEmail(dataObj) {
+  ordersProcessedReportEmail(dataObj) {
     const data = JSON.stringify(dataObj);
     console.log("dataObj: ", dataObj, " data; ", data);
 
@@ -97,7 +97,7 @@ export class GenericService {
    * POST postOrdersProcessedReportRun
    * @param dataObj
    */
-  postOrdersProcessedReportRun(dataObj) {
+  ordersProcessedReportRun(dataObj) {
     const data = JSON.stringify(dataObj);
     console.log("dataObj: ", dataObj, " data; ", data);
 
@@ -105,7 +105,7 @@ export class GenericService {
       'post', 
       this.base.REPORT_SERVICE_API_GATEWAY_URL +
       this.base.API + 
-      this.base.postOrdersProcessedReportRun,
+      this.base.ADMIN_REPORT,
       data
     );
 

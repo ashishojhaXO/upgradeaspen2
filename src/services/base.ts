@@ -10,7 +10,8 @@ export class BaseService {
   API = '/api';
   POST_PAYMENTS_METHODS_ENDPOINT = '/payments/methods';
   POST_PAYMENTS_CHARGE_ENDPOINT = '/payments/charge';
-  postOrdersProcessedReportDownload = "/admin/report/download";
+  ADMIN_REPORT = '/admin/report';
+  ADMIN_REPORT_DOWNLOAD = "/admin/report/download";
 
   LOGIN_URL = this.BASE_URL + '/v4/login';
 
