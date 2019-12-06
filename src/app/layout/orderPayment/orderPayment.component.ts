@@ -27,13 +27,26 @@ export class OrderPaymentComponent {
   orderId: string;
   vendorId: string;
   showSpinner: boolean;
+  domain: string;
 
   constructor(
     private route: ActivatedRoute,
     private genericService: GenericService,
     private router: Router
   ) {
+
+    if(window.location.hostname.indexOf('-dev') !== -1 || window.location.hostname.indexOf('localhost') !== -1) {
+      this.domain = 'dev';
+    } else if (window.location.hostname.indexOf('-qa') !== -1) {
+      this.domain = 'qa';
+    } else {
+      this.domain = 'prod';
+    }
+
     if (window['fs_widget_config']) {
+      console.log('window.location.hostname')
+      console.log(window.location.hostname);
+
       console.log('window[\'fs_widget_config\'] >>')
       console.log(window['fs_widget_config']);
         const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
