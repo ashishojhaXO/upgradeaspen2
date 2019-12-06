@@ -30,7 +30,7 @@ export class OrdersProcessedComponent extends OrdersComponent {
   ];
 
   constructor(
-    okta: OktaAuthService, 
+    okta: OktaAuthService,
     route: ActivatedRoute, router: Router, http: Http,
     private popUp: AppPopUpComponent,
     private genericService: GenericService
@@ -160,6 +160,8 @@ export class OrdersProcessedComponent extends OrdersComponent {
       text: rej.message,
       type: 'error',
       showCloseButton: true,
+      reverseButtons: true,
+      showCancelButton: true,
       cancelButtonText: "Cancel",
     }
     this.popUp.showPopUp(swalOptions )
@@ -171,6 +173,8 @@ export class OrdersProcessedComponent extends OrdersComponent {
       text: res.message,
       type: 'success',
       showCloseButton: true,
+      reverseButtons: true,
+      showCancelButton: true,
       cancelButtonText: "Cancel",
     }
     this.popUp.showPopUp(swalOptions )
@@ -206,6 +210,8 @@ export class OrdersProcessedComponent extends OrdersComponent {
       text: rej.message,
       type: 'error',
       showCloseButton: true,
+      reverseButtons: true,
+      showCancelButton: true,
       cancelButtonText: "Cancel",
     }
     this.popUp.showPopUp(swalOptions )
@@ -217,6 +223,8 @@ export class OrdersProcessedComponent extends OrdersComponent {
       text: res.message,
       type: 'success',
       showCloseButton: true,
+      reverseButtons: true,
+      showCancelButton: true,
       cancelButtonText: "Cancel",
     }
     this.popUp.showPopUp(swalOptions )
@@ -250,6 +258,8 @@ export class OrdersProcessedComponent extends OrdersComponent {
       text: rej.message,
       type: 'error',
       showCloseButton: true,
+      reverseButtons: true,
+      showCancelButton: true,
       cancelButtonText: "Cancel",
     }
     this.popUp.showPopUp(swalOptions )
@@ -261,6 +271,8 @@ export class OrdersProcessedComponent extends OrdersComponent {
       text: res.message,
       type: 'success',
       showCloseButton: true,
+      reverseButtons: true,
+      showCancelButton: true,
       cancelButtonText: "Cancel",
     }
     this.popUp.showPopUp(swalOptions )
