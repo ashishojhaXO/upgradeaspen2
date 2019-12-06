@@ -76,7 +76,7 @@
       <app-charts [config]="chartConfig"></app-charts>
   </div>
   <div class="page-header" style="padding-top: 1px" *ngIf="!chartConfig.data.length">
-    <div style="height: 200px;background-color: #ffff; width: 100%;margin-top: 60px;padding: 17% 42%;">There is no data to plot.</div>
+    <div style="background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to plot.</div>
   </div>
   <div>
     <div class="gridOverflow" *ngIf="dataObject.isDataAvailable">
@@ -86,7 +86,7 @@
       <!--<app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height"></app-data-table1>-->
     </div>
     <div class="page-header" *ngIf="!dataObject.isDataAvailable">
-      <div style="height: 200px;background-color: #ffff; width: 100%;margin-top: 60px;padding: 17% 42%;">There is no data to display.</div>
+      <div style="background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to display.</div>
     </div>
   </div>
 </div>
