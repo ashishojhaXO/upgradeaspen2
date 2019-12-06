@@ -31,9 +31,10 @@ export class GenericService {
     const data = JSON.stringify(dataObj);
     console.log("dataObj: ", dataObj, " data; ", data);
 
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
     return this.service.Call(
       'post',
-      this.base.REPORT_SERVICE_API_GATEWAY_URL +
+        apiPath.api +
       this.base.API +
       this.base.POST_PAYMENTS_METHODS_ENDPOINT,
       data
@@ -49,9 +50,11 @@ export class GenericService {
     const data = JSON.stringify(dataObj);
     console.log("dataObj: ", dataObj, " data; ", data);
 
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+
     return this.service.Call(
       'post',
-      this.base.REPORT_SERVICE_API_GATEWAY_URL +
+        apiPath.api +
       this.base.API +
       this.base.POST_PAYMENTS_CHARGE_ENDPOINT,
       data
@@ -67,9 +70,11 @@ export class GenericService {
     const data = JSON.stringify(dataObj);
     console.log("dataObj: ", dataObj, " data; ", data);
 
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+
     return this.service.Call(
         'put',
-        this.base.REPORT_SERVICE_API_GATEWAY_URL +
+        apiPath.api +
         this.base.API +
         this.base.PUT_DEFAULT_PAYMENTS_METHOD,
         data
