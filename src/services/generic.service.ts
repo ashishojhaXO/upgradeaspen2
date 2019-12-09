@@ -87,7 +87,7 @@ export class GenericService {
       'post', 
       this.base.REPORT_SERVICE_API_GATEWAY_URL +
       this.base.API + 
-      this.base.postOrdersProcessedReportEmail,
+      this.base.ADMIN_REPORT,
       data
     );
 
