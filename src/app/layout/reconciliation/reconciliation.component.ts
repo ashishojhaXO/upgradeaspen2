@@ -137,7 +137,7 @@ export class ReconciliationComponent implements OnInit  {
         clientCode: 'homd',
         year: this.selectedPeriod[0].id.split('-')[0],
         month: this.selectedPeriod[0].id.split('-')[1],
-        siteName: this.selectedChannel[0].id
+        // siteName: this.selectedChannel[0].id
     }
 
     const obj = JSON.stringify(dataObj);

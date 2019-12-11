@@ -48,7 +48,7 @@ export class OrderComponent implements OnInit  {
   externalAuth: any;
   showSpinner: boolean;
   widget: any;
-  isExistingOrder = false;
+  existingOrder: any;
   dataFieldConfiguration = [];
   templates = [];
   template = '';
@@ -86,9 +86,71 @@ export class OrderComponent implements OnInit  {
 
     this.route.params.subscribe(params => {
       if (params['id']) {
-        this.isExistingOrder = true;
+        this.extractOrderDetails(params['id']);
+        // if(this.templates.length) {
+        //   this.template = '41';
+        //   this.searchTemplateDetails(this.template);
+        // }
       }
     });
+  }
+
+  extractOrderDetails(id) {
+    this.getOrderDetails(id).subscribe(
+        response => {
+          this.showSpinner = false;
+
+          console.log('response >>')
+          console.log(response);
+          if (response.orders && response.orders.length && response.orders[0].order && response.orders[0].order.temp_id) {
+            this.existingOrder = response.orders[0];
+            this.template = response.orders[0].order.temp_id;
+            this.searchTemplateDetails(this.template, this.existingOrder);
+          }
+        },
+        err => {
+          if(err.status === 401) {
+            if(localStorage.getItem('accessToken')) {
+              console.log("ord no okt if")
+              // this.widget.tokenManager.refresh('accessToken')
+              //     .then(function (newToken) {
+              //       localStorage.setItem('accessToken', newToken);
+              //       this.showSpinner = false;
+              //       this.searchTemplates();
+              //     })
+              //     .catch(function (err) {
+              //       console.log('error >>')
+              //       console.log(err);
+              //     });
+            } else {
+              console.log("ord no okt else")
+              // this.widget.signOut(() => {
+              //   localStorage.removeItem('accessToken');
+              //   window.location.href = '/login';
+              // });
+            }
+          } else {
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+
+  getOrderDetails(id) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken;
+    }
+    const data = JSON.stringify({order_id: id});
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/orders/list';
+    return this.http
+        .post(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   searchTemplates() {
@@ -108,11 +170,6 @@ export class OrderComponent implements OnInit  {
                 text: ele.name
               });
             }, this);
-
-            // if(this.templates.length) {
-            //   this.template = '41';
-            //   this.searchTemplateDetails(this.template);
-            // }
           }
         },
         err => {
@@ -144,14 +201,27 @@ export class OrderComponent implements OnInit  {
     );
   }
 
-  searchTemplateDetails(templateID) {
+  searchTemplateDetails(templateID, existingOrderInfo = null) {
     this.templateDefinition = [];
     this.dataFieldConfiguration = [];
     this.getTemplateDetails(templateID).subscribe(
         response => {
           this.originalResponseObj = response;
+
+          // Build Order Info
           if (response && response.orderTemplateData && response.orderTemplateData.orderFields && response.orderTemplateData.orderFields.length) {
             response.orderTemplateData.orderFields.forEach(function (ele) {
+
+              console.log('ele >>')
+              console.log(ele);
+
+              console.log('existingOrderInfo >>')
+              console.log(existingOrderInfo);
+
+              let value =  ele.default_value || '';
+              if (existingOrderInfo && existingOrderInfo.order[ele.name] !== null) {
+                value = existingOrderInfo.order[ele.name];
+              }
 
               const obj: any = {
                 id: ele.id,
@@ -159,7 +229,7 @@ export class OrderComponent implements OnInit  {
                 name: ele.name,
                 type: ele.type,
                 validation : ele.validation,
-                value: ele.default_value || '',
+                value: value,
                 disabled : ele.disable !== 0,
                 size: 40
               };
@@ -184,6 +254,7 @@ export class OrderComponent implements OnInit  {
 
             this.buildTemplateForm();
 
+            // Build Line Item Info
             if (response && response.orderTemplateData && response.orderTemplateData.lineItems && response.orderTemplateData.lineItems.length) {
               response.orderTemplateData.lineItems.forEach(function (ele) {
 
@@ -218,12 +289,12 @@ export class OrderComponent implements OnInit  {
             }
 
             if (this.dataFieldConfiguration.length) {
-              this.buildLineItem(this.dataFieldConfiguration);
+              this.buildLineItem(this.dataFieldConfiguration, existingOrderInfo);
             }
 
           } else {
             this.buildTemplateForm();
-            this.buildLineItem(this.dataFieldConfiguration);
+            this.buildLineItem(this.dataFieldConfiguration, existingOrderInfo);
           }
 
 
@@ -377,16 +448,14 @@ export class OrderComponent implements OnInit  {
     }, this);
   }
 
-  buildLineItem(lineItemDef) {
+  buildLineItem(lineItemDef, existingOrderInfo = null) {
     this.dataObject = {};
     this.gridData = {};
     this.gridData['result'] = [];
     const headers = [];
+    const lineItemRows = [];
 
     lineItemDef.forEach(function (key) {
-
-      console.log('key >>')
-      console.log(key);
 
       headers.push({
         key: key.name,
@@ -400,14 +469,25 @@ export class OrderComponent implements OnInit  {
       });
     });
 
-    // const dataObj = {};
-    // lineItemDef.forEach(function (conf) {
-    //   dataObj[conf.name] = '10/01/2019';
-    // });
+    if (existingOrderInfo && existingOrderInfo.lineItems && existingOrderInfo.lineItems.length) {
+
+      existingOrderInfo.lineItems.forEach(function (ele, index) {
+
+        const obj = {};
+        lineItemDef.forEach(function (line) {
+          if (ele[line.name] !== null) {
+             obj[line.name] = ele[line.name] && ele[line.name].toString().indexOf('T00:00:00.000Z') !== -1 ? ele[line.name].split('T')[0] : ele[line.name];
+          }
+        });
+        lineItemRows.push(obj);
+      }, this);
+    }
 
     this.gridData['headers'] = headers;
     this.gridData['options'] = this.options[0];
-    // this.gridData['result'] = [dataObj];
+    if (lineItemRows.length) {
+      this.gridData['result'] = lineItemRows;
+    }
     this.dashboard = 'orderLineItem';
     this.dataObject.gridData = this.gridData;
   }
