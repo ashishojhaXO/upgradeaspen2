@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Common } from '../../util/common';
@@ -16,7 +16,8 @@ export class AppSpinnerComponent implements OnInit {
     // Configs here
     config = {
         // Max timer that this loading spinner can be shown on the page
-        coutdownTimerMax: 3000,
+        networkCallWaitTimeMax: 5000,
+        pageReloadCountdownTimerMax: 3000,
     }
 
     // If this instance has been initiated for more than 60 secconds(1 minute)
@@ -24,7 +25,9 @@ export class AppSpinnerComponent implements OnInit {
     // countdownTimer: Number = this.config.coutdownTimerMax;
     countdownTimer: any;
 
-    constructor(private translate: TranslateService,
+    constructor(
+        private translate: TranslateService,
+        private elt: ElementRef,
         public router: Router, private common: Common,
         private popUp: AppPopUpComponent
     ) {
@@ -36,25 +39,30 @@ export class AppSpinnerComponent implements OnInit {
 
     }
 
-    ngOnDestroy() {
-    }
+    ngAfterViewInit() {}
+
+    ngOnDestroy() {}
     
     stopTimer() {
         this.countdownTimer.unsubscribe();
+        // Remove element
+        this.elt.nativeElement.remove();
         const swalOptions = {
-            title: "Error occurred!",
-            text: "Reloading the page...",
+            title: "Error in the network call!",
+            text: "Please try again!",
+            // `Reloading page in the next ${this.config.pageReloadCountdownTimerMax/1000} seconds...`,
             type: 'error',
-            timer: this.config.coutdownTimerMax,
-            buttons: false,
+            timer: this.config.pageReloadCountdownTimerMax,
+            // buttons: false,
         }
         this.popUp.showPopUp(swalOptions).then( (res) => {
             location.reload();
+            // this.ngOnInit();
         })
     }
 
     startTimer() {
-        this.countdownTimer = Observable.timer(this.config.coutdownTimerMax).subscribe( res => {
+        this.countdownTimer = Observable.timer(this.config.networkCallWaitTimeMax).subscribe( res => {
             this.stopTimer();
         })
     }
