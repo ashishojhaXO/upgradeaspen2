@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Common } from '../../util/common';
@@ -25,22 +25,41 @@ export class AppSpinnerComponent implements OnInit {
     // countdownTimer: Number = this.config.coutdownTimerMax;
     countdownTimer: any;
 
+    @Input()
+    showSpinnerFlag: boolean;
+
     constructor(
         private translate: TranslateService,
         private elt: ElementRef,
         public router: Router, private common: Common,
         private popUp: AppPopUpComponent
     ) {
+
     }
 
     ngOnInit() {
-        this.startTimer()
+        this.startTimerCond()
     }
 
     ngAfterViewInit() {}
 
-    ngOnDestroy() {}
+    ngOnDestroy() {
+        this.stopTimerCond()
+    }
 
+    startTimerCond() {
+        // Only start/stop timers if showSpinnerFlag is passed,
+        // not on other random html initiations
+        if (typeof this.showSpinnerFlag != "undefined") {
+            this.startTimer()
+        }
+    }
+
+    stopTimerCond() {
+        if (typeof this.showSpinnerFlag != "undefined") {
+            this.stopTimer();
+        }
+    }
 
     removeNativeEl() {
         // Remove element
@@ -64,7 +83,8 @@ export class AppSpinnerComponent implements OnInit {
     }
 
     startTimer() {
-        this.countdownTimer = Observable.timer(this.config.networkCallWaitTimeMax).subscribe( res => {
+        this.countdownTimer = Observable.timer(this.config.networkCallWaitTimeMax)
+        .subscribe( res => {
             this.stopTimer();
             this.removeNativeEl();
             this.showErrorReloadPopUp();
