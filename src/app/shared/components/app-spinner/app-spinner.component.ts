@@ -16,7 +16,7 @@ export class AppSpinnerComponent implements OnInit {
     // Configs here
     config = {
         // Max timer that this loading spinner can be shown on the page
-        networkCallWaitTimeMax: 5000,
+        networkCallWaitTimeMax: 60000,
         pageReloadCountdownTimerMax: 3000,
     }
 
@@ -31,39 +31,43 @@ export class AppSpinnerComponent implements OnInit {
         public router: Router, private common: Common,
         private popUp: AppPopUpComponent
     ) {
-
     }
 
     ngOnInit() {
         this.startTimer()
-
     }
 
     ngAfterViewInit() {}
 
     ngOnDestroy() {}
-    
-    stopTimer() {
-        this.countdownTimer.unsubscribe();
+
+
+    removeNativeEl() {
         // Remove element
         this.elt.nativeElement.remove();
+    }
+
+    showErrorReloadPopUp() {
         const swalOptions = {
-            title: "Error in the network call!",
-            text: "Please try again!",
-            // `Reloading page in the next ${this.config.pageReloadCountdownTimerMax/1000} seconds...`,
+            title: "An error in network call!",
+            text: `Reloading page in the next ${this.config.pageReloadCountdownTimerMax/1000} seconds...`,
             type: 'error',
             timer: this.config.pageReloadCountdownTimerMax,
-            // buttons: false,
         }
         this.popUp.showPopUp(swalOptions).then( (res) => {
             location.reload();
-            // this.ngOnInit();
         })
+    }
+    
+    stopTimer() {
+        this.countdownTimer.unsubscribe();
     }
 
     startTimer() {
         this.countdownTimer = Observable.timer(this.config.networkCallWaitTimeMax).subscribe( res => {
             this.stopTimer();
+            this.removeNativeEl();
+            this.showErrorReloadPopUp();
         })
     }
 
