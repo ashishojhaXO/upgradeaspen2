@@ -321,6 +321,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
                   .then(
                       response2 => {
                         console.log("gSD resp2")
+
+                        response2 = response2.json();
+
                         this.showSpinner = false;
                         this.populateChart(response2);
                         this.populateDataTable(response2);
@@ -377,22 +380,22 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       clientCode: 'homd'
     };
 
-
     const dataObj = JSON.stringify(obj);
     return this.http.post(
       this.api_fs.api + '/api/reports/org/homd/seed-dashboard/v1', 
       dataObj, 
       options
     ).toPromise()
-        .then(
-          data => data.json(), 
-          rej => {
-            console.log("inside gSD: ", rej)
-          }
-        )
-        .catch( rej => {
-          console.log("CATCH REj", rej)
-        });
+        // .then(
+        //   data => data.json(), 
+        //   rej => {
+        //     console.log("inside gSD: ", rej)
+        //     this.showSpinner = false;
+        //   }
+        // )
+        // .catch( rej => {
+        //   console.log("CATCH REj", rej)
+        // });
   }
 
   populateFilters(filterResponse, seedResponse) {
