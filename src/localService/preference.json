@@ -116,7 +116,7 @@
       "title": "Admin",
       "selected": false,
       "id": "admin",
-      "url":"app/admin/usermanagement",
+      "url":"app/admin",
       "submenu": [
         {
           "index": 1,
