@@ -45,63 +45,63 @@ export class CustomFormbuilderComponent implements OnInit {
             "dropType": "text",
             "type": "varchar",
             "icon": "fa-font",
-            "name": "text"
+            "name": "Text"
           },
           {
             "id": "",
             "dropType": "email",
             "type": "text",
             "icon": "fa-envelope",
-            "name": "email"
+            "name": "Email"
           },
           {
             "id": "",
             "dropType": "phone",
             "type": "int",
             "icon": "fa-phone",
-            "name": "phone"
+            "name": "Phone"
           },
           {
             "id": "",
             "dropType": "number",
             "type": "int",
             "icon": "fa-html5",
-            "name": "number"
+            "name": "Number"
           },
           {
             "id": "",
             "dropType": "amount",
             "type": "amount",
             "icon": "fa-usd",
-            "name": "amount"
+            "name": "Amount"
           },
           {
             "id": "",
             "dropType": "date",
             "type": "date",
             "icon":"fa-calendar",
-            "name": "date"
+            "name": "Date"
           },
           {
             "id": "",
             "dropType": "textarea",
             "type": "text",
             "icon":"fa-text-width",
-            "name": "textarea"
+            "name": "Textarea"
           },
           {
             "id": "",
             "dropType": "checkbox",
             "type": "checkbox",
             "icon":"fa-list",
-            "name": "checkbox"
+            "name": "Checkbox"
           },
           {
             "id": "",
             "dropType": "radio",
             "type": "radio",
             "icon":"fa-list-ul",
-            "name": "radio"
+            "name": "Radio"
           },
           {
             "id": "",
