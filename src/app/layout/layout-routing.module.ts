@@ -195,10 +195,6 @@ const routes: Routes = [
         component: PaymentsComponent
       },
       {
-        path: 'vendormanagement',
-        component: VendorManagementComponent
-      },
-      {
         path: 'admin',
         data: {
           breadcrumbs: true,
@@ -243,6 +239,14 @@ const routes: Routes = [
             },
           },
           {
+            path: 'vendormanagement',
+            component: VendorManagementComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Vendor Management'
+            },
+          },
+          {
             path: 'ordertemplate',
             component: OrderTemplateComponent,
             data: {
@@ -273,7 +277,7 @@ const routes: Routes = [
               breadcrumbs: true,
               text: 'Orders List'
             },
-          }
+          },
         ]
       }
     ]
