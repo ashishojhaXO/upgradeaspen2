@@ -130,7 +130,7 @@
           "name": "vendormanagement",
           "title": "Vendor Management",
           "id": "vendormanagement",
-          "url": "app/vendormanagement"
+          "url": "app/admin/vendormanagement"
         },
         {
           "index": 3,
