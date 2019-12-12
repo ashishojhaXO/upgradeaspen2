@@ -24,7 +24,6 @@ export class BaseFieldsComponent implements OnInit {
   constructor(private okta: OktaAuthService, private http: Http) { }
 
   ngOnInit() {
-    this.showSpinner = true;
     this.widget = this.okta.getWidget();
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
@@ -32,6 +31,7 @@ export class BaseFieldsComponent implements OnInit {
   }
 
   onSubmitTemplate() {
+    this.showSpinner = true;
     if(this.baseForm.model.attributes.length){
       let baseItems = [];
       this.baseForm.model.attributes.forEach(element => {
@@ -57,6 +57,7 @@ export class BaseFieldsComponent implements OnInit {
       response => {
         console.log('response >>')
         console.log(response);
+        this.showSpinner = false;
         if (response && response.status == 200) {
           console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>', response.message);
           Swal({
