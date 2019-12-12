@@ -16,8 +16,19 @@ export class AppSpinnerComponent implements OnInit {
     // Configs here
     config = {
         // Max timer that this loading spinner can be shown on the page
-        networkCallWaitTimeMax: 60000,
-        pageReloadCountdownTimerMax: 3000,
+        networkCallWaitTimeMax: 6000,
+        pageReloadCountdownTimerMaxFunc: () => {
+            let cacheNumber: number; 
+            return () => {
+                if (cacheNumber)
+                    return cacheNumber;
+
+                // Formula: Math.round( Math.random() * (max - min ) ) + min
+                cacheNumber = Math.round( Math.random() * (10 - 5) ) + 5;
+                return cacheNumber;
+            }
+        },
+        pageReloadCountdownTimerMax: Number(),
     }
 
     // If this instance has been initiated for more than 60 secconds(1 minute)
@@ -34,7 +45,7 @@ export class AppSpinnerComponent implements OnInit {
         public router: Router, private common: Common,
         private popUp: AppPopUpComponent
     ) {
-
+        this.config.pageReloadCountdownTimerMax = this.config.pageReloadCountdownTimerMaxFunc()()
     }
 
     ngOnInit() {
@@ -69,13 +80,21 @@ export class AppSpinnerComponent implements OnInit {
     showErrorReloadPopUp() {
         const swalOptions = {
             title: "An error in network call!",
-            text: `Reloading page in the next ${this.config.pageReloadCountdownTimerMax/1000} seconds...`,
+            text: `Reloading page in the next ${this.config.pageReloadCountdownTimerMax} seconds...`,
             type: 'error',
-            timer: this.config.pageReloadCountdownTimerMax,
+            timer: this.config.pageReloadCountdownTimerMax * 1000,
+            showCloseButton: true,
+            reverseButtons: true,
+            showCancelButton: true,
+            cancelButtonText: "Cancel Reload",
         }
-        this.popUp.showPopUp(swalOptions).then( (res) => {
-            location.reload();
-        })
+        this.popUp.showPopUp(swalOptions).then( 
+            (res) => {
+                if(res.value || res.dismiss.toString() == "timer" ) {
+                    location.reload();
+                }
+            },
+        )
     }
     
     stopTimer() {
