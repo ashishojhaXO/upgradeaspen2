@@ -299,10 +299,22 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     columnIndex++;
                                 }
 
+                                console.log('field >>>')
+                                console.log(field);
+
+                                console.log('$(\'td\', row).eq(columnIndex).text() >>')
+                                console.log($('td', row).eq(columnIndex).text());
+
                                 field.value = __this.dataObject.gridData.result[index][field.name];
 
-                                if (field.type === 'text' || field.type === 'decimal' || field.type === 'varchar' || field.type === 'string') {
+                                if((field.type === 'checkbox' || field.type === 'radio') && typeof field.value === 'string') {
+                                    field.value = [field.value];
+                                }
+
+                                if (field.type === 'decimal' || field.type === 'varchar' || field.type === 'string') {
                                     $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.label + '" class="inlineEditor ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' )  + '" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
+                                } else if(field.type === 'text') {
+                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><textarea placeholder="Select ' + field.label + '" class="inlineEditor ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' )  + '" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"></textarea></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
                                 } else if (field.type === 'int') {
                                     $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.label + '" class="inlineEditor ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' )  + '" type="number" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
                                 } else if (field.type === 'amount') {
@@ -312,7 +324,19 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     $('td', row).eq(columnIndex).html(html);
                                 } else if (field.type === 'list') {
                                     if (field.name === 'ad_copy') {
-                                        $('td', row).eq(columnIndex).html('<div><img class="display-ad" src="./../../../../assets/images/adCopy.png" style="width: 38px; cursor: pointer"/></div>');
+
+                                        let options = '<option value="">--Select--</option>';
+                                        field.options.forEach(function (option, index1) {
+                                            options += '<option value="' + option.key + '"';
+                                            if(option.key === field.value) {
+                                                options += ' selected ';
+                                            }
+                                            options += '>' + option.text + '</option>';
+                                        });
+                                        const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class="form-control inlineEditor select-control ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
+                                        $('td', row).eq(columnIndex).html(html);
+
+                                       // $('td', row).eq(columnIndex).html('<div><img class="display-ad" src="./../../../../assets/images/adCopy.png" style="width: 38px; cursor: pointer"/></div>');
                                     } else {
                                         let options = '<option value="">--Select--</option>';
                                         field.options.forEach(function (option, index1) {
@@ -325,6 +349,50 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                         const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class="form-control inlineEditor select-control ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
                                         $('td', row).eq(columnIndex).html(html);
                                     }
+                                } else if (field.type === 'checkbox') {
+                                    let options = '';
+                                    field.options.forEach(function (option, index1) {
+                                        options += '<div><input class="inlineEditor-sub" data-type="checkbox" data-field="' + field.name +  '" value="' + option.key + '" type="checkbox"';
+
+                                        console.log('field.value >>')
+                                        console.log(field.value);
+
+                                        console.log('option >')
+                                        console.log(option);
+
+                                        if(field.value.indexOf(option.key) !== -1) {
+                                            options += ' checked=checked ';
+                                        }
+                                        options += '"/><span style="margin-left: 5px; position: relative; top: 2px">' + option.text +  '</span></div>';
+                                        // if(option.key === field.value) {
+                                        //     options += ' selected ';
+                                        // }
+                                        // options += '>' + option.text + '</option>';
+                                    });
+                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class=" ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</div></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
+                                    $('td', row).eq(columnIndex).html(html);
+                                } else if (field.type === 'radio') {
+                                    let options = '';
+                                    field.options.forEach(function (option, index1) {
+                                        options += '<div><input class="inlineEditor-sub" data-type="radio" value="' + option.key + '" type="radio" name="' + field.id + '" ';
+
+                                        console.log('field.value >>')
+                                        console.log(field.value);
+
+                                        console.log('option >')
+                                        console.log(option);
+
+                                        if(field.value.indexOf(option.key) !== -1) {
+                                            options += ' checked=checked ';
+                                        }
+                                        options += '"/><span style="margin-left: 5px; position: relative; top: 2px">' + option.text +  '</span></div>';
+                                        // if(option.key === field.value) {
+                                        //     options += ' selected ';
+                                        // }
+                                        // options += '>' + option.text + '</option>';
+                                    });
+                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class=" ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</div></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
+                                    $('td', row).eq(columnIndex).html(html);
                                 }
                             }
                         });
@@ -908,6 +976,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             });
 
             // Register change event on inline edit fields
+            $(document).off('change', '.inlineEditor');
             $('.inlineEditor').on('change', function () {
                 const rowIndex = $(this).closest('.form-group').attr('rowIndex');
                 let columnIndex = $(this).closest('.form-group').attr('columnIndex');
@@ -927,6 +996,56 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 console.log(__this.dataObject.gridData);
             });
 
+            // Register change event on inline edit fields
+            $(document).off('change', '.inlineEditor-sub');
+            $('.inlineEditor-sub').on('change', function () {
+                console.log('this.val >>>')
+                console.log($(this).val());
+
+                console.log('$(this).data(\'field\') >>>')
+                console.log($(this).data('field'));
+
+                const rowIndex = $(this).closest('.form-group').attr('rowIndex');
+                let columnIndex = $(this).closest('.form-group').attr('columnIndex');
+                console.log($(this).closest('.form-group').attr('rowIndex'));
+                console.log($(this).closest('.form-group').attr('columnIndex'));
+                if (!$(this).val()) {
+                    $(this).closest('.form-group').next('div.alert').show();
+                } else {
+                    $(this).closest('.form-group').next('div.alert').hide();
+                };
+
+                if (__this.dataObject.gridData.options.isRowSelection) {
+                    columnIndex--;
+                }
+
+                const value = $(this).val();
+                if ($(this).data('type') === 'checkbox') {
+                    if(typeof __this.dataObject.gridData.result[rowIndex][__this.dataObject.gridData.headers[columnIndex].key] === 'string') {
+                        __this.dataObject.gridData.result[rowIndex][__this.dataObject.gridData.headers[columnIndex].key] = [];
+                    }
+                    if ($(this).is(":checked") && __this.dataObject.gridData.result[rowIndex][__this.dataObject.gridData.headers[columnIndex].key].indexOf(value) === -1) {
+                        __this.dataObject.gridData.result[rowIndex][__this.dataObject.gridData.headers[columnIndex].key].push(value);
+                    } else if (__this.dataObject.gridData.result[rowIndex][__this.dataObject.gridData.headers[columnIndex].key].indexOf(value) !== -1) {
+                        __this.dataObject.gridData.result[rowIndex][__this.dataObject.gridData.headers[columnIndex].key].splice(value, 1);
+                    }
+                } else {
+                    __this.dataObject.gridData.result[rowIndex][__this.dataObject.gridData.headers[columnIndex].key] = value;
+                }
+
+                console.log('__this.dataObject.gridData.result[rowIndex] >>>')
+                console.log(__this.dataObject.gridData.result[rowIndex]);
+
+                console.log('__this.dataObject.gridData.headers[columnIndex].key >>>')
+                console.log(__this.dataObject.gridData.headers[columnIndex].key);
+
+              //  __this.dataObject.gridData.result[rowIndex][__this.dataObject.gridData.headers[columnIndex].key] = $(this).val();
+
+                console.log('__this.dataObject.gridData.result >>>')
+                console.log(__this.dataObject.gridData);
+            });
+
+            $(document).off('click', '.step-nav');
             $(document).on('click', '.step-nav', function() {
                 const id = $(this).attr('id').replace('#','');
                 $(this).closest('div.steps-main').find('div.step-container').find('.step-content').removeClass('active');
