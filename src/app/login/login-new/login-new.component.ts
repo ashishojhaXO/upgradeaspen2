@@ -87,12 +87,12 @@ export class LoginNewComponent implements OnInit {
     console.log('res >>')
     console.log(res);
 
-    localStorage.setItem('accessToken', res.body.access_token);
-    localStorage.setItem('idToken', res.body.id_token);
-    localStorage.setItem('loggedInUserName', res.body.first_name.trim() + " " + res.body.last_name.trim());
-    localStorage.setItem('loggedInUserID', res.body.external_id);
-    localStorage.setItem('loggedInUserGroup', JSON.stringify([res.body.user_role ? res.body.user_role.name.toUpperCase() : '']));
-    localStorage.setItem('loggedInOrg', res.body.org && res.body.org.org_name ? res.body.org.org_name : 'Home Depot');
+    localStorage.setItem('accessToken', res.access_token);
+    localStorage.setItem('idToken', res.id_token);
+    localStorage.setItem('loggedInUserName', res.first_name.trim() + " " + res.last_name.trim());
+    localStorage.setItem('loggedInUserID', res.external_id);
+    localStorage.setItem('loggedInUserGroup', JSON.stringify([res.user_role ? res.user_role.name.toUpperCase() : '']));
+    localStorage.setItem('loggedInOrg', res.org && res.org.org_name ? res.org.org_name : 'Home Depot');
   }
 
   compileBody(userData){
@@ -121,17 +121,19 @@ export class LoginNewComponent implements OnInit {
               console.log('responseDetails >>>')
               console.log(responseDetails);
 
-              if (responseDetails.body && responseDetails.body) {
-                localStorage.setItem('customerInfo', JSON.stringify(responseDetails.body));
+              if (responseDetails && responseDetails) {
+                localStorage.setItem('customerInfo', JSON.stringify(responseDetails));
                 this.router.navigate(['/app/dashboards/'], { relativeTo: this.route } ).then( res => {
                   this.showSpinner = false;
                 });
               } else {
+                this.showSpinner = false;
                 this.formError = 'No User details found. Please contact administrator';
                 console.log('No Vendor details found');
               }
             },
             err => {
+              this.showSpinner = false;
               if (err.status === 401) {
                 if (localStorage.getItem('accessToken')) {
 
