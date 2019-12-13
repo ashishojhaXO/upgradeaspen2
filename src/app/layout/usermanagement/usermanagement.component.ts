@@ -110,9 +110,9 @@ export class UserManagementComponent implements OnInit  {
           if (response) {
             console.log('response >>')
             console.log(JSON.stringify(response));
-            if (response.body) {
+            if (response) {
               this.showSpinner = false;
-              this.populateDataTable(response.body, true);
+              this.populateDataTable(response, true);
               return this.getVendors().subscribe(
                   response1 => {
                     console.log('response1');
@@ -313,7 +313,7 @@ export class UserManagementComponent implements OnInit  {
           console.log(response);
           if (response) {
             this.showSpinner = false;
-            this.error = { type : 'success' , message : response.body };
+            this.error = { type : 'success' , message : response };
           }
           // modalComponent.hide();
         },
