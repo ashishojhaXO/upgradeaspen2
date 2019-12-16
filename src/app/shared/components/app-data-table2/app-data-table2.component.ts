@@ -284,6 +284,15 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         });
                     }
 
+                    if (__this.dataObject.gridData.rowsToColor) {
+                        __this.dataObject.gridData.rowsToColor.forEach(function (rowAttr) {
+                            if (index === rowAttr.index) {
+                                $(row).css('background-color', rowAttr['background-color']);
+                                $(row).css('color', rowAttr['color']);
+                            }
+                        });
+                    }
+
                     if (__this.dataObject.gridData.result[index] && __this.dataObject.gridData.result[index].isChecked) {
                         $('td', row).find('input.check-row-selection').prop('checked', true);
                         // $(row).addClass('selected');

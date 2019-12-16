@@ -43,7 +43,7 @@
   </div>
   <div style="padding-top: 35px">
     <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject.isDataAvailable">
-      <app-data-table2 [dataObject]="dataObject" (triggerActions)="this[$event.action]($event)"></app-data-table2>
+      <app-data-table2 [dataObject]="dataObject" identity="reconciliation" (triggerActions)="this[$event.action]($event)"></app-data-table2>
     </div>
     <div class="page-header" *ngIf="!dataObject.isDataAvailable">
       <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
