@@ -234,7 +234,7 @@ export class OrderComponent implements OnInit  {
                 size: 40
               };
 
-              if (ele.type === 'list') {
+              if (ele.type === 'list' || ele.type === 'checkbox' || ele.type === 'radio') {
                 obj.options = [];
                 if (ele.attr_list && ele.attr_list.options && ele.attr_list.options.length) {
                   ele.attr_list.options.forEach(function (option) {
@@ -269,7 +269,7 @@ export class OrderComponent implements OnInit  {
                   disabled : ele.disable !== 0
                 };
 
-                if (ele.type === 'list') {
+                if (ele.type === 'list' || ele.type === 'checkbox' || ele.type === 'radio') {
                   obj.options = [];
                   if (ele.attr_list && ele.attr_list.options && ele.attr_list.options.length) {
                     ele.attr_list.options.forEach(function (option) {
@@ -492,6 +492,33 @@ export class OrderComponent implements OnInit  {
     this.dataObject.gridData = this.gridData;
   }
 
+  onCheckItem(event, item, itemValue) {
+
+    console.log('event.target.checked >>')
+    console.log(event.target.checked)
+    console.log('item >>')
+    console.log(item)
+    console.log('itemValue >>')
+    console.log(itemValue)
+
+    const value = typeof item.value === 'string' ? [item.value] : item.value;
+
+    if (event.target.checked) {
+      if (value.indexOf(itemValue) === -1) {
+        value.push(itemValue);
+      }
+    } else {
+      value.splice(value.indexOf(itemValue), 1);
+    }
+
+    console.log('value >>')
+    console.log(value);
+
+    //item.value = value;
+
+    (<FormControl>this.form.controls[item.name]).setValue(value || '');
+  }
+
   searchDataRequest() {
     return this.searchData().subscribe(
         response => {
@@ -625,7 +652,7 @@ export class OrderComponent implements OnInit  {
       const corr = this.form.controls[ele.name];
       if (corr) {
         if (ele.type === 'date' && this.form.controls[ele.name].value) {
-          ele.value = this.formatDate(new Date(this.form.controls[ele.name].value._d));
+          ele.value = this.form.controls[ele.name].value._d ? this.formatDate(new Date(this.form.controls[ele.name].value._d)) : this.formatDate(new Date(this.form.controls[ele.name].value));
         } else {
           ele.value = corr.value;
         }
