@@ -55,7 +55,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   resultStatus: any;
 
   constructor(
-    private okta: OktaAuthService, 
+    private okta: OktaAuthService,
     private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager) {
 
     this.vendorForm = new FormGroup({
@@ -103,9 +103,9 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
           if (response) {
             console.log('response >>')
             console.log(response);
-            if (response.body && response.body.length) {
+            if (response && response.length) {
               this.showSpinner = false;
-              this.populateDataTable(response.body, true);
+              this.populateDataTable(response, true);
             } else {
               this.resultStatus = 'No data found'
               this.showSpinner = false;

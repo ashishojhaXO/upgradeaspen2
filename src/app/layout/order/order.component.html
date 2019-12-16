@@ -30,12 +30,40 @@
         <div *ngIf="data.controls && data.controls.length">
           <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12" *ngFor="let def of data.controls; let i = index;">
             <label class="col-lg-2 col-md-2 col-sm-12">{{def.label}} <span class="text-danger">{{def.validation && def.validation.indexOf('required') !== -1 ? '*' : ''}}</span></label>
-            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'text' || def.type ==='varchar' || def.type ==='string'">
+            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type ==='varchar' || def.type ==='string'">
               <input class="input-form-control"
                      [style.cursor]="(def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && def.validation && def.validation.indexOf('PostOrderChange') === -1)? 'not-allowed' : null"
                      [attr.disabled]="(def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && def.validation && def.validation.indexOf('PostOrderChange') === -1)  ? 'disabled' : null"
                      [style.background]="(def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && (!def.validation || ( def.validation && def.validation.indexOf('PostOrderChange') === -1))) ? '#EEEEEE' : null"
                      type="text" [formControl]="FormModel.attributes[def.name]"/>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'text'">
+              <textarea class="input-form-control" rows="10" style="height: 100px"
+                     [style.cursor]="(def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && def.validation && def.validation.indexOf('PostOrderChange') === -1)? 'not-allowed' : null"
+                     [attr.disabled]="(def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && def.validation && def.validation.indexOf('PostOrderChange') === -1)  ? 'disabled' : null"
+                     [style.background]="(def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && (!def.validation || ( def.validation && def.validation.indexOf('PostOrderChange') === -1))) ? '#EEEEEE' : null"
+                     type="text" [formControl]="FormModel.attributes[def.name]"></textarea>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type ==='checkbox'">
+              <div *ngFor="let option of def.options; let i= index">
+                <input class="" type="checkbox"
+                       (change)="onCheckItem($event, def,option.id)"
+                       [checked]="def.value && def.value.indexOf(option.id) !== -1"
+                       [style.cursor]="(def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && def.validation && def.validation.indexOf('PostOrderChange') === -1)? 'not-allowed' : null"
+                       [attr.disabled]="(def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && def.validation && def.validation.indexOf('PostOrderChange') === -1)  ? 'disabled' : null"
+                       [style.background]="(def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && (!def.validation || ( def.validation && def.validation.indexOf('PostOrderChange') === -1))) ? '#EEEEEE' : null"
+                       /><span style="margin-left: 5px; position: relative; top: 2px">{{option.text}}</span>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type ==='radio'">
+              <div *ngFor="let option of def.options; let i= index">
+                <input class="" type="radio" [name]="def.name"
+                       [value]="option.id"
+                       [style.cursor]="(def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && def.validation && def.validation.indexOf('PostOrderChange') === -1)? 'not-allowed' : null"
+                       [attr.disabled]="(def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && def.validation && def.validation.indexOf('PostOrderChange') === -1)  ? 'disabled' : null"
+                       [style.background]="(def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && (!def.validation || ( def.validation && def.validation.indexOf('PostOrderChange') === -1))) ? '#EEEEEE' : null"
+                       [formControl]="FormModel.attributes[def.name]"/><span style="margin-left: 5px; position: relative; top: 1px">{{option.text}}</span>
+              </div>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-12" style="position: relative; top: -4px" *ngIf="def.type === 'date'">
               <div class="form-group">
@@ -45,6 +73,7 @@
                          [attr.disabled]="(def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && (!def.validation || ( def.validation && def.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : null"
                          [style.background]="(def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && (!def.validation || ( def.validation && def.validation.indexOf('PostOrderChange') === -1))) ? '#EEEEEE' : null"
                          a2e-datetimepicker
+                         [value]="def.value"
                          [formControl]="FormModel.attributes[def.name]"
                          [options]="dateOptions"/>
                   <span class="input-group-addon datepicker-icon">
