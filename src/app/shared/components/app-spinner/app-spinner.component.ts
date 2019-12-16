@@ -16,7 +16,7 @@ export class AppSpinnerComponent implements OnInit {
     // Configs here
     config = {
         // Max timer that this loading spinner can be shown on the page
-        networkCallWaitTimeMax: 6000,
+        networkCallWaitTimeMax: 60000,
         pageReloadCountdownTimerMaxFunc: () => {
             let cacheNumber: number; 
             return () => {
