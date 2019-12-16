@@ -117,17 +117,17 @@ export class UserManagementComponent implements OnInit  {
                   response1 => {
                     console.log('response1');
                     console.log(JSON.stringify(response1));
-                    if (response1 && response1.body) {
+                    if (response1) {
                       const vendorOptions = [];
-                      response1.body.forEach(function (item) {
+                      response1.forEach(function (item) {
                         vendorOptions.push({
                           id: item.id,
                           text: item.external_vendor_id + ' - ' + item.company_name
                         });
                       });
                       this.vendorOptions = vendorOptions;
-                      if(response1.body.length) {
-                        this.selectedVendor = response1.body[0].id;
+                      if(response1.length) {
+                        this.selectedVendor = response1[0].id;
                       }
                     }
                   },
