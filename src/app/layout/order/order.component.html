@@ -130,7 +130,12 @@
         <button class="btn btn-primary" (click)="addLineItem()">ADD</button>
         <button class="btn btn-primary" (click)="removeLineItem()">REMOVE</button>
         <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject && dataFieldConfiguration.length">
-          <app-data-table2 [existingIdentity]="!!existingOrder" [dataObject]="dataObject" (triggerActions)="this[$event.action]($event)" [dataRowUpdated]="dataRowUpdated" [dataFieldsConfiguration]="dataFieldConfiguration"></app-data-table2>
+          <app-data-table2 
+            [existingIdentity]="!!existingOrder" 
+            [dataObject]="dataObject" 
+            (triggerActions)="this[$event.action]($event)" 
+            [dataFieldsConfiguration]="dataFieldConfiguration"
+          ></app-data-table2>
           <!--<app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height"></app-data-table1>-->
         </div>
         <div class="clearfix"></div>

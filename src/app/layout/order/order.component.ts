@@ -37,9 +37,9 @@ export class OrderComponent implements OnInit  {
     isColVisibility: true,
     isDownload: true,
     isRowHighlight: false,
-    isRowSelection: {
-      isMultiple : false
-    },
+    // isRowSelection: {
+    //   isMultiple : false
+    // },
     isPageLength: true,
     isPagination: true,
     sendResponseOnCheckboxClick: true
@@ -67,6 +67,9 @@ export class OrderComponent implements OnInit  {
   };
   selectedRow: any;
   originalResponseObj : any;
+
+  // gridDataResult: Object[] = new Array(Object);
+  gridDataResult: Object[] = [];
 
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
@@ -372,7 +375,11 @@ export class OrderComponent implements OnInit  {
         }).share();
   }
 
+
   addLineItem() {
+
+    console.log('this')
+    console.log(this)
 
     console.log('ADDLINEITEM __this.dataObject.gridData.result >>')
     console.log(this.dataObject.gridData.result);
@@ -382,9 +389,10 @@ export class OrderComponent implements OnInit  {
 
     console.log( "this.appDataTable2Component: ", this.appDataTable2Component );
 
-    this.dataRowUpdated = false;
+    // this.dataRowUpdated = false;
+
     const __this = this;
-    setTimeout(function () {
+    // setTimeout(function () {
       console.log('INSIDE SETTO')
 
       const dataObj = {};
@@ -400,12 +408,23 @@ export class OrderComponent implements OnInit  {
       console.log('dataObj >>')
       console.log(dataObj);
 
+    this.gridDataResult.push(dataObj);
+    // this.dataRowUpdated = false;
+    // __this.dataObject.gridData.result = this.gridDataResult;
+    // __this.dataRowUpdated = true;
+
       __this.dataObject.gridData.result.push(dataObj);
 
       // this.appDataTable2Component.table.row.add(dataObj);
 
-      __this.dataRowUpdated = true;
-    }, 100);
+      // __this.dataRowUpdated = true;
+    // }, 100);
+
+    console.log(" ******* __this: ", __this )
+    console.log(  "__this.dataObject.gridData.result", __this.dataObject.gridData.result)
+    console.log(  "HERE dataObj: ", dataObj);
+
+    this.appDataTable2Component.table.row.add(dataObj).draw();
 
   }
 

@@ -278,6 +278,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     // }
                 },
                 createdRow: function (row, data, index, cells) {
+                    console.log(" === ROW: ", row,  "data: ", data, " index: ", index, " cells: ", cells);
                     if (__this.dataObject.gridData.columnsToColor) {
                         __this.dataObject.gridData.columnsToColor.forEach(function (column) {
                             $('td', row).eq(column.index).css('background-color', column.color);
@@ -291,8 +292,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                     // Initialize inline-edit fields
                     if (__this.dataFieldsConfiguration) {
+                        console.log("====== __this.dataFieldsConfiguration", __this.dataFieldsConfiguration);
+
                         __this.dataFieldsConfiguration.forEach(function (field) {
                             const headerColumnField = __this.dataObject.gridData.headers.find(x=> x.key === field.name);
+
                             if (headerColumnField) {
                                 let columnIndex = __this.dataObject.gridData.headers.indexOf(headerColumnField);
                                 if (__this.dataObject.gridData.options.isRowSelection) {
@@ -304,6 +308,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                                 console.log('$(\'td\', row).eq(columnIndex).text() >>')
                                 console.log($('td', row).eq(columnIndex).text());
+
+                                console.log('------------ __this.dataObject',  "index", "field")
+                                console.log(__this.dataObject, index, field );
 
                                 field.value = __this.dataObject.gridData.result[index][field.name];
 
@@ -395,6 +402,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     $('td', row).eq(columnIndex).html(html);
                                 }
                             }
+
                         });
                     }
                 }
