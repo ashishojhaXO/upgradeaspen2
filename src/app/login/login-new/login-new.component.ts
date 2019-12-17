@@ -148,7 +148,9 @@ export class LoginNewComponent implements OnInit {
       }, rej => {
         //this.loginForm.reset();
         this.showSpinner = false;
-        this.formError = rej.statusText; //for error handling
+        // this.formError = rej.statusText; //for error handling
+        console.log("rej", rej);
+        this.formError = rej.json().message; //for error handling
       });
     }
   }
@@ -197,11 +199,15 @@ export class LoginNewComponent implements OnInit {
       const forgotObj = {"email": forgotEmail};
       this.forgotPasswordService(forgotObj).subscribe( res => {
         this.showSpinner = false;
-        this.formError = res.statusText;
+        // this.formError = res.statusText;
+        console.log("res", res);
+        this.formError = res.json().message;
       }, rej => {
         //this.loginForm.reset();
         this.showSpinner = false;
-        this.formError = rej.statusText; //for error handling
+        // this.formError = rej.statusText; //for error handling
+        console.log("rej 2", rej);
+        this.formError = rej.json().message; //for error handling
       });
     }
   }
