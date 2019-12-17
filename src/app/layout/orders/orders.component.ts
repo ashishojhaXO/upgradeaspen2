@@ -35,6 +35,7 @@ export class OrdersComponent implements OnInit  {
     isColVisibility: true,
     isRowHighlight: false,
     isDownload: true,
+    fixedColumn: 1,
     isPageLength: true,
     isPagination: true,
     sendResponseOnCheckboxClick: true

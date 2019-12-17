@@ -46,6 +46,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     @Input() identity: any;
     @Input() height: any;
     @Input() existingIdentity: boolean;
+    fixedColumnFlag: boolean;
 
     constructor(
         public toastr: ToastsManager,
@@ -155,6 +156,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             const columnDefs = []; // columnDef define the table body row schema
             const gridButtons = [];
+            let fixedColumn:any = false;
 
             let domConfig = '';
             if (this.dataObject.gridData.options) {
@@ -227,6 +229,13 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     });
                 }
 
+                if (this.dataObject.gridData.options.fixedColumn){
+                    this.fixedColumnFlag = true;
+                    fixedColumn = {
+                        "leftColumns": this.dataObject.gridData.options.fixedColumn
+                    }
+                }
+
                 if (this.dataObject.gridData.options.isSearchColumn) {
                     domConfig += 'f';
                 }
@@ -260,6 +269,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 dom: domConfig, // l - length changing input control ,f - filtering input ,t - The table!,i - Table information summary,p - pagination control
                 buttons: gridButtons,
                 columnDefs: columnDefs,
+                fixedColumns: fixedColumn,
                 select: {
                     style: this.dataObject.gridData.options.isRowSelection && this.dataObject.gridData.options.isRowSelection.isMultiple ? 'multi' : 'os',
                 },
@@ -558,6 +568,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             table.on('draw', function () {
                 // Update state of "Select all" control
                 console.log('drawn ....');
+                __this.adjustHeight(__this);
             });
 
             // Highlight pre checked rows
@@ -1452,6 +1463,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     });
                 }
             }
+            __this.adjustHeight(__this);
         });
     }
 
@@ -1466,6 +1478,17 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     rowIndex: indexes[0]
                 });
             }
+            __this.adjustHeight(__this);
         });
+    }
+
+    adjustHeight(context){
+        if(context.fixedColumnFlag){
+            let height = context.height - 18;
+            $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('height', height);
+            $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('max-height', height);
+            $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('padding-top', '15px');
+            $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner>table').css('border', 0);
+        }
     }
 }
