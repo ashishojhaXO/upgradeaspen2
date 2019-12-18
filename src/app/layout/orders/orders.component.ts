@@ -209,7 +209,7 @@ export class OrdersComponent implements OnInit  {
           } else {
             Swal({
               title: 'No downloadable link available',
-              text: 'We did not find a download link for that invoice',
+              text: 'We did not find a download link for that order',
               type: 'error'
             });
           }
@@ -235,7 +235,7 @@ export class OrdersComponent implements OnInit  {
             }
           } else {
             Swal({
-              title: 'Unable to download the invoice',
+              title: 'Unable to download the order details',
               text: 'We were enable to download details of order: ' + orderId  + '. Please try again',
               type: 'error'
             });
