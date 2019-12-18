@@ -71,7 +71,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes['dataObject'] || changes['dataRowUpdated'] || changes['dataRowUpdatedLen'] ) {
+
+        if (changes['dataObject'] || changes['dataRowUpdated']  ) {
 
             console.log('dataObject >>>');
             console.log(this.dataObject);
@@ -89,11 +90,30 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             }
 
             const __this = this;
+            setTimeout(function () {
+                __this.initializeTable();
+            }, 0);
+            // this.initializeTable();
+        }
+
+        if ( changes['dataRowUpdatedLen']) {
+
+            if(this.dataObject.gridId) {
+                this.tableId = this.dataObject.gridId;
+            }
+
+            if ( $.fn.DataTable.isDataTable('#' + this.tableId) ) {
+                $('#' + this.tableId).DataTable().clear().destroy();
+                $('#' + this.tableId).empty();
+            }
+
+            const __this = this;
             // setTimeout(function () {
                 __this.initializeTable();
             // }, 0);
             // this.initializeTable();
         }
+
     }
 
     attachEvents(row) {
