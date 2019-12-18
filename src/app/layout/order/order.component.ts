@@ -37,9 +37,9 @@ export class OrderComponent implements OnInit  {
     isColVisibility: true,
     isDownload: true,
     isRowHighlight: false,
-    // isRowSelection: {
-    //   isMultiple : false
-    // },
+    isRowSelection: {
+      isMultiple : false
+    },
     isPageLength: true,
     isPagination: true,
     sendResponseOnCheckboxClick: true
@@ -59,6 +59,7 @@ export class OrderComponent implements OnInit  {
   public form: FormGroup;
   formAttribute: any;
   dataRowUpdated = false;
+  dataRowUpdatedLen = 0;
   minDate = new Date();
 
   dateOptions = {
@@ -378,22 +379,11 @@ export class OrderComponent implements OnInit  {
 
   addLineItem() {
 
-    console.log('this')
-    console.log(this)
-
-    console.log('ADDLINEITEM __this.dataObject.gridData.result >>')
-    console.log(this.dataObject.gridData.result);
-
-    console.log('__this.dataFieldConfiguration >')
-    console.log(this.dataFieldConfiguration);
-
-    console.log( "this.appDataTable2Component: ", this.appDataTable2Component );
-
     // this.dataRowUpdated = false;
 
     const __this = this;
+
     // setTimeout(function () {
-      console.log('INSIDE SETTO')
 
       const dataObj = {};
       __this.dataFieldConfiguration.forEach(function (conf) {
@@ -408,34 +398,32 @@ export class OrderComponent implements OnInit  {
       console.log('dataObj >>')
       console.log(dataObj);
 
-    this.gridDataResult.push(dataObj);
+    // this.gridDataResult.push(dataObj);
     // this.dataRowUpdated = false;
     // __this.dataObject.gridData.result = this.gridDataResult;
     // __this.dataRowUpdated = true;
 
-      __this.dataObject.gridData.result.push(dataObj);
+    this.dataObject.gridData.result.push(dataObj);
+    this.dataRowUpdatedLen = this.dataObject.gridData.result.length;
 
       // this.appDataTable2Component.table.row.add(dataObj);
 
       // __this.dataRowUpdated = true;
+
     // }, 100);
 
-    console.log(" ******* __this: ", __this )
-    console.log(  "__this.dataObject.gridData.result", __this.dataObject.gridData.result)
-    console.log(  "HERE dataObj: ", dataObj);
-
-    this.appDataTable2Component.table.row.add(dataObj).draw();
+    // this.appDataTable2Component.table.row.add(dataObj).draw(false);
 
   }
 
   removeLineItem() {
     if(this.selectedRow) {
-      this.dataRowUpdated = false;
+      // this.dataRowUpdated = false;
       const __this = this;
-      setTimeout(function () {
+      // setTimeout(function () {
         __this.dataObject.gridData.result.splice(__this.selectedRow.rowIndex, 1);
-        __this.dataRowUpdated = true;
-      }, 100);
+        this.dataRowUpdatedLen = this.dataObject.gridData.result.length;
+      // }, 100);
     }
   }
 

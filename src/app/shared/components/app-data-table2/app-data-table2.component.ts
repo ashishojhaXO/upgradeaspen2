@@ -43,6 +43,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     @Input() dataFieldsConfiguration: any;
     table: any;
     @Input() dataRowUpdated: boolean;
+    @Input() dataRowUpdatedLen: number;
     @Input() identity: any;
     @Input() height: any;
     @Input() existingIdentity: boolean;
@@ -70,7 +71,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes['dataObject'] || changes['dataRowUpdated']) {
+        if (changes['dataObject'] || changes['dataRowUpdated'] || changes['dataRowUpdatedLen'] ) {
 
             console.log('dataObject >>>');
             console.log(this.dataObject);
@@ -88,9 +89,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             }
 
             const __this = this;
-            setTimeout(function () {
+            // setTimeout(function () {
                 __this.initializeTable();
-            }, 0);
+            // }, 0);
             // this.initializeTable();
         }
     }
@@ -278,7 +279,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     // }
                 },
                 createdRow: function (row, data, index, cells) {
-                    console.log(" === ROW: ", row,  "data: ", data, " index: ", index, " cells: ", cells);
                     if (__this.dataObject.gridData.columnsToColor) {
                         __this.dataObject.gridData.columnsToColor.forEach(function (column) {
                             $('td', row).eq(column.index).css('background-color', column.color);
@@ -292,8 +292,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                     // Initialize inline-edit fields
                     if (__this.dataFieldsConfiguration) {
-                        console.log("====== __this.dataFieldsConfiguration", __this.dataFieldsConfiguration);
-
                         __this.dataFieldsConfiguration.forEach(function (field) {
                             const headerColumnField = __this.dataObject.gridData.headers.find(x=> x.key === field.name);
 
@@ -308,9 +306,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                                 console.log('$(\'td\', row).eq(columnIndex).text() >>')
                                 console.log($('td', row).eq(columnIndex).text());
-
-                                console.log('------------ __this.dataObject',  "index", "field")
-                                console.log(__this.dataObject, index, field );
 
                                 field.value = __this.dataObject.gridData.result[index][field.name];
 
