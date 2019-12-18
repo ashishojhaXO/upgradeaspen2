@@ -1,0 +1,14 @@
+<ul class="nav navbar-nav bottom-menu">
+  <ng-template ngFor let-bmm [ngForOf]="navItems" let-j="index" >
+    <li><a [routerLink]="bmm.url==''?['/organizationList']:['/'+bmm.url]" routerLinkActive="active-bar" [routerLinkActiveOptions]="{exact: false}" [ngClass]="bmm.sideBar?.length > 0 && routeActive ? 'active-bar submenuActive': bmm.selected && bmm.sideBar?.length <= 0? 'active-bar':''" title={{bmm.name}} id="{{bmm.id}}">{{bmm.title}}
+      &nbsp;&nbsp;<i *ngIf="bmm.url==''" class="fa fa-caret-down" aria-hidden="true"></i>
+    </a>
+      <ul class="subChildMenu">
+        <ng-template ngFor let-summ [ngForOf]="bmm.sideBar" let-j="index" >
+          <li><a routerLink="/{{summ.url}}" routerLinkActive="active-bar" [routerLinkActiveOptions]="{exact: true}" class="active-bar" title={{summ.name}} id="{{summ.id}}">
+            {{summ.title}}</a></li>
+        </ng-template>
+      </ul>
+    </li>
+  </ng-template>
+</ul>

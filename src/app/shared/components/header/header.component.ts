@@ -11,6 +11,7 @@ import * as OktaSignIn from '@okta/okta-signin-widget/dist/js/okta-sign-in-no-jq
 import {PopUpModalComponent} from '../pop-up-modal/pop-up-modal.component';
 import {FormControl, FormGroup, FormArray, Validators} from '@angular/forms';
 import {Http, Headers, RequestOptions} from '@angular/http';
+import { AppNavComponent } from '../app-nav/app-nav.component';
 // import { OktaAuthService } from '@okta/okta-angular';
 
 @Component({
@@ -52,7 +53,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   globalURLActive: any = ['/', '/parameter-list', '/organizationList', '/featureList', '/globaladminusers'];
   popoverOpen = false;
   clearPreselectedMenuItem: boolean;
-  widget : any;
+  widget: any;
   error: any;
   api_fs: any;
   externalAuth: any;
@@ -62,7 +63,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   resetModel: any;
 
   constructor(
-    // private okta: OktaAuthService, 
+    // private okta: OktaAuthService,
     private translate: TranslateService,
     public router: Router,
     private route: ActivatedRoute,
@@ -215,6 +216,9 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
           });
           this.mainmenu = reducedMenu;
         }
+
+        console.log('this.mainmenu >>')
+        console.log(this.mainmenu);
 
         if (window.location.pathname) {
           const urlParts = window.location.pathname.indexOf('/') != -1 ? window.location.pathname.split('/') : window.location.pathname;

@@ -22,6 +22,8 @@ import { TargetAudComponent } from './targetAud/targetAud.component';
 import { OrderSummaryComponent } from './orderSummary/orderSummary.component';
 import { OrdersTemplateListComponent } from './orders-template-list/orders-template-list.component';
 import { OrdersListComponent } from './orders-list/orders-list.component';
+import { InvoicesComponent } from './invoices/invoices.component';
+import { InvoiceComponent } from './invoice/invoice.component';
 
 const routes: Routes = [
   {
@@ -276,6 +278,30 @@ const routes: Routes = [
             data: {
               breadcrumbs: true,
               text: 'Orders List'
+            },
+          },
+          {
+            path: 'invoices',
+            component: InvoicesComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Invoices'
+            },
+          },
+          {
+            path: 'invoice',
+            component: InvoiceComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Invoices Details'
+            },
+          },
+          {
+            path: 'invoice/:id',
+            component: InvoiceComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Invoices Details'
             },
           },
         ]

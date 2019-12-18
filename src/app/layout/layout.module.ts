@@ -41,7 +41,8 @@ import { TargetAudComponent } from './targetAud/targetAud.component';
 import { BaseFieldsComponent } from './baseFields/baseFields.component';
 import { OrderTemplateComponent } from './order-template/order-template.component';
 import { OrderSummaryComponent } from './orderSummary/orderSummary.component';
-
+import { InvoicesComponent } from './invoices/invoices.component';
+import { InvoiceComponent } from './invoice/invoice.component';
 
 // providers
 import { AuthGuard } from './../shared';
@@ -105,11 +106,13 @@ import { NumericDirective } from '../shared/directives/Numeric.directive';
         ConfigureAdComponent,
         TargetAudComponent,
         OrderSummaryComponent,
-        NumericDirective
+        NumericDirective,
+        InvoicesComponent,
+        InvoiceComponent
     ],
     providers: [
-        AuthGuard, 
-        OktaAuthService, 
+        AuthGuard,
+        OktaAuthService,
         OrganizationService],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA
