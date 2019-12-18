@@ -43,7 +43,7 @@ export class SupportComponent implements OnInit {
         isDeleteOption: false,
         isAddRow: false,
         isColVisibility: true,
-        isDownload: true,
+        isDownloadOption: false,
         isRowSelection: null,
         isPageLength: true,
         isPagination: true,

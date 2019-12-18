@@ -42,7 +42,7 @@
       "isDeleteOption": true,
       "isAddRow": false,
       "isColVisibility": true,
-      "isDownload": true,
+      "isDownloadOption": true,
       "isPageLength": 10,
       "isTableInfo": true
     },

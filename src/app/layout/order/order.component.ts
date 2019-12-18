@@ -35,7 +35,7 @@ export class OrderComponent implements OnInit  {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
-    isDownload: true,
+    isDownloadOption: false,
     isRowHighlight: false,
     isRowSelection: {
       isMultiple : false

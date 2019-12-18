@@ -38,7 +38,7 @@ export class PaymentsComponent implements OnInit  {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
-    isDownload: true,
+    isDownloadOption: false,
     isRowSelection: null,
     isPageLength: true,
     isPagination: true
@@ -158,7 +158,7 @@ export class PaymentsComponent implements OnInit  {
         const control = <FormArray>this.paymentFormNew.controls['lineItemPartialInputArr'];
         for(let i = control.length-1; i >= 0; i--) {
             control.removeAt(i);
-        } 
+        }
       }else if(change){
         this.getInvoiceItems(this.selectedInvoice);
       }

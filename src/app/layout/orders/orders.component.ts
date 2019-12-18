@@ -34,7 +34,7 @@ export class OrdersComponent implements OnInit  {
     isAddRow: false,
     isColVisibility: true,
     isRowHighlight: false,
-    isDownload: true,
+    isDownloadOption: false,
     fixedColumn: 1,
     isPageLength: true,
     isPagination: true,

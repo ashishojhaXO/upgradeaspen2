@@ -298,7 +298,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: false,
-    isDownload: false,
+    isDownloadOption: false,
     isRowSelection: {
       isMultiple : true
     },
@@ -314,7 +314,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
       isDeleteOption: false,
       isAddRow: false,
       isColVisibility: false,
-      isDownload: false,
+      isDownloadOption: false,
       isRowSelection: {
         isMultiple : true
       },
@@ -358,7 +358,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
       isDeleteOption: false,
       isAddRow: false,
       isColVisibility: false,
-      isDownload: false,
+      isDownloadOption: false,
       isRowSelection: {
         isMultiple : true
       },
@@ -403,7 +403,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
       isDeleteOption: false,
       isAddRow: false,
       isColVisibility: false,
-      isDownload: false,
+      isDownloadOption: false,
       isRowSelection: {
         isMultiple : true
       },
@@ -1027,7 +1027,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
         isDeleteOption: false,
         isAddRow: false,
         isColVisibility: false,
-        isDownload: false,
+        isDownloadOption: false,
         isRowSelection: {
           isMultiple : true
         },

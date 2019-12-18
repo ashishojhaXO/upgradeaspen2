@@ -26,7 +26,7 @@ export class OrdersTemplateListComponent implements OnInit  {
     isAddRow: false,
     isColVisibility: true,
     isRowHighlight: false,
-    isDownload: true,
+    isDownloadOption: false,
     isPageLength: true,
     isPagination: true,
     sendResponseOnCheckboxClick: true

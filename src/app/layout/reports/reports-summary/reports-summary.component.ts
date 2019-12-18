@@ -37,7 +37,7 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
-    isDownload: true,
+    isDownloadOption: true,
     isRowSelection: null,
     isPageLength: true,
     isPagination: true,
@@ -45,8 +45,7 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
     inheritHeadersForTree: true,
     isPlayOption: {
       value : true
-    },
-    isDownloadOption: true,
+    }
   }];
   dashboard: any;
   serverSide: any;
