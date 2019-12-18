@@ -182,7 +182,6 @@ export class OrderTemplateComponent implements OnInit {
         console.log('response >>')
         console.log(response);
         if (response && response.status == 200) {
-          response.message
           console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>', response.message);
           let status;
           if(this.isPublished){
@@ -205,6 +204,8 @@ export class OrderTemplateComponent implements OnInit {
         }
       },
       err => {
+        console.log('err >>>')
+        console.log(err)
         if(err.status === 401) {
           if(localStorage.getItem('accessToken')) {
             this.widget.tokenManager.refresh('accessToken')
@@ -224,6 +225,11 @@ export class OrderTemplateComponent implements OnInit {
             });
           }
         } else {
+          Swal({
+            title: 'Error',
+            text: err.statusText ? err.statusText : 'An Error occurred',
+            type: 'error'
+          })
           this.showSpinner = false;
         }
       }
@@ -280,7 +286,7 @@ export class OrderTemplateComponent implements OnInit {
         else{
           this.showSpinner = false;
           Swal({
-            title: 'Error Occured',
+            title: 'Error',
             text: response.message,
             type: 'warning'
           }).then( () => {
@@ -290,6 +296,8 @@ export class OrderTemplateComponent implements OnInit {
         }
       },
       err => {
+        console.log('err >>')
+        console.log(err);
         if(err.status === 401) {
           if(localStorage.getItem('accessToken')) {
             this.widget.tokenManager.refresh('accessToken')
@@ -309,6 +317,11 @@ export class OrderTemplateComponent implements OnInit {
             });
           }
         } else {
+          Swal({
+            title: 'Error',
+            text: err.statusText ? err.statusText : 'An Error occurred',
+            type: 'error'
+          })
           this.showSpinner = false;
         }
       }
