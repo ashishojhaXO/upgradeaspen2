@@ -43,6 +43,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     @Input() dataFieldsConfiguration: any;
     table: any;
     @Input() dataRowUpdated: boolean;
+    @Input() dataRowUpdatedLen: number;
     @Input() identity: any;
     @Input() height: any;
     @Input() existingIdentity: boolean;
@@ -70,7 +71,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes['dataObject'] || changes['dataRowUpdated']) {
+        if (changes['dataObject'] || changes['dataRowUpdated'] || changes['dataRowUpdatedLen'] ) {
 
             console.log('dataObject >>>');
             console.log(this.dataObject);
@@ -88,9 +89,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             }
 
             const __this = this;
-            setTimeout(function () {
+            // setTimeout(function () {
                 __this.initializeTable();
-            }, 0);
+            // }, 0);
             // this.initializeTable();
         }
     }
@@ -293,6 +294,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     if (__this.dataFieldsConfiguration) {
                         __this.dataFieldsConfiguration.forEach(function (field) {
                             const headerColumnField = __this.dataObject.gridData.headers.find(x=> x.key === field.name);
+
                             if (headerColumnField) {
                                 let columnIndex = __this.dataObject.gridData.headers.indexOf(headerColumnField);
                                 if (__this.dataObject.gridData.options.isRowSelection) {
@@ -395,6 +397,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     $('td', row).eq(columnIndex).html(html);
                                 }
                             }
+
                         });
                     }
                 }
