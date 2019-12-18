@@ -178,12 +178,21 @@ export class ReconciliationComponent implements OnInit  {
       }
     }
 
+      const rowsToColor = [];
+      tableData.forEach(function (data, index) {
+          if (data.discrepancy_amount && data.discrepancy_amount > 0) {
+              rowsToColor.push({
+                  index: index,
+                  'background-color': 'rgba(255,0,0,0.9)',
+                  color : 'rgba(255,255,255,0.9)'
+              });
+          }
+      })
+
     this.gridData['result'] = tableData;
     this.gridData['headers'] = this.headers;
     this.gridData['options'] = this.options[0];
-    this.gridData.columnsToColor = [
-        { name: 'CALCULATED AMOUNT', color: 'rgb(47,132,234,0.2)'}
-    ];
+    this.gridData.rowsToColor = rowsToColor;
     this.dashboard = 'paymentGrid';
     this.dataObject.gridData = this.gridData;
     console.log(this.gridData);
