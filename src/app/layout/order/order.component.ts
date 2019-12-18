@@ -569,6 +569,11 @@ export class OrderComponent implements OnInit  {
               });
             }
           } else {
+            Swal({
+              title: 'Error',
+              text: err.statusText ? err.statusText : 'An Error occurred',
+              type: 'error'
+            })
             this.showSpinner = false;
           }
         }
