@@ -14,6 +14,7 @@ import {DataTableOptions} from '../../../models/dataTableOptions';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-orders',
@@ -34,7 +35,7 @@ export class OrdersComponent implements OnInit  {
     isAddRow: false,
     isColVisibility: true,
     isRowHighlight: false,
-    isDownloadOption: false,
+    isDownloadOption: true,
     fixedColumn: 1,
     isPageLength: true,
     isPagination: true,
@@ -166,14 +167,11 @@ export class OrdersComponent implements OnInit  {
     ];
     this.dashboard = 'paymentGrid';
     this.dataObject.gridData = this.gridData;
-    console.log(this.gridData);
     this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
     // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
   }
 
   handleCheckboxSelection(rowObj: any, rowData: any) {
-    console.log('this.selectedRow >>')
-    console.log(this.selectedRow);
     this.selectedRow = rowObj;
   }
 
@@ -184,6 +182,88 @@ export class OrdersComponent implements OnInit  {
   handleRow(rowObj: any, rowData: any) {
     if(this[rowObj.action])
       this[rowObj.action](rowObj);
+  }
+
+  handleDownload(dataObj: any) {
+    const downloadId = dataObj.data.Vendor_Receipt_Id;
+    const orderId = dataObj.data.Order_Id;
+    if (downloadId) {
+      this.searchDownloadLink(downloadId, orderId);
+    } else {
+      Swal({
+        title: 'No downloadable link available',
+        text: 'We did not find a download link for that order',
+        type: 'error'
+      });
+    }
+  }
+
+  searchDownloadLink(downloadId, orderId) {
+    this.getDownloadLink(downloadId).subscribe(
+        response => {
+          if (response && response.data && response.data.pre_signed_url) {
+            const link = document.createElement('a');
+            link.setAttribute('href', response.data.pre_signed_url);
+            document.body.appendChild(link);
+            link.click();
+          } else {
+            Swal({
+              title: 'No downloadable link available',
+              text: 'We did not find a download link for that invoice',
+              type: 'error'
+            });
+          }
+        },
+        err => {
+          if(err.status === 401) {
+            if(localStorage.getItem('accessToken')) {
+              this.widget.tokenManager.refresh('accessToken')
+                  .then(function (newToken) {
+                    localStorage.setItem('accessToken', newToken);
+                    this.showSpinner = false;
+                    this.searchDownloadLink(downloadId, orderId);
+                  })
+                  .catch(function (err) {
+                    console.log('error >>')
+                    console.log(err);
+                  });
+            } else {
+              this.widget.signOut(() => {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/login';
+              });
+            }
+          } else {
+            Swal({
+              title: 'Unable to download the invoice',
+              text: 'We were enable to download details of order: ' + orderId  + '. Please try again',
+              type: 'error'
+            });
+            this.showSpinner = false;
+          }
+        });
+  }
+
+  getDownloadLink(downloadId) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    const data = JSON.stringify({
+      'reference_id': downloadId
+    });
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/reports/download';
+    return this.http
+        .post(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
 }
