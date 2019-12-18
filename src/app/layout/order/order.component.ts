@@ -5,7 +5,7 @@
  * Date: 2019-02-27 14:54:37
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
@@ -15,6 +15,7 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 // import { OktaAuthService } from '../../../services/okta.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import Swal from 'sweetalert2';
+import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 
 @Component({
   selector: 'app-order',
@@ -58,6 +59,7 @@ export class OrderComponent implements OnInit  {
   public form: FormGroup;
   formAttribute: any;
   dataRowUpdated = false;
+  dataRowUpdatedLen = 0;
   minDate = new Date();
 
   dateOptions = {
@@ -66,6 +68,12 @@ export class OrderComponent implements OnInit  {
   };
   selectedRow: any;
   originalResponseObj : any;
+
+  // gridDataResult: Object[] = new Array(Object);
+  gridDataResult: Object[] = [];
+
+  @ViewChild ( AppDataTable2Component )
+  private appDataTable2Component : AppDataTable2Component;
 
   constructor(
     // private okta: OktaAuthService,
@@ -368,17 +376,15 @@ export class OrderComponent implements OnInit  {
         }).share();
   }
 
+
   addLineItem() {
 
-    console.log('__this.dataObject.gridData.result >>')
-    console.log(this.dataObject.gridData.result);
+    // this.dataRowUpdated = false;
 
-    console.log('__this.dataFieldConfiguration >')
-    console.log(this.dataFieldConfiguration);
-
-    this.dataRowUpdated = false;
     const __this = this;
-    setTimeout(function () {
+
+    // setTimeout(function () {
+
       const dataObj = {};
       __this.dataFieldConfiguration.forEach(function (conf) {
 
@@ -392,19 +398,32 @@ export class OrderComponent implements OnInit  {
       console.log('dataObj >>')
       console.log(dataObj);
 
-      __this.dataObject.gridData.result.push(dataObj);
-      __this.dataRowUpdated = true;
-    }, 100);
+    // this.gridDataResult.push(dataObj);
+    // this.dataRowUpdated = false;
+    // __this.dataObject.gridData.result = this.gridDataResult;
+    // __this.dataRowUpdated = true;
+
+    this.dataObject.gridData.result.push(dataObj);
+    this.dataRowUpdatedLen = this.dataObject.gridData.result.length;
+
+      // this.appDataTable2Component.table.row.add(dataObj);
+
+      // __this.dataRowUpdated = true;
+
+    // }, 100);
+
+    // this.appDataTable2Component.table.row.add(dataObj).draw(false);
+
   }
 
   removeLineItem() {
     if(this.selectedRow) {
-      this.dataRowUpdated = false;
+      // this.dataRowUpdated = false;
       const __this = this;
-      setTimeout(function () {
+      // setTimeout(function () {
         __this.dataObject.gridData.result.splice(__this.selectedRow.rowIndex, 1);
-        __this.dataRowUpdated = true;
-      }, 100);
+        this.dataRowUpdatedLen = this.dataObject.gridData.result.length;
+      // }, 100);
     }
   }
 
