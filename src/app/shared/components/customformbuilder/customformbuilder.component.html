@@ -82,46 +82,46 @@
               <div class="col-xs-7" *ngIf="!isBaseField">
                 <div *ngIf="item.dropType=='text'">
                   <label>{{item.label}}</label> <label *ngIf="item.validation.indexOf('required') != -1" class="text-danger">*</label>
-                  <input type="text" class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [disabled]="item.validation.indexOf('disable') != -1">
+                  <input type="text" class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [(ngModel)]="item.default_value" [disabled]="item.validation.indexOf('disable') != -1">
                 </div>
                 <div *ngIf="item.dropType=='email'">
                   <label>{{item.label}}</label> <label *ngIf="item.validation.indexOf('required') != -1" class="text-danger">*</label>
-                  <input type="email" class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [disabled]="item.validation.indexOf('disable') != -1">
+                  <input type="email" class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [(ngModel)]="item.default_value" [disabled]="item.validation.indexOf('disable') != -1">
                 </div>
                 <div *ngIf="item.dropType=='phone'">
                   <label>{{item.label}}</label> <label *ngIf="item.validation.indexOf('required') != -1" class="text-danger">*</label>
-                  <input type="text" class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [disabled]="item.validation.indexOf('disable') != -1">
+                  <input type="text" class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [(ngModel)]="item.default_value" [disabled]="item.validation.indexOf('disable') != -1">
                 </div>
                 <div *ngIf="item.dropType=='number'">
                   <label>{{item.label}}</label> <label *ngIf="item.validation.indexOf('required') != -1" class="text-danger">*</label>
-                  <input type="number" class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [disabled]="item.validation.indexOf('disable') != -1">
+                  <input type="number" class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [(ngModel)]="item.default_value" [disabled]="item.validation.indexOf('disable') != -1">
                 </div>
                 <div *ngIf="item.dropType=='amount'">
                   <label>{{item.label}}</label> <label *ngIf="item.validation.indexOf('required') != -1" class="text-danger">*</label>
                   <div class="input-group">
                     <span class="input-group-addon">$</span>
-                    <input type="number" class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [disabled]="item.validation.indexOf('disable') != -1">
+                    <input type="number" class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [(ngModel)]="item.default_value" [disabled]="item.validation.indexOf('disable') != -1">
                   </div>
                 </div>
                 <div *ngIf="item.dropType=='date'">
                   <label>{{item.label}}</label> <label *ngIf="item.validation.indexOf('required') != -1" class="text-danger">*</label>
-                  <input type="date" class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [disabled]="item.validation.indexOf('disable') != -1">
+                  <input type="date" class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [(ngModel)]="item.default_value" [disabled]="item.validation.indexOf('disable') != -1">
                 </div>
                 <div *ngIf="item.dropType=='textarea'">
                   <label>{{item.label}}</label> <label *ngIf="item.validation.indexOf('required') != -1" class="text-danger">*</label>
-                  <textarea class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}"  [disabled]="item.validation.indexOf('disable') != -1"></textarea>
+                  <textarea class="form-control" id="{{item.dropName}}" placeholder="{{item.label}}" [(ngModel)]="item.default_value"  [disabled]="item.validation.indexOf('disable') != -1"></textarea>
                 </div>
                 <div *ngIf="item.dropType=='autocomplete'">
                   <label>{{item.label}}</label> <label *ngIf="item.validation.indexOf('required') != -1" class="text-danger">*</label>
-                  <select class="form-control" id="{{item.dropName}}" [disabled]="item.validation.indexOf('disable') != -1">
+                  <select class="form-control" id="{{item.dropName}}" [disabled]="item.validation.indexOf('disable') != -1" [(ngModel)]="item.default_value">
                     <option *ngFor="let v of item.attr_list.options" [value]="v.option">{{v.option}}</option>
                   </select>
                 </div>
                 <div *ngIf="item.dropType=='checkbox'">
                   <label>{{item.label}}</label> <label *ngIf="item.validation.indexOf('required') != -1" class="text-danger">*</label>
-                  <div *ngFor="let v of item.attr_list.options" class="inline-form-group">
+                  <div *ngFor="let v of item.attr_list.options; let j = index" class="inline-form-group">
                     <label class="cust-check-bx">
-                      <input type="checkbox" [value]="v.option" name="{{item.dropName}}" [disabled]="item.validation.indexOf('disable') != -1">
+                      <input type="checkbox" [value]="v.option" name="{{item.dropName + '_' + j}}" [disabled]="item.validation.indexOf('disable') != -1" (change)="onCheckboxClick(v.option, $event.target.checked, model.attributes[i])">
                       {{v.option}}
                       <span class="checkmark"></span>
                     </label>
@@ -131,7 +131,7 @@
                   <label>{{item.label}}</label> <label *ngIf="item.validation.indexOf('required') != -1" class="text-danger">*</label>
                   <div *ngFor="let v of item.attr_list.options" class="inline-form-group">
                     <label class="cust-check-bx">
-                      <input type="radio" [value]="v.option" name="{{item.dropName}}" [disabled]="item.validation.indexOf('disable') != -1"> {{v.option}}
+                      <input type="radio" [value]="v.option" name="{{item.dropName}}" [disabled]="item.validation.indexOf('disable') != -1" [(ngModel)]="item.default_value"> {{v.option}}
                       <span class="checkmark"></span>
                     </label>
                   </div>
@@ -175,7 +175,10 @@
               </div>
               <div class="form-group-fields">
                 <label>Default Value</label>
-                <input class="form-control" type="text" [(ngModel)]="item.default_value" />
+                <input class="form-control" type="text" [(ngModel)]="item.default_value" *ngIf="item.dropType != 'date' && item.dropType != 'checkbox' && item.dropType != 'radio' && item.dropType != 'autocomplete'"/>
+                <input class="form-control" type="text" [(ngModel)]="item.default_value" *ngIf="item.dropType === 'radio' || item.dropType === 'autocomplete'" disabled/>
+                <input class="form-control" type="date" [(ngModel)]="item.default_value" *ngIf="item.dropType === 'date'"/>
+                <input class="form-control" type="text" [(ngModel)]="checkboxDefault" *ngIf="item.dropType === 'checkbox'" disabled/>
               </div>
               <div class="form-group-fields">
                 <label>Regex</label>
