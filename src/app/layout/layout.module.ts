@@ -17,6 +17,7 @@ import { Select2Module } from 'ng2-select2';
 import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
 import { PopUpModalModule } from '../shared/components/pop-up-modal/pop-up-modal.module';
 import { HeaderComponentDirective } from '../shared/components/header/header.component';
+import { AppNavComponent } from '../shared/components/app-nav/app-nav.component';
 import { FooterComponent } from '../shared';
 import {CheckboxSwitchModule} from './../shared/components/app-checkbox-switch/app-checkbox-switch.module';
 import {MultiSelectDropdownModule} from './../shared/components/multiselect-dropdown/multiselect-dropdown.module';
@@ -87,6 +88,7 @@ import { NumericDirective } from '../shared/directives/Numeric.directive';
         LayoutComponent,
         SidebarComponentDirective,
         HeaderComponentDirective,
+        AppNavComponent,
         FooterComponent,
         DashboardsComponent,
         OrdersComponent,

@@ -69,11 +69,9 @@ export class InvoicesComponent implements OnInit  {
   searchDataRequest() {
      this.searchData().subscribe(
         response => {
-          if (response) {
-            if (response && response.data) {
-              this.populateDataTable(response.data, true);
-              this.showSpinner = false;
-            }
+          if (response && response.data) {
+            this.populateDataTable(response.data, true);
+            this.showSpinner = false;
           }
         },
         err => {
@@ -168,8 +166,16 @@ export class InvoicesComponent implements OnInit  {
   }
 
   handleRun(dataObj: any) {
-    alert();
     const invoiceId = dataObj.data.id;
+    if (invoiceId) {
+      this.router.navigate(['/app/payments/invoices/invoice/' + invoiceId]);
+    } else {
+      Swal({
+        title: 'No invoice ID found',
+        text: 'We did not find an invoice id',
+        type: 'error'
+      });
+    }
   }
 
   handleDownload(dataObj: any) {
@@ -191,19 +197,17 @@ export class InvoicesComponent implements OnInit  {
   searchDownloadLink(downloadId, invoiceId) {
     this.getDownloadLink(downloadId).subscribe(
         response => {
-          if (response) {
-            if (response && response.data && response.data.pre_signed_url) {
-              const link = document.createElement('a');
-              link.setAttribute('href', response.data.pre_signed_url);
-              document.body.appendChild(link);
-              link.click();
-            } else {
-              Swal({
-                title: 'No downloadable link available',
-                text: 'We did not find a download link for that invoice',
-                type: 'error'
-              });
-            }
+          if (response && response.data && response.data.pre_signed_url) {
+            const link = document.createElement('a');
+            link.setAttribute('href', response.data.pre_signed_url);
+            document.body.appendChild(link);
+            link.click();
+          } else {
+            Swal({
+              title: 'No downloadable link available',
+              text: 'We did not find a download link for that invoice',
+              type: 'error'
+            });
           }
         },
         err => {
@@ -228,7 +232,7 @@ export class InvoicesComponent implements OnInit  {
           } else {
             Swal({
               title: 'Unable to download the invoice',
-              text: 'We were enable to download invoice: ' + invoiceId  + '. Please try again',
+              text: 'We were enable to download details of invoice: ' + invoiceId  + '. Please try again',
               type: 'error'
             });
             this.showSpinner = false;

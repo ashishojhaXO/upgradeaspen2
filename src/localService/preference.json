@@ -108,7 +108,14 @@
       "title": "Payments",
       "selected": false,
       "id": "payments",
-      "url":"app/payments"
+      "url":"app/payments",
+      "submenu" : [{
+        "index": 17,
+        "name": "invoices",
+        "title": "Invoices",
+        "id": "invoices",
+        "url": "app/payments/invoices"
+      }]
     },
     {
       "index": 9,

@@ -346,11 +346,11 @@ export class PaymentsComponent implements OnInit  {
       response => {
         if(response)
         {
-          if(response.body.data.length > 0)
+          if(response.data.length > 0)
           {
             const organizations = [];
 
-            _.forEach(response.body.data, organization => {
+            _.forEach(response.data, organization => {
 
               organizations.push({
                 id : organization.id,

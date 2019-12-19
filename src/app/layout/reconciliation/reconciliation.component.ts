@@ -101,12 +101,10 @@ export class ReconciliationComponent implements OnInit  {
    searchDataRequest() {
       return this.searchData().subscribe(
         response => {
-          if (response) {
             if (response) {
-              this.populateDataTable(response, true);
-              this.showSpinner = false;
+                this.populateDataTable(response, true);
+                this.showSpinner = false;
             }
-          }
         },
         err => {
           if(err.status === 401) {

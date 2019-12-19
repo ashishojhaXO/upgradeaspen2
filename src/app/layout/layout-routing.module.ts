@@ -194,7 +194,63 @@ const routes: Routes = [
       },
       {
         path: 'payments',
-        component: PaymentsComponent
+        data: {
+          breadcrumbs: true,
+          text: 'Payments'
+        },
+        children: [
+          {
+            path: '',
+            redirectTo: 'payments',
+            pathMatch: 'full'
+          },
+          {
+            path: 'payments',
+            component: PaymentsComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Payments'
+            }
+          },
+          {
+            path: 'invoices',
+            data: {
+              breadcrumbs: true,
+              text: 'Invoices'
+            },
+            children: [
+              {
+                path: '',
+                redirectTo: 'invoices',
+                pathMatch: 'full'
+              },
+              {
+                path: 'invoices',
+                component: InvoicesComponent,
+                data: {
+                  breadcrumbs: true,
+                  text: 'Invoices'
+                }
+              },
+              {
+                path: 'invoice',
+                component: InvoiceComponent,
+                data: {
+                  breadcrumbs: true,
+                  text: 'Invoices Details'
+                },
+              },
+              {
+                path: 'invoice/:id',
+                component: InvoiceComponent,
+                data: {
+                  breadcrumbs: true,
+                  text: 'Invoices Details'
+                },
+              }
+            ]
+          }
+        ]
       },
       {
         path: 'admin',
@@ -279,31 +335,7 @@ const routes: Routes = [
               breadcrumbs: true,
               text: 'Orders List'
             },
-          },
-          {
-            path: 'invoices',
-            component: InvoicesComponent,
-            data: {
-              breadcrumbs: true,
-              text: 'Invoices'
-            },
-          },
-          {
-            path: 'invoice',
-            component: InvoiceComponent,
-            data: {
-              breadcrumbs: true,
-              text: 'Invoices Details'
-            },
-          },
-          {
-            path: 'invoice/:id',
-            component: InvoiceComponent,
-            data: {
-              breadcrumbs: true,
-              text: 'Invoices Details'
-            },
-          },
+          }
         ]
       }
     ]

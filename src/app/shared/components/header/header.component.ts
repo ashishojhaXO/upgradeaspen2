@@ -28,12 +28,12 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
 
   @ViewChild('popoverButton') private;
   @ViewChild('ResetPassword') modalReset: PopUpModalComponent;
+  @ViewChild('navItems') navItems: AppNavComponent;
 
   loggedInUser: string;
   loggedInOrg: string;
   mainmenu: any;
   urlMatching: string;
-  isDataAvailable: boolean;
   activeParent: boolean;
   subMenu: object;
   selected: any;
@@ -217,9 +217,6 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
           this.mainmenu = reducedMenu;
         }
 
-        console.log('this.mainmenu >>')
-        console.log(this.mainmenu);
-
         if (window.location.pathname) {
           const urlParts = window.location.pathname.indexOf('/') != -1 ? window.location.pathname.split('/') : window.location.pathname;
           const corr = this.mainmenu.find( x=> x.url === (urlParts[1] + '/' + urlParts[2]));
@@ -242,8 +239,6 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
         //
         // console.log('this.subMenu >>')
         // console.log(this.subMenu);
-        //
-        this.isDataAvailable = true;
       },
       err => {
 

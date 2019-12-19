@@ -27,6 +27,8 @@ export class InvoiceComponent implements OnInit  {
   widget: any;
   invoiceId: any;
   selectedRow: any;
+  invoiceItems = [];
+  totalAmount = 0;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
   }
@@ -48,19 +50,21 @@ export class InvoiceComponent implements OnInit  {
           text: 'We did not find an invoice ID in the request',
           type: 'error'
         }).then( () => {
-          this.router.navigate(['/app/admin/invoices']);
+          this.router.navigate(['/app/payments/invoices']);
         });
       }
     });
   }
 
   searchDataRequest(invoiceId) {
-    return this.searchData().subscribe(
+    this.searchData(invoiceId).subscribe(
         response => {
-          if (response) {
-            if (response) {
-
-            }
+          if (response && response.data) {
+            this.invoiceItems = response.data;
+            this.invoiceItems.forEach(function (item) {
+              item.pay = '';
+            }, this);
+            this.showSpinner = false;
           }
         },
         err => {
@@ -71,7 +75,7 @@ export class InvoiceComponent implements OnInit  {
                   .then(function (newToken) {
                     localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
-                    this.searchDataRequest();
+                    this.searchDataRequest(invoiceId);
                   })
                   .catch(function (err) {
                     console.log('error >>')
@@ -90,7 +94,7 @@ export class InvoiceComponent implements OnInit  {
     );
   }
 
-  searchData() {
+  searchData(invoiceId) {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
@@ -99,7 +103,7 @@ export class InvoiceComponent implements OnInit  {
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/payments/invoices/getAll';
+    var url = this.api_fs.api + '/api/payments/invoices/' + invoiceId;
     return this.http
         .get(url, options)
         .map(res => {
@@ -122,4 +126,92 @@ export class InvoiceComponent implements OnInit  {
       this[rowObj.action](rowObj);
   }
 
+  updateTotal() {
+    this.totalAmount = 0;
+    this.invoiceItems.forEach(function (item) {
+      this.totalAmount += item.pay ? parseFloat(item.pay) : 0;
+    }, this);
+  }
+
+  OnPay() {
+
+    const lineItems = [];
+    this.invoiceItems.forEach(function (item) {
+      lineItems.push({
+        id : item.id,
+        amount: item.pay ? parseFloat(item.pay) : 0,
+        client_id: item.client_id,
+        company_name : item.company_name
+      });
+    }, this);
+
+    const dataObj = {
+      invoice: {
+        number: this.invoiceItems[0].invoice_number,
+        header_id: this.invoiceItems[0].invoice_header_id,
+        amount : this.totalAmount // total amount of the entered values in line item
+      },
+      line_items: lineItems
+    };
+
+    this.createTransactionRequest(dataObj);
+  }
+
+  createTransactionRequest(dataObj) {
+    return this.createTransaction(dataObj).subscribe(
+        response => {
+          console.log('response from create transaction >>>')
+          console.log(response);
+          if (response) {
+            this.showSpinner = false;
+
+          //  this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Transaction successfully created' : 'Transaction creation failed' };
+
+          }
+
+        },
+        err => {
+
+          if(err.status === 401) {
+            if(localStorage.getItem('accessToken')) {
+              this.widget.tokenManager.refresh('accessToken')
+                  .then(function (newToken) {
+                    localStorage.setItem('accessToken', newToken);
+                    this.showSpinner = false;
+                    this.createTransactionRequest(dataObj);
+                  })
+                  .catch(function (err1) {
+                    console.log('error >>')
+                    console.log(err1);
+                  });
+            } else {
+              this.widget.signOut(() => {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/login';
+              });
+            }
+          } else {
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+
+  createTransaction(dataObj) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken;
+      token = AccessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    const data = JSON.stringify(dataObj);
+    const url = this.api_fs.api + '/api/payments/transactions';
+    return this.http
+        .post(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
 }
