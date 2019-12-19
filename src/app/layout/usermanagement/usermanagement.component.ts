@@ -48,6 +48,7 @@ export class UserManagementComponent implements OnInit  {
   @ViewChild('AddUser') addUser: PopUpModalComponent;
   userForm: FormGroup;
   userModel: any;
+  selectedRole: any;
   selectedSource: any;
   selectedVendor: any;
   error: any;
@@ -69,6 +70,7 @@ export class UserManagementComponent implements OnInit  {
     }];
 
   vendorOptions = [];
+  roleOptions = [];
   widget: any;
 
   constructor(
@@ -113,6 +115,7 @@ export class UserManagementComponent implements OnInit  {
             if (response) {
               this.showSpinner = false;
               this.populateDataTable(response, true);
+
               return this.getVendors().subscribe(
                   response1 => {
                     console.log('response1');
@@ -209,6 +212,12 @@ export class UserManagementComponent implements OnInit  {
     );
   }
 
+  OnRoleChanged(e: any): void {
+    if (!this.selectedRole || this.selectedRole !== e.value ) {
+      this.selectedRole = e.value;
+    }
+  }
+
   OnSourceChanged(e: any): void {
     if (!this.selectedSource || this.selectedSource !== e.value ) {
       this.selectedSource = e.value;
@@ -299,11 +308,79 @@ export class UserManagementComponent implements OnInit  {
     dataObj.first_name = this.userForm.controls['first'].value;
     dataObj.last_name = this.userForm.controls['last'].value;
     dataObj.source = this.selectedSource;
+    dataObj.role = this.selectedRole;
     if (this.selectedSource === 'vendor') {
       dataObj.vendor_id = this.selectedVendor;
     }
 
     this.performUserAdditionRequest(dataObj);
+  }
+
+  getRolesService() {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/users/roles';
+    return this.http
+      .get(url, options)
+      .map(res => {
+        return res.json();
+      }).share();
+  }
+
+  getRoles() {
+    this.getRolesService().subscribe(
+      response => {
+        this.showSpinner = false;
+
+        if (response) {
+          const roleOptions = [];
+          response.user_roles.forEach(function (item) {
+            roleOptions.push({
+              // id: item.id,
+              id: item.name,
+              text: item.name.replace( item.name[0], item.name[0].toUpperCase() )
+            });
+          });
+
+          this.roleOptions = roleOptions;
+          if(response.length) {
+            this.selectedRole = response[0].id;
+            // this.selectedRole = response[0].name;
+          }
+        }
+      },
+      err => {
+        if(err.status === 401) {
+          if(localStorage.getItem('accessToken')) {
+            this.widget.tokenManager.refresh('accessToken')
+                .then(function (newToken) {
+                  localStorage.setItem('accessToken', newToken);
+                  this.showSpinner = false;
+                })
+                .catch(function (err1) {
+                  console.log('error >>')
+                  console.log(err1);
+                });
+          } else {
+            this.widget.signOut(() => {
+              localStorage.removeItem('accessToken');
+              window.location.href = '/login';
+            });
+          }
+        } else {
+          this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
+          this.showSpinner = false;
+        }
+
+      }
+
+    )
   }
 
   performUserAdditionRequest(dataObj) {
@@ -385,6 +462,7 @@ export class UserManagementComponent implements OnInit  {
   }
 
   handleShowModal(modalComponent: PopUpModalComponent) {
+    this.getRoles();
     modalComponent.show();
   }
 
