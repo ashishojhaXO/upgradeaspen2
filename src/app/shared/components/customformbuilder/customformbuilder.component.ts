@@ -19,7 +19,6 @@ export class CustomFormbuilderComponent implements OnInit {
   externalAuth: any;
   showSpinner: boolean;
   widget: any;
-  checkboxDefault;
 
   value = {
     option: ""
@@ -163,7 +162,10 @@ export class CustomFormbuilderComponent implements OnInit {
               }
             }else if(element.type == 'checkbox'){
               element.dropType = 'checkbox';
-              element.default_value = [];
+              if(element.default_value){
+                element.checkboxDefault = element.default_value.split(', ');
+                console.log(element.checkboxDefault, element.default_value);
+              }
               // element.validation = {
               //   required : element.validation == null ? 0 : element.validation.required
               // }
@@ -227,7 +229,7 @@ export class CustomFormbuilderComponent implements OnInit {
               }
             }else if(element.type == 'checkbox'){
               element.dropType = 'checkbox';
-              element.default_value = [];
+              element.checkboxDefault = [];
               element.attr_list =  {
                 "options": [
                   {
@@ -366,11 +368,11 @@ export class CustomFormbuilderComponent implements OnInit {
 
   onCheckboxClick(value, isChecked, item){
     if(isChecked) {
-      item.default_value.push(value);
+      item.checkboxDefault.push(value);
     } else {
-      let index = item.default_value.indexOf(value);
-      item.default_value.splice(index,1);
+      let index = item.checkboxDefault.indexOf(value);
+      item.checkboxDefault.splice(index,1);
     }
-    this.checkboxDefault = item.default_value.join(', ');
+    item.default_value = item.checkboxDefault.join(', ');
   }
 }
