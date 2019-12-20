@@ -172,9 +172,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 }, this);
             }
 
-            console.log('dataSet >>>')
-            console.log(dataSet);
-
             const columnDefs = []; // columnDef define the table body row schema
             const gridButtons = [];
             let fixedColumn:any = false;
@@ -190,7 +187,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     const iconClass = this.dataObject.gridData.options.isPlayOption.icon ? this.dataObject.gridData.options.isPlayOption.icon : 'fa-play';
                     columnButtonDefs += '<a class="fa ' + iconClass  + ' fa-action-view playLink" style="margin-right: 15px; cursor: pointer">';
                 }
-                if (this.dataObject.gridData.options.isDownloadOption) {
+                if (this.dataObject.gridData.options.isDownloadOption && this.dataObject.gridData.options.isDownloadOption.value) {
                     columnButtonDefs += '<a class="fa fa-download fa-action-view downloadLink" style="margin-right: 15px; cursor: pointer">';
                 }
                 if (this.dataObject.gridData.options.isDeleteOption) {
@@ -323,6 +320,23 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                             }
                         });
                     }
+
+                    console.log('$(\'td\', row).find(\'a.fa-download\') >>>')
+                    console.log($('td', row).find('a.fa-download'));
+
+                    if (__this.dataObject.gridData.options.isDownloadOption && __this.dataObject.gridData.options.isDownloadOption.dependency && __this.dataObject.gridData.options.isDownloadOption.dependency.length) {
+                        let isValid = true;
+                        __this.dataObject.gridData.options.isDownloadOption.dependency.forEach(function (ele) {
+                            if(!data[ele]) {
+                                isValid = false;
+                            }
+                        });
+                        if(!isValid) {
+                            $('td', row).find('a.fa-download').css('pointer-events', 'none');
+                            $('td', row).find('a.fa-download').addClass('disabled');
+                        }
+                    }
+
 
                     if (__this.dataObject.gridData.result[index] && __this.dataObject.gridData.result[index].isChecked) {
                         $('td', row).find('input.check-row-selection').prop('checked', true);

@@ -35,7 +35,11 @@ export class OrdersComponent implements OnInit  {
     isAddRow: false,
     isColVisibility: true,
     isRowHighlight: false,
-    isDownloadOption: true,
+    isDownloadOption: {
+      value: true,
+      icon: '',
+      dependency: ['vendor_receipt_id']
+    },
     fixedColumn: 1,
     isPageLength: true,
     isPagination: true,

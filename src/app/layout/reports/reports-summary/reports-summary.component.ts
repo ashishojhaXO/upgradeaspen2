@@ -37,7 +37,10 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
-    isDownloadOption: true,
+    isDownloadOption: {
+      value: true,
+      icon: ''
+    },
     isRowSelection: null,
     isPageLength: true,
     isPagination: true,

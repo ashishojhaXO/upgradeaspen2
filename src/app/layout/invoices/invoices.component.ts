@@ -39,7 +39,10 @@ export class InvoicesComponent implements OnInit  {
     },
     isColVisibility: true,
     isRowHighlight: false,
-    isDownloadOption: true,
+    isDownloadOption: {
+      value: true,
+      icon: '',
+    },
     isPageLength: true,
     isPagination: true,
     sendResponseOnCheckboxClick: true
