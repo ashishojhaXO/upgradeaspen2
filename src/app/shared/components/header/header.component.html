@@ -12,14 +12,14 @@
           </div>
           <!-- This is the main menu -->
           <div class="collapse navbar-collapse" id="navbar-collapse-1">
-            <!--<app-nav #navItems [mainmenu]="mainmenu"></app-nav>-->
-            <ul class="nav navbar-nav main-menu">
+            <app-nav #navItems [mainmenu]="mainmenu"></app-nav>
+            <!-- <ul class="nav navbar-nav main-menu">
               <ng-template ngFor let-mm [ngForOf]="mainmenu" let-i="index">
                 <li [attr.data-index]="i+1" *ngIf="mm.name!='profile'" [ngClass]="mm.selected ? 'active' : '' ">
                   <a (click)="loadOptions(i,mm)" title={{mm.name}} id="{{mm.id}}" [ngClass]="isActive(i) ? 'active' : '' " >{{ mm.title | translate }}</a>
                 </li>
               </ng-template>
-            </ul>
+            </ul> -->
           </div>
         </nav>
       </div>
@@ -57,7 +57,7 @@
           </div>
         <!-- This is the sub menu -->
           <div class="collapse navbar-collapse" id="navbar-collapse-3">
-            <ul class="nav navbar-nav bottom-menu">
+            <!-- <ul class="nav navbar-nav bottom-menu">
                 <ng-template ngFor let-bmm [ngForOf]="subMenu" let-j="index" >
                   <li>
                     <a [routerLink]="bmm.url==''?['/organizationList']:['/'+bmm.url]" routerLinkActive="active-bar" [routerLinkActiveOptions]="{exact: false}" [ngClass]="bmm.sideBar?.length > 0 && routeActive ? 'active-bar submenuActive': bmm.selected && bmm.sideBar?.length <= 0? 'active-bar':''" title={{bmm.name}} id="{{bmm.id}}">{{bmm.title}}
@@ -65,7 +65,7 @@
                       </a>
                   </li>
                 </ng-template>
-            </ul>
+            </ul> -->
           </div>
       </nav>
     </div>
