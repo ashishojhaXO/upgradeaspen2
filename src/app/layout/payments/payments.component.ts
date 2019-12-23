@@ -41,7 +41,8 @@ export class PaymentsComponent implements OnInit  {
     isDownloadOption: false,
     isRowSelection: null,
     isPageLength: true,
-    isPagination: true
+    isPagination: true,
+    fixedColumn: 1
   }];
   dashboard: any;
   api_fs: any;
