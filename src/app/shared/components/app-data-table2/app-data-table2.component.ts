@@ -321,8 +321,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         });
                     }
 
-                    console.log('$(\'td\', row).find(\'a.fa-download\') >>>')
-                    console.log($('td', row).find('a.fa-download'));
+                    // console.log('$(\'td\', row).find(\'a.fa-download\') >>>')
+                    // console.log($('td', row).find('a.fa-download'));
 
                     if (__this.dataObject.gridData.options.isDownloadOption && __this.dataObject.gridData.options.isDownloadOption.dependency && __this.dataObject.gridData.options.isDownloadOption.dependency.length) {
                         let isValid = true;
@@ -455,7 +455,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     }
                 }
             };
-
+            // console.log('height>>>>>>', this.height);
+            if(!this.height){
+                this.height = 320;
+                // console.log('height was null', this.height);
+            }
             console.log('dataTableOptions >>>');
             console.log(dataTableOptions);
 
@@ -1521,7 +1525,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
     adjustHeight(context){
         if(context.fixedColumnFlag){
+            // console.log('context.height>>>>>>', context.height);
             let height = context.height - 18;
+            $('.DTFC_LeftWrapper>.DTFC_LeftBodyWrapper').css('height', height);
             $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('height', height);
             $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('max-height', height);
             $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('padding-top', '15px');

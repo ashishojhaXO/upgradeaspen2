@@ -45,7 +45,8 @@ export class InvoicesComponent implements OnInit  {
     },
     isPageLength: true,
     isPagination: true,
-    sendResponseOnCheckboxClick: true
+    sendResponseOnCheckboxClick: true,
+    fixedColumn: 1
   }];
   dashboard: any;
   api_fs: any;

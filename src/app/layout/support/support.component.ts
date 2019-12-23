@@ -47,7 +47,8 @@ export class SupportComponent implements OnInit {
         isRowSelection: null,
         isPageLength: true,
         isPagination: true,
-        sendResponseOnCheckboxClick: true
+        sendResponseOnCheckboxClick: true,
+        fixedColumn: 1
     }];
     api_fs: any;
     externalAuth: any;

@@ -72,7 +72,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     isDownload: true,
     isRowSelection: null,
     isPageLength: true,
-    isPagination: true
+    isPagination: true,
+    fixedColumn: 1
   }];
   dashboard: any;
   widget: any;
