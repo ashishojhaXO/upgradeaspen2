@@ -227,7 +227,7 @@ export class OrderTemplateComponent implements OnInit {
         } else {
           Swal({
             title: 'Error',
-            text: err.statusText ? err.statusText : 'An Error occurred',
+            text: err._body ? (err._body.indexOf(':') !== -1 ? err._body.split(':')[1] : err._body) : 'An Error occurred',
             type: 'error'
           })
           this.showSpinner = false;
@@ -319,7 +319,7 @@ export class OrderTemplateComponent implements OnInit {
         } else {
           Swal({
             title: 'Error',
-            text: err.statusText ? err.statusText : 'An Error occurred',
+            text: err._body ? (err._body.indexOf(':') !== -1 ? err._body.split(':')[1] : err._body) : 'An Error occurred',
             type: 'error'
           })
           this.showSpinner = false;

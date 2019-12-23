@@ -867,8 +867,8 @@ export class PaymentsComponent implements OnInit  {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
           swal({
             title: 'Error',
-            text: this.error.message,
-            type: 'warning'
+            text: err._body ? (err._body.indexOf(':') !== -1 ? err._body.split(':')[1] : err._body) : 'An Error occurred',
+            type: 'error'
           });
           console.log(this.error);
           this.showSpinner = false;
