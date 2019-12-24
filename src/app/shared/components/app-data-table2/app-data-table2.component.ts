@@ -321,17 +321,23 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         });
                     }
 
-                    // console.log('$(\'td\', row).find(\'a.fa-download\') >>>')
-                    // console.log($('td', row).find('a.fa-download'));
-
                     if (__this.dataObject.gridData.options.isDownloadOption && __this.dataObject.gridData.options.isDownloadOption.dependency && __this.dataObject.gridData.options.isDownloadOption.dependency.length) {
                         let isValid = true;
                         __this.dataObject.gridData.options.isDownloadOption.dependency.forEach(function (ele) {
-                            if(!data[ele]) {
-                                isValid = false;
+                            const headerColumnField = __this.dataObject.gridData.headers.find(x=> x.key === ele);
+                            if (headerColumnField) {
+                                let columnIndex = __this.dataObject.gridData.headers.indexOf(headerColumnField);
+                                if (__this.dataObject.gridData.options.isRowSelection) {
+                                    columnIndex++;
+                                }
+
+                                if (!$('td', row).eq(columnIndex).text()) {
+                                    isValid = false;
+                                }
                             }
                         });
-                        if(!isValid) {
+
+                        if (!isValid) {
                             $('td', row).find('a.fa-download').css('pointer-events', 'none');
                             $('td', row).find('a.fa-download').addClass('disabled');
                         }

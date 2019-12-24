@@ -189,7 +189,7 @@ export class OrdersComponent implements OnInit  {
   }
 
   handleDownload(dataObj: any) {
-    const downloadId = dataObj.data.Vendor_Receipt_Id;
+    const downloadId = dataObj.data.vendor_receipt_id;
     const orderId = dataObj.data.Order_Id;
     if (downloadId) {
       this.searchDownloadLink(downloadId, orderId);
