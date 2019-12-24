@@ -15,12 +15,13 @@
                 [ngClass]="isActive(i) ? 'active' : '' "
             >{{ mm.title }}  
             </a>
-        </li>
+            
                     <app-nav 
                         *ngIf="mm.submenu" 
                         [mainmenu]="mm.submenu"
                         [mainUlClass]="bottom-menu"
                     ></app-nav>
+        </li>
     </ng-template>
 </ul>
 
