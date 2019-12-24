@@ -321,8 +321,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         });
                     }
 
-                    console.log('$(\'td\', row).find(\'a.fa-download\') >>>')
-                    console.log($('td', row).find('a.fa-download'));
+                    // console.log('$(\'td\', row).find(\'a.fa-download\') >>>')
+                    // console.log($('td', row).find('a.fa-download'));
 
                     if (__this.dataObject.gridData.options.isDownloadOption && __this.dataObject.gridData.options.isDownloadOption.dependency && __this.dataObject.gridData.options.isDownloadOption.dependency.length) {
                         let isValid = true;

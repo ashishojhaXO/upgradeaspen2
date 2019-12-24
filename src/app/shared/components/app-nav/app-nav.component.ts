@@ -13,27 +13,65 @@ export class AppNavComponent implements OnInit, OnChanges {
 
     @Input() mainmenu: any;
     @Input() mainUlClass: any;
+    @Input() random: any;
 
     subMenu: any;
     clearPreselectedMenuItem: boolean;
     selected: any;
-
     menu: any;
 
-
     constructor(public router: Router, private translate: TranslateService) {
+        console.log('CONstruct >>>')
+        
+        this.initConstVars();
+    }
 
-        console.log("mainmenu", this.mainmenu)
-        console.log("mainUlClass", this.mainUlClass)
+    initConstVars() {
+        if(typeof this.mainUlClass == "undefined") 
+            this.mainUlClass = "main-menu";
+    }
 
-        if(typeof this.mainUlClass == "undefined") this.mainUlClass = "main-menu"
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['mainmenu'] || changes['subMenu'] || changes['mainUlClass'] || changes['random'] ) {
+
+            console.log('mainmenu >>>')
+            console.log(this.mainmenu);
+
+            console.log('subMenu >>>')
+            console.log(this.subMenu);
+
+            console.log('mainUlClass >>>')
+            console.log(this.mainUlClass);
+
+            console.log('random >>>')
+            console.log(this.random);
+
+            // this.getMenuItems();
+            // this.getMenuItems(this.menu);
+        }
+
     }
 
     ngOnInit() {
+        console.log('onInit >>>')
+
+        console.log('onInit mainmenu >>>')
+        console.log(this.mainmenu);
+
         this.menu = this.mainmenu;
+        this.mainUlClass = this.mainUlClass;
+
+        console.log('onInit mainmenu 22 >>>')
+        console.log(this.mainmenu);
+
+        console.log('onInit mainUlClass >>>')
+        console.log(this.mainUlClass);
+
         // this.getMenuItems();
         // this.getMenuItems(this.menu);
     }
+
+    // urlPatternMatch
 
     recur(li) { 
         // Tail Recursion
@@ -140,17 +178,4 @@ export class AppNavComponent implements OnInit, OnChanges {
         return this.selected === position;
     }
 
-    ngOnChanges(changes: SimpleChanges) {
-        if (changes['mainmenu']) {
-
-            console.log('mainmenu >>>')
-            console.log(this.mainmenu);
-
-            console.log('subMenu >>>')
-            console.log(this.subMenu);
-
-            // this.getMenuItems();
-            // this.getMenuItems(this.menu);
-        }
-    }
 }

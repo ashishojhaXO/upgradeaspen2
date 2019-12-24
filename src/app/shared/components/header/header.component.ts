@@ -208,9 +208,9 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
           });
         }
 
+        console.log( "MAINMEN this:", this, " mainMENU: " , response["admin"]);
         this.mainmenu = response['admin'];
 
-        console.log( "MAINMEN :" , this.mainmenu)
 
         if (removeMenuItems) {
           var reducedMenu = this.mainmenu.filter(function (res) {

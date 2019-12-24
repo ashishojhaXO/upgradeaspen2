@@ -1,5 +1,6 @@
 <ul 
-    class="nav navbar-nav {{mainUlClass}}" 
+    class="nav navbar-nav" 
+    [ngClass]="mainUlClass"
     *ngIf="mainmenu && mainmenu.length"
 >
     <ng-template ngFor let-mm [ngForOf]="mainmenu" let-i="index">
@@ -15,12 +16,12 @@
                 [ngClass]="isActive(i) ? 'active' : '' "
             >{{ mm.title }}  
             </a>
-            
-                    <app-nav 
-                        *ngIf="mm.submenu" 
-                        [mainmenu]="mm.submenu"
-                        [mainUlClass]="bottom-menu"
-                    ></app-nav>
+                <app-nav 
+                    *ngIf="mm.submenu" 
+                    [mainmenu]="mm.submenu"
+                    mainUlClass="bottom-menu"
+                >
+                </app-nav>
         </li>
     </ng-template>
 </ul>
