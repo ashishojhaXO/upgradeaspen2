@@ -19,20 +19,22 @@ export class AppNavComponent implements OnInit, OnChanges {
     clearPreselectedMenuItem: boolean;
     selected: any;
     menu: any;
-    urlPath: string;
+    // urlPath: string;
 
     constructor(public router: Router, private translate: TranslateService) {
-        console.log('CONstruct >>>')
         
         this.initConstVars();
     }
 
     initConstVars() {
-        this.urlPath = window.location.pathname;
-        this.urlPath = this.urlPath.replace( /.*app/, '');
+        // this.urlPath = window.location.pathname;
+        // this.urlPath = this.urlPath.replace( /.*app/, '');
 
         if(typeof this.mainUlClass == "undefined") 
             this.mainUlClass = "main-menu";
+        
+        // recurse & Set css property on init
+        this.recurse(this.mainmenu)
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -52,17 +54,35 @@ export class AppNavComponent implements OnInit, OnChanges {
 
             // this.getMenuItems();
             // this.getMenuItems(this.menu);
+
+            // OnChange, recurse & add css
+            this.recurse(this.mainmenu)
+            // this.addCss();
         }
 
     }
 
+    addCss(di) {
+        console.log("+++ FIRST DI: ", di);
+        if(!di.css)
+            di.css = ' display-none';
+        else
+            di.css += '';
+        
+       console.log("++++SECOND DI: ", di);
+    }
+
+    removeCss(di) {
+        if(di.css)
+            di.css = '';
+    }
+
     ngOnInit() {
-        console.log('onInit >>>')
 
         console.log('onInit mainmenu >>>')
         console.log(this.mainmenu);
 
-        this.menu = this.mainmenu;
+        // this.menu = this.mainmenu;
         this.mainUlClass = this.mainUlClass;
 
         console.log('onInit mainmenu 22 >>>')
@@ -79,18 +99,50 @@ export class AppNavComponent implements OnInit, OnChanges {
         // instead of liUrlPath, 
         // break liUrlPath in parts divided by 'slash' &
         // take -1th element of the returning array
-        return pageUrlPath.indexOf (liUrlPath) != -1;
+        const newLiUrlArr = this.breakLiUrl(liUrlPath);
+
+        const minus1Elem = newLiUrlArr[newLiUrlArr.length - 2]
+
+        const ret = pageUrlPath.indexOf (minus1Elem) != -1;
+        
+        console.log("set SELEC: ", 
+            pageUrlPath, liUrlPath, newLiUrlArr, minus1Elem, 
+        " RET: ", ret
+        );
+
+        return ret;
+    }
+
+    breakLiUrl(liUrlPath) {
+        return liUrlPath.split("/");
     }
 
     replaceApp( str ) {
-        return str.replace(/.*app/, '');
+        const ret = str.replace(/.*app/, '');
+
+        return ret;
     }
 
     recurse(li) { 
+        console.log("REcuRES LI: ", li);
         // Tail Recursion
-        for( let i = 0; i < li.length; i++) { 
-            if(li[i].submenu) { 
-                this.recurse(li[i].submenu) 
+        // If condition, since, at first instance, the mainmenu is still to be loaded
+        if(li) {
+            for( let i = 0; i < li.length; i++) { 
+                
+                // if( this.setSelected(this.urlPath, li[i].url ) !== true ) {
+                // if( this.setSelected( window.location.pathname , li[i].url ) !== true ) {
+                if( this.setSelected( this.router.url , li[i].url ) !== true ) {
+                    this.addCss(li[i])
+                    console.log( "LI i css: --- ", li[i]);
+                } else {
+                    this.removeCss(li[i])
+
+                }
+
+                if(li[i].submenu) { 
+                    this.recurse(li[i].submenu) 
+                }
             }
         }
     }
@@ -170,20 +222,24 @@ export class AppNavComponent implements OnInit, OnChanges {
 
     loadOptions(position, object) {
         // remove pre-selected option from the configured JSON
-        if (!this.clearPreselectedMenuItem) {
-            const preselectedOption = this.mainmenu.find(x => x.selected);
-            if (preselectedOption) {
-                preselectedOption.selected = false;
-                this.clearPreselectedMenuItem = true;
-            }
-        }
-        this.selected = position;
+        // if (!this.clearPreselectedMenuItem) {
+        //     const preselectedOption = this.mainmenu.find(x => x.selected);
+        //     if (preselectedOption) {
+        //         preselectedOption.selected = false;
+        //         this.clearPreselectedMenuItem = true;
+        //     }
+        // }
+        // this.selected = position;
+
+
         if (object.url) {
             this.router.navigate([object.url]);
         }
-        if (this.mainmenu[position]) {
-            this.subMenu = this.mainmenu[position].submenu;
-        }
+        // if (this.mainmenu[position]) {
+        //     this.subMenu = this.mainmenu[position].submenu;
+        // }
+
+        this.recurse(this.mainmenu);
     }
 
     isActive(position) {

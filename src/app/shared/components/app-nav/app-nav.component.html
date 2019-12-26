@@ -7,17 +7,14 @@
         <li 
             [attr.data-index]="i+1" 
             *ngIf="mm.name!='profile'" 
-            [ngClass]="[ 
-            {false:'display-none', undefined: ''} [setSelected(urlPath,  replaceApp( mm.url ) )], 
-            {true:'active', false: '', undefined: ''}[mm.selected] 
-            ]"
+            [ngClass]="[ {true: mm.css, false: ''}[mm.css ? true : false] , {true:'active', false: '', undefined: ''}[mm.selected] ]"
         >
             <a 
                 (click)="loadOptions(i,mm)" 
                 title={{mm.name}} 
                 id="{{mm.id}}"
                 [ngClass]="isActive(i) ? 'active' : '' "
-            >{{ mm.title }}
+            >{{ mm.title }} 
             </a>
                 <app-nav 
                     *ngIf="mm.submenu" 
