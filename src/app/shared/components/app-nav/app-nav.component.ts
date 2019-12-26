@@ -19,7 +19,7 @@ export class AppNavComponent implements OnInit, OnChanges {
     clearPreselectedMenuItem: boolean;
     selected: any;
     menu: any;
-    // urlPath: string;
+    urlPath: string;
 
     constructor(public router: Router, private translate: TranslateService) {
         
@@ -27,7 +27,7 @@ export class AppNavComponent implements OnInit, OnChanges {
     }
 
     initConstVars() {
-        // this.urlPath = window.location.pathname;
+        this.urlPath = window.location.pathname;
         // this.urlPath = this.urlPath.replace( /.*app/, '');
 
         if(typeof this.mainUlClass == "undefined") 
@@ -63,13 +63,10 @@ export class AppNavComponent implements OnInit, OnChanges {
     }
 
     addCss(di) {
-        console.log("+++ FIRST DI: ", di);
         if(!di.css)
             di.css = ' display-none';
         else
             di.css += '';
-        
-       console.log("++++SECOND DI: ", di);
     }
 
     removeCss(di) {
@@ -128,11 +125,12 @@ export class AppNavComponent implements OnInit, OnChanges {
         // Tail Recursion
         // If condition, since, at first instance, the mainmenu is still to be loaded
         if(li) {
+                console.log("this.router.url ++++ ", this.router.url);
             for( let i = 0; i < li.length; i++) { 
                 
-                // if( this.setSelected(this.urlPath, li[i].url ) !== true ) {
+                if( this.setSelected(this.urlPath, li[i].url ) !== true ) {
                 // if( this.setSelected( window.location.pathname , li[i].url ) !== true ) {
-                if( this.setSelected( this.router.url , li[i].url ) !== true ) {
+                // if( this.setSelected( this.router.url , li[i].url ) !== true ) {
                     this.addCss(li[i])
                     console.log( "LI i css: --- ", li[i]);
                 } else {
@@ -234,6 +232,7 @@ export class AppNavComponent implements OnInit, OnChanges {
 
         if (object.url) {
             this.router.navigate([object.url]);
+            this.urlPath = object.url;
         }
         // if (this.mainmenu[position]) {
         //     this.subMenu = this.mainmenu[position].submenu;
