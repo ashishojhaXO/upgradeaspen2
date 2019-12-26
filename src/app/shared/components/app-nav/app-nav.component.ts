@@ -19,6 +19,7 @@ export class AppNavComponent implements OnInit, OnChanges {
     clearPreselectedMenuItem: boolean;
     selected: any;
     menu: any;
+    urlPath: string;
 
     constructor(public router: Router, private translate: TranslateService) {
         console.log('CONstruct >>>')
@@ -27,6 +28,9 @@ export class AppNavComponent implements OnInit, OnChanges {
     }
 
     initConstVars() {
+        this.urlPath = window.location.pathname;
+        this.urlPath = this.urlPath.replace( /.*app/, '');
+
         if(typeof this.mainUlClass == "undefined") 
             this.mainUlClass = "main-menu";
     }
@@ -71,13 +75,22 @@ export class AppNavComponent implements OnInit, OnChanges {
         // this.getMenuItems(this.menu);
     }
 
-    // urlPatternMatch
+    setSelected(pageUrlPath, liUrlPath) {
+        // instead of liUrlPath, 
+        // break liUrlPath in parts divided by 'slash' &
+        // take -1th element of the returning array
+        return pageUrlPath.indexOf (liUrlPath) != -1;
+    }
 
-    recur(li) { 
+    replaceApp( str ) {
+        return str.replace(/.*app/, '');
+    }
+
+    recurse(li) { 
         // Tail Recursion
         for( let i = 0; i < li.length; i++) { 
             if(li[i].submenu) { 
-                this.recur(li[i].submenu) 
+                this.recurse(li[i].submenu) 
             }
         }
     }
@@ -154,7 +167,6 @@ export class AppNavComponent implements OnInit, OnChanges {
             }
         }
     }
-
 
     loadOptions(position, object) {
         // remove pre-selected option from the configured JSON
