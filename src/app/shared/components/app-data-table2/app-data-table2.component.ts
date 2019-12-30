@@ -230,7 +230,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     });
                 }
 
-                if (this.dataObject.gridData.options.isDownload) {
+                if (this.dataObject.gridData.options.isDownloadAsCsv) {
+                    console.log("PACING")
                     gridButtons.push({
                         extend: 'csv',
                         text: '<span><i class="fa fa-download fa-Idown" aria-hidden="true"></i></span>',

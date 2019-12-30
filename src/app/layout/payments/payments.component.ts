@@ -38,6 +38,7 @@ export class PaymentsComponent implements OnInit  {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
+    isDownloadAsCsv: true,
     isDownloadOption: false,
     isRowSelection: null,
     isPageLength: true,
