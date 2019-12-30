@@ -13,16 +13,18 @@
                 (click)="loadOptions(i,mm)" 
                 title={{mm.name}} 
                 id="{{mm.id}}"
-                [ngClass]="isActive(i) ? 'active' : '' "
+                [ngClass]="mm.selected ? 'active' : '' "
             >{{ mm.title }} 
             </a>
                 <app-nav 
                     *ngIf="mm.submenu" 
                     [mainmenu]="mm.submenu"
                     mainUlClass="bottom-menu"
+                    random="{{mm.id}}"
                 >
                 </app-nav>
         </li>
+
     </ng-template>
 </ul>
 

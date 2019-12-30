@@ -18,6 +18,7 @@ export class AppNavComponent implements OnInit, OnChanges {
     subMenu: any;
     clearPreselectedMenuItem: boolean;
     selected: any;
+    selectedUrl: any;
     menu: any;
     urlPath: string;
 
@@ -35,22 +36,34 @@ export class AppNavComponent implements OnInit, OnChanges {
         
         // recurse & Set css property on init
         this.recurse(this.mainmenu)
+
     }
 
     ngOnChanges(changes: SimpleChanges) {
+        //
+        this.selectedUrl = this.router.url;
+
+
+        // Set selected on the main nav level 
+        this.setSelectedMenu(this.mainmenu)
+
+        console.log("ngCHange: ", this.mainmenu)
+
+        console.log("SELE: ", this.selectedUrl)
+
         if (changes['mainmenu'] || changes['subMenu'] || changes['mainUlClass'] || changes['random'] ) {
 
-            console.log('mainmenu >>>')
-            console.log(this.mainmenu);
+            // console.log('mainmenu >>>')
+            // console.log(this.mainmenu);
 
-            console.log('subMenu >>>')
-            console.log(this.subMenu);
+            // console.log('subMenu >>>')
+            // console.log(this.subMenu);
 
-            console.log('mainUlClass >>>')
-            console.log(this.mainUlClass);
+            // console.log('mainUlClass >>>')
+            // console.log(this.mainUlClass);
 
-            console.log('random >>>')
-            console.log(this.random);
+            // console.log('random >>>')
+            // console.log(this.random);
 
             // this.getMenuItems();
             // this.getMenuItems(this.menu);
@@ -60,6 +73,24 @@ export class AppNavComponent implements OnInit, OnChanges {
             // this.addCss();
         }
 
+
+    }
+
+    // setSelectedMenu(i, bool) {
+    setSelectedMenu(mainmenu) {
+        // i.selected = bool;
+        // console.log("sSM: ", i, bool);
+        // this.selected = i;
+        console.log("sSM: mainmenu: ", mainmenu);
+        if(mainmenu) {
+            mainmenu.forEach(element => {
+                if ( this.selectedUrl.indexOf(element.url ) != -1 )
+                    element.selected = true;
+                else
+                    element.selected = false;
+            });
+
+        }
     }
 
     addCss(di) {
@@ -76,23 +107,23 @@ export class AppNavComponent implements OnInit, OnChanges {
 
     ngOnInit() {
 
-        console.log('onInit mainmenu >>>')
-        console.log(this.mainmenu);
+        // console.log('onInit mainmenu >>>')
+        // console.log(this.mainmenu);
 
         // this.menu = this.mainmenu;
         this.mainUlClass = this.mainUlClass;
 
-        console.log('onInit mainmenu 22 >>>')
-        console.log(this.mainmenu);
+        // console.log('onInit mainmenu 22 >>>')
+        // console.log(this.mainmenu);
 
-        console.log('onInit mainUlClass >>>')
-        console.log(this.mainUlClass);
+        // console.log('onInit mainUlClass >>>')
+        // console.log(this.mainUlClass);
 
         // this.getMenuItems();
         // this.getMenuItems(this.menu);
     }
 
-    setSelected(pageUrlPath, liUrlPath) {
+    compareUrl(pageUrlPath, liUrlPath) {
         // instead of liUrlPath, 
         // break liUrlPath in parts divided by 'slash' &
         // take -1th element of the returning array
@@ -101,11 +132,6 @@ export class AppNavComponent implements OnInit, OnChanges {
         const minus1Elem = newLiUrlArr[newLiUrlArr.length - 2]
 
         const ret = pageUrlPath.indexOf (minus1Elem) != -1;
-        
-        console.log("set SELEC: ", 
-            pageUrlPath, liUrlPath, newLiUrlArr, minus1Elem, 
-        " RET: ", ret
-        );
 
         return ret;
     }
@@ -121,21 +147,24 @@ export class AppNavComponent implements OnInit, OnChanges {
     }
 
     recurse(li) { 
-        console.log("REcuRES LI: ", li);
+        // console.log("REcuRES LI: ", li);
         // Tail Recursion
         // If condition, since, at first instance, the mainmenu is still to be loaded
         if(li) {
-                console.log("this.router.url ++++ ", this.router.url);
+                // console.log("this.router.url ++++ ", this.router.url);
             for( let i = 0; i < li.length; i++) { 
                 
-                if( this.setSelected(this.urlPath, li[i].url ) !== true ) {
-                // if( this.setSelected( window.location.pathname , li[i].url ) !== true ) {
-                // if( this.setSelected( this.router.url , li[i].url ) !== true ) {
+                // If url's don't match
+                if( this.compareUrl(this.urlPath, li[i].url ) !== true ) {
+                // if( this.compareUrl( window.location.pathname , li[i].url ) !== true ) {
+                // if( this.compareUrl( this.router.url , li[i].url ) !== true ) {
                     this.addCss(li[i])
-                    console.log( "LI i css: --- ", li[i]);
+                    // this.setSelectedMenu(li[i], false)
+                    // console.log( "LI i css: --- ", li[i]);
                 } else {
+                    // If url's match
+                    // this.setSelectedMenu(li[i], true)
                     this.removeCss(li[i])
-
                 }
 
                 if(li[i].submenu) { 
@@ -219,6 +248,7 @@ export class AppNavComponent implements OnInit, OnChanges {
     }
 
     loadOptions(position, object) {
+        console.log("LoadOP: ", position, object)
         // remove pre-selected option from the configured JSON
         // if (!this.clearPreselectedMenuItem) {
         //     const preselectedOption = this.mainmenu.find(x => x.selected);
@@ -242,6 +272,7 @@ export class AppNavComponent implements OnInit, OnChanges {
     }
 
     isActive(position) {
+        console.log(" iACTi: ", position);
         return this.selected === position;
     }
 
