@@ -30,6 +30,7 @@ export class OrdersListComponent implements OnInit  {
     isAddRow: false,
     isColVisibility: true,
     isRowHighlight: false,
+    isDownloadAsCsv: true,
     isDownloadOption: false,
     isPageLength: true,
     isPagination: true,

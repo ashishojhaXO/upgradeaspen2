@@ -35,6 +35,7 @@ export class OrdersComponent implements OnInit  {
     isAddRow: false,
     isColVisibility: true,
     isRowHighlight: false,
+    isDownloadAsCsv: true,
     isDownloadOption: {
       value: true,
       icon: '',

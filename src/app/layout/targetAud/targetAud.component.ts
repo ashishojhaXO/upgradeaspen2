@@ -47,6 +47,7 @@ export class TargetAudComponent implements OnInit  {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
+    isDownloadAsCsv: true,
     isDownloadOption: false,
     isRowHighlight: false,
     isRowSelection: {

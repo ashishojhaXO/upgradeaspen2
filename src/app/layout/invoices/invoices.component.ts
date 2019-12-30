@@ -39,6 +39,7 @@ export class InvoicesComponent implements OnInit  {
     },
     isColVisibility: true,
     isRowHighlight: false,
+    isDownloadAsCsv: true,
     isDownloadOption: {
       value: true,
       icon: '',

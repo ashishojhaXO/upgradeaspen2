@@ -36,6 +36,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     isDeleteOption: true,
     isAddRow: false,
     isColVisibility: true,
+    isDownloadAsCsv: true,
     isDownloadOption: false,
     isRowSelection: null,
     isPageLength: true,

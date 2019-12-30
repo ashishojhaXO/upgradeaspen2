@@ -37,6 +37,7 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
+    isDownloadAsCsv: true,
     isDownloadOption: {
       value: true,
       icon: ''
