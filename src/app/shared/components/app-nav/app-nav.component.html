@@ -6,9 +6,17 @@
     <ng-template ngFor let-mm [ngForOf]="mainmenu" let-i="index">
         <li 
             [attr.data-index]="i+1" 
-            *ngIf="mm.name!='profile'" 
-            [ngClass]="[ {true: mm.css, false: ''}[mm.css ? true : false] , {true:'active', false: '', undefined: ''}[mm.selected] ]"
+            *ngIf="urlPath.indexOf( mm.url.split('/')[mm.url.split('/').length - 2] ) === -1; then thenBlock else elseBlock"
         >
+            <div #thenBlock>ThenBLOCK</div>
+            <div #elseBlock>elseBLOCK</div>
+            <br />
+            urlPath: {{urlPath}}
+            <br />
+            mm.url.split: {{mm.url.split('/')[mm.url.split('/').length - 2] }}
+            <br />
+            urlPath: {{urlPath.indexOf( mm.url.split('/')[mm.url.split('/').length - 2] ) === -1;}}
+            <br />
             <a 
                 (click)="loadOptions(i,mm)" 
                 title={{mm.name}} 

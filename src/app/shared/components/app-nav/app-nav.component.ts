@@ -35,11 +35,13 @@ export class AppNavComponent implements OnInit, OnChanges {
             this.mainUlClass = "main-menu";
         
         // recurse & Set css property on init
-        this.recurse(this.mainmenu)
+        // this.recurse(this.mainmenu)
 
     }
 
     ngOnChanges(changes: SimpleChanges) {
+        console.log("+++ ngCHange: ", changes, " this mainMenu: ", this.mainmenu)
+
         //
         this.selectedUrl = this.router.url;
 
@@ -47,11 +49,13 @@ export class AppNavComponent implements OnInit, OnChanges {
         // Set selected on the main nav level 
         this.setSelectedMenu(this.mainmenu)
 
-        console.log("ngCHange: ", this.mainmenu)
 
         console.log("SELE: ", this.selectedUrl)
 
         if (changes['mainmenu'] || changes['subMenu'] || changes['mainUlClass'] || changes['random'] ) {
+        
+            console.log("=== IF ngCHange: ", changes, 
+            )
 
             // console.log('mainmenu >>>')
             // console.log(this.mainmenu);
@@ -69,7 +73,7 @@ export class AppNavComponent implements OnInit, OnChanges {
             // this.getMenuItems(this.menu);
 
             // OnChange, recurse & add css
-            this.recurse(this.mainmenu)
+            // this.recurse(this.mainmenu)
             // this.addCss();
         }
 
@@ -268,7 +272,7 @@ export class AppNavComponent implements OnInit, OnChanges {
         //     this.subMenu = this.mainmenu[position].submenu;
         // }
 
-        this.recurse(this.mainmenu);
+        // this.recurse(this.mainmenu);
     }
 
     isActive(position) {
