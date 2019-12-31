@@ -14,13 +14,14 @@ export class AppNavComponent implements OnInit, OnChanges {
     @Input() mainmenu: any;
     @Input() mainUlClass: any;
     @Input() random: any;
+    @Input() urlPath: string;
+    // urlPath: string;
 
     subMenu: any;
     clearPreselectedMenuItem: boolean;
     selected: any;
     selectedUrl: any;
     menu: any;
-    urlPath: string;
 
     constructor(public router: Router, private translate: TranslateService) {
         
@@ -28,8 +29,8 @@ export class AppNavComponent implements OnInit, OnChanges {
     }
 
     initConstVars() {
-        this.urlPath = window.location.pathname;
-        // this.urlPath = this.urlPath.replace( /.*app/, '');
+        
+        // this.urlPath = window.location.pathname;
 
         if(typeof this.mainUlClass == "undefined") 
             this.mainUlClass = "main-menu";
@@ -40,22 +41,18 @@ export class AppNavComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        console.log("+++ ngCHange: ", changes, " this mainMenu: ", this.mainmenu)
-
         //
         this.selectedUrl = this.router.url;
-
 
         // Set selected on the main nav level 
         this.setSelectedMenu(this.mainmenu)
 
-
-        console.log("SELE: ", this.selectedUrl)
-
-        if (changes['mainmenu'] || changes['subMenu'] || changes['mainUlClass'] || changes['random'] ) {
-        
-            console.log("=== IF ngCHange: ", changes, 
-            )
+        if (
+            changes['mainmenu'] || 
+            changes['subMenu'] || 
+            changes['mainUlClass'] || 
+            changes['urlPath'] 
+        ) {
 
             // console.log('mainmenu >>>')
             // console.log(this.mainmenu);
@@ -251,8 +248,8 @@ export class AppNavComponent implements OnInit, OnChanges {
         }
     }
 
+
     loadOptions(position, object) {
-        console.log("LoadOP: ", position, object)
         // remove pre-selected option from the configured JSON
         // if (!this.clearPreselectedMenuItem) {
         //     const preselectedOption = this.mainmenu.find(x => x.selected);
@@ -265,8 +262,9 @@ export class AppNavComponent implements OnInit, OnChanges {
 
 
         if (object.url) {
-            this.router.navigate([object.url]);
             this.urlPath = object.url;
+
+            this.router.navigate([object.url]);
         }
         // if (this.mainmenu[position]) {
         //     this.subMenu = this.mainmenu[position].submenu;
@@ -276,7 +274,6 @@ export class AppNavComponent implements OnInit, OnChanges {
     }
 
     isActive(position) {
-        console.log(" iACTi: ", position);
         return this.selected === position;
     }
 

@@ -6,22 +6,13 @@
     <ng-template ngFor let-mm [ngForOf]="mainmenu" let-i="index">
         <li 
             [attr.data-index]="i+1" 
-            *ngIf="urlPath.indexOf( mm.url.split('/')[mm.url.split('/').length - 2] ) === -1; then thenBlock else elseBlock"
+            *ngIf="urlPath && urlPath.indexOf(mm.url.split('/')[mm.url.split('/').length - 2]) !== -1"
         >
-            <div #thenBlock>ThenBLOCK</div>
-            <div #elseBlock>elseBLOCK</div>
-            <br />
-            urlPath: {{urlPath}}
-            <br />
-            mm.url.split: {{mm.url.split('/')[mm.url.split('/').length - 2] }}
-            <br />
-            urlPath: {{urlPath.indexOf( mm.url.split('/')[mm.url.split('/').length - 2] ) === -1;}}
-            <br />
             <a 
                 (click)="loadOptions(i,mm)" 
                 title={{mm.name}} 
                 id="{{mm.id}}"
-                [ngClass]="mm.selected ? 'active' : '' "
+                [ngClass]="mm.selected ? 'active active-bar' : ''"
             >{{ mm.title }} 
             </a>
                 <app-nav 
@@ -29,6 +20,7 @@
                     [mainmenu]="mm.submenu"
                     mainUlClass="bottom-menu"
                     random="{{mm.id}}"
+                    urlPath="{{urlPath}}"
                 >
                 </app-nav>
         </li>
