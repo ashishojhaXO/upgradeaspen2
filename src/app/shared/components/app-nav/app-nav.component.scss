@@ -3,9 +3,9 @@
   display: none;
 }
 
-.main-menu {
+// .main-menu {
   // display: flex;
-}
+// }
 
 // .bottom-menu {
 //     display: inline-grid;
@@ -16,6 +16,12 @@
   // display: inline-flex;
   // position: relative;
 // }
+
+.header.desktop div.container {
+// .container {
+  // display: initial;
+  display: inline !important;
+}
 
 .nav.navbar-nav.main-menu > div {
   display: initial;
@@ -30,3 +36,10 @@
 // .nav.navbar-nav.main-menu > div .bottom-menu div {
 //     display: inherit;
 // }
+
+.nav.navbar-nav.main-menu a {
+    text-decoration: none;
+    padding: 2px;
+    margin: 2px;
+}
+
