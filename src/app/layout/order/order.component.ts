@@ -62,6 +62,7 @@ export class OrderComponent implements OnInit  {
   dataRowUpdated = false;
   dataRowUpdatedLen = 0;
   minDate = new Date();
+  orderId: any;
 
   dateOptions = {
     format: "YYYY-MM-DD",
@@ -111,6 +112,7 @@ export class OrderComponent implements OnInit  {
 
           console.log('response >>')
           console.log(response);
+          this.orderId = id;
           if (response.orders && response.orders.length && response.orders[0].order && response.orders[0].order.temp_id) {
             this.existingOrder = response.orders[0];
             this.template = response.orders[0].order.temp_id;
@@ -664,14 +666,15 @@ export class OrderComponent implements OnInit  {
     this.showSpinner = true;
 
     const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
-    const reqObj =  {
-      vendor_id: customerInfo.vendor.vendor_id,
-      template_id: this.originalResponseObj.orderTemplateData.template.template_id,
-      orderDetail: {
+    const reqObj: any = {};
+    if (!this.orderId) {
+      reqObj.vendor_id =  customerInfo.vendor.vendor_id;
+      reqObj.template_id = this.originalResponseObj.orderTemplateData.template.template_id;
+    };
+    reqObj.orderDetail = {
         orderFields : [],
         lineItems: []
-      }
-    }
+    };
 
     this.data.controls.forEach(function (ele, index) {
       const corr = this.form.controls[ele.name];
@@ -693,6 +696,7 @@ export class OrderComponent implements OnInit  {
     console.log('reqObj >>')
     console.log(reqObj);
 
+    const lineItems = [];
     if (this.dataObject.gridData.result.length && this.originalResponseObj.orderTemplateData.lineItems && this.originalResponseObj.orderTemplateData.lineItems.length) {
       this.dataObject.gridData.result.forEach(function (ele, index) {
         const objArr = [];
@@ -706,8 +710,29 @@ export class OrderComponent implements OnInit  {
           }
           objArr.push(obj);
         }
-        reqObj.orderDetail.lineItems.push(objArr);
+        lineItems.push(objArr);
       }, this);
+    }
+
+    console.log('this.existingOrder >>')
+    console.log(this.existingOrder);
+
+    console.log('lineItems >>')
+    console.log(lineItems);
+
+    if(this.orderId) {
+      lineItems.forEach(function (lItem, index) {
+        const obj: any = {};
+        obj.lineItemFields = lItem;
+        obj.line_item_id = this.existingOrder.lineItems[index].id;
+        reqObj.orderDetail.lineItems.push(obj);
+      }, this);
+    } else {
+      reqObj.orderDetail.lineItems = lineItems;
+    }
+
+    if (this.orderId) {
+      reqObj.order_id = this.orderId;
     }
 
     this.submitData(reqObj).subscribe(
@@ -715,8 +740,8 @@ export class OrderComponent implements OnInit  {
           if (response) {
             this.showSpinner = false;
             Swal({
-              title: 'Order Successfully Submitted',
-              text: 'Your order was successfully submitted. You will now be directed to payment page where you will be able to choose from any existing payment methods on file or can add a new payment method',
+              title: 'Order Successfully ' + (this.orderId ? 'Updated' : 'Submitted'),
+              text: 'Your order was successfully ' + (this.orderId ? 'updated' : 'submitted') + '.You will now be directed to payment page where you will be able to choose from any existing payment methods on file or can add a new payment method',
               type: 'success'
             }).then(() => {
              // this.router.navigate(['/app/targetAud/']);
@@ -727,8 +752,8 @@ export class OrderComponent implements OnInit  {
         err => {
           this.showSpinner = false;
           Swal({
-            title: 'Order Submission Failed',
-            html: 'An error occurred while submitting the order. Please try again',
+            title: 'Order ' + (this.orderId ? 'Update' : 'Submission') + ' Failed',
+            html: 'An error occurred while ' + (this.orderId ? 'updating' : 'submitting') + ' the order. Please try again',
             type: 'error'
           });
         }
@@ -746,11 +771,19 @@ export class OrderComponent implements OnInit  {
     const options = new RequestOptions({headers: headers});
     const data = JSON.stringify(reqObj);
     const url = this.api_fs.api + '/api/orders/create';
-    return this.http
-        .post(url, data, options)
-        .map(res => {
-          return res.json();
-        }).share();
+    if (reqObj.order_id) {
+      return this.http
+          .put(url, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    } else {
+      return this.http
+          .post(url, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    }
   }
 
    formatDate(date) {
