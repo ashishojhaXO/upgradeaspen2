@@ -10,3 +10,23 @@
 // .bottom-menu {
 //     display: inline-grid;
 // }
+
+
+// .nav.navbar-nav.main-menu {
+  // display: inline-flex;
+  // position: relative;
+// }
+
+.nav.navbar-nav.main-menu > div {
+  display: initial;
+  position: inherit;
+}
+
+.nav.navbar-nav.main-menu > div .bottom-menu {
+    display: flex;
+    position: fixed;
+}
+
+// .nav.navbar-nav.main-menu > div .bottom-menu div {
+//     display: inherit;
+// }

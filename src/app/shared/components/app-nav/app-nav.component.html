@@ -1,10 +1,10 @@
-<ul 
+<div 
     class="nav navbar-nav" 
     [ngClass]="mainUlClass"
     *ngIf="mainmenu && mainmenu.length"
 >
     <ng-template ngFor let-mm [ngForOf]="mainmenu" let-i="index">
-        <li 
+        <div
             [attr.data-index]="i+1" 
             *ngIf="urlPath && urlPath.indexOf(mm.url.split('/')[mm.url.split('/').length - 2]) !== -1"
         >
@@ -15,6 +15,7 @@
                 [ngClass]="mm.selected ? 'active active-bar' : ''"
             >{{ mm.title }} 
             </a>
+
                 <app-nav 
                     *ngIf="mm.submenu" 
                     [mainmenu]="mm.submenu"
@@ -23,8 +24,8 @@
                     urlPath="{{urlPath}}"
                 >
                 </app-nav>
-        </li>
+        </div>
 
     </ng-template>
-</ul>
+</div>
 
