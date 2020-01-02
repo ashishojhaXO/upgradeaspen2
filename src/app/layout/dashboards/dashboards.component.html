@@ -73,7 +73,9 @@
     </div>
   </div>
   <div *ngIf="chartConfig.data.length">
-      <app-charts [config]="chartConfig"></app-charts>
+    <a class="btn btn-success pull-right mb-1" (click)="exportAll()"><i class="fa fa-fw fa-download" aria-hidden="true"></i>Export All</a>
+    <div class="clear-fix"></div>
+    <app-charts #chart [config]="chartConfig"></app-charts>
   </div>
   <div class="page-header" style="padding-top: 1px" *ngIf="!chartConfig.data.length">
     <div style="background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to plot.</div>
@@ -81,7 +83,7 @@
   <div>
     <div class="gridOverflow" *ngIf="dataObject.isDataAvailable">
       <div style="padding: 20px">
-        <app-data-table2 [dataObject]="dataObject" (triggerActions)="this[$event.action]($event)"></app-data-table2>
+        <app-data-table2 #table [dataObject]="dataObject" (triggerActions)="this[$event.action]($event)"></app-data-table2>
       </div>
       <!--<app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height"></app-data-table1>-->
     </div>
