@@ -163,6 +163,12 @@
                   class="fa fa-toggle-on red"></i>
                 <i *ngIf="item.validation.indexOf('PostOrderChange') == -1" (click)="validationSet('PostOrderChange', true, model.attributes[i])"
                   class="fa fa-toggle-off"></i>
+                  <span>&nbsp;&nbsp;&nbsp;</span>
+                <label>Api Lookup</label>
+                <i *ngIf="item.apiLookup" (click)="item.apiLookup = false"
+                  class="fa fa-toggle-on red"></i>
+                <i *ngIf="!item.apiLookup" (click)="item.apiLookup = true"
+                  class="fa fa-toggle-off"></i>
                 <span class="pull-right ucfirst">{{item.dropType}}</span>
               </div>
               <div class="form-group-fields">
@@ -172,6 +178,17 @@
               <div class="form-group-fields">
                 <label>Name</label>
                 <input class="form-control" type="text" [(ngModel)]="item.name" [disabled]="true"/>
+              </div>
+              <div class="form-group-fields" *ngIf="item.apiLookup">
+                <label>Request Type</label>
+                <select class="form-control">
+                  <option value="get">Get</option>
+                  <option value="post">Post</option>
+                </select>
+                <label>Request Url</label>
+                <input type="text" class="form-control">
+                <label>Payload</label>
+                <textarea type="text" class="form-control"></textarea>
               </div>
               <div class="form-group-fields">
                 <label>Default Value</label>
