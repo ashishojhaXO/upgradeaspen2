@@ -1541,4 +1541,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner>table').css('border', 0);
         }
     }
+
+    exportTable(){
+        // console.log('from table', $.fn.jquery);
+        $('.buttons-csv').click();
+    }
 }

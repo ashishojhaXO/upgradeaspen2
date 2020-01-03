@@ -10,7 +10,9 @@ declare var require: any;
 export function highchartsFactory() {
   const hc = require('highcharts');
   const dd = require('highcharts/modules/drilldown');
+  const he = require('highcharts/modules/exporting');
   dd(hc);
+  he(hc);
 
   return hc;
 }

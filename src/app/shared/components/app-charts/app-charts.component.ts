@@ -22,6 +22,7 @@ export class AppChartsComponent implements OnInit, OnChanges {
   @Input()
   config: any;
   @ViewChild('chart') chartRef: any;
+  chart: any;
 
   constructor() {}
 
@@ -162,7 +163,37 @@ export class AppChartsComponent implements OnInit, OnChanges {
           }
         }
       },
-      series: series
+      series: series,
+      // exporting: {
+      //   menuItemDefinitions: {
+      //     // Custom definition
+      //     label: {
+      //         onclick: function () {
+      //             this.renderer.label(
+      //                 'You just clicked a custom menu item',
+      //                 100,
+      //                 100
+      //             )
+      //                 .attr({
+      //                     fill: '#a4edba',
+      //                     r: 5,
+      //                     padding: 10,
+      //                     zIndex: 10
+      //                 })
+      //                 .css({
+      //                     fontSize: '1.5em'
+      //                 })
+      //                 .add();
+      //         },
+      //         text: 'Show label'
+      //     }
+      //   },
+      //   buttons: {
+      //     contextButton: {
+      //         menuItems: ['downloadPNG', 'downloadSVG', 'separator', 'label']
+      //     }
+      //   }
+      // }
       // series: [{
       //   type: 'column',
       //   name: 'Monthly Cumulative Spend',
@@ -292,5 +323,15 @@ export class AppChartsComponent implements OnInit, OnChanges {
       colors.push('#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6));
     }
     return colors;
+  }
+
+  saveInstance(chartInstance): void {
+    if (!chartInstance.options.chart.forExport) this.chart = chartInstance;
+    // console.log('onload chart', this.chart)
+  }
+
+  exportPNG():void{
+    // console.log('from chart')
+    this.chart.exportChart();
   }
 }
