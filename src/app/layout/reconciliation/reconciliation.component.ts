@@ -178,16 +178,18 @@ export class ReconciliationComponent implements OnInit  {
       }
     }
 
-      const rowsToColor = [];
-      tableData.forEach(function (data, index) {
-          if (data.discrepancy_amount && data.discrepancy_amount > 0) {
-              rowsToColor.push({
-                  index: index,
-                  'background-color': 'rgba(255,0,0,0.9)',
-                  color : 'rgba(255,255,255,0.9)'
-              });
-          }
-      })
+   const rowsToColor = [];
+    if (tableData.length) {
+        tableData.forEach(function (data, index) {
+            if (data.discrepancy_amount && data.discrepancy_amount > 0) {
+                rowsToColor.push({
+                    index: index,
+                    'background-color': 'rgba(255,0,0,0.9)',
+                    color: 'rgba(255,255,255,0.9)'
+                });
+            }
+        });
+    }
 
     this.gridData['result'] = tableData;
     this.gridData['headers'] = this.headers;
