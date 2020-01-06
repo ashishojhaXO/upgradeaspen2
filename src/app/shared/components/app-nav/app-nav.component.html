@@ -1,25 +1,33 @@
-<ul class="nav navbar-nav main-menu" *ngIf="mainmenu && mainmenu.length">
+<div
+    class="nav navbar-nav"
+
+    [ngClass]="mainUlClass"
+    *ngIf="mainmenu && mainmenu.length"
+>
     <ng-template ngFor let-mm [ngForOf]="mainmenu" let-i="index">
-        <li [attr.data-index]="i+1" *ngIf="mm.name!='profile'" [ngClass]="mm.selected ? 'active' : '' ">
-            <a (click)="loadOptions(i,mm)" title={{mm.name}} id="{{mm.id}}"
-               [ngClass]="isActive(i) ? 'active' : '' ">{{ mm.title }}</a>
-        </li>
+        <div
+            [attr.data-index]="i+1"
+            [ngClass]="mm.selected ? 'active' : ''"
+            *ngIf="urlPath && urlPath.indexOf(mm.url.split('/')[mm.url.split('/').length - 2]) !== -1"
+        >
+            <a
+                (click)="loadOptions(i,mm)"
+                title={{mm.name}}
+                id="{{mm.id}}"
+                [ngClass]="mm.selected ? 'active active-bar' : ''"
+            >{{ mm.title }}
+            </a>
+
+                <app-nav
+                    *ngIf="mm.submenu"
+                    [mainmenu]="mm.submenu"
+                    mainUlClass="bottom-menu"
+                    random="{{mm.id}}"
+                    urlPath="{{urlPath}}"
+                >
+                </app-nav>
+        </div>
+
     </ng-template>
-</ul>
-<div class="collapse navbar-collapse" id="navbar-collapse-3" *ngIf="subMenu && subMenu.length">
-    <ng-template ngFor let-bmm [ngForOf]="subMenu" let-j="index">
-        <app-nav [mainmenu]="subMenu"></app-nav>
-    </ng-template>
-    <!--<ul class="nav navbar-nav bottom-menu">-->
-        <!--<ng-template ngFor let-bmm [ngForOf]="subMenu" let-j="index">-->
-            <!--<li>-->
-                <!--<a [routerLink]="bmm.url==''?['/organizationList']:['/'+bmm.url]" routerLinkActive="active-bar"-->
-                   <!--[routerLinkActiveOptions]="{exact: false}"-->
-                   <!--[ngClass]="bmm.sideBar?.length > 0 && routeActive ? 'active-bar submenuActive': bmm.selected && bmm.sideBar?.length <= 0? 'active-bar':''"-->
-                   <!--title={{bmm.name}} id="{{bmm.id}}">{{bmm.title}}-->
-                    <!--&nbsp;&nbsp;<i *ngIf="bmm.url==''" class="fa fa-caret-down" aria-hidden="true"></i>-->
-                <!--</a>-->
-            <!--</li>-->
-        <!--</ng-template>-->
-    <!--</ul>-->
 </div>
+

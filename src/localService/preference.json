@@ -91,14 +91,16 @@
           "name": "order",
           "title": "Create Order",
           "id": "order",
-          "url": "app/order"
+          "_url": "app/order",
+          "url": "app/orders/create"
         },
         {
           "index": 8,
           "name": "orderList",
           "title": "Orders List",
           "id": "orderList",
-          "url": "app/admin/orderslist"
+          "_url": "app/admin/orderslist",
+          "url": "app/orders/orderslist"
         }
       ]
     },
@@ -130,7 +132,22 @@
           "name": "usermanagement",
           "title": "User Management",
           "id": "usermanagement",
-          "url": "app/admin/usermanagement"
+          "url": "app/admin/usermanagement",
+
+          "submenu": [{
+              "index": 1,
+              "name": "user 1",
+              "title": "User 1",
+              "id": "user1",
+              "url": "app/admin/usermanagement/user1"
+            },
+            {
+              "index": 2,
+              "name": "user 2",
+              "title": "User 2",
+              "id": "user2",
+              "url": "app/admin/usermanagement/user2"
+            }]
         },
         {
           "index": 2,
