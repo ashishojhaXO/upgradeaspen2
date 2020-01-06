@@ -33,6 +33,8 @@ label {
 
 .page-content {
   background: #ededed;
+  // Added for multi level menu, as position: fixed for submenus taking content out of flow
+  padding-top: 70px;
 }
 
 .page-content > .row {
