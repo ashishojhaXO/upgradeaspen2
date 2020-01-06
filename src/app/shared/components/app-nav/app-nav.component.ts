@@ -82,7 +82,6 @@ export class AppNavComponent implements OnInit, OnChanges {
         // i.selected = bool;
         // console.log("sSM: ", i, bool);
         // this.selected = i;
-        console.log("sSM: mainmenu: ", mainmenu);
         if(mainmenu) {
             mainmenu.forEach(element => {
                 if ( this.selectedUrl.indexOf(element.url ) != -1 )
@@ -259,7 +258,6 @@ export class AppNavComponent implements OnInit, OnChanges {
         //     }
         // }
         // this.selected = position;
-
 
         if (object.url) {
             this.urlPath = object.url;

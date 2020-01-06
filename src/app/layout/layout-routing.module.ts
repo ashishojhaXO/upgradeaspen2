@@ -110,10 +110,30 @@ const routes: Routes = [
       },
       {
         path: 'orders',
+        data: {
+          breadcrumbs: true,
+          text: 'Orders'
+        },
+        // component: OrdersComponent,
+        children: [
+      {
+        path: '',
         component: OrdersComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Orders'
+        },
       },
       {
         path: 'order',
+        component: OrdersComponent,
+        data: {
+          breadcrumbs: true,
+          text: 'Orders'
+        },
+      },
+      {
+        path: 'create',
         component: OrderComponent,
         data: {
           breadcrumbs: true,
@@ -121,13 +141,68 @@ const routes: Routes = [
         },
       },
       {
-        path: 'order/:id',
+        path: 'create/:id',
         component: OrderComponent,
         data: {
           breadcrumbs: true,
           text: 'Modify Order Management'
         },
       },
+
+
+          {
+            path: 'ordertemplate',
+            component: OrderTemplateComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Order Template'
+            },
+          },
+          {
+            path: 'ordertemplate/:id',
+            component: OrderTemplateComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Modify Order Template'
+            },
+          },
+          {
+            path: 'ordertemplatelist',
+            component: OrdersTemplateListComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Order Template List'
+            },
+          },
+          {
+            path: 'orderslist',
+            component: OrdersListComponent,
+            data: {
+              breadcrumbs: true,
+              text: 'Orders List'
+            },
+          }
+
+
+        ]
+      },
+
+      // {
+      //   path: 'order',
+      //   component: OrderComponent,
+      //   data: {
+      //     breadcrumbs: true,
+      //     text: 'Order Management'
+      //   },
+      // },
+      // {
+      //   path: 'order/:id',
+      //   component: OrderComponent,
+      //   data: {
+      //     breadcrumbs: true,
+      //     text: 'Modify Order Management'
+      //   },
+      // },
       {
         path: 'configureAd',
         component: ConfigureAdComponent,
@@ -294,38 +369,38 @@ const routes: Routes = [
               text: 'Vendor Management'
             },
           },
-          {
-            path: 'ordertemplate',
-            component: OrderTemplateComponent,
-            data: {
-              breadcrumbs: true,
-              text: 'Order Template'
-            },
-          },
-          {
-            path: 'ordertemplate/:id',
-            component: OrderTemplateComponent,
-            data: {
-              breadcrumbs: true,
-              text: 'Modify Order Template'
-            },
-          },
-          {
-            path: 'ordertemplatelist',
-            component: OrdersTemplateListComponent,
-            data: {
-              breadcrumbs: true,
-              text: 'Order Template List'
-            },
-          },
-          {
-            path: 'orderslist',
-            component: OrdersListComponent,
-            data: {
-              breadcrumbs: true,
-              text: 'Orders List'
-            },
-          }
+          // {
+          //   path: 'ordertemplate',
+          //   component: OrderTemplateComponent,
+          //   data: {
+          //     breadcrumbs: true,
+          //     text: 'Order Template'
+          //   },
+          // },
+          // {
+          //   path: 'ordertemplate/:id',
+          //   component: OrderTemplateComponent,
+          //   data: {
+          //     breadcrumbs: true,
+          //     text: 'Modify Order Template'
+          //   },
+          // },
+          // {
+          //   path: 'ordertemplatelist',
+          //   component: OrdersTemplateListComponent,
+          //   data: {
+          //     breadcrumbs: true,
+          //     text: 'Order Template List'
+          //   },
+          // },
+          // {
+          //   path: 'orderslist',
+          //   component: OrdersListComponent,
+          //   data: {
+          //     breadcrumbs: true,
+          //     text: 'Orders List'
+          //   },
+          // }
         ]
       }
     ]

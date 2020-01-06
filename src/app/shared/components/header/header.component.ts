@@ -208,7 +208,6 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
           });
         }
 
-        console.log( "MAINMEN this:", this, " mainMENU: " , response["admin"]);
         this.mainmenu = response['admin'];
 
 
