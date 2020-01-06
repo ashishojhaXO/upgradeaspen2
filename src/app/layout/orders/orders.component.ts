@@ -39,7 +39,7 @@ export class OrdersComponent implements OnInit  {
     isDownloadOption: {
       value: true,
       icon: '',
-      dependency: ['vendor_receipt_id']
+      dependency: ['Vendor_Receipt_Id']
     },
     fixedColumn: 1,
     isPageLength: true,
@@ -190,8 +190,12 @@ export class OrdersComponent implements OnInit  {
   }
 
   handleDownload(dataObj: any) {
-    const downloadId = dataObj.data.vendor_receipt_id;
+    const downloadId = dataObj.data.Vendor_Receipt_Id;
     const orderId = dataObj.data.Order_Id;
+
+    console.log('dataObj >>')
+    console.log(dataObj);
+
     if (downloadId) {
       this.searchDownloadLink(downloadId, orderId);
     } else {
