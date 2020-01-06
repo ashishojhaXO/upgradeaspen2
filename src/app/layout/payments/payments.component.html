@@ -178,13 +178,13 @@
                           <span class="input-group-addon">$</span>
                           <input type="text" numeric numericType="decimal" class="form-control" style="width:100%" formControlName="payPartialInput">
                         </div>
-                        <div class="alert alert-danger" *ngIf="paymentFormNew.get('payPartialInput').invalid">
+                        <div class="alert alert-danger" *ngIf="paymentFormNew.get('payPartialInput').invalid && (paymentFormNew.get('payPartialInput').dirty || paymentFormNew.get('payPartialInput').touched)">
                           <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
                           <span *ngIf="paymentFormNew.get('payPartialInput').errors['partialExceeds']">
                             Partial amount exceeds amount due.
                           </span>
                           <span *ngIf="paymentFormNew.get('payPartialInput').errors['negativeNumber']">
-                            Amount cannot be Negative.
+                            Amount cannot be null or zero.
                           </span>
                         </div>
                       </div>
@@ -205,13 +205,13 @@
                             <span class="input-group-addon">$</span>
                             <input type="text" numeric numericType="decimal" class="form-control" style="width:100%" [formControlName]="i">
                           </div>
-                          <div class="alert alert-danger" *ngIf="control.invalid">
+                          <div class="alert alert-danger" *ngIf="control.invalid && (control.dirty || control.touched)">
                             <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
                             <span *ngIf="control.errors['partialExceeds']">
                               Line Item partial amount exceeds amount due.
                             </span>
                             <span *ngIf="control.errors['negativeNumber']">
-                              Amount cannot be Negative.
+                              Amount cannot be null or zero.
                             </span>
                           </div>
                         </div>
@@ -224,7 +224,13 @@
                 <div class="alert alert-danger" *ngIf="verifyLineAmountError">
                   <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
                   <span>
-                    Total of line pay amount does not match total pay amount.
+                    Total of line pay amount exceeds total pay amount.
+                  </span>
+                </div>
+                <div class="alert alert-danger" *ngIf="verifyLineItemPartialInputArr">
+                  <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                  <span>
+                    Pay amount cannot be null or zero.
                   </span>
                 </div>
               </div>

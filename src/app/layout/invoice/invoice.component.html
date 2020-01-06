@@ -15,7 +15,7 @@
             </div>
         </div>
         <div style="margin-left: 15px;">
-            <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+            <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px; border-bottom: 1px solid">
                 <div class="col-sm-1"><label>Date</label></div>
                 <div class="col-sm-1"><label>Line Item ID</label></div>
                 <div class="col-sm-1"><label>Order ID</label></div>
@@ -28,7 +28,7 @@
                 <div class="col-sm-1" style="text-align: right"><label></label></div>
                 <div class="col-sm-2" style="text-align: center"><label>Pay Amount</label></div>
             </div>
-            <div class="row" style="margin-bottom: 10px" *ngFor="let item of invoiceItems; let i= index">
+            <div class="row" style="margin-bottom: 10px" *ngFor="let item of invoiceItems; let i= index" [style.background]="i % 2 === 0 ? '#f9f9f9' : '#fff'">
                 <div class="col-sm-1"><span class="paymentText">{{item.month}} {{item.year}} </span></div>
                 <div class="col-sm-1"><span class="paymentText">{{item.line_item_id}}</span></div>
                 <div class="col-sm-1"><span class="paymentText">{{item.order_id}}</span></div>
@@ -43,7 +43,7 @@
                         class="paymentText">{{item.discrepancy_amount | currency:"USD":true:'1.0-0'}}</span></div>
                 <div class="col-sm-1"><span class="paymentText"></span></div>
                 <div class="col-sm-2">
-                    <div class="input-group col-sm-12" style="position: relative; top: -7px">
+                    <div class="input-group col-sm-12">
                         <span class="input-group-addon">$</span>
                         <input type="text" numeric numericType="decimal" class="form-control"
                                style="border-radius: 0 4px 4px 0; text-align: right" [(ngModel)]="item.pay" (keyup)="updateTotal()">
@@ -66,9 +66,30 @@
             </div>
             <div class="col-sm-12">
                 <div class="col-sm-11"><span></span></div>
-                <div class="col-sm-1" style="padding-left: 42px; padding-right: 0px"><button class="btn pull-right" style="position: relative; left: 19px; margin-top: 30px; margin-bottom: 10px" (click)="OnPay()">Pay</button></div>
+                <div class="col-sm-1" style="padding-left: 42px; padding-right: 0px"><button class="btn pull-right" style="position: relative; left: 19px; margin-top: 30px; margin-bottom: 10px" (click)="handleShowModal(AddPayment)">Pay</button></div>
             </div>
         </div>
     </div>
+    <app-pop-up-modal #AddPayment>
+        <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
+            Pay Invoice
+        </div>
+        <div class="app-modal-body">
+            <div class="content" style="height: 50vh">
+               <label>Memo</label>
+                <div>
+                    <textarea style="height: 150px; width: 100%" [(ngModel)]="memo"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="app-modal-footer">
+            <button type="button" class="action-btn" (click)= "OnPay(AddPayment)">
+                Submit
+            </button>
+            <button type="button" class="inaction-btn" (click)="handleCloseModal(AddPayment)">
+                Cancel
+            </button>
+        </div>
+    </app-pop-up-modal>
 </div>
 

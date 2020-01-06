@@ -38,10 +38,12 @@ export class PaymentsComponent implements OnInit  {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
+    isDownloadAsCsv: true,
     isDownloadOption: false,
     isRowSelection: null,
     isPageLength: true,
-    isPagination: true
+    isPagination: true,
+    fixedColumn: 1
   }];
   dashboard: any;
   api_fs: any;
@@ -70,6 +72,7 @@ export class PaymentsComponent implements OnInit  {
   totalPayment: number;
   verifyLineAmount: number;
   verifyLineAmountError: boolean = false;
+  verifyLineItemPartialInputArr: boolean = false;
   statusOptions = [
     {
       id: 'FAILED',
@@ -128,7 +131,7 @@ export class PaymentsComponent implements OnInit  {
       payeeName: new FormControl('', Validators.required),
       paymentInvoice: new FormControl('', Validators.required),
       payPartialCheck: new FormControl(''),
-      payPartialInput: new FormControl('', [this.checkNegative, this.checkPartialPay(this.totalPayment,false).bind(this)]),
+      payPartialInput: new FormControl('', [this.checkZero, this.checkPartialPay(this.totalPayment,false).bind(this)]),
       lineItemPartialInputArr: new FormArray([]),
       searchcontentInput: new FormControl('')
     })
@@ -155,6 +158,7 @@ export class PaymentsComponent implements OnInit  {
       if(change === false){
         this.paymentFormNew.controls['payPartialInput'].setValue('');
         this.verifyLineAmountError = false;
+        this.verifyLineItemPartialInputArr = false;
         const control = <FormArray>this.paymentFormNew.controls['lineItemPartialInputArr'];
         for(let i = control.length-1; i >= 0; i--) {
             control.removeAt(i);
@@ -538,7 +542,7 @@ export class PaymentsComponent implements OnInit  {
     for(let line of this.lineItemPartial){
       //console.log('getInvoiceItems: line',line);
       (<FormArray>this.paymentFormNew.get('lineItemPartialInputArr')).push(
-        new FormControl(null,[this.checkNegative, this.checkPartialPay(line.amount,true)])
+        new FormControl(null,[this.checkZero, this.checkPartialPay(line.amount,true)])
       )
     }
   }
@@ -732,8 +736,8 @@ export class PaymentsComponent implements OnInit  {
     }
   }
 
-  checkNegative(control: FormControl): {[s:string]:boolean} {
-    if(control.value < 0){
+  checkZero(control: FormControl): {[s:string]:boolean} {
+    if(!(+control.value)){
       return {'negativeNumber': true}
     }
   }
@@ -741,7 +745,12 @@ export class PaymentsComponent implements OnInit  {
   newFormSubmit(modalComponent: PopUpModalComponent){
     if(this.paymentFormNew.get('payPartialCheck').value){
       this.verifyLineAmountError = false;
+      this.verifyLineItemPartialInputArr = false;
       const formValue = this.paymentFormNew.value;
+      if(!(+formValue.payPartialInput)){
+        this.verifyLineItemPartialInputArr = true;
+        return false;
+      }
       const lineItemPartial = []
       this.verifyLineAmount = 0;
       for(let i=0; i < this.lineItemPartial.length; i++){
@@ -751,12 +760,18 @@ export class PaymentsComponent implements OnInit  {
           units: this.lineItemPartial[i].units,
           quantity: this.lineItemPartial[i].quantity
         })
+        if(!(+formValue.lineItemPartialInputArr[i])){
+          this.verifyLineItemPartialInputArr = true;
+          return false;
+        }
         this.verifyLineAmount += +formValue.lineItemPartialInputArr[i];
       }
-      if(this.verifyLineAmount != +formValue.payPartialInput){
+      if(this.verifyLineAmount > +formValue.payPartialInput){
         this.verifyLineAmountError = true;
       }else{
+        // setting legacy: true so the payment --> create transaction functionality do not break with invoice functionality
         const formData = {
+          legacy: true,
           payee: this.payeeObject,
           invoice: {
             number: this.lineItemInvoice.text,
@@ -779,6 +794,7 @@ export class PaymentsComponent implements OnInit  {
         })
       }
       const formData = {
+        legacy: true,
         payee: this.payeeObject,
         invoice: {
           number: this.lineItemInvoice.text,
@@ -852,8 +868,8 @@ export class PaymentsComponent implements OnInit  {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
           swal({
             title: 'Error',
-            text: this.error.message,
-            type: 'warning'
+            text: err._body ? (err._body.indexOf(':') !== -1 ? err._body.split(':')[1] : err._body) : 'An Error occurred',
+            type: 'error'
           });
           console.log(this.error);
           this.showSpinner = false;

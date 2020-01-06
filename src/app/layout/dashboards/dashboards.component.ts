@@ -5,7 +5,7 @@
  * Date: 2019-02-27 14:54:37
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
@@ -69,13 +69,18 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
-    isDownload: true,
+    isDownloadAsCsv: true,
+    isDownloadOption: false,
     isRowSelection: null,
     isPageLength: true,
-    isPagination: true
+    isPagination: true,
+    fixedColumn: 1
   }];
   dashboard: any;
   widget: any;
+
+  @ViewChild('chart') chartRef;
+  @ViewChild('table') tableRef;
 
   constructor(
     private okta: OktaAuthService,
@@ -957,5 +962,12 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       return value.label;
     });
     return ret.join('<br/>');
+  }
+
+  exportAll(){
+    // console.log(this.chartRef);
+    this.chartRef.exportPNG();
+    // console.log(this.tableRef);
+    this.tableRef.exportTable();
   }
 }

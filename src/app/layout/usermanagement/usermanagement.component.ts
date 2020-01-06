@@ -36,6 +36,7 @@ export class UserManagementComponent implements OnInit  {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
+    isDownloadAsCsv: true,
     isDownloadOption: false,
     isRowSelection: null,
     isPageLength: true,
@@ -308,7 +309,7 @@ export class UserManagementComponent implements OnInit  {
     dataObj.first_name = this.userForm.controls['first'].value;
     dataObj.last_name = this.userForm.controls['last'].value;
     dataObj.source = this.selectedSource;
-    dataObj.role = this.selectedRole;
+    dataObj.role_id = this.selectedRole;
     if (this.selectedSource === 'vendor') {
       dataObj.vendor_id = this.selectedVendor;
     }
@@ -342,16 +343,16 @@ export class UserManagementComponent implements OnInit  {
           const roleOptions = [];
           response.user_roles.forEach(function (item) {
             roleOptions.push({
-              // id: item.id,
-              id: item.name,
+              id: item.id,
+              // id: item.name,
               text: item.name.replace( item.name[0], item.name[0].toUpperCase() )
             });
           });
 
           this.roleOptions = roleOptions;
-          if(response.length) {
-            this.selectedRole = response[0].id;
-            // this.selectedRole = response[0].name;
+
+          if(this.roleOptions.length) {
+            this.selectedRole = String(this.roleOptions[0].id );
           }
         }
       },

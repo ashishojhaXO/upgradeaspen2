@@ -1,6 +1,7 @@
 export class DataTableOptions {
     isSearchColumn?: boolean;
     isSearchGlobal?: boolean;
+    isDownloadAsCsv?: boolean;
     isDownload?: boolean;
     isColVisibility?: boolean;
     isPagination?: boolean;

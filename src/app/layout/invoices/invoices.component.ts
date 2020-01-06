@@ -39,13 +39,15 @@ export class InvoicesComponent implements OnInit  {
     },
     isColVisibility: true,
     isRowHighlight: false,
+    isDownloadAsCsv: true,
     isDownloadOption: {
       value: true,
       icon: '',
     },
     isPageLength: true,
     isPagination: true,
-    sendResponseOnCheckboxClick: true
+    sendResponseOnCheckboxClick: true,
+    fixedColumn: 1
   }];
   dashboard: any;
   api_fs: any;
@@ -203,6 +205,7 @@ export class InvoicesComponent implements OnInit  {
           if (response && response.data && response.data.pre_signed_url) {
             const link = document.createElement('a');
             link.setAttribute('href', response.data.pre_signed_url);
+            link.setAttribute('target', '_blank');
             document.body.appendChild(link);
             link.click();
           } else {

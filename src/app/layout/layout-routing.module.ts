@@ -201,11 +201,6 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            redirectTo: 'payments',
-            pathMatch: 'full'
-          },
-          {
-            path: 'payments',
             component: PaymentsComponent,
             data: {
               breadcrumbs: true,
@@ -221,11 +216,6 @@ const routes: Routes = [
             children: [
               {
                 path: '',
-                redirectTo: 'invoices',
-                pathMatch: 'full'
-              },
-              {
-                path: 'invoices',
                 component: InvoicesComponent,
                 data: {
                   breadcrumbs: true,

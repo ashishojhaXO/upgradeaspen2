@@ -13,6 +13,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
 import Swal from 'sweetalert2';
+import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-modal.component';
 
 @Component({
   selector: 'app-invoice',
@@ -29,6 +30,8 @@ export class InvoiceComponent implements OnInit  {
   selectedRow: any;
   invoiceItems = [];
   totalAmount = 0;
+  memo: string;
+  @ViewChild('AddPayment') addPayment: PopUpModalComponent;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
   }
@@ -133,15 +136,15 @@ export class InvoiceComponent implements OnInit  {
     }, this);
   }
 
-  OnPay() {
+  OnPay(modalComponent: PopUpModalComponent) {
 
+    modalComponent.hide();
     const lineItems = [];
     this.invoiceItems.forEach(function (item) {
       lineItems.push({
         id : item.id,
         amount: item.pay ? parseFloat(item.pay) : 0,
-        client_id: item.client_id,
-        company_name : item.company_name
+        client_id: item.client_id
       });
     }, this);
 
@@ -149,7 +152,8 @@ export class InvoiceComponent implements OnInit  {
       invoice: {
         number: this.invoiceItems[0].invoice_number,
         header_id: this.invoiceItems[0].invoice_header_id,
-        amount : this.totalAmount // total amount of the entered values in line item
+        amount : this.totalAmount, // total amount of the entered values in line item,
+        memo: this.memo
       },
       line_items: lineItems
     };
@@ -164,11 +168,20 @@ export class InvoiceComponent implements OnInit  {
           console.log(response);
           if (response) {
             this.showSpinner = false;
-
-          //  this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Transaction successfully created' : 'Transaction creation failed' };
-
+            Swal({
+              title: 'Payment Successful',
+              text: 'Payment for the selected invoice : ' + this.invoiceId  +  ' was successfully submitted',
+              type: 'success'
+            }).then( () => {
+              this.router.navigate(['/app/payments/invoices']);
+            });
+          } else {
+            Swal({
+              title: 'Payment Failed',
+              text: 'We were unable to process payment for the selected invoice : ' + this.invoiceId  +  '. Please try again',
+              type: 'error'
+            });
           }
-
         },
         err => {
 
@@ -192,6 +205,11 @@ export class InvoiceComponent implements OnInit  {
             }
           } else {
             this.showSpinner = false;
+            Swal({
+              title: 'Payment Failed',
+              text: 'We were unable to process payment for the selected invoice : ' + this.invoiceId  +  '. Please try again',
+              type: 'error'
+            });
           }
         }
     );
@@ -213,5 +231,13 @@ export class InvoiceComponent implements OnInit  {
         .map(res => {
           return res.json();
         }).share();
+  }
+
+  handleShowModal(modalComponent: PopUpModalComponent) {
+    modalComponent.show();
+  }
+  handleCloseModal(modalComponent: PopUpModalComponent) {
+    modalComponent.hide();
+    this.memo = '';
   }
 }

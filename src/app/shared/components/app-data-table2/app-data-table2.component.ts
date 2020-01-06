@@ -230,7 +230,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     });
                 }
 
-                if (this.dataObject.gridData.options.isDownload) {
+                if (this.dataObject.gridData.options.isDownloadAsCsv) {
+                    console.log("PACING")
                     gridButtons.push({
                         extend: 'csv',
                         text: '<span><i class="fa fa-download fa-Idown" aria-hidden="true"></i></span>',
@@ -321,17 +322,23 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         });
                     }
 
-                    // console.log('$(\'td\', row).find(\'a.fa-download\') >>>')
-                    // console.log($('td', row).find('a.fa-download'));
-
                     if (__this.dataObject.gridData.options.isDownloadOption && __this.dataObject.gridData.options.isDownloadOption.dependency && __this.dataObject.gridData.options.isDownloadOption.dependency.length) {
                         let isValid = true;
                         __this.dataObject.gridData.options.isDownloadOption.dependency.forEach(function (ele) {
-                            if(!data[ele]) {
-                                isValid = false;
+                            const headerColumnField = __this.dataObject.gridData.headers.find(x=> x.key === ele);
+                            if (headerColumnField) {
+                                let columnIndex = __this.dataObject.gridData.headers.indexOf(headerColumnField);
+                                if (__this.dataObject.gridData.options.isRowSelection) {
+                                    columnIndex++;
+                                }
+
+                                if (!$('td', row).eq(columnIndex).text()) {
+                                    isValid = false;
+                                }
                             }
                         });
-                        if(!isValid) {
+
+                        if (!isValid) {
                             $('td', row).find('a.fa-download').css('pointer-events', 'none');
                             $('td', row).find('a.fa-download').addClass('disabled');
                         }
@@ -455,7 +462,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     }
                 }
             };
-
+            // console.log('height>>>>>>', this.height);
+            if(!this.height){
+                this.height = 320;
+                // console.log('height was null', this.height);
+            }
             console.log('dataTableOptions >>>');
             console.log(dataTableOptions);
 
@@ -1521,11 +1532,18 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
     adjustHeight(context){
         if(context.fixedColumnFlag){
+            // console.log('context.height>>>>>>', context.height);
             let height = context.height - 18;
+            $('.DTFC_LeftWrapper>.DTFC_LeftBodyWrapper').css('height', height);
             $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('height', height);
             $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('max-height', height);
             $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('padding-top', '15px');
             $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner>table').css('border', 0);
         }
+    }
+
+    exportTable(){
+        // console.log('from table', $.fn.jquery);
+        $('.buttons-csv').click();
     }
 }

@@ -197,7 +197,8 @@ export class NgDataTableComponent implements OnInit, AfterViewInit {
         postfixButtons: ['colvisRestore'],
       });
     }
-    if (option.isDownload) {
+    // if (option.isDownload) {
+    if (option.isDownloadAsCsv) {
       buttons.push({
         extend: 'csv',
         text: '<i class="fa fa-download fa-Idown" aria-hidden="true"></i>',

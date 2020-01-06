@@ -121,7 +121,7 @@
                   <label>{{item.label}}</label> <label *ngIf="item.validation.indexOf('required') != -1" class="text-danger">*</label>
                   <div *ngFor="let v of item.attr_list.options; let j = index" class="inline-form-group">
                     <label class="cust-check-bx">
-                      <input type="checkbox" [value]="v.option" name="{{item.dropName + '_' + j}}" [disabled]="item.validation.indexOf('disable') != -1" (change)="onCheckboxClick(v.option, $event.target.checked, model.attributes[i])">
+                      <input type="checkbox" [value]="v.option" name="{{item.dropName + '_' + j}}" [disabled]="item.validation.indexOf('disable') != -1" [checked]="item.checkboxDefault.indexOf(v.option) > -1" (change)="onCheckboxClick(v.option, $event.target.checked, model.attributes[i])">
                       {{v.option}}
                       <span class="checkmark"></span>
                     </label>
@@ -163,6 +163,12 @@
                   class="fa fa-toggle-on red"></i>
                 <i *ngIf="item.validation.indexOf('PostOrderChange') == -1" (click)="validationSet('PostOrderChange', true, model.attributes[i])"
                   class="fa fa-toggle-off"></i>
+                  <span>&nbsp;&nbsp;&nbsp;</span>
+                <label>Api Lookup</label>
+                <i *ngIf="item.apiLookup" (click)="item.apiLookup = false"
+                  class="fa fa-toggle-on red"></i>
+                <i *ngIf="!item.apiLookup" (click)="item.apiLookup = true"
+                  class="fa fa-toggle-off"></i>
                 <span class="pull-right ucfirst">{{item.dropType}}</span>
               </div>
               <div class="form-group-fields">
@@ -173,12 +179,23 @@
                 <label>Name</label>
                 <input class="form-control" type="text" [(ngModel)]="item.name" [disabled]="true"/>
               </div>
+              <div class="form-group-fields" *ngIf="item.apiLookup">
+                <label>Request Type</label>
+                <select class="form-control">
+                  <option value="get">Get</option>
+                  <option value="post">Post</option>
+                </select>
+                <label>Request Url</label>
+                <input type="text" class="form-control">
+                <label>Payload</label>
+                <textarea type="text" class="form-control"></textarea>
+              </div>
               <div class="form-group-fields">
                 <label>Default Value</label>
                 <input class="form-control" type="text" [(ngModel)]="item.default_value" *ngIf="item.dropType != 'date' && item.dropType != 'checkbox' && item.dropType != 'radio' && item.dropType != 'autocomplete'"/>
                 <input class="form-control" type="text" [(ngModel)]="item.default_value" *ngIf="item.dropType === 'radio' || item.dropType === 'autocomplete'" disabled/>
                 <input class="form-control" type="date" [(ngModel)]="item.default_value" *ngIf="item.dropType === 'date'"/>
-                <input class="form-control" type="text" [(ngModel)]="checkboxDefault" *ngIf="item.dropType === 'checkbox'" disabled/>
+                <input class="form-control" type="text" [(ngModel)]="item.default_value" *ngIf="item.dropType === 'checkbox'" disabled/>
               </div>
               <div class="form-group-fields">
                 <label>Regex</label>
