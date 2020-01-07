@@ -34,7 +34,7 @@ label {
 .page-content {
   background: #ededed;
   // Added for multi level menu, as position: fixed for submenus taking content out of flow
-  padding-top: 70px;
+  padding-top: 40px;
 }
 
 .page-content > .row {
@@ -45,7 +45,7 @@ label {
   position: relative;
   z-index: 9999 !important;
   background-color: $header-bardk-bg;
-  
+
   .navbar-toggle.profile-toggle{
     background-color: #384349 !important;
     border-color: #fff !important;
