@@ -24,17 +24,17 @@ export class AppNavComponent implements OnInit, OnChanges {
     menu: any;
 
     constructor(public router: Router, private translate: TranslateService) {
-        
+
         this.initConstVars();
     }
 
     initConstVars() {
-        
+
         // this.urlPath = window.location.pathname;
 
-        if(typeof this.mainUlClass == "undefined") 
+        if(typeof this.mainUlClass == "undefined")
             this.mainUlClass = "main-menu";
-        
+
         // recurse & Set css property on init
         // this.recurse(this.mainmenu)
 
@@ -44,14 +44,14 @@ export class AppNavComponent implements OnInit, OnChanges {
         //
         this.selectedUrl = this.router.url;
 
-        // Set selected on the main nav level 
+        // Set selected on the main nav level
         this.setSelectedMenu(this.mainmenu)
 
         if (
-            changes['mainmenu'] || 
-            changes['subMenu'] || 
-            changes['mainUlClass'] || 
-            changes['urlPath'] 
+            changes['mainmenu'] ||
+            changes['subMenu'] ||
+            changes['mainUlClass'] ||
+            changes['urlPath']
         ) {
 
             // console.log('mainmenu >>>')
@@ -84,10 +84,13 @@ export class AppNavComponent implements OnInit, OnChanges {
         // this.selected = i;
         if(mainmenu) {
             mainmenu.forEach(element => {
-                if ( this.selectedUrl.indexOf(element.url ) != -1 )
-                    element.selected = true;
-                else
-                    element.selected = false;
+
+                element.selected = (this.selectedUrl.substr(1) === element.url) || (this.selectedUrl.substr(0, this.selectedUrl.lastIndexOf('/')).substr(1) === element.url);
+
+                // if ( this.selectedUrl.indexOf(element.url ) != -1 )
+                //     element.selected = true;
+                // else
+                //     element.selected = false;
             });
 
         }
@@ -124,7 +127,7 @@ export class AppNavComponent implements OnInit, OnChanges {
     }
 
     compareUrl(pageUrlPath, liUrlPath) {
-        // instead of liUrlPath, 
+        // instead of liUrlPath,
         // break liUrlPath in parts divided by 'slash' &
         // take -1th element of the returning array
         const newLiUrlArr = this.breakLiUrl(liUrlPath);
@@ -146,14 +149,14 @@ export class AppNavComponent implements OnInit, OnChanges {
         return ret;
     }
 
-    recurse(li) { 
+    recurse(li) {
         // console.log("REcuRES LI: ", li);
         // Tail Recursion
         // If condition, since, at first instance, the mainmenu is still to be loaded
         if(li) {
                 // console.log("this.router.url ++++ ", this.router.url);
-            for( let i = 0; i < li.length; i++) { 
-                
+            for( let i = 0; i < li.length; i++) {
+
                 // If url's don't match
                 if( this.compareUrl(this.urlPath, li[i].url ) !== true ) {
                 // if( this.compareUrl( window.location.pathname , li[i].url ) !== true ) {
@@ -167,8 +170,8 @@ export class AppNavComponent implements OnInit, OnChanges {
                     this.removeCss(li[i])
                 }
 
-                if(li[i].submenu) { 
-                    this.recurse(li[i].submenu) 
+                if(li[i].submenu) {
+                    this.recurse(li[i].submenu)
                 }
             }
         }
@@ -204,7 +207,7 @@ export class AppNavComponent implements OnInit, OnChanges {
     //         //                 this.mainmenu[this.mainmenu.indexOf(corr)].submenu[this.mainmenu[this.mainmenu.indexOf(corr)].submenu.indexOf(corr1)].selected = true;
 
     //         // console.log(
-    //         //     "IF 4 corr1 this.mainmenu: ", 
+    //         //     "IF 4 corr1 this.mainmenu: ",
     //         //     this.mainmenu[this.mainmenu.indexOf(corr)].submenu[this.mainmenu[this.mainmenu.indexOf(corr)].submenu.indexOf(corr1)]
     //         // );
 
@@ -237,7 +240,7 @@ export class AppNavComponent implements OnInit, OnChanges {
                         if (corr1) {
                             this.mainmenu[this.mainmenu.indexOf(corr)].submenu[this.mainmenu[this.mainmenu.indexOf(corr)].submenu.indexOf(corr1)].selected = true;
             // console.log(
-            //     "IF 4 corr1 this.mainmenu: ", 
+            //     "IF 4 corr1 this.mainmenu: ",
             //     this.mainmenu[this.mainmenu.indexOf(corr)].submenu[this.mainmenu[this.mainmenu.indexOf(corr)].submenu.indexOf(corr1)]
             // );
                         }
