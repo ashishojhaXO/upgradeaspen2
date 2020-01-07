@@ -27,24 +27,21 @@ export class OrderPaymentComponent {
   orderId: string;
   vendorId: string;
   showSpinner: boolean;
-  // domain: string;
-  api_fs: any;
+  domain: string;
 
   constructor(
-    private route: ActivatedRoute,
-    private genericService: GenericService,
-    private router: Router
+      private route: ActivatedRoute,
+      private genericService: GenericService,
+      private router: Router
   ) {
 
-    this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
-
-    // if(window.location.hostname.indexOf('-dev') !== -1 || window.location.hostname.indexOf('localhost') !== -1) {
-    //   this.domain = 'dev';
-    // } else if (window.location.hostname.indexOf('-qa') !== -1) {
-    //   this.domain = 'qa';
-    // } else {
-    //   this.domain = 'prod';
-    // }
+    if(window.location.hostname.indexOf('-dev') !== -1 || window.location.hostname.indexOf('localhost') !== -1) {
+      this.domain = 'dev';
+    } else if (window.location.hostname.indexOf('-qa') !== -1) {
+      this.domain = 'qa';
+    } else {
+      this.domain = 'prod';
+    }
 
     if (window['fs_widget_config']) {
       console.log('window.location.hostname')
@@ -52,14 +49,14 @@ export class OrderPaymentComponent {
 
       console.log('window[\'fs_widget_config\'] >>')
       console.log(window['fs_widget_config']);
-        const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
-        window['fs_widget_config'].vendor_id = this.vendorId = customerInfo.vendor.vendor_id;
-        window['fs_widget_config'].api_key = customerInfo.org.x_api_key;
-        window['fs_widget_config'].org_id = customerInfo.org.org_id;
+      const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
+      window['fs_widget_config'].vendor_id = this.vendorId = customerInfo.vendor.vendor_id;
+      window['fs_widget_config'].api_key = customerInfo.org.x_api_key;
+      window['fs_widget_config'].org_id = customerInfo.org.org_id;
 
-        // Temp assignment FOR TESTING:
-        // window['fs_widget_config'].vendor_id = '592f94f3-e2b1-4621-b1c0-c795ee2a1814'
-        // this.vendorId = '592f94f3-e2b1-4621-b1c0-c795ee2a1814';
+      // Temp assignment FOR TESTING:
+      // window['fs_widget_config'].vendor_id = '592f94f3-e2b1-4621-b1c0-c795ee2a1814'
+      // this.vendorId = '592f94f3-e2b1-4621-b1c0-c795ee2a1814';
     }
   }
 
@@ -114,7 +111,7 @@ export class OrderPaymentComponent {
       })[0]
 
       console.log("SCB IFFF: self.paymentOptions ", self.paymentOptions ,
-      " this payMC", this.paymentsChargeData );
+          " this payMC", this.paymentsChargeData );
     }
 
   }
@@ -136,18 +133,18 @@ export class OrderPaymentComponent {
     this.setPaymentsMethodsData()
 
     return this.genericService
-      .postPaymentsMethods(this.paymentsMethodsData)
-      .subscribe(
-        (res) => {
-          this.showSpinner = false;
-          // this.successCB.apply(this, [res])
-          this.successCB(res)
-        },
-        (rej) => {
-          this.showSpinner = false;
-          this.errorCB(rej)
-        }
-      )
+        .postPaymentsMethods(this.paymentsMethodsData)
+        .subscribe(
+            (res) => {
+              this.showSpinner = false;
+              // this.successCB.apply(this, [res])
+              this.successCB(res)
+            },
+            (rej) => {
+              this.showSpinner = false;
+              this.errorCB(rej)
+            }
+        )
   }
 
   setDefaultPaymentMethod(option) {
@@ -197,26 +194,26 @@ export class OrderPaymentComponent {
     this.showSpinner = true;
 
     this.genericService
-      .postPaymentsCharge(this.paymentsChargeData)
-      .subscribe( (res) => {
-            this.showSpinner = false;
-            Swal({
-              title: 'Payment Successfully Charged',
-              text: 'Your payment for the order ' + this.orderId + ' was successfully charged',
-              type: 'success'
-            }).then( () => {
-                  this.router.navigate(['/app/admin/orderslist']);
-                });
-      },
-      (rej) => {
-          this.showSpinner = false;
-          Swal({
-            title: 'Payment Charge Failed',
-            text: 'We are having trouble charging for the order ' + this.orderId + ' using the selected payment type. Please try again',
-            type: 'error'
-          }).then( () => {})
-          this.errorCB.apply(this, [rej])
-        });
+        .postPaymentsCharge(this.paymentsChargeData)
+        .subscribe( (res) => {
+              this.showSpinner = false;
+              Swal({
+                title: 'Payment Successfully Charged',
+                text: 'Your payment for the order ' + this.orderId + ' was successfully charged',
+                type: 'success'
+              }).then( () => {
+                this.router.navigate(['/app/admin/orderslist']);
+              });
+            },
+            (rej) => {
+              this.showSpinner = false;
+              Swal({
+                title: 'Payment Charge Failed',
+                text: 'We are having trouble charging for the order ' + this.orderId + ' using the selected payment type. Please try again',
+                type: 'error'
+              }).then( () => {})
+              this.errorCB.apply(this, [rej])
+            });
   }
 
 
