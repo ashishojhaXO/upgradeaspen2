@@ -32,8 +32,8 @@ export class CustomFormbuilderComponent implements OnInit {
     attributes:this.modelFields
   };
 
-  constructor( 
-    private okta: OktaAuthService, 
+  constructor(
+    private okta: OktaAuthService,
     private http: Http) {
   }
 
@@ -125,6 +125,10 @@ export class CustomFormbuilderComponent implements OnInit {
       if(changes['fieldData']){
         //console.log('from custom field input >>', this.fieldData);
         if(this.fieldData){
+
+          console.log('this.fieldData >>>>')
+          console.log(this.fieldData)
+
           this.fieldData.forEach(element => {
             if(element.type == 'varchar' || element.type == 'text' || element.type == 'string'){
               element.dropType = 'text';
@@ -363,6 +367,14 @@ export class CustomFormbuilderComponent implements OnInit {
       item.validation.push(field)
     }else{
       item.validation.splice(item.validation.indexOf(field), 1)
+      if(field === 'apiLookup') {
+        item.request_type = '';
+        item.request_url = '';
+        item.request_payload = '';
+        item.request_mapped_property = '';
+      }
+      console.log('item.validation >>>>')
+      console.log(item.validation)
     }
   }
 

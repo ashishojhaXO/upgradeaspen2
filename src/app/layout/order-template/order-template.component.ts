@@ -138,10 +138,10 @@ export class OrderTemplateComponent implements OnInit {
         let orderFields = [];
         let lineItems = [];
         this.orderForm.model.attributes.forEach(element => {
-          orderFields.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation']))
+          orderFields.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation', 'request_type', 'request_url', 'request_payload', 'request_mapped_property' ]))
         });
         this.lineItemForm.model.attributes.forEach(element => {
-          lineItems.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation']))
+          lineItems.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation', 'request_type', 'request_url', 'request_payload', 'request_mapped_property']))
         });
 
         this.templateResponse.orderTemplateData = {

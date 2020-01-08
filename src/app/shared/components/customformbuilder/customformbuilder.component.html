@@ -165,9 +165,9 @@
                   class="fa fa-toggle-off"></i>
                   <span>&nbsp;&nbsp;&nbsp;</span>
                 <label>Api Lookup</label>
-                <i *ngIf="item.apiLookup" (click)="item.apiLookup = false"
+                <i *ngIf="item.validation.indexOf('apiLookup') != -1" (click)="validationSet('apiLookup', false, model.attributes[i])"
                   class="fa fa-toggle-on red"></i>
-                <i *ngIf="!item.apiLookup" (click)="item.apiLookup = true"
+                <i *ngIf="item.validation.indexOf('apiLookup') === -1" (click)="validationSet('apiLookup', true, model.attributes[i])"
                   class="fa fa-toggle-off"></i>
                 <span class="pull-right ucfirst">{{item.dropType}}</span>
               </div>
@@ -179,19 +179,19 @@
                 <label>Name</label>
                 <input class="form-control" type="text" [(ngModel)]="item.name" [disabled]="true"/>
               </div>
-              <div class="form-group-fields" *ngIf="item.apiLookup" style="margin: 20px 0px 20px 20px">
+              <div class="form-group-fields" *ngIf="item.validation.indexOf('apiLookup') != -1"  style="margin: 20px 0px 20px 20px">
                 <h5>API Lookup Configuration</h5>
                 <label>Request Type</label>
-                <select class="form-control">
+                <select class="form-control" [(ngModel)]="item.request_type">
                   <option value="get">GET</option>
                   <option value="post">POST</option>
                 </select>
                 <label>Request Url</label>
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" [(ngModel)]="item.request_url">
                 <label>Payload</label>
-                <textarea type="text" class="form-control"></textarea>
+                <textarea type="text" class="form-control" [(ngModel)]="item.request_payload"></textarea>
                 <label>Property Name</label>
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" [(ngModel)]="item.request_mapped_property">
               </div>
               <div class="form-group-fields">
                 <label>Default Value</label>
