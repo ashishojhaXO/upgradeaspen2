@@ -192,6 +192,9 @@
                 <textarea type="text" class="form-control" [(ngModel)]="item.request_payload"></textarea>
                 <label>Property Name</label>
                 <input type="text" class="form-control" [(ngModel)]="item.request_mapped_property">
+                <div style="padding: 10px 0px">
+                  <button type="button" class="btn btn-info" style="float: right" (click)="ValidateAPILookUp(item)">Test</button>
+                </div>
               </div>
               <div class="form-group-fields">
                 <label>Default Value</label>

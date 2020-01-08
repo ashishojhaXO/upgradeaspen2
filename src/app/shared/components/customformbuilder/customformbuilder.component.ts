@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { field } from "./customformbuilder.model";
-import Swal from "sweetalert2";
+import Swal from 'sweetalert2';
 import { DndDropEvent, DropEffect } from 'ngx-drag-drop';
 import { Headers, RequestOptions, Http } from '@angular/http';
 import { OktaAuthService } from '../../../../services/okta.service';
@@ -386,5 +386,50 @@ export class CustomFormbuilderComponent implements OnInit {
       item.checkboxDefault.splice(index,1);
     }
     item.default_value = item.checkboxDefault.join(', ');
+  }
+
+  ValidateAPILookUp(item) {
+    this.performApiLookUpForValue(item.request_type, item.request_url, item.request_payload).subscribe(
+        responseLookup => {
+          Swal({
+            title: 'Test Successful',
+            html: JSON.stringify(responseLookup),
+            type: 'success'
+          });
+        },
+        err => {
+          Swal({
+            title: 'Test Failed',
+            html: 'Response could not be validated',
+            type: 'error'
+          });
+        });
+  }
+
+  performApiLookUpForValue(requestType, requestUrl, requestPayload) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    const data = requestPayload ? requestPayload : {};
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    if(requestType === 'post') {
+      return this.http
+          .post(requestUrl, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    } else if(requestType === 'get') {
+      return this.http
+          .get(requestUrl, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    }
   }
 }
