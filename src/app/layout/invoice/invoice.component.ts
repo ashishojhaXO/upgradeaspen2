@@ -142,7 +142,7 @@ export class InvoiceComponent implements OnInit  {
     const lineItems = [];
     this.invoiceItems.forEach(function (item) {
       lineItems.push({
-        id : item.id,
+        id : item.line_item_id,
         amount: item.pay ? parseFloat(item.pay) : 0,
         client_id: item.client_id
       });
