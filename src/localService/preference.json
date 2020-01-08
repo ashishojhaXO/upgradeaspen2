@@ -91,7 +91,6 @@
           "name": "order",
           "title": "Create Order",
           "id": "order",
-          "_url": "app/order",
           "url": "app/orders/create"
         },
         {
@@ -99,7 +98,6 @@
           "name": "orderList",
           "title": "Orders List",
           "id": "orderList",
-          "_url": "app/admin/orderslist",
           "url": "app/orders/orderslist"
         }
       ]
