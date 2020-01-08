@@ -204,7 +204,7 @@ export class OrdersListComponent implements OnInit  {
     console.log('rowData >>>')
     console.log(dataObj.data);
     this.editID = dataObj.data.id;
-    this.router.navigate(['/app/order/', this.editID]);
+    this.router.navigate(['/app/orders/create', this.editID]);
   }
 
   handleRun(dataObj: any){
