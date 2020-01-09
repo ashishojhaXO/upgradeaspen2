@@ -40,6 +40,7 @@
               <i aria-hidden="true" class="fa fa-caret-down"></i></span>
           </button>
           <div class="dropdown-content" [hidden]="!isMenuOpened">
+            <a routerLink="/app/user-setting">User Settings</a>
             <a href="javascript:void(0)" (click)="resetPassword()">Change Password</a>
             <a href="javascript:void(0)" (click)="logout()">Log Out</a>
           </div>
