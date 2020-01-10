@@ -15,6 +15,7 @@ export class CustomFormbuilderComponent implements OnInit {
   @Input() isBaseField: boolean;
   @Input('fieldData') fieldData;
   @Input('editTemplate') editTemplate;
+  @Input('builderFor') builderFor;
   api_fs: any;
   externalAuth: any;
   showSpinner: boolean;
@@ -198,7 +199,14 @@ export class CustomFormbuilderComponent implements OnInit {
       response => {
         if (response && response.attributes) {
           //console.log('response from get attributes', response.attributes);
-          this.fieldModels = response.attributes;
+          const fieldModels = response.attributes;
+          if (this.builderFor === 'order'){
+            this.fieldModels = this.sortAttributes('order', fieldModels);
+          }else if (this.builderFor === 'lineitem') {
+            this.fieldModels = this.sortAttributes('lineitem', fieldModels);
+          } else {
+            this.fieldModels = fieldModels;
+          }
           this.fieldModels.forEach(element => {
             element.validation = [];
             if(element.type == 'varchar' || element.type == 'text' || element.type == 'string'){
@@ -292,6 +300,15 @@ export class CustomFormbuilderComponent implements OnInit {
         .map(res => {
           return res.json();
         }).share();
+  }
+
+  sortAttributes(value, arr) {
+    arr.forEach((element, index) => {
+      if(element.core === value){
+        arr.unshift(arr.splice(index, 1)[0]);
+      }
+    })
+    return arr;
   }
 
   onDragStart(event:DragEvent) {
