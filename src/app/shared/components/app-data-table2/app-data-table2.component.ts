@@ -162,6 +162,12 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     if (this.dataObject.gridData.options.isTree) {
                         rowData.push('');
                     }
+
+                    // ACTION col
+                    if(this.dataObject.gridData.options.isActionColPosition) {
+                        rowData.splice(this.dataObject.gridData.options.isActionColPosition, 0, '');
+                    }
+
                     for (const prop in result) {
                         const findProp = this.dataObject.gridData.headers.find(x => x.data === prop);
                         if (findProp) {
@@ -194,14 +200,31 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     columnButtonDefs += '<a class="fa fa-trash fa-action-view deleteLink" style="cursor: pointer"></a>';
                 }
 
-                if (columnButtonDefs) {
-                    columns.push({
-                        title: 'ACTIONS'
-                    });
-                    columnDefs.push({
-                        targets: -1,
-                        defaultContent: columnButtonDefs
-                    });
+                // if (columnButtonDefs) {
+                //     console.log("CDEFFEFEF 1", columns, columnDefs, columnButtonDefs)
+                //     columns.push({
+                //         title: 'ACTIONS'
+                //     });
+                //     columnDefs.push(
+                //         {
+                //         targets: -1,
+                //         defaultContent: columnButtonDefs
+                //     });
+                // }
+
+                if (columnButtonDefs && this.dataObject.gridData.options.isActionColPosition != null ) {
+                    columns.splice( 
+                        this.dataObject.gridData.options.isActionColPosition, 
+                        0, 
+                        {
+                            title: 'ACTIONS',
+                            data: null,
+                            orderable: false,
+                            render: function() {
+                                return columnButtonDefs
+                            }
+                        }
+                    );
                 }
 
                 if (this.dataObject.gridData.options.isTree) {
@@ -291,7 +314,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 select: {
                     style: this.dataObject.gridData.options.isRowSelection && this.dataObject.gridData.options.isRowSelection.isMultiple ? 'multi' : 'os',
                 },
-                order: [[1, 'asc']],
+
+                order: this.dataObject.gridData.options.isOrder ? 
+                        this.dataObject.gridData.options.isOrder : 
+                        [[1, 'asc']],
+
                 rowCallback: function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                     // Get row ID
                     // console.log('ROW SELECTED >>')
@@ -653,14 +680,44 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                     if(__this.dataObject.gridData.options.inheritHeadersForTree) {
                         if (!tr.hasClass('details')) {
-                            let ret = '';
+                            let retStr = '';
                             const data = __this.dataObject.gridData.result[row[0][0]].heirarchyData;
                             const rowData = __this.dataObject.gridData.result[row[0][0]];
                             data.forEach(function (d) {
                                 console.log('d >>>')
                                 console.log(d);
-                                ret += '<tr class="heirarchy" role="row">';
-                                ret += '<td class=" dt-body-center"><img style="width: 15px; position: relative; top: -2px" src="./../../../../assets/images/details_arrow.png">' + (rowData.alertEnabled && rowData.heirarchyData && rowData.heirarchyData.length ? '<div><b>ALERT</b></div>' : '') + '</td>';
+
+                                // ret += '<tr class="heirarchy" role="row">';
+                                // ret += '<td class=" dt-body-center"><img style="width: 15px; position: relative; top: -2px" src="./../../../../assets/images/details_arrow.png">' + (rowData.alertEnabled && rowData.heirarchyData && rowData.heirarchyData.length ? '<div><b>ALERT</b></div>' : '') + '</td>';
+                                // for (const prop in rowData) {
+                                //     let applyHeirarChyData;
+                                //     if (prop === 'name') {
+                                //         applyHeirarChyData = d['name'];
+                                //     } else if (prop === 'frequency') {
+                                //         applyHeirarChyData = d['frequency'];
+                                //     } else if (prop === 'period') {
+                                //         applyHeirarChyData = __this.datePipe.transform(d['report_run_start_time'], 'MMM-dd-yyyy') + ' - ' + __this.datePipe.transform(d['report_run_end_time'], 'MMM-dd-yyyy');
+                                //     } else if (prop === 'created_by') {
+                                //         applyHeirarChyData = d['created_by'];
+                                //     } else if (prop === 'lastruntime') {
+                                //         applyHeirarChyData = __this.datePipe.transform(d['report_run_end_time'], 'yyyy-dd-M h:mm:ss a');
+                                //     } else if (prop === 'status') {
+                                //         applyHeirarChyData = d['report_run_status'];
+                                //     }
+                                //     const field = __this.dataObject.gridData.headers.find(x => x.data === prop);
+                                //     if (field || applyHeirarChyData) {
+                                //         ret += '<td class="sorting_disabled" style="width: 30px;" aria-label="">' + (applyHeirarChyData ? applyHeirarChyData : rowData[prop]) + '</td>';
+                                //     }
+                                // }
+                                // ret += '<td class="sorting_disabled" style="width: 30px;"><a class="fa fa-pencil fa-action-view" style="margin-right: 15px; visibility: hidden; cursor: pointer"></a><a class="fa fa-play fa-action-view" style="margin-right: 15px; visibility: hidden; cursor: pointer"></a><a class="fa fa-download fa-action-view" href="' + d.report_run_file_location + '" style="margin-right: 15px; cursor: pointer"></a></td>';
+                                // ret += '</tr>';
+
+                                let retTr = [];
+                                let ret = []
+
+                                retTr.push('<tr class="heirarchy" role="row">');
+
+                                ret.push( '<td class=" dt-body-center"><img style="width: 15px; position: relative; top: -2px" src="./../../../../assets/images/details_arrow.png">' + (rowData.alertEnabled && rowData.heirarchyData && rowData.heirarchyData.length ? '<div><b>ALERT</b></div>' : '') + '</td>');
                                 for (const prop in rowData) {
                                     let applyHeirarChyData;
                                     if (prop === 'name') {
@@ -678,15 +735,22 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     }
                                     const field = __this.dataObject.gridData.headers.find(x => x.data === prop);
                                     if (field || applyHeirarChyData) {
-                                        ret += '<td class="sorting_disabled" style="width: 30px;" aria-label="">' + (applyHeirarChyData ? applyHeirarChyData : rowData[prop]) + '</td>';
+                                        ret.push( '<td class="sorting_disabled" style="width: 30px;" aria-label="">' + (applyHeirarChyData ? applyHeirarChyData : rowData[prop]) + '</td>');
                                     }
                                 }
+                                ret.push('<td class="sorting_disabled" style="width: 30px;"><a class="fa fa-pencil fa-action-view" style="margin-right: 15px; visibility: hidden; cursor: pointer"></a><a class="fa fa-play fa-action-view" style="margin-right: 15px; visibility: hidden; cursor: pointer"></a><a class="fa fa-download fa-action-view" href="' + d.report_run_file_location + '" style="margin-right: 15px; cursor: pointer"></a></td>');
 
-                                ret += '<td class="sorting_disabled" style="width: 30px;"><a class="fa fa-pencil fa-action-view" style="margin-right: 15px; visibility: hidden; cursor: pointer"></a><a class="fa fa-play fa-action-view" style="margin-right: 15px; visibility: hidden; cursor: pointer"></a><a class="fa fa-download fa-action-view" href="' + d.report_run_file_location + '" style="margin-right: 15px; cursor: pointer"></a></td>';
+                                if(__this.dataObject.gridData.options.isActionColPosition) {
+                                    ret.splice(__this.dataObject.gridData.options.isActionColPosition, 0, '<td class="">  ---  </td>');
+                                }
 
-                                ret += '</tr>';
+                                // retTr and not ret
+                                retTr.push('</tr>');
+
+                                retStr += retTr[0] +  ret.join('') + retTr[1];
+
                             });
-                            tr.after(ret);
+                            tr.after(retStr);
                             tr.addClass('details');
                         } else {
                             tr.nextUntil('tr:not(".heirarchy")').show();
