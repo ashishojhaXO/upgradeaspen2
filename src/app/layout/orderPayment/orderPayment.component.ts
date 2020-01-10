@@ -27,7 +27,8 @@ export class OrderPaymentComponent {
   orderId: string;
   vendorId: string;
   showSpinner: boolean;
-  domain: string;
+  // domain: string;
+  api_fs: any;
 
   constructor(
       private route: ActivatedRoute,
@@ -35,13 +36,15 @@ export class OrderPaymentComponent {
       private router: Router
   ) {
 
-    if(window.location.hostname.indexOf('-dev') !== -1 || window.location.hostname.indexOf('localhost') !== -1) {
-      this.domain = 'dev';
-    } else if (window.location.hostname.indexOf('-qa') !== -1) {
-      this.domain = 'qa';
-    } else {
-      this.domain = 'prod';
-    }
+    this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
+
+    // if(window.location.hostname.indexOf('-dev') !== -1 || window.location.hostname.indexOf('localhost') !== -1) {
+    //   this.domain = 'dev';
+    // } else if (window.location.hostname.indexOf('-qa') !== -1) {
+    //   this.domain = 'qa';
+    // } else {
+    //   this.domain = 'prod';
+    // }
 
     if (window['fs_widget_config']) {
       console.log('window.location.hostname')
