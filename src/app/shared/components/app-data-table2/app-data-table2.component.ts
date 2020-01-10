@@ -163,17 +163,27 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         rowData.push('');
                     }
 
-                    // ACTION col
-                    if(this.dataObject.gridData.options.isActionColPosition) {
-                        rowData.splice(this.dataObject.gridData.options.isActionColPosition, 0, '');
-                    }
-
                     for (const prop in result) {
                         const findProp = this.dataObject.gridData.headers.find(x => x.data === prop);
                         if (findProp) {
                             rowData.push(result[prop]);
                         }
                     }
+
+                    // ACTION col
+                    if(
+                        this.dataObject.gridData.options.isActionColPosition || 
+                        this.dataObject.gridData.options.isEditOption || 
+                        this.dataObject.gridData.options.isPlayOption ||
+                        this.dataObject.gridData.options.isDownloadOption ||
+                        this.dataObject.gridData.options.isDeleteOption
+                    ) {
+                        rowData.splice(
+                            this.dataObject.gridData.options.isActionColPosition || 0, 
+                            0, 'ACTIONS'
+                        );
+                    }
+
                     dataSet.push(rowData);
                 }, this);
             }
@@ -212,9 +222,14 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 //     });
                 // }
 
-                if (columnButtonDefs && this.dataObject.gridData.options.isActionColPosition != null ) {
+                if (columnButtonDefs) {
+                    let actionColPosition = 
+                        this.dataObject.gridData.options.isActionColPosition ? 
+                        this.dataObject.gridData.options.isActionColPosition :
+                        0;
+
                     columns.splice( 
-                        this.dataObject.gridData.options.isActionColPosition, 
+                        actionColPosition,
                         0, 
                         {
                             title: 'ACTIONS',
@@ -225,6 +240,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                             }
                         }
                     );
+                    // columnDefs.push(
+                    //     {
+                    //     targets: -1,
+                    //     defaultContent: columnButtonDefs
+                    // });
                 }
 
                 if (this.dataObject.gridData.options.isTree) {
