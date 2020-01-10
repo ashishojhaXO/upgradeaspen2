@@ -224,7 +224,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                 if (columnButtonDefs) {
                     let actionColPosition = 
-                        this.dataObject.gridData.options.isActionColPosition ? 
+                        this.dataObject.gridData.options.isActionColPosition && this.dataObject.gridData.options.isActionColPosition != null ? 
                         this.dataObject.gridData.options.isActionColPosition :
                         0;
 
