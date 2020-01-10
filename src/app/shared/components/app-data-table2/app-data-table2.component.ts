@@ -172,14 +172,14 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                     // ACTION col
                     if(
-                        this.dataObject.gridData.options.isActionColPosition || 
-                        this.dataObject.gridData.options.isEditOption || 
+                        this.dataObject.gridData.options.isActionColPosition ||
+                        this.dataObject.gridData.options.isEditOption ||
                         this.dataObject.gridData.options.isPlayOption ||
                         this.dataObject.gridData.options.isDownloadOption ||
                         this.dataObject.gridData.options.isDeleteOption
                     ) {
                         rowData.splice(
-                            this.dataObject.gridData.options.isActionColPosition || 0, 
+                            this.dataObject.gridData.options.isActionColPosition || 0,
                             0, 'ACTIONS'
                         );
                     }
@@ -223,14 +223,14 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // }
 
                 if (columnButtonDefs) {
-                    let actionColPosition = 
-                        this.dataObject.gridData.options.isActionColPosition && this.dataObject.gridData.options.isActionColPosition != null ? 
+                    let actionColPosition =
+                        this.dataObject.gridData.options.isActionColPosition && this.dataObject.gridData.options.isActionColPosition != null ?
                         this.dataObject.gridData.options.isActionColPosition :
                         0;
 
-                    columns.splice( 
+                    columns.splice(
                         actionColPosition,
-                        0, 
+                        0,
                         {
                             title: 'ACTIONS',
                             data: null,
@@ -335,8 +335,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     style: this.dataObject.gridData.options.isRowSelection && this.dataObject.gridData.options.isRowSelection.isMultiple ? 'multi' : 'os',
                 },
 
-                order: this.dataObject.gridData.options.isOrder ? 
-                        this.dataObject.gridData.options.isOrder : 
+                order: this.dataObject.gridData.options.isOrder ?
+                        this.dataObject.gridData.options.isOrder :
                         [[1, 'asc']],
 
                 rowCallback: function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -431,32 +431,44 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div class="input-group date datepicker"><input placeholder="Select ' + field.label + '" type="text" class="form-control inlineEditor ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' ) + '" style="border-radius: 4px; font-size: 12px" value="' + $('td', row).eq(columnIndex).text()  + '" /> <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span></div></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
                                     $('td', row).eq(columnIndex).html(html);
                                 } else if (field.type === 'list') {
-                                    if (field.name === 'ad_copy') {
 
-                                        let options = '<option value="">--Select--</option>';
-                                        field.options.forEach(function (option, index1) {
-                                            options += '<option value="' + option.key + '"';
-                                            if(option.key === field.value) {
-                                                options += ' selected ';
-                                            }
-                                            options += '>' + option.text + '</option>';
-                                        });
-                                        const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class="form-control inlineEditor select-control ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
-                                        $('td', row).eq(columnIndex).html(html);
+                                    let options = '<option value="">--Select--</option>';
+                                    field.options.forEach(function (option, index1) {
+                                        options += '<option value="' + option.key + '"';
+                                        if(option.key === field.value) {
+                                            options += ' selected ';
+                                        }
+                                        options += '>' + option.text + '</option>';
+                                    });
+                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class="form-control inlineEditor select-control ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
+                                    $('td', row).eq(columnIndex).html(html);
 
-                                       // $('td', row).eq(columnIndex).html('<div><img class="display-ad" src="./../../../../assets/images/adCopy.png" style="width: 38px; cursor: pointer"/></div>');
-                                    } else {
-                                        let options = '<option value="">--Select--</option>';
-                                        field.options.forEach(function (option, index1) {
-                                            options += '<option value="' + option.key + '"';
-                                            if(option.key === field.value) {
-                                                options += ' selected ';
-                                            }
-                                            options += '>' + option.text + '</option>';
-                                        });
-                                        const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class="form-control inlineEditor select-control ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
-                                        $('td', row).eq(columnIndex).html(html);
-                                    }
+                                    // if (field.name === 'ad_copy') {
+                                    //
+                                    //     let options = '<option value="">--Select--</option>';
+                                    //     field.options.forEach(function (option, index1) {
+                                    //         options += '<option value="' + option.key + '"';
+                                    //         if(option.key === field.value) {
+                                    //             options += ' selected ';
+                                    //         }
+                                    //         options += '>' + option.text + '</option>';
+                                    //     });
+                                    //     const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class="form-control inlineEditor select-control ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
+                                    //     $('td', row).eq(columnIndex).html(html);
+                                    //
+                                    //    // $('td', row).eq(columnIndex).html('<div><img class="display-ad" src="./../../../../assets/images/adCopy.png" style="width: 38px; cursor: pointer"/></div>');
+                                    // } else {
+                                    //     let options = '<option value="">--Select--</option>';
+                                    //     field.options.forEach(function (option, index1) {
+                                    //         options += '<option value="' + option.key + '"';
+                                    //         if(option.key === field.value) {
+                                    //             options += ' selected ';
+                                    //         }
+                                    //         options += '>' + option.text + '</option>';
+                                    //     });
+                                    //     const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class="form-control inlineEditor select-control ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
+                                    //     $('td', row).eq(columnIndex).html(html);
+                                    // }
                                 } else if (field.type === 'checkbox') {
                                     let options = '';
                                     field.options.forEach(function (option, index1) {

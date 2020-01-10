@@ -14,7 +14,7 @@
             (dndEnd)="onDragEnd($event)">
             <i *ngIf="isBaseField" [ngClass]="item.icon" class="fa pull-left"></i>
             <h5 *ngIf="isBaseField" class="mb0 dragListItem">{{item.name}}</h5>
-            
+
             <h5 *ngIf="builderFor === 'order'" class="mb0 dragListItem">{{item.name}}<span *ngIf="item.core === 'order'">*</span></h5>
             <h5 *ngIf="builderFor === 'lineitem'" class="mb0 dragListItem">{{item.name}}<span *ngIf="item.core === 'lineitem'">*</span></h5>
           </div>
@@ -196,7 +196,7 @@
                 <label>Property Name</label>
                 <input type="text" class="form-control" [(ngModel)]="item.request_mapped_property">
                 <div style="padding: 10px 0px">
-                  <button type="button" class="btn btn-info" style="float: right" (click)="ValidateAPILookUp(item)">Test</button>
+                  <button type="button" class="btn btn-info" style="float: right" (click)="ValidateAPILookUp(item)">Validate</button>
                 </div>
               </div>
               <div class="form-group-fields">

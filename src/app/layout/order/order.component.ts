@@ -222,13 +222,6 @@ export class OrderComponent implements OnInit  {
           // Build Order Info
           if (response && response.orderTemplateData && response.orderTemplateData.orderFields && response.orderTemplateData.orderFields.length) {
             response.orderTemplateData.orderFields.forEach(function (ele) {
-
-              console.log('ele >>')
-              console.log(ele);
-
-              console.log('existingOrderInfo >>')
-              console.log(existingOrderInfo);
-
               let value =  ele.default_value || '';
               if (existingOrderInfo && existingOrderInfo.order[ele.name] !== null) {
                 value = existingOrderInfo.order[ele.name];
@@ -277,7 +270,11 @@ export class OrderComponent implements OnInit  {
                   type: ele.type,
                   validation : ele.validation,
                   value: ele.default_value || '',
-                  disabled : ele.disable !== 0
+                  disabled : ele.disable !== 0,
+                  request_type: ele.request_type,
+                  request_url: ele.request_url,
+                  request_payload: ele.request_payload,
+                  request_mapped_property: ele.request_mapped_property
                 };
 
                 if (ele.type === 'list' || ele.type === 'checkbox' || ele.type === 'radio') {
@@ -303,15 +300,112 @@ export class OrderComponent implements OnInit  {
               this.buildLineItem(this.dataFieldConfiguration, existingOrderInfo);
             }
 
+            // Perform API Lookup order field configuration
+            if(!this.existingOrder) {
+              response.orderTemplateData.orderFields.forEach(function (ele) {
+                if (ele.validation && ele.validation.indexOf('apiLookup') !== -1) {
+                  this.performApiLookUpForValue(ele.request_type, ele.request_url, ele.request_payload).subscribe(
+                      responseLookup => {
+                        if(ele.request_mapped_property) {
+                           if (ele.type === 'list') {
+                             if( Object.prototype.toString.call( responseLookup[ele.request_mapped_property] ) === '[object Array]' ) {
+                               (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property].length ? responseLookup[ele.request_mapped_property][0] : '');
+                               const options = [];
+                               responseLookup[ele.request_mapped_property].forEach(function (prop) {
+                                 options.push({
+                                   id: prop, text: prop
+                                 });
+                               });
+                               responseLookup[ele.request_mapped_property].forEach(function (prop) {
+                                 this.data.controls.forEach(function (ctrl) {
+                                   if (ctrl.name === ele.name) {
+                                     ctrl.options = options;
+                                   }
+                                 }, this);
+                               });
+                             } else {
+                               (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property]);
+                               this.data.controls.forEach(function (ctrl) {
+                                 if (ctrl.name === ele.name) {
+                                   ctrl.options = [{
+                                     id: responseLookup[ele.request_mapped_property], text: responseLookup[ele.request_mapped_property]
+                                   }];
+                                 }
+                               }, this);
+                             }
+                           } else {
+                             (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property]);
+                           }
+                         }
+                      });
+                  }
+              }, this);
+            }
+
+            // Perform API Lookup for line item configuration
+            if(!this.existingOrder) {
+              this.dataFieldConfiguration.forEach(function (lineItem) {
+                if (lineItem.validation && lineItem.validation.indexOf('apiLookup') !== -1) {
+                  this.performApiLookUpForValue(lineItem.request_type, lineItem.request_url, lineItem.request_payload).subscribe(
+                      responseLookup => {
+                        if(lineItem.request_mapped_property) {
+                          if (lineItem.type === 'list') {
+                            if( Object.prototype.toString.call( responseLookup[lineItem.request_mapped_property] ) === '[object Array]' ) {
+                              lineItem.value =  responseLookup[lineItem.request_mapped_property].length ? responseLookup[lineItem.request_mapped_property][0] : ''
+                              const options = [];
+                              responseLookup[lineItem.request_mapped_property].forEach(function (prop) {
+                                options.push({
+                                  key: prop, text: prop
+                                });
+                              });
+                              lineItem.options = options;
+                            } else {
+                              lineItem.value = lineItem.default_value = responseLookup[lineItem.request_mapped_property];
+                              lineItem.options = [{ key: responseLookup[lineItem.request_mapped_property], text: responseLookup[lineItem.request_mapped_property]}];
+                            }
+                          } else {
+                            lineItem.value =  responseLookup[lineItem.request_mapped_property];
+                          }
+                        }
+                      });
+                }
+              }, this);
+            }
+
           } else {
             this.buildTemplateForm();
             this.buildLineItem(this.dataFieldConfiguration, existingOrderInfo);
+
+            // Perform API Lookup for line item configuration
+            if(!this.existingOrder) {
+              this.dataFieldConfiguration.forEach(function (lineItem) {
+                if (lineItem.validation && lineItem.validation.indexOf('apiLookup') !== -1) {
+                  this.performApiLookUpForValue(lineItem.request_type, lineItem.request_url, lineItem.request_payload).subscribe(
+                      responseLookup => {
+                        if(lineItem.request_mapped_property) {
+                          if (lineItem.type === 'list') {
+                            if( Object.prototype.toString.call( responseLookup[lineItem.request_mapped_property] ) === '[object Array]' ) {
+                              lineItem.value =  responseLookup[lineItem.request_mapped_property].length ? responseLookup[lineItem.request_mapped_property][0] : ''
+                              const options = [];
+                              responseLookup[lineItem.request_mapped_property].forEach(function (prop) {
+                                options.push({
+                                  key: prop, text: prop
+                                });
+                              });
+                              lineItem.options = options;
+                            } else {
+                              lineItem.value = lineItem.default_value = responseLookup[lineItem.request_mapped_property];
+                              lineItem.options = [{ key: responseLookup[lineItem.request_mapped_property], text: responseLookup[lineItem.request_mapped_property]}];
+                            }
+                          } else {
+                            lineItem.value =  responseLookup[lineItem.request_mapped_property];
+                          }
+                        }
+                      });
+                }
+              }, this);
+            }
           }
-
-
-          console.log('this.dataFieldConfiguration');
-          console.log(this.dataFieldConfiguration);
-
         },
         err => {
 
@@ -379,6 +473,32 @@ export class OrderComponent implements OnInit  {
         }).share();
   }
 
+  performApiLookUpForValue(requestType, requestUrl, requestPayload) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    const data = requestPayload ? requestPayload : {};
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    if(requestType === 'post') {
+      return this.http
+          .post(requestUrl, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    } else if(requestType === 'get') {
+      return this.http
+          .get(requestUrl, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    }
+  }
 
   addLineItem() {
 
