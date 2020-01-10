@@ -50,7 +50,6 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
     isPlayOption: {
       value : true
     },
-
     // Any number starting from 1 to ..., but not 0
     isActionColPosition: 1, // This can not be 0, since zeroth column logic might crash 
     // since isActionColPosition is 1, isOrder is also required to be sent, 

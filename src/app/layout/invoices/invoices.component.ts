@@ -47,7 +47,12 @@ export class InvoicesComponent implements OnInit  {
     isPageLength: true,
     isPagination: true,
     sendResponseOnCheckboxClick: true,
-    fixedColumn: 1
+    fixedColumn: 1,
+    // Any number starting from 1 to ..., but not 0
+    isActionColPosition: 1, // This can not be 0, since zeroth column logic might crash 
+    // since isActionColPosition is 1, isOrder is also required to be sent, 
+    // since default ordering assigned in dataTable is [[1, 'asc']]
+    isOrder: [[2, 'asc']], 
   }];
   dashboard: any;
   api_fs: any;
