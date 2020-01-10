@@ -36,7 +36,15 @@ export class AppComponent {
     // localStorage.setItem("apis_fs", JSON.stringify(apis_fs));
     // localStorage.setItem("externalAuth", JSON.stringify(externalAuth));
     // localStorage.setItem("externalPaymentGateway", JSON.stringify(externalPaymentGateway));
-
+    
+    // new app config
+    // var apis_fs = {  
+    //   api: "https://plazo-dev.fusionseven.net",
+    //   widget: "https://static.fusionseven.net/widget/widget_dev.js",
+    //   version: "306"
+    // };
+    // localStorage.setItem("apis_fs", JSON.stringify(apis_fs));
+      
     const browserLang = translate.getBrowserLang();
     translate.use(browserLang.match(/en|fr|ur/) ? browserLang : 'en');
   }

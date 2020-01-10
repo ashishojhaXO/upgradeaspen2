@@ -27,6 +27,7 @@ export class LoginNewComponent implements OnInit {
   formError: string = null;
   api_fs: any;
   showSpinner: boolean;
+  version: any;
 
   constructor(
     private common:Common,
@@ -45,6 +46,7 @@ export class LoginNewComponent implements OnInit {
       localStorage.setItem('apis_fs', JSON.stringify(ENV.apis_fs));
     // or some url from config file
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs')) || ENV.apis_fs;
+    this.version = this.api_fs.version;
   }
 
   private formOnInit(){
