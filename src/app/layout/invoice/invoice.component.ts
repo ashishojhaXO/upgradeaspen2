@@ -28,9 +28,10 @@ export class InvoiceComponent implements OnInit  {
   widget: any;
   invoiceId: any;
   selectedRow: any;
-  invoiceItems = [];
+  invoices = [];
   totalAmount = 0;
   memo: string;
+  selectedInvoice: any;
   @ViewChild('AddPayment') addPayment: PopUpModalComponent;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
@@ -59,14 +60,50 @@ export class InvoiceComponent implements OnInit  {
     });
   }
 
+  hideProfile(invoice) {
+    invoice.show = false;
+  }
+
+  getInvoiceDetails(invoice) {
+    invoice.show = true;
+    console.log('invoice >>')
+    console.log(invoice);
+    if(!invoice.invoiceItems.length) {
+      this.getKenshooProfileDetails(invoice, invoice.profileName, invoice.invoiceHeaderId);
+    }
+  }
+
   searchDataRequest(invoiceId) {
     this.searchData(invoiceId).subscribe(
         response => {
           if (response && response.data) {
-            this.invoiceItems = response.data;
-            this.invoiceItems.forEach(function (item) {
-              item.pay = '';
-            }, this);
+            const kenshoo_data = response.data.find(x=> x.site_name.toLowerCase() === 'kenshoo');
+            if (!kenshoo_data) {
+              const invoiceItems = response.data;
+              invoiceItems.forEach(function (item) {
+                item.pay = '';
+              }, this);
+              this.invoices.push({
+                isKenshoo: false,
+                invoiceNumber: invoiceItems.length ? invoiceItems[0].invoice_number : '',
+                invoiceHeaderId: invoiceItems.length ? invoiceItems[0].invoice_header_id : '',
+                invoiceItems : invoiceItems,
+                show: true
+              });
+            } else {
+              response.data.forEach(function (d) {
+                this.invoices.push({
+                  isKenshoo: true,
+                  profileName: d.profile_name,
+                  invoiceNumber: d.invoice_number,
+                  invoiceHeaderId: d.invoice_header_id,
+                  invoiceItems : [],
+                  billedAmount : d.billed_amount,
+                  calculatedAmount: d.calculated_amount,
+                  discrepancyAmount: d.discrepancy_amount
+              });
+              }, this);
+            }
             this.showSpinner = false;
           }
         },
@@ -95,6 +132,66 @@ export class InvoiceComponent implements OnInit  {
           }
         }
     );
+  }
+
+  getKenshooProfileDetails(invoice, profileName, invoice_header_id) {
+    this.searchProfileData(profileName, invoice_header_id).subscribe(
+        response => {
+          if (response && response.data) {
+            const invoiceItems = response.data;
+            invoiceItems.forEach(function (item) {
+              item.pay = '';
+            }, this);
+            invoice.invoiceItems = invoiceItems;
+            this.showSpinner = false;
+          }
+
+          console.log('invoice')
+          console.log(invoice);
+
+        },
+        err => {
+
+          if(err.status === 401) {
+            if(localStorage.getItem('accessToken')) {
+              this.widget.tokenManager.refresh('accessToken')
+                  .then(function (newToken) {
+                    localStorage.setItem('accessToken', newToken);
+                    this.showSpinner = false;
+                    this.getKenshooProfileDetails(invoice, profileName, invoice_header_id);
+                  })
+                  .catch(function (err) {
+                    console.log('error >>')
+                    console.log(err);
+                  });
+            } else {
+              this.widget.signOut(() => {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/login';
+              });
+            }
+          } else {
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+
+  searchProfileData(profileName, InvoiceHeaderID) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/payments/invoices/line-items?profile_name=' + profileName + '&invoice_header_id=' + InvoiceHeaderID;
+    return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   searchData(invoiceId) {
@@ -129,9 +226,9 @@ export class InvoiceComponent implements OnInit  {
       this[rowObj.action](rowObj);
   }
 
-  updateTotal() {
+  updateTotal(invoice) {
     this.totalAmount = 0;
-    this.invoiceItems.forEach(function (item) {
+    invoice.invoiceItems.forEach(function (item) {
       this.totalAmount += item.pay ? parseFloat(item.pay) : 0;
     }, this);
   }
@@ -140,7 +237,7 @@ export class InvoiceComponent implements OnInit  {
 
     modalComponent.hide();
     const lineItems = [];
-    this.invoiceItems.forEach(function (item) {
+    this.selectedInvoice.invoiceItems.forEach(function (item) {
       lineItems.push({
         id : item.line_item_id,
         amount: item.pay ? parseFloat(item.pay) : 0,
@@ -148,10 +245,14 @@ export class InvoiceComponent implements OnInit  {
       });
     }, this);
 
+    console.log('this.selectedInvoice >>')
+    console.log(this.selectedInvoice);
+
+
     const dataObj = {
       invoice: {
-        number: this.invoiceItems[0].invoice_number,
-        header_id: this.invoiceItems[0].invoice_header_id,
+        number: this.selectedInvoice.invoiceNumber,
+        header_id: this.selectedInvoice.invoiceHeaderId,
         amount : this.totalAmount, // total amount of the entered values in line item,
         memo: this.memo
       },
@@ -233,7 +334,8 @@ export class InvoiceComponent implements OnInit  {
         }).share();
   }
 
-  handleShowModal(modalComponent: PopUpModalComponent) {
+  handleShowModal(modalComponent: PopUpModalComponent, invoice: any) {
+    this.selectedInvoice = invoice;
     modalComponent.show();
   }
   handleCloseModal(modalComponent: PopUpModalComponent) {

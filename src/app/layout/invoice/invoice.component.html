@@ -2,72 +2,97 @@
     <div class="col-lg-12 col-md-12" style="padding-left: 0px">
         <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">INVOICE DETAILS</p>
     </div>
-    <div class="col-lg-12 col-mg-12 col-sm-12 form-group-fields" style="background: #fff" *ngIf="invoiceItems.length">
-        <p style="clear: both"></p>
-        <div style="padding-bottom: 35px">
-            <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
-                <div class="col-sm-4"><label>Invoice Number</label></div>
+    <div class="col-lg-12 col-mg-12 col-sm-12 form-group-fields" style="background: #fff" *ngIf="invoices.length">
+        <div *ngFor="let invoice of invoices; let j=index" style="margin-bottom: 10px" [style.marginTop]="j ===0 ? '10px' : '0px'">
+            <div *ngIf="invoice.isKenshoo" style="background: beige">
+                 <i class="fa fa-minus" style="cursor: pointer" [hidden]="!invoice.show" (click)="hideProfile(invoice)"></i>
+                    <i class="fa fa-plus" style="cursor: pointer" [hidden]="invoice.show" (click)="getInvoiceDetails(invoice)"></i>
+                    <h5 style="display: inline-block">{{invoice.profileName ? invoice.profileName : '-' }}</h5>
             </div>
-            <div>
-                <div class="col-sm-4"><span
-                        class="paymentText">{{invoiceItems[0].invoice_number ? invoiceItems[0].invoice_number : '-'}}</span>
-                </div>
-            </div>
-        </div>
-        <div style="margin-left: 15px;">
-            <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px; border-bottom: 1px solid">
-                <div class="col-sm-1"><label>Date</label></div>
-                <div class="col-sm-1"><label>Line Item ID</label></div>
-                <div class="col-sm-1"><label>Order ID</label></div>
-                <div class="col-sm-1"><label>Site Name</label></div>
-                <div class="col-sm-1"><label>Vendor ID</label></div>
-                <div class="col-sm-1"><label>Vendor Name</label></div>
-                <div class="col-sm-1" style="text-align: right"><label>Billed Amount</label></div>
-                <div class="col-sm-1" style="text-align: right"><label>Calculated Amount</label></div>
-                <div class="col-sm-1" style="text-align: right"><label>Discrepancy Amount</label></div>
-                <div class="col-sm-1" style="text-align: right"><label></label></div>
-                <div class="col-sm-2" style="text-align: center"><label>Pay Amount</label></div>
-            </div>
-            <div class="row" style="margin-bottom: 10px" *ngFor="let item of invoiceItems; let i= index" [style.background]="i % 2 === 0 ? '#f9f9f9' : '#fff'">
-                <div class="col-sm-1"><span class="paymentText">{{item.month}} {{item.year}} </span></div>
-                <div class="col-sm-1"><span class="paymentText">{{item.line_item_id}}</span></div>
-                <div class="col-sm-1"><span class="paymentText">{{item.order_id}}</span></div>
-                <div class="col-sm-1"><span class="paymentText">{{item.site_name}}</span></div>
-                <div class="col-sm-1"><span class="paymentText">{{item.client_id}}</span></div>
-                <div class="col-sm-1"><span class="paymentText">{{item.company_name}}</span></div>
-                <div class="col-sm-1" style="text-align: right"><span
-                        class="paymentText">{{item.billed_amount | currency:"USD":true:'1.0-0'}}</span></div>
-                <div class="col-sm-1" style="text-align: right"><span
-                        class="paymentText">{{item.calculated_amount | currency:"USD":true:'1.0-0'}}</span></div>
-                <div class="col-sm-1" style="text-align: right"><span
-                        class="paymentText">{{item.discrepancy_amount | currency:"USD":true:'1.0-0'}}</span></div>
-                <div class="col-sm-1"><span class="paymentText"></span></div>
-                <div class="col-sm-2">
-                    <div class="input-group col-sm-12">
-                        <span class="input-group-addon">$</span>
-                        <input type="text" numeric numericType="decimal" class="form-control"
-                               style="border-radius: 0 4px 4px 0; text-align: right" [(ngModel)]="item.pay" (keyup)="updateTotal()">
+            <div [hidden]="!invoice.show">
+                <p style="clear: both"></p>
+                <div style="padding-bottom: 35px">
+                    <div>
+                        <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+                            <div class="col-sm-4"><label>Invoice Number : {{invoice.invoiceNumber ? invoice.invoiceNumber : '-'}}</label></div>
+                        </div>
                     </div>
-                    <!--<div class="alert alert-danger" *ngIf="control.invalid">-->
-                    <!--<i class="fa fa-exclamation-circle" aria-hidden="true"></i>-->
-                    <!--<span *ngIf="control.errors['partialExceeds']">-->
-                    <!--Line Item partial amount exceeds amount due.-->
-                    <!--</span>-->
-                    <!--<span *ngIf="control.errors['negativeNumber']">-->
-                    <!--Amount cannot be Negative.-->
-                    <!--</span>-->
-                    <!--</div>-->
+                    <div *ngIf="invoice.isKenshoo">
+                        <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+                            <div class="col-sm-4"><label>Billed Amount : {{invoice.billedAmount ? invoice.billedAmount : 0}}</label></div>
+                        </div>
+                    </div>
+                    <div *ngIf="invoice.isKenshoo">
+                        <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+                            <div class="col-sm-4"><label>Total Calculated Amount : {{invoice.calculatedAmount ? invoice.calculatedAmount : 0}}</label></div>
+                        </div>
+                    </div>
+                    <div *ngIf="invoice.isKenshoo">
+                        <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+                            <div class="col-sm-4"><label>Discrepancy Amount : {{invoice.discrepancyAmount ? invoice.discrepancyAmount : 0 }}</label></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div style="margin-left: 15px;">
+                    <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px; border-bottom: 1px solid">
+                        <div class="col-sm-1"><label>Date</label></div>
+                        <div class="col-sm-1"><label>Line Item ID</label></div>
+                        <div class="col-sm-1"><label>Order ID</label></div>
+                        <div class="col-sm-1"><label>Site Name</label></div>
+                        <div class="col-sm-1"><label>Vendor ID</label></div>
+                        <div class="col-sm-1"><label>Vendor Name</label></div>
+                        <div [style.visibility]="invoice.isKenshoo ? 'hidden' : 'visible'" class="col-sm-1" style="text-align: right"><label>Billed Amount</label></div>
+                        <div class="col-sm-1" style="text-align: right"><label>Calculated Amount</label></div>
+                        <div [style.visibility]="invoice.isKenshoo ? 'hidden' : 'visible'" class="col-sm-1" style="text-align: right"><label>Discrepancy Amount</label></div>
+                        <div class="col-sm-1" style="text-align: right"><label></label></div>
+                        <div class="col-sm-2" style="text-align: center"><label>Pay Amount</label></div>
+                    </div>
+                    <div *ngIf="invoice.invoiceItems && invoice.invoiceItems.length">
+                        <div class="row" style="margin-bottom: 10px" *ngFor="let item of invoice.invoiceItems; let i= index" [style.background]="i % 2 === 0 ? '#f9f9f9' : '#fff'">
+                            <div class="col-sm-1"><span class="paymentText">{{item.month}} {{item.year}} </span></div>
+                            <div class="col-sm-1"><span class="paymentText">{{item.line_item_id}}</span></div>
+                            <div class="col-sm-1"><span class="paymentText">{{item.order_id}}</span></div>
+                            <div class="col-sm-1"><span class="paymentText">{{item.site_name}}</span></div>
+                            <div class="col-sm-1"><span class="paymentText">{{item.client_id}}</span></div>
+                            <div class="col-sm-1"><span class="paymentText">{{item.company_name}}</span></div>
+                            <div [style.visibility]="invoice.isKenshoo ? 'hidden' : 'visible'"  class="col-sm-1" style="text-align: right"><span
+                                    class="paymentText">{{item.billed_amount | currency:"USD":true:'1.0-0'}}</span></div>
+                            <div class="col-sm-1" style="text-align: right"><span
+                                    class="paymentText">{{ invoice.isKenshoo ? (item.total_spend | currency:"USD":true:'1.0-0') : (item.calculated_amount | currency:"USD":true:'1.0-0')}}</span></div>
+                            <div [style.visibility]="invoice.isKenshoo ? 'hidden' : 'visible'" class="col-sm-1" style="text-align: right"><span
+                                    class="paymentText">{{item.discrepancy_amount | currency:"USD":true:'1.0-0'}}</span></div>
+                            <div class="col-sm-1"><span class="paymentText"></span></div>
+                            <div class="col-sm-2">
+                                <div class="input-group col-sm-12">
+                                    <span class="input-group-addon">$</span>
+                                    <input type="text" numeric numericType="decimal" class="form-control"
+                                           style="border-radius: 0 4px 4px 0; text-align: right" [(ngModel)]="item.pay" (keyup)="updateTotal(invoice)">
+                                </div>
+                                <!--<div class="alert alert-danger" *ngIf="control.invalid">-->
+                                <!--<i class="fa fa-exclamation-circle" aria-hidden="true"></i>-->
+                                <!--<span *ngIf="control.errors['partialExceeds']">-->
+                                <!--Line Item partial amount exceeds amount due.-->
+                                <!--</span>-->
+                                <!--<span *ngIf="control.errors['negativeNumber']">-->
+                                <!--Amount cannot be Negative.-->
+                                <!--</span>-->
+                                <!--</div>-->
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="col-sm-10"><span></span></div>
+                            <div class="col-sm-1" style="padding-left: 36px"><span><b>Total($)</b></span></div>
+                            <div class="col-sm-1"><span style="float: right; position: relative; left: 29px">{{totalAmount | number:'':'fr-FR'}}</span></div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="col-sm-11"><span></span></div>
+                            <div class="col-sm-1" style="padding-left: 42px; padding-right: 0px"><button class="btn pull-right" style="position: relative; left: 19px; margin-top: 30px; margin-bottom: 10px" (click)="handleShowModal(AddPayment, invoice)">Pay</button></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-sm-12">
-                <div class="col-sm-10"><span></span></div>
-                <div class="col-sm-1" style="padding-left: 36px"><span><b>Total($)</b></span></div>
-                <div class="col-sm-1"><span style="float: right; position: relative; left: 29px">{{totalAmount | number:'':'fr-FR'}}</span></div>
-            </div>
-            <div class="col-sm-12">
-                <div class="col-sm-11"><span></span></div>
-                <div class="col-sm-1" style="padding-left: 42px; padding-right: 0px"><button class="btn pull-right" style="position: relative; left: 19px; margin-top: 30px; margin-bottom: 10px" (click)="handleShowModal(AddPayment)">Pay</button></div>
-            </div>
+            <p style="clear: both"></p>
         </div>
     </div>
     <app-pop-up-modal #AddPayment>
