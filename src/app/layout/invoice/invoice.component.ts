@@ -60,12 +60,16 @@ export class InvoiceComponent implements OnInit  {
     });
   }
 
-  hideProfile(invoice) {
-    invoice.show = false;
+  onTabClick(invoice) {
+    if(invoice.show) {
+      invoice.show = false;
+    } else {
+      invoice.show = true;
+      this.getInvoiceDetails(invoice);
+    }
   }
 
   getInvoiceDetails(invoice) {
-    invoice.show = true;
     console.log('invoice >>')
     console.log(invoice);
     if(!invoice.invoiceItems.length) {
