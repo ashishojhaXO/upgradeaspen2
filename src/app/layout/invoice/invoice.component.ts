@@ -128,6 +128,13 @@ export class InvoiceComponent implements OnInit  {
               });
             }
           } else {
+            Swal({
+              title: 'No Invoices found',
+              text: 'We did not find any invoices associated with ID : ' + invoiceId,
+              type: 'error'
+            }).then( () => {
+              this.router.navigate(['/app/payments/invoices']);
+            });
             this.showSpinner = false;
           }
         }
