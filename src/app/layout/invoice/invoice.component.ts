@@ -29,7 +29,6 @@ export class InvoiceComponent implements OnInit  {
   invoiceId: any;
   selectedRow: any;
   invoices = [];
-  totalAmount = 0;
   memo: string;
   selectedInvoice: any;
   @ViewChild('AddPayment') addPayment: PopUpModalComponent;
@@ -238,9 +237,9 @@ export class InvoiceComponent implements OnInit  {
   }
 
   updateTotal(invoice) {
-    this.totalAmount = 0;
+    invoice.totalAmount = 0;
     invoice.invoiceItems.forEach(function (item) {
-      this.totalAmount += item.pay ? parseFloat(item.pay) : 0;
+      invoice.totalAmount += item.pay ? parseFloat(item.pay) : 0;
     }, this);
   }
 
@@ -264,7 +263,7 @@ export class InvoiceComponent implements OnInit  {
       invoice: {
         number: this.selectedInvoice.invoiceNumber,
         header_id: this.selectedInvoice.invoiceHeaderId,
-        amount : this.totalAmount, // total amount of the entered values in line item,
+        amount : this.selectedInvoice.totalAmount, // total amount of the entered values in line item,
         memo: this.memo
       },
       line_items: lineItems
