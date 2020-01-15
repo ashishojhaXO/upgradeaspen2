@@ -36,7 +36,6 @@
                 </div>
                 <div style="margin-left: 15px;">
                     <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px; border-bottom: 1px solid; margin-right: 5px">
-                        <div class="col-sm-1"><label>Date</label></div>
                         <div class="col-sm-1"><label>Line Item ID</label></div>
                         <div class="col-sm-1"><label>Order ID</label></div>
                         <div class="col-sm-1"><label>Site Name</label></div>
@@ -50,18 +49,17 @@
                     </div>
                     <div *ngIf="invoice.invoiceItems && invoice.invoiceItems.length">
                         <div class="row" style="margin-bottom: 10px" *ngFor="let item of invoice.invoiceItems; let i= index" [style.background]="i % 2 === 0 ? '#f9f9f9' : '#fff'">
-                            <div class="col-sm-1"><span class="paymentText">{{item.month}} {{item.year}} </span></div>
                             <div class="col-sm-1"><span class="paymentText">{{item.line_item_id}}</span></div>
                             <div class="col-sm-1"><span class="paymentText">{{item.order_id}}</span></div>
                             <div class="col-sm-1"><span class="paymentText">{{item.site_name}}</span></div>
                             <div class="col-sm-1"><span class="paymentText">{{item.client_id}}</span></div>
                             <div class="col-sm-1"><span class="paymentText">{{item.company_name}}</span></div>
                             <div [style.visibility]="invoice.isKenshoo ? 'hidden' : 'visible'"  class="col-sm-1" style="text-align: right"><span
-                                    class="paymentText">{{item.billed_amount | currency:"USD":true:'1.0-0'}}</span></div>
+                                    class="paymentText">{{item.billed_amount | currency:"USD":true:'1.2-2'}}</span></div>
                             <div class="col-sm-1" style="text-align: right"><span
-                                    class="paymentText">{{ invoice.isKenshoo ? (item.total_spend | currency:"USD":true:'1.0-0') : (item.calculated_amount | currency:"USD":true:'1.0-0')}}</span></div>
+                                    class="paymentText">{{ invoice.isKenshoo ? (item.total_spend | currency:"USD":true:'1.2-2') : (item.calculated_amount | currency:"USD":true:'1.2-2')}}</span></div>
                             <div [style.visibility]="invoice.isKenshoo ? 'hidden' : 'visible'" class="col-sm-1" style="text-align: right"><span
-                                    class="paymentText">{{item.discrepancy_amount | currency:"USD":true:'1.0-0'}}</span></div>
+                                    class="paymentText">{{item.discrepancy_amount | currency:"USD":true:'1.2-2'}}</span></div>
                             <div class="col-sm-1"><span class="paymentText"></span></div>
                             <div class="col-sm-2">
                                 <div class="input-group col-sm-12">
