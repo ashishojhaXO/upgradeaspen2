@@ -38,8 +38,8 @@
             <input formControlName="phone" type="text" class="col-lg-7 col-md-7 form-field"/>
           </div>
           <div class="col-lg-12 col-md-12 form-field" *ngIf="userProfile.controls['phone'].invalid && (userProfile.controls['phone'].dirty || userProfile.controls['phone'].touched)" class="alert alert-danger">
-            <div *ngIf="userProfile.controls['phone'].errors.required">
-              Phone number is required.
+            <div *ngIf="userProfile.controls['phone'].errors.pattern">
+              Only numbers allowed.
             </div>
           </div>
   
@@ -62,6 +62,11 @@
             <label class="col-lg-3 col-md-3">Zip Code : </label>
             <input formControlName="zipCode" type="text" class="col-lg-7 col-md-7 form-field"/>
           </div>
+          <div class="col-lg-12 col-md-12 form-field" *ngIf="userProfile.controls['zipCode'].invalid && (userProfile.controls['zipCode'].dirty || userProfile.controls['zipCode'].touched)" class="alert alert-danger">
+            <div *ngIf="userProfile.controls['zipCode'].errors.pattern">
+              Only numbers allowed.
+            </div>
+          </div>
   
           <div class="form-group-fields">
             <label class="col-lg-3 col-md-3">State : </label>
@@ -70,7 +75,11 @@
   
           <div class="form-group-fields">
             <label class="col-lg-3 col-md-3">Country : </label>
-            <input formControlName="country" type="text" class="col-lg-7 col-md-7 form-field"/>
+            <select2 width="100%" placeholder="Select" class="col-lg-7 col-md-7" style="padding: 0px; line-height: 1.42857143"
+              [value]="selectedCountry"
+              (valueChanged)="OnCountryChanged($event);"
+              [data]="countryArr"
+            ></select2>
           </div>
   
           <div class="form-group-fields">
