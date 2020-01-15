@@ -21,10 +21,15 @@ export class OrdersListComponent implements OnInit  {
   options: Array<any> = [{
     isSearchColumn: true,
     isTableInfo: true,
-    isEditOption: true,
+    isEditOption: {
+      value : true,
+      icon : '',
+      tooltip: 'Edit Order'
+    },
     isPlayOption: {
       value : true,
       icon : 'fa-dollar',
+      tooltip: 'Pay Order'
     },
     isDeleteOption: false,
     isAddRow: false,

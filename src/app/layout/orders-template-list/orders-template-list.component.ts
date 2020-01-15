@@ -21,7 +21,11 @@ export class OrdersTemplateListComponent implements OnInit  {
   options: Array<any> = [{
     isSearchColumn: true,
     isTableInfo: true,
-    isEditOption: true,
+    isEditOption: {
+      value : true,
+      icon : '',
+      tooltip: 'Edit Order Template'
+    },
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
@@ -32,10 +36,10 @@ export class OrdersTemplateListComponent implements OnInit  {
     isPagination: true,
     sendResponseOnCheckboxClick: true,
     // Any number starting from 1 to ..., but not 0
-    isActionColPosition: 0, // This can not be 0, since zeroth column logic might crash 
-    // since isActionColPosition is 1, isOrder is also required to be sent, 
+    isActionColPosition: 0, // This can not be 0, since zeroth column logic might crash
+    // since isActionColPosition is 1, isOrder is also required to be sent,
     // since default ordering assigned in dataTable is [[1, 'asc']]
-    isOrder: [[2, 'asc']], 
+    isOrder: [[2, 'asc']],
   }];
   api_fs: any;
   externalAuth: any;

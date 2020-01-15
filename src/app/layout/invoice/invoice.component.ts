@@ -69,8 +69,6 @@ export class InvoiceComponent implements OnInit  {
   }
 
   getInvoiceDetails(invoice) {
-    console.log('invoice >>')
-    console.log(invoice);
     if(!invoice.invoiceItems.length) {
       this.getKenshooProfileDetails(invoice, invoice.profileName, invoice.invoiceHeaderId);
     }
@@ -84,7 +82,7 @@ export class InvoiceComponent implements OnInit  {
             if (!kenshoo_data) {
               const invoiceItems = response.data;
               invoiceItems.forEach(function (item) {
-                item.pay = '';
+                item.pay = item.discrepancy_amount === 0 ? item.billed_amount : '';
               }, this);
               this.invoices.push({
                 isKenshoo: false,
@@ -270,6 +268,25 @@ export class InvoiceComponent implements OnInit  {
     };
 
     this.createTransactionRequest(dataObj);
+  }
+
+  getMonth(num) {
+    var ret = '';
+    switch (num) {
+      case 1: ret = 'Jan'; break;
+      case 2: ret = 'Feb'; break;
+      case 3: ret = 'Mar'; break;
+      case 4: ret = 'Apr'; break;
+      case 5: ret = 'May'; break;
+      case 6: ret = 'Jun'; break;
+      case 7: ret = 'Jul'; break;
+      case 8: ret = 'Aug'; break;
+      case 9: ret = 'Sep'; break;
+      case 10: ret = 'Oct'; break;
+      case 11: ret = 'Nov'; break;
+      case 12: ret = 'Dec'; break;
+    }
+    return ret;
   }
 
   createTransactionRequest(dataObj) {

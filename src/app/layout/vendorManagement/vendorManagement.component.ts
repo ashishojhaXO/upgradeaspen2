@@ -32,8 +32,16 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   options: Array<any> = [{
     isSearchColumn: true,
     isTableInfo: true,
-    isEditOption: true,
-    isDeleteOption: true,
+    isEditOption: {
+      value : true,
+      icon : '',
+      tooltip: 'Edit Vendor'
+    },
+    isDeleteOption: {
+      value : true,
+      icon : '',
+      tooltip: 'Delete Vendor'
+    },
     isAddRow: false,
     isColVisibility: true,
     isDownloadAsCsv: true,
@@ -43,10 +51,10 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     isPagination: true,
     isTree: true,
     // Any number starting from 1 to ..., but not 0
-    isActionColPosition: 1, // This can not be 0, since zeroth column logic might crash 
-    // since isActionColPosition is 1, isOrder is also required to be sent, 
+    isActionColPosition: 1, // This can not be 0, since zeroth column logic might crash
+    // since isActionColPosition is 1, isOrder is also required to be sent,
     // since default ordering assigned in dataTable is [[1, 'asc']]
-    isOrder: [[2, 'asc']], 
+    isOrder: [[2, 'asc']],
   }];
   dashboard: any;
   api_fs: any;
@@ -252,6 +260,10 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   handleDelete(dataObj: any) {
     // console.log('rowData >>>!!!!')
     // console.log(rowData);
+
+    console.log('dataObj >>')
+    console.log(dataObj);
+
     if (dataObj.data.id) {
       if (dataObj.data.id.no_of_orders > 0 && dataObj.data.id.no_of_users) {
         if (!this.showError) {
@@ -260,7 +272,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
           this.showError = false;
         }
       } else {
-        this.performVendorDeletionRequest(dataObj.data.id.id);
+        this.performVendorDeletionRequest(dataObj.data.id);
       }
     }
   }

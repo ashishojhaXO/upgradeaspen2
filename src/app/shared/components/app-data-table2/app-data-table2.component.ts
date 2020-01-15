@@ -196,18 +196,18 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             if (this.dataObject.gridData.options) {
 
                 let columnButtonDefs = '';
-                if (this.dataObject.gridData.options.isEditOption) {
-                    columnButtonDefs += '<a class="fa fa-pencil fa-action-view editLink" style="margin-right: 15px; cursor: pointer">';
+                if (this.dataObject.gridData.options.isEditOption && this.dataObject.gridData.options.isEditOption.value) {
+                    columnButtonDefs += '<a class="fa fa-pencil fa-action-view editLink" title="' + (this.dataObject.gridData.options.isEditOption.tooltip ? this.dataObject.gridData.options.isEditOption.tooltip : 'Edit' ) + '" style="margin-right: 15px; cursor: pointer">';
                 }
                 if (this.dataObject.gridData.options.isPlayOption && this.dataObject.gridData.options.isPlayOption.value) {
                     const iconClass = this.dataObject.gridData.options.isPlayOption.icon ? this.dataObject.gridData.options.isPlayOption.icon : 'fa-play';
-                    columnButtonDefs += '<a class="fa ' + iconClass  + ' fa-action-view playLink" style="margin-right: 15px; cursor: pointer">';
+                    columnButtonDefs += '<a class="fa ' + iconClass  + ' fa-action-view playLink" title="' + (this.dataObject.gridData.options.isPlayOption.tooltip ? this.dataObject.gridData.options.isPlayOption.tooltip : 'Click' ) + '" style="margin-right: 15px; cursor: pointer">';
                 }
                 if (this.dataObject.gridData.options.isDownloadOption && this.dataObject.gridData.options.isDownloadOption.value) {
-                    columnButtonDefs += '<a class="fa fa-download fa-action-view downloadLink" style="margin-right: 15px; cursor: pointer">';
+                    columnButtonDefs += '<a class="fa fa-download fa-action-view downloadLink" title="' + (this.dataObject.gridData.options.isDownloadOption.tooltip ? this.dataObject.gridData.options.isDownloadOption.tooltip : 'Download' ) + '" style="margin-right: 15px; cursor: pointer">';
                 }
-                if (this.dataObject.gridData.options.isDeleteOption) {
-                    columnButtonDefs += '<a class="fa fa-trash fa-action-view deleteLink" style="cursor: pointer"></a>';
+                if (this.dataObject.gridData.options.isDeleteOption && this.dataObject.gridData.options.isDeleteOption.value) {
+                    columnButtonDefs += '<a class="fa fa-trash fa-action-view deleteLink" title="' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete' ) + '" style="cursor: pointer"></a>';
                 }
 
                 // if (columnButtonDefs) {
@@ -249,7 +249,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                 if (this.dataObject.gridData.options.isTree) {
                     columnDefs.push({
-                        targets: 0,
+                        targets: this.dataObject.gridData.options.isActionColPosition === 0 ? 1 : 0,
                         searchable: false,
                         orderable: false,
                         width: '30px',
@@ -262,7 +262,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                 if (this.dataObject.gridData.options.isRowSelection) {
                     columnDefs.push({
-                        targets: this.dataObject.gridData.options.isTree ? 1 : 0,
+                        targets: this.dataObject.gridData.options.isTree && this.dataObject.gridData.options.isActionColPosition !== 0 ? 1 : 0,
                         searchable: false,
                         orderable: false,
                         width: '30px',

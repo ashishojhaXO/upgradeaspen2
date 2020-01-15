@@ -36,6 +36,7 @@ export class InvoicesComponent implements OnInit  {
     isPlayOption: {
       value : true,
       icon : 'fa-dollar',
+      tooltip: 'Pay Invoice'
     },
     isColVisibility: true,
     isRowHighlight: false,
@@ -43,16 +44,17 @@ export class InvoicesComponent implements OnInit  {
     isDownloadOption: {
       value: true,
       icon: '',
+      tooltip: 'View/Download Invoice'
     },
     isPageLength: true,
     isPagination: true,
     sendResponseOnCheckboxClick: true,
     fixedColumn: 1,
     // Any number starting from 1 to ..., but not 0
-    isActionColPosition: 0, // This can not be 0, since zeroth column logic might crash 
-    // since isActionColPosition is 1, isOrder is also required to be sent, 
+    isActionColPosition: 0, // This can not be 0, since zeroth column logic might crash
+    // since isActionColPosition is 1, isOrder is also required to be sent,
     // since default ordering assigned in dataTable is [[1, 'asc']]
-    isOrder: [[2, 'asc']], 
+    isOrder: [[2, 'asc']],
   }];
   dashboard: any;
   api_fs: any;

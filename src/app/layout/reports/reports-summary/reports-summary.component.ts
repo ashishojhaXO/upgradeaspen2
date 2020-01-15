@@ -33,7 +33,11 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
   options: Array<any> = [{
     isSearchColumn: true,
     isTableInfo: true,
-    isEditOption: true,
+    isEditOption: {
+      value : true,
+      icon : '',
+      tooltip: 'Edit Report'
+    },
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
@@ -51,10 +55,10 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
       value : true
     },
     // Any number starting from 1 to ..., but not 0
-    isActionColPosition: 1, // This can not be 0, since zeroth column logic might crash 
-    // since isActionColPosition is 1, isOrder is also required to be sent, 
+    isActionColPosition: 1, // This can not be 0, since zeroth column logic might crash
+    // since isActionColPosition is 1, isOrder is also required to be sent,
     // since default ordering assigned in dataTable is [[1, 'asc']]
-    isOrder: [[2, 'asc']], 
+    isOrder: [[2, 'asc']],
   }];
   dashboard: any;
   serverSide: any;
