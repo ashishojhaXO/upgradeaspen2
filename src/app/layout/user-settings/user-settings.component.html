@@ -1,0 +1,98 @@
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12 col-md-12">
+      <span class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">USER SETTINGS</span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-10">
+      <form [formGroup]="userProfile" (submit)="userProfileSubmit()">
+        <div class="form">
+          <div class="form-group-fields">
+            <label class="col-lg-3 col-md-3">Email : </label>
+            <input formControlName="email" type="text" class="col-lg-7 col-md-7 form-field"/>
+          </div>
+  
+          <div class="form-group-fields">
+            <label class="col-lg-3 col-md-3">First Name : </label>
+            <input formControlName="firstName" type="text" class="col-lg-7 col-md-7 form-field"/>
+          </div>
+          <div class="col-lg-12 col-md-12 form-field" *ngIf="userProfile.controls['firstName'].invalid && (userProfile.controls['firstName'].dirty || userProfile.controls['firstName'].touched)" class="alert alert-danger">
+            <div *ngIf="userProfile.controls['firstName'].errors.required">
+              First name is required.
+            </div>
+          </div>
+  
+          <div class="form-group-fields">
+            <label class="col-lg-3 col-md-3">Last Name : </label>
+            <input formControlName="lastName" type="text" class="col-lg-7 col-md-7 form-field"/>
+          </div>
+          <div class="col-lg-12 col-md-12 form-field" *ngIf="userProfile.controls['lastName'].invalid && (userProfile.controls['lastName'].dirty || userProfile.controls['lastName'].touched)" class="alert alert-danger">
+            <div *ngIf="userProfile.controls['lastName'].errors.required">
+              Last name is required.
+            </div>
+          </div>
+  
+          <div class="form-group-fields">
+            <label class="col-lg-3 col-md-3">Phone : </label>
+            <input formControlName="phone" type="text" class="col-lg-7 col-md-7 form-field"/>
+          </div>
+          <div class="col-lg-12 col-md-12 form-field" *ngIf="userProfile.controls['phone'].invalid && (userProfile.controls['phone'].dirty || userProfile.controls['phone'].touched)" class="alert alert-danger">
+            <div *ngIf="userProfile.controls['phone'].errors.pattern">
+              Only numbers allowed.
+            </div>
+          </div>
+  
+          <div class="form-group-fields">
+            <label class="col-lg-3 col-md-3">Address line 1 : </label>
+            <input formControlName="address1" type="text" class="col-lg-7 col-md-7 form-field"/>
+          </div>
+  
+          <div class="form-group-fields">
+            <label class="col-lg-3 col-md-3">Address line 2 : </label>
+            <input formControlName="address2" type="text" class="col-lg-7 col-md-7 form-field"/>
+          </div>
+  
+          <div class="form-group-fields">
+            <label class="col-lg-3 col-md-3">City : </label>
+            <input formControlName="city" type="text" class="col-lg-7 col-md-7 form-field"/>
+          </div>
+  
+          <div class="form-group-fields">
+            <label class="col-lg-3 col-md-3">Zip Code : </label>
+            <input formControlName="zipCode" type="text" class="col-lg-7 col-md-7 form-field"/>
+          </div>
+          <div class="col-lg-12 col-md-12 form-field" *ngIf="userProfile.controls['zipCode'].invalid && (userProfile.controls['zipCode'].dirty || userProfile.controls['zipCode'].touched)" class="alert alert-danger">
+            <div *ngIf="userProfile.controls['zipCode'].errors.pattern">
+              Only numbers allowed.
+            </div>
+          </div>
+  
+          <div class="form-group-fields">
+            <label class="col-lg-3 col-md-3">State : </label>
+            <input formControlName="state" type="text" class="col-lg-7 col-md-7 form-field"/>
+          </div>
+  
+          <div class="form-group-fields">
+            <label class="col-lg-3 col-md-3">Country : </label>
+            <select2 width="100%" placeholder="Select" class="col-lg-7 col-md-7" style="padding: 0px; line-height: 1.42857143"
+              [value]="selectedCountry"
+              (valueChanged)="OnCountryChanged($event);"
+              [data]="countryArr"
+            ></select2>
+          </div>
+  
+          <div class="form-group-fields">
+            <label class="col-lg-3 col-md-3">Role : </label>
+            <input formControlName="role" type="text" class="col-lg-7 col-md-7 form-field"/>
+          </div>
+          <br>
+          <div class="form-group-fields">
+            <button type="button" class="inaction-btn">CANCEL</button>
+            <button type="submit" class="action-btn" [disabled]="!userProfile.valid">SAVE</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

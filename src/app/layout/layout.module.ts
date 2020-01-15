@@ -53,6 +53,7 @@ import { CustomFormBuilderModule } from '../shared/components/customformbuilder/
 import { OrdersTemplateListComponent } from './orders-template-list/orders-template-list.component';
 import { OrdersListComponent } from './orders-list/orders-list.component';
 import { NumericDirective } from '../shared/directives/Numeric.directive';
+import { UserSettingsComponent } from './user-settings/user-settings.component';
 
 @NgModule({
     imports: [
@@ -110,7 +111,8 @@ import { NumericDirective } from '../shared/directives/Numeric.directive';
         OrderSummaryComponent,
         NumericDirective,
         InvoicesComponent,
-        InvoiceComponent
+        InvoiceComponent,
+        UserSettingsComponent
     ],
     providers: [
         AuthGuard,

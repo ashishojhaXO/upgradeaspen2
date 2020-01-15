@@ -24,6 +24,7 @@ import {OrdersTemplateListComponent} from './orders-template-list/orders-templat
 import {OrdersListComponent} from './orders-list/orders-list.component';
 import {InvoicesComponent} from './invoices/invoices.component';
 import {InvoiceComponent} from './invoice/invoice.component';
+import { UserSettingsComponent } from './user-settings/user-settings.component';
 
 const routes: Routes = [
     {
@@ -398,6 +399,14 @@ const routes: Routes = [
                       },
                     }
                 ]
+            },
+            {
+                path: 'user-setting',
+                component: UserSettingsComponent,
+                data: {
+                    breadcrumbs: true,
+                    text: 'User Settings'
+                }
             }
         ]
     }
