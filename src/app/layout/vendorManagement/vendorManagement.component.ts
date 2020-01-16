@@ -463,4 +463,10 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   handleShowModal(modalComponent: PopUpModalComponent) {
     modalComponent.show();
   }
+  
+  reLoad(){
+    this.showSpinner = true;
+    this.searchDataRequest();
+  }
+
 }

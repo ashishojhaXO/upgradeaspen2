@@ -147,4 +147,10 @@ export class AlertNoticationdashboardsComponent implements OnInit {
   handleRowSelection(rowObj: any, rowData: any) {
 
   }
+
+  reLoad(){
+    this.showSpinner = true;
+    this.searchDataRequest();
+  }
+
 }

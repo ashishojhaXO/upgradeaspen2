@@ -281,4 +281,9 @@ export class OrdersComponent implements OnInit  {
         }).share();
   }
 
+  reLoad(){
+    this.showSpinner = true;
+    this.searchDataRequest();
+  }
+
 }

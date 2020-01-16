@@ -279,4 +279,8 @@ export class OrdersListComponent implements OnInit  {
     this.searchDataRequest(value)
   }
 
+  reLoad(){
+    this.showSpinner = true;
+    this.searchDataRequest(this.templateValue);
+  }
 }

@@ -898,4 +898,8 @@ export class PaymentsComponent implements OnInit  {
     this.payeeArr = [];
     modalComponent.hide();
   }
+  reLoad(){
+    this.showSpinner = true;
+    this.searchDataRequest();
+  }
 }

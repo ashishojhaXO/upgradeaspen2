@@ -273,4 +273,9 @@ export class InvoicesComponent implements OnInit  {
         }).share();
   }
 
+  reLoad(){
+    this.showSpinner = true;
+    this.searchDataRequest();
+  }
+
 }

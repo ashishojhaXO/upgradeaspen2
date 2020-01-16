@@ -638,5 +638,9 @@ export class UserManagementComponent implements OnInit  {
   }
 
   // Started/
+  reLoad(){
+    this.showSpinner = true;
+    this.searchDataRequest();
+  }
 
 }
