@@ -18,15 +18,13 @@
 // }
 
 .header.desktop div.container {
-// .container {
-  // display: initial;
   display: inline !important;
 }
 
 .nav.navbar-nav.main-menu > div {
-  display: initial;
+  display: inline-grid;
   position: inherit;
-  padding: 20px;
+  padding: 10px 8px;
 }
 
 .nav.navbar-nav.main-menu > div .bottom-menu {
@@ -53,9 +51,10 @@
     cursor: pointer;
 }
 
-div.nav.navbar-nav {
-  margin-top: 12px;
-}
+// div.nav.navbar-nav {
+// div.nav.navbar-nav.main-menu {
+//   margin-top: 12px;
+// }
 
 div.active {
   background: #333333 !important;

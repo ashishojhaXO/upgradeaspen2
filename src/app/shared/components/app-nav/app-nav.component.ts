@@ -33,7 +33,7 @@ export class AppNavComponent implements OnInit, OnChanges {
         // this.urlPath = window.location.pathname;
 
         if(typeof this.mainUlClass == "undefined")
-            this.mainUlClass = "main-menu";
+            this.mainUlClass = "nav navbar-nav main-menu";
 
         // recurse & Set css property on init
         // this.recurse(this.mainmenu)
