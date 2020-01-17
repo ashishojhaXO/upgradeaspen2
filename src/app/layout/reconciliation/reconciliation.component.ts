@@ -228,4 +228,9 @@ export class ReconciliationComponent implements OnInit  {
         channel.push({ id: 'google', itemName: 'Google'});
         return channel;
     }
+
+    reLoad(){
+      this.showSpinner = true;
+      this.searchDataRequest();
+    }
 }
