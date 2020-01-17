@@ -18,19 +18,12 @@
 // }
 
 .header.desktop div.container {
-// .container {
-  // display: initial;
   display: inline !important;
 }
 
 .nav.navbar-nav.main-menu > div {
-  // display: initial;
   display: inline-grid;
   position: inherit;
-  // padding: 20px;
-  // padding: 10px;
-  // padding: 9px 10px;
-  // padding: 9px;
   padding: 10px 8px;
 }
 
