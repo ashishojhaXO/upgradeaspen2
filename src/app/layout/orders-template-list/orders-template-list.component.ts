@@ -181,4 +181,9 @@ export class OrdersTemplateListComponent implements OnInit  {
       this[rowObj.action](rowObj);
   }
 
+  reLoad(){
+    this.showSpinner = true;
+    this.searchDataRequest();
+  }
+
 }
