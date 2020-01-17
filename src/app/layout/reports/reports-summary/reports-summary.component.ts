@@ -329,4 +329,9 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
       this.toastr.error('ERROR!', message);
     });
   }
+  reLoad(){
+    this.showSpinner = true;
+    this.populateReportDataTable();
+  }
+
 }

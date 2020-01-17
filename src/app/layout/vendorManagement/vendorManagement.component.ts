@@ -312,7 +312,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
           console.log(response);
           if (response) {
             this.showSpinner = false;
-            this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Vendor successfully ' + ( this.editID ? 'updated' : 'created' ) : 'Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
+            this.error = { type : response.data ? 'success' : 'fail' , message : response.data ?  'Vendor successfully ' + ( this.editID ? 'updated' : 'created' ) : 'Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
           }
         },
         err => {
@@ -475,4 +475,10 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   handleShowModal(modalComponent: PopUpModalComponent) {
     modalComponent.show();
   }
+  
+  reLoad(){
+    this.showSpinner = true;
+    this.searchDataRequest();
+  }
+
 }

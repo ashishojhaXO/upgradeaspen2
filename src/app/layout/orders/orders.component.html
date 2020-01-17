@@ -4,6 +4,9 @@
     <!--<div class="alert-btn type-create pull-right">-->
       <!--<a title="create" class="button btn btn-primary" routerLink="/app/order" href="javascript:void(0)">CREATE NEW ORDER</a>-->
     <!--</div>-->
+    <div class="pull-right">
+      <a (click)="reLoad()" class="button btn btn-success" style="background-color: #0777bc"><i class="fa fa-fw fa-refresh" aria-hidden="true"></i>Reload</a>
+    </div>
   </div>
   <!--<div class="col-lg-12 col-md-12" style="margin: 0px 0px 20px">-->
     <!--<button type="submit"-->
@@ -36,4 +39,4 @@
     </div>
   </div>
 </div>
-
+<app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>

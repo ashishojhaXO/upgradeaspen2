@@ -2,6 +2,7 @@
   <span class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">PAYMENTS</span>
   <div class="pull-right">
     <a title="Create Payment" class="btn btn-success" (click)="handleShowModal(AddPayment)" href="javascript:void(0)">CREATE TRANSACTION</a>
+    <a (click)="reLoad()" class="button btn btn-success" style="background-color: #0777bc"><i class="fa fa-fw fa-refresh" aria-hidden="true"></i>Reload</a>
   </div>
 </div>
 <div *ngIf="summary.length" style="background-color: #FFF; width: 100%;margin-top: 50px; padding: 10px 0px">
@@ -27,6 +28,7 @@
     </div>
   </div>
 </div>
+<app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
 <div style="width:100%">
     <app-pop-up-modal #AddPayment>
       <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
