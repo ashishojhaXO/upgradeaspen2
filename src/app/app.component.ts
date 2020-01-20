@@ -1,6 +1,7 @@
 import { Component, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -12,9 +13,18 @@ export class AppComponent {
   title = 'app';
 
   constructor(private translate: TranslateService,
+    private router: Router,
     public toastr: ToastsManager,
     vRef: ViewContainerRef) {
-
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        const userID = localStorage.getItem('loggedInUserID') || '';
+        (<any>window).ga('set', 'page', event.urlAfterRedirects);
+        (<any>window).ga('set', 'userId', userID);
+        (<any>window).ga('send', 'pageview');
+        // console.log("analytics log-------->", event, event.urlAfterRedirects, userID);
+      }
+    });
     translate.addLangs(['en', 'fr', 'ur']);
     translate.setDefaultLang('en');
     this.toastr.setRootViewContainerRef(vRef);
