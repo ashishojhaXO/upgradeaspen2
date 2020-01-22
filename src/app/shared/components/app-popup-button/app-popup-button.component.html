@@ -1,7 +1,7 @@
 <div *ngIf="filterConfig" class="sidebar-container">
   <span *ngIf="displayDropDownIcon" class="glyphicon glyphicon-triangle-bottom" style="position: absolute; top: 14px;left: 190px; color: #3FA8F4"></span>
   <span *ngIf="displayClearOption" style="position: absolute; display: inline-block; left: 250px; font-size: 14px; top: 10px; cursor: pointer" (click)="_OnDelete()">X</span>
-  <label (click)="invokePopUp(displayPopUp)" class="displayLabel" [title]="filterConfig.values.length ? 'Selected ' + filterConfig.label + ' : ' +  selectedText : 'Click to select values'">{{filterConfig.values.length ? (hideSelectedValues ? ( displayLabel ? filterConfig.label : 'Select ' + filterConfig.label ) : selectedText ): ( displayLabel ? filterConfig.label : 'Select' ) }}</label>
+  <label (click)="invokePopUp(displayPopUp)" class="displayLabel" title="{{filterConfig.values.length ? 'Selected ' + filterConfig.label + ' : ' +  selectedText : 'Click to select values'}}">{{filterConfig.values.length ? (hideSelectedValues ? ( displayLabel ? filterConfig.label : 'Select ' + filterConfig.label ) : selectedText ): ( displayLabel ? filterConfig.label : 'Select' ) }}</label>
   <div style="width:100%">
     <app-pop-up-modal #displayPopUp>
       <div class="app-modal-header" style="margin: 15px 0px 0px 10px">

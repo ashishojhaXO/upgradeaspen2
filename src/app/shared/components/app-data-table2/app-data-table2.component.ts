@@ -198,16 +198,20 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 let columnButtonDefs = '';
                 if (this.dataObject.gridData.options.isEditOption && this.dataObject.gridData.options.isEditOption.value) {
                     columnButtonDefs += '<a class="fa fa-pencil fa-action-view editLink" title="' + (this.dataObject.gridData.options.isEditOption.tooltip ? this.dataObject.gridData.options.isEditOption.tooltip : 'Edit' ) + '" style="margin-right: 15px; cursor: pointer">';
+                   // columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isEditOption.tooltip ? this.dataObject.gridData.options.isEditOption.tooltip : 'Edit' )  + '</span>';
                 }
                 if (this.dataObject.gridData.options.isPlayOption && this.dataObject.gridData.options.isPlayOption.value) {
                     const iconClass = this.dataObject.gridData.options.isPlayOption.icon ? this.dataObject.gridData.options.isPlayOption.icon : 'fa-play';
                     columnButtonDefs += '<a class="fa ' + iconClass  + ' fa-action-view playLink" title="' + (this.dataObject.gridData.options.isPlayOption.tooltip ? this.dataObject.gridData.options.isPlayOption.tooltip : 'Click' ) + '" style="margin-right: 15px; cursor: pointer">';
+                  //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isPlayOption.tooltip ? this.dataObject.gridData.options.isPlayOption.tooltip : 'Click' )  + '</span>';
                 }
                 if (this.dataObject.gridData.options.isDownloadOption && this.dataObject.gridData.options.isDownloadOption.value) {
                     columnButtonDefs += '<a class="fa fa-download fa-action-view downloadLink" title="' + (this.dataObject.gridData.options.isDownloadOption.tooltip ? this.dataObject.gridData.options.isDownloadOption.tooltip : 'Download' ) + '" style="margin-right: 15px; cursor: pointer">';
+                  //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isDownloadOption.tooltip ? this.dataObject.gridData.options.isDownloadOption.tooltip : 'Download' )  + '</span>';
                 }
                 if (this.dataObject.gridData.options.isDeleteOption && this.dataObject.gridData.options.isDeleteOption.value) {
                     columnButtonDefs += '<a class="fa fa-trash fa-action-view deleteLink" title="' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete' ) + '" style="cursor: pointer"></a>';
+                  //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete' )  + '</span>';
                 }
 
                 // if (columnButtonDefs) {
@@ -1310,6 +1314,17 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     $(this).closest('td').find('div.alert-danger').hide();
                 }
             });
+
+            // $(document).off('mouseenter mouseleave', '.editLink, .playLink, .downloadLink, .deleteLink');
+            // $(document).on({
+            //     mouseenter: function () {
+            //         $(this).after('<span class="ng-tooltip ng-tooltip-right ng-tooltip-show" style="transition: opacity 500ms ease 0s; left: 55px;">Hello this is some text</span>')
+            //       //  $(this).find('span.ng-tooltip').addClass('ng-tooltip-show');
+            //     },
+            //     mouseleave: function () {
+            //         $(this).find('span.ng-tooltip').remove();
+            //     }
+            // }, '.editLink, .playLink, .downloadLink, .deleteLink');
 
             $('.disabled').attr('disabled', 'disabled');
             $('.disabled').css('cursor', 'not-allowed');

@@ -10,7 +10,7 @@
         >
             <a
                 (click)="loadOptions(i,mm)"
-                title={{mm.name}}
+                title="{{mm.title}}"
                 id="{{mm.id}}"
                 [ngClass]="mm.selected ? 'active active-bar' : ''"
             >{{ mm.title }}
