@@ -2,6 +2,8 @@ import {Component, OnInit, Directive, Input, OnChanges, SimpleChanges} from '@an
 import { Router } from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 
+import { Rules } from '../../util/rulesEngine';
+
 declare var $: any;
 
 @Component({
@@ -23,6 +25,9 @@ export class AppNavComponent implements OnInit, OnChanges {
     selectedUrl: any;
     menu: any;
 
+    // Navigation rules
+    showOrderMenu: boolean;
+
     constructor(public router: Router, private translate: TranslateService) {
 
         this.initConstVars();
@@ -37,6 +42,14 @@ export class AppNavComponent implements OnInit, OnChanges {
 
         // recurse & Set css property on init
         // this.recurse(this.mainmenu)
+
+        // Rule for Order Submenu
+        var hasTemplates = JSON.parse( localStorage.getItem('customerInfo')).org.hasTemplates;
+        var rules = new Rules(hasTemplates, [ Rules.exists ] );
+        this.showOrderMenu = rules.runRule();
+        if ( this.mainmenu.id == "orders" && !this.showOrderMenu )
+            delete this.mainmenu.submenu;
+        //-
 
     }
 
