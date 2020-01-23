@@ -53,7 +53,7 @@ export class InvoiceComponent implements OnInit  {
           text: 'We did not find an invoice ID in the request',
           type: 'error'
         }).then( () => {
-          this.router.navigate(['/app/payments/invoices']);
+          this.router.navigate(['/app/payment/invoices']);
         });
       }
     });
@@ -134,7 +134,7 @@ export class InvoiceComponent implements OnInit  {
               text: 'We did not find any invoices associated with ID : ' + invoiceId,
               type: 'error'
             }).then( () => {
-              this.router.navigate(['/app/payments/invoices']);
+              this.router.navigate(['/app/payment/invoices']);
             });
             this.showSpinner = false;
           }
@@ -301,7 +301,7 @@ export class InvoiceComponent implements OnInit  {
               text: 'Payment for the selected invoice : ' + this.invoiceId  +  ' was successfully submitted',
               type: 'success'
             }).then( () => {
-              this.router.navigate(['/app/payments/invoices']);
+              this.router.navigate(['/app/payment/invoices']);
             });
           } else {
             Swal({
