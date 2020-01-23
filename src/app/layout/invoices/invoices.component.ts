@@ -180,7 +180,7 @@ export class InvoicesComponent implements OnInit  {
   handleRun(dataObj: any) {
     const invoiceId = dataObj.data.id;
     if (invoiceId) {
-      this.router.navigate(['/app/payments/invoices/invoice/' + invoiceId]);
+      this.router.navigate(['/app/payment/invoices/invoice/' + invoiceId]);
     } else {
       Swal({
         title: 'No invoice ID found',
