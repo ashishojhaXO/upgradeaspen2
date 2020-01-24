@@ -34,7 +34,7 @@ label {
 .page-content {
   background: #ededed;
   // Added for multi level menu, as position: fixed for submenus taking content out of flow
-  padding-top: 40px;
+  padding-top: 25px;
 }
 
 .page-content > .row {
@@ -280,8 +280,10 @@ label {
 }
 
 .footer {
-  position: fixed;
-  bottom: 0;
+  // position: fixed;   //removing fixed footer
+  // bottom: 0;
+  position: relative;
+  margin-top: 15px;
   width: 100%;
   background-color: $primary-bg;
   z-index: 10000;
