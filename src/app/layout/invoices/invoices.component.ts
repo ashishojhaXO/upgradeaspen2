@@ -15,6 +15,7 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import Swal from 'sweetalert2';
+import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-modal.component';
 
 @Component({
   selector: 'app-invoices',
@@ -34,7 +35,7 @@ export class InvoicesComponent implements OnInit  {
     isDeleteOption: false,
     isAddRow: false,
     isPlayOption: {
-      value : true,
+      value : false,
       icon : 'fa-dollar',
       tooltip: 'Pay Invoice'
     },
@@ -49,12 +50,13 @@ export class InvoicesComponent implements OnInit  {
     isPageLength: true,
     isPagination: true,
     sendResponseOnCheckboxClick: true,
-    fixedColumn: 1,
+    // fixedColumn: 1,
     // Any number starting from 1 to ..., but not 0
     isActionColPosition: 0, // This can not be 0, since zeroth column logic might crash
     // since isActionColPosition is 1, isOrder is also required to be sent,
     // since default ordering assigned in dataTable is [[1, 'asc']]
     isOrder: [[2, 'asc']],
+    isTree: true
   }];
   dashboard: any;
   api_fs: any;
@@ -62,6 +64,9 @@ export class InvoicesComponent implements OnInit  {
   showSpinner: boolean;
   widget: any;
   selectedRow: any;
+  selectedInvoiceDetails: any;
+  memo: string;
+  @ViewChild('AddPayment') addPayment: PopUpModalComponent;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
   }
@@ -280,4 +285,100 @@ export class InvoicesComponent implements OnInit  {
     this.searchDataRequest();
   }
 
+
+  handleInvoicePay(dataObj: any) {
+    console.log('dataObj >>>')
+    console.log(dataObj);
+    this.selectedInvoiceDetails = dataObj.data;
+    this.addPayment.show();
+  }
+
+  OnPay(modalComponent: PopUpModalComponent) {
+
+    modalComponent.hide();
+
+    console.log('this.selectedInvoiceDetails >>>')
+    console.log(this.selectedInvoiceDetails);
+
+    this.selectedInvoiceDetails.invoice.memo = this.memo;
+    this.createTransactionRequest(this.selectedInvoiceDetails);
+  }
+
+  createTransactionRequest(dataObj) {
+    return this.createTransaction(dataObj).subscribe(
+        response => {
+          console.log('response from create transaction >>>')
+          console.log(response);
+          if (response) {
+            this.showSpinner = false;
+            this.memo = '';
+            Swal({
+              title: 'Payment Successful',
+              text: 'Payment for the selected invoice : ' + this.selectedInvoiceDetails.invoice.number  +  ' was successfully submitted',
+              type: 'success'
+            }).then( () => {
+              this.reLoad();
+            });
+          } else {
+            Swal({
+              title: 'Payment Failed',
+              text: 'We were unable to process payment for the selected invoice : ' +  this.selectedInvoiceDetails.invoice.number  +  '. Please try again',
+              type: 'error'
+            });
+          }
+        },
+        err => {
+
+          if(err.status === 401) {
+            if(localStorage.getItem('accessToken')) {
+              this.widget.tokenManager.refresh('accessToken')
+                  .then(function (newToken) {
+                    localStorage.setItem('accessToken', newToken);
+                    this.showSpinner = false;
+                    this.createTransactionRequest(dataObj);
+                  })
+                  .catch(function (err1) {
+                    console.log('error >>')
+                    console.log(err1);
+                  });
+            } else {
+              this.widget.signOut(() => {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/login';
+              });
+            }
+          } else {
+            this.showSpinner = false;
+            Swal({
+              title: 'Payment Failed',
+              text: 'We were unable to process payment for the selected invoice : ' + this.selectedInvoiceDetails.invoice.number   +  '. Please try again',
+              type: 'error'
+            });
+          }
+        }
+    );
+  }
+
+  createTransaction(dataObj) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken;
+      token = AccessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    const data = JSON.stringify(dataObj);
+    const url = this.api_fs.api + '/api/payments/transactions';
+    return this.http
+        .post(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
+  handleCloseModal(modalComponent: PopUpModalComponent) {
+    modalComponent.hide();
+    this.memo = '';
+  }
 }

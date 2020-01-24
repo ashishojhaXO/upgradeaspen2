@@ -22,3 +22,24 @@
   </div>
 </div>
 <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
+<app-pop-up-modal #AddPayment>
+  <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
+    Pay Invoice
+  </div>
+  <div class="app-modal-body">
+    <div class="content" style="height: 50vh">
+      <label>Memo</label>
+      <div>
+        <textarea style="height: 150px; width: 100%" [(ngModel)]="memo"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="app-modal-footer">
+    <button type="button" class="action-btn" (click)= "OnPay(AddPayment)">
+      Submit
+    </button>
+    <button type="button" class="inaction-btn" (click)="handleCloseModal(AddPayment)">
+      Cancel
+    </button>
+  </div>
+</app-pop-up-modal>

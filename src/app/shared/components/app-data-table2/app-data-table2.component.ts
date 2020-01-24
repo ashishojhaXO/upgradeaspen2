@@ -132,6 +132,108 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         });
     }
 
+    attachInvoiceEvent(row, invoiceHeaderId) {
+        const __this = this;
+        const invoice_header_Id = invoiceHeaderId;
+        $(document).off('click', '.invoicePay');
+        $(document).on('click', '.invoicePay', function () {
+
+            let totalAmount = 0;
+            $(this).closest('div.form-group-fields').find('div.invoiceBody').find('input.invoicePayAmount').each(function (ele) {
+                totalAmount += $(this).val() ? (parseFloat($(this).val()) ? parseFloat($(this).val()) : 0) : 0;
+            });
+
+            const lineItems = [];
+            $(this).closest('div.form-group-fields').find('div.invoiceBody').find('div.row').each(function () {
+                lineItems.push({
+                    id : parseInt($(this).find('span.invoice-lineItem').text(), 10) ? parseInt($(this).find('span.invoice-lineItem').text(), 10) : null,
+                    amount: parseFloat($(this).find('input.invoicePayAmount').val()) ? parseFloat($(this).find('input.invoicePayAmount').val())  : 0,
+                    client_id: $(this).find('span.invoice-clientId').text() === "null" ? null : $(this).find('span.invoice-clientId').text()
+                });
+            });
+
+
+            const rowIndex = row[0][0];
+            const rowData = __this.dataObject.gridData.result[rowIndex];
+
+            const dataObj = {
+                invoice: {
+                    number: rowData.invoice_number,
+                    header_id: invoice_header_Id,
+                    amount : totalAmount
+                },
+                line_items: lineItems
+            };
+
+            __this.triggerActions.emit({
+                action: 'handleInvoicePay',
+                data: dataObj
+            });
+        });
+
+        $(document).off('keup', '.invoicePayAmount');
+        $(document).on('keyup', '.invoicePayAmount', function () {
+            console.log('this !!!')
+            console.log($(this).closest('div.invoiceBody'));
+
+            let totalAmount = 0;
+            $(this).closest('div.invoiceBody').find('input.invoicePayAmount').each(function (ele) {
+                totalAmount += $(this).val() ? (parseFloat($(this).val()) ? parseFloat($(this).val()) : 0.00) : 0.00;
+            });
+
+            $(this).closest('div.form-group-fields').find('div.invoiceFooter').find('span.totalInvoice').text(totalAmount.toLocaleString());
+        });
+
+        $(document).off('change', '.header-applyAmount');
+        $(document).on('change', '.header-applyAmount', function (e) {
+            if ($(this).is(':checked')) {
+                $(this).closest('div.form-group-fields').find('div.invoiceBody').find('input.applyAmount').prop('checked', true);
+            } else {
+                $(this).closest('div.form-group-fields').find('div.invoiceBody').find('input.applyAmount').prop('checked', false);
+            }
+
+            $(this).closest('div.form-group-fields').find('div.invoiceBody').find('input.applyAmount').each(function () {
+                if ($(this).is(':checked')) {
+                    let billed_amount_text = $(this).closest('div.row').find('.invoiceBilledAmount').text();
+                    billed_amount_text = billed_amount_text.replace(/,/g, '').replace('$', '');
+                    const billed_amount = billed_amount_text ? (parseFloat(billed_amount_text) ? parseFloat(billed_amount_text) : 0.00) : 0.00;
+                    $(this).closest('div.row').find('.invoicePayAmount').val(billed_amount);
+                } else {
+                    $(this).closest('div.invoiceBody').find('.invoicePayAmount').val(0.00);
+                }
+            });
+
+            //update total
+            let totalAmount = 0.00;
+            $(this).closest('div.form-group-fields').find('div.invoiceBody').find('input.invoicePayAmount').each(function () {
+                totalAmount += parseFloat($(this).val());
+            });
+
+            $(this).closest('div.form-group-fields').find('div.invoiceFooter').find('span.totalInvoice').text(totalAmount.toLocaleString());
+        });
+
+        $(document).off('change', '.applyAmount');
+        $(document).on('change', '.applyAmount', function (e) {
+            if ($(this).is(':checked')) {
+                let billed_amount_text = $(this).closest('div.row').find('.invoiceBilledAmount').text();
+                billed_amount_text = billed_amount_text.replace(/,/g, '').replace('$', '');
+                const billed_amount = billed_amount_text ? (parseFloat(billed_amount_text) ? parseFloat(billed_amount_text) : 0.00) : 0.00;
+                $(this).closest('div.row').find('.invoicePayAmount').val(billed_amount);
+            } else {
+                $(this).closest('div.row').find('.invoicePayAmount').val(0.00);
+            }
+
+            //update total
+            let totalAmount = 0.00;
+            $(this).closest('div.form-group-fields').find('div.invoiceBody').find('input.invoicePayAmount').each(function () {
+                totalAmount += parseFloat($(this).val());
+            });
+
+            $(this).closest('div.form-group-fields').find('div.invoiceFooter').find('span.totalInvoice').text(totalAmount.toLocaleString());
+
+        });
+    }
+
     initializeTable() {
         const __this = this;
 
@@ -952,6 +1054,130 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 $('.accordion .accordion-header').on('click', function() {
                                     $(this).toggleClass('active').next().slideToggle();
                                 });
+                            } else if (__this.identity === 'invoices') {
+                                __this.getInvoiceDetails(rowData.id).subscribe(
+                                    response => {
+
+                                        console.log('response >>')
+                                        console.log(response);
+
+                                        let retHtml = '';
+                                        let headerId = '';
+                                        if (response && response.data && response.data.length) {
+                                            retHtml += '<div class="col-lg-12 col-mg-12 col-sm-12 form-group-fields" style="background: #fff">';
+
+                                            const divMain = $('<div/>', {
+                                                style : 'padding-bottom: 5px;'
+                                            });
+                                            $(divMain).append('<div><div class="row margin0" style="margin-top: 10px;"> <div class="col-sm-4"><label>Invoice Number : ' + rowData['invoice_number'] + '</label></div></div> </div>');
+                                            $(divMain).append('<div><div class="row margin0"> <div class="col-sm-4"><label>Invoice Date : ' + rowData['invoice_date'] + '</label></div></div> </div>');
+                                            $(divMain).append('<div><div class="row margin0"> <div class="col-sm-4"><label>Supplier : ' + rowData['supplier'] + '</label></div></div> </div>');
+                                            $(divMain).append('<div><div class="row margin0" style="margin-bottom: 10px"> <div class="col-sm-4"><label>Invoice Amount : ' + rowData['invoice_amount'] + '</label></div></div> </div>');
+                                            retHtml += $(divMain)[0].outerHTML;
+
+                                            const divHeader = $('<div/>', {
+                                            });
+
+                                            const divHeaderDetails = $('<div/>', {
+                                                style : 'margin-top: 10px; margin-bottom: 10px; border-bottom: 1px solid;',
+                                                class : 'row margin0'
+                                            });
+
+                                            $(divHeaderDetails).append('<div class="col-sm-1"><label>Line Item ID</label></div>');
+                                            $(divHeaderDetails).append('<div class="col-sm-1"><label>Order ID</label></div>');
+                                            $(divHeaderDetails).append('<div class="col-sm-1"><label>Site Name</label></div>');
+                                            $(divHeaderDetails).append('<div class="col-sm-1"><label>Vendor ID</label></div>');
+                                            $(divHeaderDetails).append('<div class="col-sm-1"><label>Vendor Name</label></div>');
+                                            if (response.data[0].site_name === 'KENSHOO') {
+                                                $(divHeaderDetails).append('<div class="col-sm-1"><label>Profile Name</label></div>');
+                                            }
+                                            $(divHeaderDetails).append('<div class="col-sm-1" style="text-align: right"><label>Billed Amount</label></div>');
+                                            $(divHeaderDetails).append('<div class="col-sm-1" style="text-align: right"><label>Calculated Amount</label></div>');
+                                            $(divHeaderDetails).append('<div class="col-sm-1" style="text-align: right"><label>Discrepancy Amount</label></div>');
+                                            $(divHeaderDetails).append('<div class="col-sm-1" style="text-align: right; margin-top: -1px"><label><input style="position: relative; top: 0px" type="checkbox" class="header-applyAmount"/> Apply Full Amount</label></div>');
+                                            $(divHeaderDetails).append('<div class="col-sm-2" style="text-align: center"><label>Pay Amount</label></div>');
+
+                                            $(divHeader).append($(divHeaderDetails)[0].outerHTML);
+                                            retHtml += $(divHeader)[0].outerHTML;
+
+                                            const divBody = $('<div/>', {
+                                                class: 'invoiceBody',
+                                                css : {
+                                                    'max-height' : '250px',
+                                                    'overflow-y' : 'scroll',
+                                                    'overflow-x' : 'hidden'
+                                                }
+                                            });
+
+                                            let total = 0.00;
+
+                                            response.data.forEach(function (ele, index) {
+
+                                                if(index === 0) {
+                                                    headerId = ele.invoice_header_id;
+                                                }
+
+                                                const divBodyDetails = $('<div/>', {
+                                                    style : 'margin-bottom: 10px; background : ' + (index % 2 === 0 ? '#f9f9f9' : '#fff')  + '',
+                                                    class : 'row',
+                                                });
+
+                                                $(divBodyDetails).append('<div class="col-sm-1" style="padding-top: 7px"><span class="paymentText invoice-lineItem">' + ele.line_item_id + '</span></div>');
+                                                $(divBodyDetails).append('<div class="col-sm-1" style="padding-top: 7px"><span class="paymentText">' + ele.order_id  + '</span></div>');
+                                                $(divBodyDetails).append('<div class="col-sm-1" style="padding-top: 7px"><span class="paymentText">' +  ele.site_name  + '</span></div>');
+                                                $(divBodyDetails).append('<div class="col-sm-1" style="padding-top: 7px"><span class="paymentText invoice-clientId">' + ele.client_id  + '</span></div>');
+                                                $(divBodyDetails).append('<div class="col-sm-1" style="white-space: pre-wrap; padding-top: 7px"><span class="paymentText">' + ele.company_name  + '</span></div>');
+                                                if (ele.site_name === 'KENSHOO') {
+                                                    $(divBodyDetails).append('<div class="col-sm-1" style="white-space: pre-wrap; padding-top: 7px"><span class="paymentText">' + ele.profile_name + '</span></div>');
+                                                }
+                                                $(divBodyDetails).append('<div class="col-sm-1" style="text-align: right; padding-top: 7px"><span class="paymentText invoiceBilledAmount">$' + (ele.billed_amount ? ele.billed_amount.toLocaleString() : '0.00') + '</span></div>');
+                                                $(divBodyDetails).append('<div class="col-sm-1" style="text-align: right; padding-top: 7px"><span class="paymentText">$' + (ele.calculated_amount ? ele.calculated_amount.toLocaleString() : '0.00') + '</span></div>');
+                                                $(divBodyDetails).append('<div class="col-sm-1" style="text-align: right; padding-top: 7px"><span class="paymentText">$' + (ele.discrepancy_amount ? ele.discrepancy_amount.toLocaleString() : '0.00') + '</span></div>');
+
+                                                const $span = $('<span/>', {
+                                                    class : 'paymentText'
+                                                });
+
+                                                if (ele.discrepancy_amount === 0) {
+                                                    $($span).append('<input type="checkbox" class="applyAmount"/>');
+                                                } else {
+                                                    $($span).append('<input type="checkbox" disabled="disabled"/>');
+                                                }
+
+                                                $(divBodyDetails).append('<div class="col-sm-1" style="text-align: center; padding-top: 5px">' + $($span)[0].outerHTML  + '</div>');
+                                                $(divBodyDetails).append('<div class="col-sm-2"><div class="input-group col-sm-12"><span class="input-group-addon">$</span><input type="number" class="form-control invoicePayAmount" value="' + '0.00' + '" style="border-radius: 0 4px 4px 0; text-align: right" [(ngModel)]="item.pay" (keyup)="updateTotal(invoice)"></div></div>');
+
+                                                total += 0.00; // ele.discrepancy_amount === 0 ? ele.billed_amount : 0.00;
+
+                                                $(divBody).append($(divBodyDetails)[0].outerHTML);
+                                            });
+
+                                            const divFooter = $('<div/>', {
+                                                class: 'invoiceFooter',
+                                                css : {
+                                                    'margin-top': '10px'
+                                                }
+                                            });
+
+                                            if (response.data[0].site_name === 'KENSHOO') {
+                                                $(divHeaderDetails).append('<div class="col-sm-1"><label>Profile Name</label></div>');
+                                            }
+                                            $(divFooter).append('<div class="col-sm-12"><div class="col-sm-' + (response.data[0].site_name === 'KENSHOO' ? '10' : '9') + '"><span></span></div><div class="col-sm-2" style="padding-left: 36px"><span><b>Total($)</b></span><span class="totalInvoice" style="float: right; margin-right: 3px; font-size: 14px">' + total.toLocaleString() + '</span></div></div>');
+                                            $(divFooter).append('<div class="col-sm-12"><div class="col-sm-' + (response.data[0].site_name === 'KENSHOO' ? '11' : '10') + '"><span></span></div><div class="col-sm-1" style="padding-left: 42px; padding-right: 0px"><button class="btn pull-right invoicePay" style="position: relative; left: 19px; margin-top: 30px; margin-bottom: 10px">Pay</button></div></div>');
+
+                                            retHtml +=  $(divBody)[0].outerHTML + $(divFooter)[0].outerHTML;
+
+                                            retHtml += '</div>';
+
+                                        } else {
+                                            retHtml += ' No details found';
+                                        }
+                                        row.child(retHtml).show();
+                                        __this.attachInvoiceEvent(row, headerId);
+                                        tr.addClass('shown');
+                                    },
+                                    err => {
+                                    });
                             }
                             // row.child(__this.format(rowData)).show();
                             // tr.addClass('shown');
@@ -1577,6 +1803,23 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
         return this.http
             .post(url, dataObj, options)
+            .map(res => {
+                return res.json();
+            }).share();
+    }
+
+    getInvoiceDetails(invoiceId) {
+        const AccessToken: any = localStorage.getItem('accessToken');
+        let token = '';
+        if (AccessToken) {
+            // token = AccessToken.accessToken;
+            token = AccessToken;
+        }
+        const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+        const options = new RequestOptions({headers: headers});
+        var url = this.api_fs.api + '/api/payments/invoices/' + invoiceId;
+        return this.http
+            .get(url, options)
             .map(res => {
                 return res.json();
             }).share();
