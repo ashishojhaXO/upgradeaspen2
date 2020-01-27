@@ -38,16 +38,22 @@ export class Rules {
 
     runRule() {
         var li = [];
-        // Run each passed function 1 after the other in a chained manner on the data supplied
+        let ret: boolean = true;
+        // Run each passed function 1 after the other 
+        // in a chained manner on the data supplied
         this.arrayOfFuncs.forEach(element => {
             console.log("ELEM: ", element, " this.data: ", this.data);
-            // If function holds true then don't crash
-            // else, crash & throw Error inside the function
-            // So the next line `return true` never reaches in case of crash
-            element(this.data);
+            if (ret) {
+                // If function holds true then don't crash
+                // else, crash & throw Error inside the function
+                // So the next line `return true` never reaches in case of crash
+                ret = element(this.data);
+            } else {
+                return ret;
+            }
         });
 
-        return true;
+        return ret;
     }
 
     // Rule: To Show or Hide Something

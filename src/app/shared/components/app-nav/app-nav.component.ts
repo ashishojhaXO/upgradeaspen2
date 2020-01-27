@@ -26,7 +26,7 @@ export class AppNavComponent implements OnInit, OnChanges {
     menu: any;
 
     // Navigation rules
-    showOrderMenu: boolean;
+    showSubmenu: boolean;
 
     constructor(public router: Router, private translate: TranslateService) {
 
@@ -35,21 +35,19 @@ export class AppNavComponent implements OnInit, OnChanges {
 
     initConstVars() {
 
-        // this.urlPath = window.location.pathname;
-
         if(typeof this.mainUlClass == "undefined")
             this.mainUlClass = "nav navbar-nav main-menu";
 
         // recurse & Set css property on init
         // this.recurse(this.mainmenu)
 
-        // Rule for Order Submenu
+        // Rules for Order Submenu
         var hasTemplates = JSON.parse( localStorage.getItem('customerInfo')).org.hasTemplates;
-        var rules = new Rules(hasTemplates, [ Rules.exists ] );
-        this.showOrderMenu = rules.runRule();
-        if ( this.mainmenu.id == "orders" && !this.showOrderMenu )
-            delete this.mainmenu.submenu;
-        //-
+        var rules = new Rules(hasTemplates, [ Rules.exists,  ] );
+        this.showSubmenu = rules.runRule();
+        // if ( this.mainmenu && this.mainmenu.id == "orders" && !this.showSubmenu )
+        //     delete this.mainmenu.submenu;
+        // Rules for Order Submenu-
 
     }
 
@@ -66,25 +64,7 @@ export class AppNavComponent implements OnInit, OnChanges {
             changes['mainUlClass'] ||
             changes['urlPath']
         ) {
-
-            // console.log('mainmenu >>>')
-            // console.log(this.mainmenu);
-
-            // console.log('subMenu >>>')
-            // console.log(this.subMenu);
-
-            // console.log('mainUlClass >>>')
-            // console.log(this.mainUlClass);
-
-            // console.log('random >>>')
-            // console.log(this.random);
-
-            // this.getMenuItems();
-            // this.getMenuItems(this.menu);
-
-            // OnChange, recurse & add css
-            // this.recurse(this.mainmenu)
-            // this.addCss();
+            // Nothing here really!!!
         }
 
 
@@ -93,17 +73,10 @@ export class AppNavComponent implements OnInit, OnChanges {
     // setSelectedMenu(i, bool) {
     setSelectedMenu(mainmenu) {
         // i.selected = bool;
-        // console.log("sSM: ", i, bool);
         // this.selected = i;
         if(mainmenu) {
             mainmenu.forEach(element => {
-
                 element.selected = (this.selectedUrl.substr(1) === element.url) || (this.selectedUrl.substr(0, this.selectedUrl.lastIndexOf('/')).substr(1) === element.url);
-
-                // if ( this.selectedUrl.indexOf(element.url ) != -1 )
-                //     element.selected = true;
-                // else
-                //     element.selected = false;
             });
 
         }
@@ -122,21 +95,9 @@ export class AppNavComponent implements OnInit, OnChanges {
     }
 
     ngOnInit() {
-
         // console.log('onInit mainmenu >>>')
         // console.log(this.mainmenu);
-
-        // this.menu = this.mainmenu;
         this.mainUlClass = this.mainUlClass;
-
-        // console.log('onInit mainmenu 22 >>>')
-        // console.log(this.mainmenu);
-
-        // console.log('onInit mainUlClass >>>')
-        // console.log(this.mainUlClass);
-
-        // this.getMenuItems();
-        // this.getMenuItems(this.menu);
     }
 
     compareUrl(pageUrlPath, liUrlPath) {
@@ -144,11 +105,8 @@ export class AppNavComponent implements OnInit, OnChanges {
         // break liUrlPath in parts divided by 'slash' &
         // take -1th element of the returning array
         const newLiUrlArr = this.breakLiUrl(liUrlPath);
-
         const minus1Elem = newLiUrlArr[newLiUrlArr.length - 2]
-
         const ret = pageUrlPath.indexOf (minus1Elem) != -1;
-
         return ret;
     }
 
@@ -162,6 +120,7 @@ export class AppNavComponent implements OnInit, OnChanges {
         return ret;
     }
 
+    // This `recurse` function not getting used at the moment
     recurse(li) {
         // console.log("REcuRES LI: ", li);
         // Tail Recursion
@@ -190,72 +149,22 @@ export class AppNavComponent implements OnInit, OnChanges {
         }
     }
 
-    // getMenuItems(menu) {
-    //     console.log("getMenuItems: ", menu);
-    //     if (menu) {
-    //         const urlParts = menu.indexOf('/') != -1 ? menu.split('/') : menu;
-
-    //         const corr = this.mainmenu.find(x => x.url === (urlParts[1] + '/' + urlParts[2]));
-
-    //         console.log("urlPar, corr: ", urlParts, corr);
-
-    //         if (corr) {
-    //             this.mainmenu[this.mainmenu.indexOf(corr)].selected = true;
-
-    //         console.log("IF this.mainmenu: ", this.mainmenu , this.mainmenu.indexOf(corr) , this.mainmenu[this.mainmenu.indexOf(corr)] );
-
-    //             if (this.mainmenu[this.mainmenu.indexOf(corr)].submenu) {
-
-    //         console.log("IF 2 this.mainmenu: ", this.mainmenu , this.mainmenu.indexOf(corr) , this.mainmenu[this.mainmenu.indexOf(corr)] );
-
-    //                 this.subMenu = this.mainmenu[this.mainmenu.indexOf(corr)].submenu;
-    //                 this.getMenuItems(this.subMenu);
-
-    //         //         if (urlParts[3]) {
-    //         // console.log("IF 3 this.subMenu: ", this.subMenu , this.mainmenu.indexOf(corr) , this.mainmenu[this.mainmenu.indexOf(corr)] );
-
-    //         //             const corr1 = this.mainmenu[this.mainmenu.indexOf(corr)].submenu.find(x => x.id === urlParts[3]);
-
-    //         //             if (corr1) {
-    //         //                 this.mainmenu[this.mainmenu.indexOf(corr)].submenu[this.mainmenu[this.mainmenu.indexOf(corr)].submenu.indexOf(corr1)].selected = true;
-
-    //         // console.log(
-    //         //     "IF 4 corr1 this.mainmenu: ",
-    //         //     this.mainmenu[this.mainmenu.indexOf(corr)].submenu[this.mainmenu[this.mainmenu.indexOf(corr)].submenu.indexOf(corr1)]
-    //         // );
-
-    //         //             }
-    //                 // }
-
-    //             }
-    //         }
-    //     }
-    // }
 
 
+    // func Not getting used
     getMenuItems() {
         if (window.location.pathname) {
             const urlParts = window.location.pathname.indexOf('/') != -1 ? window.location.pathname.split('/') : window.location.pathname;
             const corr = this.mainmenu.find(x => x.url === (urlParts[1] + '/' + urlParts[2]));
 
-            // console.log("urlPar, corr: ", urlParts, corr);
-
             if (corr) {
                 this.mainmenu[this.mainmenu.indexOf(corr)].selected = true;
-
-            // console.log("IF this.mainmenu: ", this.mainmenu , this.mainmenu.indexOf(corr) , this.mainmenu[this.mainmenu.indexOf(corr)] );
                 if (this.mainmenu[this.mainmenu.indexOf(corr)].submenu) {
-            // console.log("IF 2 this.mainmenu: ", this.mainmenu , this.mainmenu.indexOf(corr) , this.mainmenu[this.mainmenu.indexOf(corr)] );
                     this.subMenu = this.mainmenu[this.mainmenu.indexOf(corr)].submenu;
                     if (urlParts[3]) {
-            // console.log("IF 3 this.subMenu: ", this.subMenu , this.mainmenu.indexOf(corr) , this.mainmenu[this.mainmenu.indexOf(corr)] );
                         const corr1 = this.mainmenu[this.mainmenu.indexOf(corr)].submenu.find(x => x.id === urlParts[3]);
                         if (corr1) {
                             this.mainmenu[this.mainmenu.indexOf(corr)].submenu[this.mainmenu[this.mainmenu.indexOf(corr)].submenu.indexOf(corr1)].selected = true;
-            // console.log(
-            //     "IF 4 corr1 this.mainmenu: ",
-            //     this.mainmenu[this.mainmenu.indexOf(corr)].submenu[this.mainmenu[this.mainmenu.indexOf(corr)].submenu.indexOf(corr1)]
-            // );
                         }
                     }
                 }
@@ -265,16 +174,6 @@ export class AppNavComponent implements OnInit, OnChanges {
 
 
     loadOptions(position, object) {
-        // remove pre-selected option from the configured JSON
-        // if (!this.clearPreselectedMenuItem) {
-        //     const preselectedOption = this.mainmenu.find(x => x.selected);
-        //     if (preselectedOption) {
-        //         preselectedOption.selected = false;
-        //         this.clearPreselectedMenuItem = true;
-        //     }
-        // }
-        // this.selected = position;
-
         if (object.url) {
             this.urlPath = object.url;
 
