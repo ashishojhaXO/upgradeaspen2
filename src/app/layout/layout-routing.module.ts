@@ -110,23 +110,20 @@ const routes: Routes = [
                 },
             },
             {
-                path: 'orders',
+                path: 'order',
                 data: {
                     breadcrumbs: true,
-                    text: 'Orders'
+                    text: 'Order'
                 },
                 // component: OrdersComponent,
                 children: [
                     {
                         path: '',
-                        component: OrdersComponent,
-                        data: {
-                            breadcrumbs: true,
-                            text: 'Orders'
-                        },
+                        redirectTo: 'orders',
+                        pathMatch: 'full'
                     },
                     {
-                        path: 'order',
+                        path: 'orders',
                         component: OrdersComponent,
                         data: {
                             breadcrumbs: true,
@@ -273,14 +270,19 @@ const routes: Routes = [
                 },
             },
             {
-                path: 'payments',
+                path: 'payment',
                 data: {
                     breadcrumbs: true,
-                    text: 'Payments'
+                    text: 'Payment'
                 },
                 children: [
                     {
                         path: '',
+                        redirectTo: 'payments',
+                        pathMatch: 'full'
+                    },
+                    {
+                        path: 'payments',
                         component: PaymentsComponent,
                         data: {
                             breadcrumbs: true,

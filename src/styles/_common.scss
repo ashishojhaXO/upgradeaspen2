@@ -11,7 +11,8 @@ div.dt-button-background {
   -ms-flex-direction: column;
   -webkit-flex-direction: column;
   flex-direction: column;
-  height: calc(100vh - 80px - 52px);
+  // height: calc(100vh - 80px - 52px);  //removing fixed footer
+  height: calc(100vh - 80px);
 }
 //Button section
 

@@ -24,7 +24,7 @@
 .nav.navbar-nav.main-menu > div {
   display: inline-grid;
   position: inherit;
-  padding: 10px 8px;
+  padding: 10px 16px;
 }
 
 .nav.navbar-nav.main-menu > div .bottom-menu {
@@ -33,7 +33,7 @@
     background: #333333;
     width: 100%;
     left: 0px;
-    padding-left: 10px;
+    padding-left: 15px;
 }
 
  .nav.navbar-nav.main-menu > div .bottom-menu > div {
@@ -49,6 +49,7 @@
     font-family: "lucidagrande-bold", sans-serif !important;
     background: transparent;
     cursor: pointer;
+    margin-bottom: 6px;
 }
 
 // div.nav.navbar-nav {

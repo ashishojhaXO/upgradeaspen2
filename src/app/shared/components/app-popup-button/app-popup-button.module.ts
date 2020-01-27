@@ -5,6 +5,7 @@ import { AppPopupButtonComponent } from './app-popup-button.component';
 import { FormsModule } from '@angular/forms';
 import {PopUpModalModule} from '../../../shared/components/pop-up-modal/pop-up-modal.module';
 import {AppDataTableModule, AppSpinnerModule, AppDataTable2Module} from '../../../shared/components';
+import { TooltipModule } from '../../../shared/directives/tooltip.module';
 
 @NgModule({
     imports: [
@@ -14,7 +15,8 @@ import {AppDataTableModule, AppSpinnerModule, AppDataTable2Module} from '../../.
         PopUpModalModule,
         AppDataTableModule,
         AppDataTable2Module,
-        AppSpinnerModule
+        AppSpinnerModule,
+        TooltipModule
     ],
     declarations: [
       AppPopupButtonComponent

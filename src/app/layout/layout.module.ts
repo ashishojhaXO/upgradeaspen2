@@ -24,6 +24,7 @@ import {MultiSelectDropdownModule} from './../shared/components/multiselect-drop
 import { DatepickerModule, BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { AppScriptEmbedderModule} from './../shared/components/app-script-embedder/app-script-embedder.module';
 import {A2Edatetimepicker} from 'ng2-eonasdan-datetimepicker';
+import { TooltipModule } from './../shared/directives/tooltip.module';
 
 //declarations
 import { DashboardsComponent } from './dashboards/dashboards.component';
@@ -83,7 +84,8 @@ import { UserSettingsComponent } from './user-settings/user-settings.component';
         DatepickerModule.forRoot(),
         AppScriptEmbedderModule,
         CustomFormBuilderModule,
-        A2Edatetimepicker
+        A2Edatetimepicker,
+        TooltipModule
     ],
     declarations: [
         LayoutComponent,
