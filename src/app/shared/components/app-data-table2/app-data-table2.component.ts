@@ -480,7 +480,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                             const headerColumnField = __this.dataObject.gridData.headers.find(x=> x.key === ele);
                             if (headerColumnField) {
                                 let columnIndex = __this.dataObject.gridData.headers.indexOf(headerColumnField);
-                                if (__this.dataObject.gridData.options.isRowSelection) {
+                                if (__this.dataObject.gridData.options.isRowSelection || ( __this.dataObject.gridData.options.isActionColPosition !== null && (__this.dataObject.gridData.options.isActionColPosition + 1) < columnIndex)) {
                                     columnIndex++;
                                 }
 
