@@ -42,7 +42,6 @@ export class Rules {
         // Run each passed function 1 after the other 
         // in a chained manner on the data supplied
         this.arrayOfFuncs.forEach(element => {
-            console.log("ELEM: ", element, " this.data: ", this.data);
             if (ret) {
                 // If function holds true then don't crash
                 // else, crash & throw Error inside the function

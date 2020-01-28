@@ -56,7 +56,8 @@ export class InvoicesComponent implements OnInit  {
     // since isActionColPosition is 1, isOrder is also required to be sent,
     // since default ordering assigned in dataTable is [[1, 'asc']]
     isOrder: [[2, 'asc']],
-    isTree: true
+    isTree: true,
+    isHideColumns: ["id", "downloadable_file_id"],
   }];
   dashboard: any;
   api_fs: any;
@@ -69,6 +70,16 @@ export class InvoicesComponent implements OnInit  {
   @ViewChild('AddPayment') addPayment: PopUpModalComponent;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
+    // {
+    //   "columnDefs": [
+    //         {
+    //             "targets": [ 2 ],
+    //             "visible": false,
+    //             "searchable": false
+    //         }
+    //       ]
+    //     }
+    console.log("INVOID")
   }
 
   ngOnInit() {
@@ -156,6 +167,8 @@ export class InvoicesComponent implements OnInit  {
         });
       }
     }
+
+    console.log("HEADD::: ", headers);
 
     this.gridData['result'] = tableData;
     this.gridData['headers'] = headers;
