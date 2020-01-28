@@ -1067,7 +1067,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                             retHtml += '<div class="col-lg-12 col-mg-12 col-sm-12 form-group-fields" style="background: #fff">';
 
                                             const divMain = $('<div/>', {
-                                                style : 'padding-bottom: 5px;'
                                             });
                                             $(divMain).append('<div><div class="row margin0" style="margin-top: 10px;"> <div class="col-sm-4"><label>Invoice Number : ' + rowData['invoice_number'] + '</label></div></div> </div>');
                                             $(divMain).append('<div><div class="row margin0"> <div class="col-sm-4"><label>Invoice Date : ' + rowData['invoice_date'] + '</label></div></div> </div>');
@@ -1076,6 +1075,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                             retHtml += $(divMain)[0].outerHTML;
 
                                             const divHeader = $('<div/>', {
+                                                style : 'margin-left: 15px;',
                                             });
 
                                             const divHeaderDetails = $('<div/>', {
@@ -1083,19 +1083,19 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                                 class : 'row margin0'
                                             });
 
-                                            $(divHeaderDetails).append('<div class="col-sm-1"><label>Line Item ID</label></div>');
-                                            $(divHeaderDetails).append('<div class="col-sm-1"><label>Order ID</label></div>');
-                                            $(divHeaderDetails).append('<div class="col-sm-1"><label>Site Name</label></div>');
-                                            $(divHeaderDetails).append('<div class="col-sm-1"><label>Vendor ID</label></div>');
-                                            $(divHeaderDetails).append('<div class="col-sm-1"><label>Vendor Name</label></div>');
+                                            $(divHeaderDetails).append('<div style="width: 100px; display: inline-block"><label>Line Item ID</label></div>');
+                                            $(divHeaderDetails).append('<div style="width:100px; display: inline-block"><label>Order ID</label></div>');
+                                            $(divHeaderDetails).append('<div style="width:100px; display: inline-block"><label>Site Name</label></div>');
+                                            $(divHeaderDetails).append('<div style="width:100px; display: inline-block"><label>Vendor ID</label></div>');
+                                            $(divHeaderDetails).append('<div style="width:100px; display: inline-block"><label>Vendor Name</label></div>');
                                             if (response.data[0].site_name === 'KENSHOO') {
-                                                $(divHeaderDetails).append('<div class="col-sm-1"><label>Profile Name</label></div>');
+                                                $(divHeaderDetails).append('<div style="width:100px; display: inline-block"><label>Profile Name</label></div>');
                                             }
-                                            $(divHeaderDetails).append('<div class="col-sm-1" style="text-align: right"><label>Billed Amount</label></div>');
-                                            $(divHeaderDetails).append('<div class="col-sm-1" style="text-align: right"><label>Calculated Amount</label></div>');
-                                            $(divHeaderDetails).append('<div class="col-sm-1" style="text-align: right"><label>Discrepancy Amount</label></div>');
-                                            $(divHeaderDetails).append('<div class="col-sm-1" style="text-align: right; margin-top: -1px"><label><input style="position: relative; top: 0px" type="checkbox" class="header-applyAmount"/> Apply Full Amount</label></div>');
-                                            $(divHeaderDetails).append('<div class="col-sm-2" style="text-align: center"><label>Pay Amount</label></div>');
+                                            $(divHeaderDetails).append('<div style="text-align: right; width: 100px; display: inline-block"><label>Billed Amount</label></div>');
+                                            $(divHeaderDetails).append('<div style="text-align: right; width: 150px; display: inline-block"><label>Calculated Amount</label></div>');
+                                            $(divHeaderDetails).append('<div style="text-align: right; width: 150px; display: inline-block"><label>Discrepancy Amount</label></div>');
+                                            $(divHeaderDetails).append('<div style="text-align: right; margin-top: -1px; width: 150px; display: inline-block"><label><input style="position: relative; top: 0px" type="checkbox" class="header-applyAmount"/> Apply Full Amount</label></div>');
+                                            $(divHeaderDetails).append('<div style="text-align: center; width: 150px; display: inline-block"><label>Pay Amount</label></div>');
 
                                             $(divHeader).append($(divHeaderDetails)[0].outerHTML);
                                             retHtml += $(divHeader)[0].outerHTML;
@@ -1104,6 +1104,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                                 class: 'invoiceBody',
                                                 css : {
                                                     'max-height' : '250px',
+                                                    'margin-left' : '15px',
                                                     'overflow-y' : 'scroll',
                                                     'overflow-x' : 'hidden'
                                                 }
@@ -1122,17 +1123,17 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                                     class : 'row',
                                                 });
 
-                                                $(divBodyDetails).append('<div class="col-sm-1" style="padding-top: 7px"><span class="paymentText invoice-lineItem">' + ele.line_item_id + '</span></div>');
-                                                $(divBodyDetails).append('<div class="col-sm-1" style="padding-top: 7px"><span class="paymentText">' + ele.order_id  + '</span></div>');
-                                                $(divBodyDetails).append('<div class="col-sm-1" style="padding-top: 7px"><span class="paymentText">' +  ele.site_name  + '</span></div>');
-                                                $(divBodyDetails).append('<div class="col-sm-1" style="padding-top: 7px"><span class="paymentText invoice-clientId">' + ele.client_id  + '</span></div>');
-                                                $(divBodyDetails).append('<div class="col-sm-1" style="white-space: pre-wrap; padding-top: 7px"><span class="paymentText">' + ele.company_name  + '</span></div>');
+                                                $(divBodyDetails).append('<div style="padding-top: 7px; width: 100px; display: inline-block; padding-left: 15px"><span class="paymentText invoice-lineItem">' + ele.line_item_id + '</span></div>');
+                                                $(divBodyDetails).append('<div style="padding-top: 7px; width: 100px; display: inline-block"><span class="paymentText">' + ele.order_id  + '</span></div>');
+                                                $(divBodyDetails).append('<div style="padding-top: 7px; width: 100px; display: inline-block"><span class="paymentText">' +  ele.site_name  + '</span></div>');
+                                                $(divBodyDetails).append('<div style="padding-top: 7px; width: 100px; display: inline-block"><span class="paymentText invoice-clientId">' + ele.client_id  + '</span></div>');
+                                                $(divBodyDetails).append('<div style="white-space: pre-wrap; padding-top: 7px; width: 100px; display: inline-block"><span class="paymentText">' + ele.company_name  + '</span></div>');
                                                 if (ele.site_name === 'KENSHOO') {
-                                                    $(divBodyDetails).append('<div class="col-sm-1" style="white-space: pre-wrap; padding-top: 7px"><span class="paymentText">' + ele.profile_name + '</span></div>');
+                                                    $(divBodyDetails).append('<div style="white-space: pre-wrap; padding-top: 7px; width: 100px; display: inline-block"><span class="paymentText">' + ele.profile_name + '</span></div>');
                                                 }
-                                                $(divBodyDetails).append('<div class="col-sm-1" style="text-align: right; padding-top: 7px"><span class="paymentText invoiceBilledAmount">$' + (ele.billed_amount ? ele.billed_amount.toLocaleString() : '0.00') + '</span></div>');
-                                                $(divBodyDetails).append('<div class="col-sm-1" style="text-align: right; padding-top: 7px"><span class="paymentText">$' + (ele.calculated_amount ? ele.calculated_amount.toLocaleString() : '0.00') + '</span></div>');
-                                                $(divBodyDetails).append('<div class="col-sm-1" style="text-align: right; padding-top: 7px"><span class="paymentText">$' + (ele.discrepancy_amount ? ele.discrepancy_amount.toLocaleString() : '0.00') + '</span></div>');
+                                                $(divBodyDetails).append('<div style="text-align: right; padding-top: 7px; width: 100px; display: inline-block"><span class="paymentText invoiceBilledAmount">$' + (ele.billed_amount ? ele.billed_amount.toLocaleString() : '0.00') + '</span></div>');
+                                                $(divBodyDetails).append('<div style="text-align: right; padding-top: 7px; width: 150px; display: inline-block"><span class="paymentText">$' + (ele.calculated_amount ? ele.calculated_amount.toLocaleString() : '0.00') + '</span></div>');
+                                                $(divBodyDetails).append('<div style="text-align: right; padding-top: 7px; width: 150px; display: inline-block"><span class="paymentText">$' + (ele.discrepancy_amount ? ele.discrepancy_amount.toLocaleString() : '0.00') + '</span></div>');
 
                                                 const $span = $('<span/>', {
                                                     class : 'paymentText'
@@ -1144,8 +1145,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                                     $($span).append('<input type="checkbox" disabled="disabled"/>');
                                                 }
 
-                                                $(divBodyDetails).append('<div class="col-sm-1" style="text-align: center; padding-top: 5px">' + $($span)[0].outerHTML  + '</div>');
-                                                $(divBodyDetails).append('<div class="col-sm-2"><div class="input-group col-sm-12"><span class="input-group-addon">$</span><input type="number" class="form-control invoicePayAmount" value="' + '0.00' + '" style="border-radius: 0 4px 4px 0; text-align: right" [(ngModel)]="item.pay" (keyup)="updateTotal(invoice)"></div></div>');
+                                                $(divBodyDetails).append('<div style="text-align: center; padding-top: 5px; width: 150px; display: inline-block">' + $($span)[0].outerHTML  + '</div>');
+                                                $(divBodyDetails).append('<div style="width: 150px; display: inline-block"><div sty class="input-group col-sm-11"><span class="input-group-addon">$</span><input type="number" class="form-control invoicePayAmount" value="' + '0.00' + '" style="border-radius: 0 4px 4px 0; text-align: right" [(ngModel)]="item.pay" (keyup)="updateTotal(invoice)"></div></div>');
 
                                                 total += 0.00; // ele.discrepancy_amount === 0 ? ele.billed_amount : 0.00;
 
@@ -1160,10 +1161,10 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                             });
 
                                             if (response.data[0].site_name === 'KENSHOO') {
-                                                $(divHeaderDetails).append('<div class="col-sm-1"><label>Profile Name</label></div>');
+                                                $(divHeaderDetails).append('<div style="width: 100px"><label>Profile Name</label></div>');
                                             }
-                                            $(divFooter).append('<div class="col-sm-12"><div class="col-sm-' + (response.data[0].site_name === 'KENSHOO' ? '10' : '9') + '"><span></span></div><div class="col-sm-2" style="padding-left: 36px"><span><b>Total($)</b></span><span class="totalInvoice" style="float: right; margin-right: 3px; font-size: 14px">' + total.toLocaleString() + '</span></div></div>');
-                                            $(divFooter).append('<div class="col-sm-12"><div class="col-sm-' + (response.data[0].site_name === 'KENSHOO' ? '11' : '10') + '"><span></span></div><div class="col-sm-1" style="padding-left: 42px; padding-right: 0px"><button class="btn pull-right invoicePay" style="position: relative; left: 19px; margin-top: 30px; margin-bottom: 10px">Pay</button></div></div>');
+                                            $(divFooter).append('<div class="col-sm-9" style="margin-left: ' + (response.data[0].site_name === 'KENSHOO' ? '-56' : '-40')  + 'px"><div class="col-sm-' + (response.data[0].site_name === 'KENSHOO' ? '10' : '9') + '"><span></span></div><div class="col-sm-2" style="padding-left: 36px"><span><b>Total($)</b></span><span class="totalInvoice" style="float: right; margin-right: 45px; font-size: 14px">' + total.toLocaleString() + '</span></div></div>');
+                                            $(divFooter).append('<div class="col-sm-9" style="margin-left: ' + (response.data[0].site_name === 'KENSHOO' ? '-131' : '-115')  + 'px"><div class="col-sm-' + (response.data[0].site_name === 'KENSHOO' ? '11' : '10') + '"><span></span></div><div class="col-sm-1" style="padding-left: 42px; padding-right: 0px"><button class="btn pull-right invoicePay" style="position: relative; left: 19px; margin-top: 30px; margin-bottom: 10px">Pay</button></div></div>');
 
                                             retHtml +=  $(divBody)[0].outerHTML + $(divFooter)[0].outerHTML;
 
