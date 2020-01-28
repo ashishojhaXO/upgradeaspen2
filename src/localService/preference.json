@@ -115,22 +115,7 @@
       "title": "Payments",
       "selected": false,
       "id": "payments",
-      "url":"app/payment",
-      "submenu" : [
-        {
-          "index": 16,
-          "name": "payments",
-          "title": "Payments",
-          "id": "payments_sub",
-          "url": "app/payment/payments"
-        },
-        {
-        "index": 17,
-        "name": "invoices",
-        "title": "Invoices",
-        "id": "invoices",
-        "url": "app/payment/invoices"
-      }]
+      "url":"app/payment"
     },
     {
       "index": 9,
@@ -142,41 +127,55 @@
       "submenu": [
         {
           "index": 1,
+          "name": "orgmanagement",
+          "title": "Org Management",
+          "id": "orgmanagement",
+          "url": "app/admin/orgmanagement"
+        },
+        {
+          "index": 2,
           "name": "usermanagement",
           "title": "User Management",
           "id": "usermanagement",
           "url": "app/admin/usermanagement"
         },
         {
-          "index": 2,
+          "index": 3,
           "name": "vendormanagement",
           "title": "Vendor Management",
           "id": "vendormanagement",
           "url": "app/admin/vendormanagement"
         },
         {
-          "index": 3,
+          "index": 4,
+          "name": "invoices",
+          "title": "Invoice Management",
+          "id": "invoices",
+          "url": "app/admin/invoices"
+        },
+        {
+          "index": 5,
           "name": "support",
           "title": "Support",
           "id": "support",
           "url": "app/admin/support"
         },
         {
-          "index": 4,
+          "index": 6,
           "name": "baseFields",
           "title": "Configure Base Fields",
           "id": "baseFields",
           "url": "app/admin/baseFields"
         },
         {
-          "index": 5,
+          "index": 7,
           "name": "ordertemplate",
           "title": "Configure Template",
           "id": "ordertemplate",
           "url": "app/admin/ordertemplate"
         },
         {
-          "index": 6,
+          "index": 8,
           "name": "ordertemplatelist",
           "title": "Template List",
           "id": "ordertemplatelist",
