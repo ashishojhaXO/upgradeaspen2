@@ -150,6 +150,7 @@ export class AlertNoticationdashboardsComponent implements OnInit {
 
   reLoad(){
     this.showSpinner = true;
+    this.dataObject.isDataAvailable = false;
     this.searchDataRequest();
   }
 

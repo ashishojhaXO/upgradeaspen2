@@ -640,6 +640,7 @@ export class UserManagementComponent implements OnInit  {
   // Started/
   reLoad(){
     this.showSpinner = true;
+    this.dataObject.isDataAvailable = false;
     this.searchDataRequest();
   }
 

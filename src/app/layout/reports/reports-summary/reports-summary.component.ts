@@ -331,6 +331,7 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
   }
   reLoad(){
     this.showSpinner = true;
+    this.dataObject.isDataAvailable = false;
     this.populateReportDataTable();
   }
 
