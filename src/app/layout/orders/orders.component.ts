@@ -168,8 +168,6 @@ export class OrdersComponent implements OnInit  {
       }
     }
 
-    console.log("Orders HEADD::: ", headers);
-
     this.gridData['result'] = tableData;
     this.gridData['headers'] = headers;
     this.gridData['options'] = this.options[0];

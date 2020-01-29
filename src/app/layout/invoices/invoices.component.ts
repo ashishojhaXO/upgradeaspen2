@@ -70,16 +70,6 @@ export class InvoicesComponent implements OnInit  {
   @ViewChild('AddPayment') addPayment: PopUpModalComponent;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
-    // {
-    //   "columnDefs": [
-    //         {
-    //             "targets": [ 2 ],
-    //             "visible": false,
-    //             "searchable": false
-    //         }
-    //       ]
-    //     }
-    console.log("INVOID")
   }
 
   ngOnInit() {
