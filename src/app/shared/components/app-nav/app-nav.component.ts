@@ -26,7 +26,7 @@ export class AppNavComponent implements OnInit, OnChanges {
     menu: any;
 
     // Navigation rules
-    showSubmenu: boolean;
+    showSubmenu: boolean = true;
 
     constructor(public router: Router, private translate: TranslateService) {
 
@@ -41,13 +41,17 @@ export class AppNavComponent implements OnInit, OnChanges {
         // recurse & Set css property on init
         // this.recurse(this.mainmenu)
 
-        // Rules for Order Submenu
-        var hasTemplates = JSON.parse( localStorage.getItem('customerInfo')).org.hasTemplates;
-        var rules = new Rules(hasTemplates, [ Rules.exists,  ] );
-        this.showSubmenu = rules.runRule();
-        // if ( this.mainmenu && this.mainmenu.id == "orders" && !this.showSubmenu )
-        //     delete this.mainmenu.submenu;
-        // Rules for Order Submenu-
+        let customerInfo =  JSON.parse( localStorage.getItem('customerInfo'));
+
+        if( "hasTemplates" in customerInfo.org ) {
+            // Rules for Order Submenu
+            var hasTemplates = customerInfo.org.hasTemplates;
+            var rules = new Rules(hasTemplates, [ Rules.exists,  ] );
+            this.showSubmenu = rules.runRule();
+            // if ( this.mainmenu && this.mainmenu.id == "orders" && !this.showSubmenu )
+            //     delete this.mainmenu.submenu;
+            // Rules for Order Submenu-
+        }
 
     }
 
