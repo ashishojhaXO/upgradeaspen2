@@ -241,7 +241,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             // columns defines the header columns
             const columns = this.dataObject.gridData.headers.map(function (x) {
-                return {title: x.title};
+                return {id: x.key, title: x.title};
             });
 
             // Add additional column in the row for checkboxes
@@ -377,6 +377,26 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                             return '<input class="check-row-selection" type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
                         }
                     });
+                }
+
+
+                if (this.dataObject.gridData.options.isHideColumns) {
+                    let targ: Array<Number>;
+                    targ = columns.map( 
+                        (v, k) => { 
+                            if( v.id 
+                                && 
+                                this.dataObject.gridData.options.isHideColumns.indexOf(v.id) != -1 
+                            ) {
+                                return k; 
+                            }
+                        } 
+                    ).filter( (v, k) => v != undefined);
+
+                    columnDefs.push({
+                        targets: targ, 
+                        visible: false,
+                    })
                 }
 
                 if (this.dataObject.gridData.options.isDownloadAsCsv) {
