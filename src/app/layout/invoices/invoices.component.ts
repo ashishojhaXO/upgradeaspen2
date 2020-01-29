@@ -35,7 +35,7 @@ export class InvoicesComponent implements OnInit  {
     isDeleteOption: false,
     isAddRow: false,
     isPlayOption: {
-      value : false,
+      value : true,
       icon : 'fa-dollar',
       tooltip: 'Pay Invoice'
     },
@@ -56,7 +56,6 @@ export class InvoicesComponent implements OnInit  {
     // since isActionColPosition is 1, isOrder is also required to be sent,
     // since default ordering assigned in dataTable is [[1, 'asc']]
     isOrder: [[2, 'asc']],
-    isTree: true,
     isHideColumns: ["id", "downloadable_file_id"],
   }];
   dashboard: any;
@@ -186,7 +185,7 @@ export class InvoicesComponent implements OnInit  {
   handleRun(dataObj: any) {
     const invoiceId = dataObj.data.id;
     if (invoiceId) {
-      this.router.navigate(['/app/payment/invoices/invoice/' + invoiceId]);
+      this.router.navigate(['/app/admin/invoices/invoice/' + invoiceId]);
     } else {
       Swal({
         title: 'No invoice ID found',
