@@ -18,7 +18,7 @@ export class AppSpinnerComponent implements OnInit {
         // Max timer that this loading spinner can be shown on the page
         networkCallWaitTimeMax: 60000,
         pageReloadCountdownTimerMaxFunc: () => {
-            let cacheNumber: number; 
+            let cacheNumber: number;
             return () => {
                 if (cacheNumber)
                     return cacheNumber;
@@ -49,13 +49,13 @@ export class AppSpinnerComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.startTimerCond()
+       // this.startTimerCond()
     }
 
     ngAfterViewInit() {}
 
     ngOnDestroy() {
-        this.stopTimerCond()
+       // this.stopTimerCond()
     }
 
     startTimerCond() {
@@ -88,7 +88,7 @@ export class AppSpinnerComponent implements OnInit {
             showCancelButton: true,
             cancelButtonText: "Cancel Reload",
         }
-        this.popUp.showPopUp(swalOptions).then( 
+        this.popUp.showPopUp(swalOptions).then(
             (res) => {
                 if(res.value || res.dismiss.toString() == "timer" ) {
                     location.reload();
@@ -96,7 +96,7 @@ export class AppSpinnerComponent implements OnInit {
             },
         )
     }
-    
+
     stopTimer() {
         this.countdownTimer.unsubscribe();
     }

@@ -25,6 +25,7 @@ import {OrdersListComponent} from './orders-list/orders-list.component';
 import {InvoicesComponent} from './invoices/invoices.component';
 import {InvoiceComponent} from './invoice/invoice.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
+import {OrgManagementComponent} from './../layout/orgManagement/orgManagement.component';
 
 const routes: Routes = [
     {
@@ -288,6 +289,28 @@ const routes: Routes = [
                             breadcrumbs: true,
                             text: 'Payments'
                         }
+                    }
+                ]
+            },
+            {
+                path: 'admin',
+                data: {
+                    breadcrumbs: true,
+                    text: 'Admin'
+                },
+                children: [
+                    {
+                        path: '',
+                        redirectTo: 'usermanagement',
+                        pathMatch: 'full'
+                    },
+                    {
+                        path: 'usermanagement',
+                        component: UserManagementComponent,
+                        data: {
+                            breadcrumbs: true,
+                            text: 'User Management'
+                        }
                     },
                     {
                         path: 'invoices',
@@ -321,28 +344,6 @@ const routes: Routes = [
                                 },
                             }
                         ]
-                    }
-                ]
-            },
-            {
-                path: 'admin',
-                data: {
-                    breadcrumbs: true,
-                    text: 'Admin'
-                },
-                children: [
-                    {
-                        path: '',
-                        redirectTo: 'usermanagement',
-                        pathMatch: 'full'
-                    },
-                    {
-                        path: 'usermanagement',
-                        component: UserManagementComponent,
-                        data: {
-                            breadcrumbs: true,
-                            text: 'User Management'
-                        }
                     },
                     {
                         path: 'tasks',
@@ -376,6 +377,14 @@ const routes: Routes = [
                             text: 'Vendor Management'
                         },
                     },
+                    // {
+                    //     path: 'orgmanagement',
+                    //     component: OrgManagementComponent,
+                    //     data: {
+                    //         breadcrumbs: true,
+                    //         text: 'Org Management'
+                    //     },
+                    // },
                     {
                       path: 'ordertemplate',
                       component: OrderTemplateComponent,

@@ -297,7 +297,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }
 
   ngOnInit() {
-
     this.widget = this.okta.getWidget();
 
     this.showSpinner = true;
@@ -325,22 +324,59 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               this.getSeedDashboard()
                   .then(
                       response2 => {
-                        console.log("gSD resp2")
-
                         response2 = response2.json();
-
                         this.showSpinner = false;
                         this.populateChart(response2);
                         this.populateDataTable(response2);
-                      }, rej => {
-                        console.log("gSD rej", rej)
+                      }, error => {
+                        if(error.status === 401) {
+                          if(localStorage.getItem('accessToken')) {
+                            this.widget.tokenManager.refresh('accessToken')
+                                .then(function (newToken) {
+                                  localStorage.setItem('accessToken', newToken);
+                                  this.showSpinner = false;
+                                  // this.searchDataRequest();
+                                })
+                                .catch(function (err1) {
+                                  console.log('error >>')
+                                  console.log(err1);
+                                });
+                          } else {
+                            this.widget.signOut(() => {
+                              localStorage.removeItem('accessToken');
+                              window.location.href = '/login';
+                            });
+                          }
+                        } else {
+                          this.showSpinner = false;
+                        }
 
                       });
             }
           },
           error => {
-            console.log("error: ", error)
-            this.showSpinner = false;
+
+            if(error.status === 401) {
+              if(localStorage.getItem('accessToken')) {
+                this.widget.tokenManager.refresh('accessToken')
+                    .then(function (newToken) {
+                      localStorage.setItem('accessToken', newToken);
+                      this.showSpinner = false;
+                     // this.searchDataRequest();
+                    })
+                    .catch(function (err1) {
+                      console.log('error >>')
+                      console.log(err1);
+                    });
+              } else {
+                this.widget.signOut(() => {
+                  localStorage.removeItem('accessToken');
+                  window.location.href = '/login';
+                });
+              }
+            } else {
+              this.showSpinner = false;
+            }
           });
 
       const defaultObj: any = {};
@@ -387,12 +423,12 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
     const dataObj = JSON.stringify(obj);
     return this.http.post(
-      this.api_fs.api + '/api/reports/org/homd/seed-dashboard/v1', 
-      dataObj, 
+      this.api_fs.api + '/api/reports/org/homd/seed-dashboard/v1',
+      dataObj,
       options
     ).toPromise()
         // .then(
-        //   data => data.json(), 
+        //   data => data.json(),
         //   rej => {
         //     console.log("inside gSD: ", rej)
         //     this.showSpinner = false;
@@ -900,25 +936,21 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         err => {
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.refresh('accessToken')
-                  // this.refreshToken()
-                  .then(function (res: any) {
-                    const newToken = res.newToken;
-
+              this.widget.tokenManager.refresh('accessToken')
+                  .then(function (newToken) {
                     localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
-                    this.getSearchDataRequest(dataObj);
+                    this.getSearchDataRequest();
                   })
-                  .catch(function (err) {
+                  .catch(function (err1) {
                     console.log('error >>')
-                    console.log(err);
+                    console.log(err1);
                   });
             } else {
-              console.log("Token Sign OUt")
-              // this.widget.signOut(() => {
-              //   localStorage.removeItem('accessToken');
-              //   window.location.href = '/login';
-              // });
+              this.widget.signOut(() => {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/login';
+              });
             }
           } else {
             this.showSpinner = false;
