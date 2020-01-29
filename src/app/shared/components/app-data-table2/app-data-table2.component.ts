@@ -241,7 +241,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             // columns defines the header columns
             const columns = this.dataObject.gridData.headers.map(function (x) {
-                return {id: x.id, title: x.title};
+                return {id: x.key, title: x.title};
             });
 
             // Add additional column in the row for checkboxes
@@ -381,18 +381,20 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
 
                 if (this.dataObject.gridData.options.isHideColumns) {
-                console.log("COLSLS", columns)
-                    let targ = [];
-                    this.dataObject.gridData.headers.map(el => {
-                        if(this.dataObject.gridData.options.isHideColumns.indexOf( el.key) != -1 ) {
+                    let targ: Array<Number>;
+                    targ = columns.map( 
+                        (v, k) => { 
+                            if( v.id 
+                                && 
+                                this.dataObject.gridData.options.isHideColumns.indexOf(v.id) != -1 
+                            ) {
+                                return k; 
+                            }
+                        } 
+                    ).filter( (v, k) => v != undefined);
 
-                        }
-
-                    });
-
-                    console.log("HIDDHDI: ", this.dataObject.gridData.headers)
                     columnDefs.push({
-                        targets: ["id",3],
+                        targets: targ, 
                         visible: false,
                     })
                 }
