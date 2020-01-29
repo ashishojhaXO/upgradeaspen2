@@ -45,6 +45,7 @@ import { OrderTemplateComponent } from './order-template/order-template.componen
 import { OrderSummaryComponent } from './orderSummary/orderSummary.component';
 import { InvoicesComponent } from './invoices/invoices.component';
 import { InvoiceComponent } from './invoice/invoice.component';
+import {OrgManagementComponent} from './../layout/orgManagement/orgManagement.component';
 
 // providers
 import { AuthGuard } from './../shared';
@@ -114,7 +115,8 @@ import { UserSettingsComponent } from './user-settings/user-settings.component';
         NumericDirective,
         InvoicesComponent,
         InvoiceComponent,
-        UserSettingsComponent
+        UserSettingsComponent,
+        OrgManagementComponent
     ],
     providers: [
         AuthGuard,

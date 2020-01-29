@@ -1,0 +1,107 @@
+<div>
+  <div class="col-lg-12 col-md-12">
+    <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">ORG MANAGEMENT</p>
+    <div class="alert-btn type-create pull-right">
+      <a title="create" class="button btn btn-success" (click)="handleShowModal(AddOrg)" href="javascript:void(0)">CREATE NEW ORG</a>
+      <a (click)="reLoad()" class="button btn btn-success" style="background-color: #0777bc"><i class="fa fa-fw fa-refresh" aria-hidden="true"></i>Reload</a>
+    </div>
+  </div>
+  <div class="">
+    <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject.isDataAvailable">
+      <app-data-table2 [dataObject]="dataObject" identity="org" (triggerActions)="this[$event.action]($event)"></app-data-table2>
+      <!--<app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height" [dataTableAction]="this"></app-data-table1>-->
+    </div>
+    <div class="clearfix"></div>
+    <div class="page-header" *ngIf="!dataObject.isDataAvailable">
+      <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">{{resultStatus}}</div>
+    </div>
+    <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
+  </div>
+</div>
+<div style="width:100%">
+  <app-pop-up-modal #AddOrg>
+    <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
+      {{ editID ? ' Update' : ' Add ' }} Vendor
+    </div>
+    <div class="app-modal-body">
+      <div class="content">
+        <form [formGroup]="orgForm" novalidate (keydown.enter)="$event.preventDefault()">
+          <div class="form">
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">Org Name : </label>
+              <input formControlName="company_name" [(ngModel)]="orgModel.company_name" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['company_name'].invalid && (orgForm.controls['company_name'].dirty || orgForm.controls['company_name'].touched)" class="alert alert-danger">
+              <div *ngIf="orgForm.controls['company_name'].errors.required">
+                Org name is required.
+              </div>
+            </div>
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">Email : </label>
+              <input formControlName="email" [(ngModel)]="orgModel.email" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['email'].invalid && (orgForm.controls['email'].dirty || orgForm.controls['email'].touched)" class="alert alert-danger">
+              <div *ngIf="orgForm.controls['email'].errors.required">
+                Email is required.
+              </div>
+              <div *ngIf="orgForm.controls['email'].errors.pattern">
+                Incorrect Email Format
+              </div>
+            </div>
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">Address 1 : </label>
+              <input formControlName="address_1" [(ngModel)]="orgModel.address_1" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['address_1'].invalid && (orgForm.controls['address_1'].dirty || orgForm.controls['address_1'].touched)" class="alert alert-danger">
+              <div *ngIf="orgForm.controls['address_1'].errors.required">
+                Address is required.
+              </div>
+            </div>
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">Address 2 : </label>
+              <input formControlName="address_2" [(ngModel)]="orgModel.address_2" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">City : </label>
+              <input formControlName="city" [(ngModel)]="orgModel.city" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['city'].invalid && (orgForm.controls['city'].dirty || orgForm.controls['city'].touched)" class="alert alert-danger">
+              <div *ngIf="orgForm.controls['city'].errors.required">
+                City is required.
+              </div>
+            </div>
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">State : </label>
+              <input formControlName="state" [(ngModel)]="orgModel.state" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['state'].invalid && (orgForm.controls['state'].dirty || orgForm.controls['state'].touched)" class="alert alert-danger">
+              <div *ngIf="orgForm.controls['state'].errors.required">
+                State is required.
+              </div>
+            </div>
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">Country : </label>
+              <input formControlName="country" [(ngModel)]="orgModel.country" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['country'].invalid && (orgForm.controls['country'].dirty || orgForm.controls['country'].touched)" class="alert alert-danger">
+              <div *ngIf="orgForm.controls['country'].errors.required">
+                Country is required.
+              </div>
+            </div>
+            <div *ngIf="error && error.message" style="text-align: center">
+              <span [class]="error.type === 'success' ? 'success' : 'fail'">{{error.message}}</span>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="app-modal-footer">
+      <button type="button" [disabled]="!orgForm.valid" [style.cursor]="!orgForm.valid ? 'not-allowed' : 'pointer'" class="action-btn" (click)="OnSubmit(AddOrg)">
+        {{ editID ? ' Update' : ' Add ' }}
+      </button>
+      <button type="button" class="inaction-btn" (click)="handleCloseModal(AddOrg)">
+        Close
+      </button>
+    </div>
+  </app-pop-up-modal>
+</div>

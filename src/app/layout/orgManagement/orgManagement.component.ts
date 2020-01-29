@@ -18,11 +18,11 @@ import {DataTableAction } from '../../shared/components/app-data-table/data-tabl
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
 @Component({
-  selector: 'app-vendormanagement',
-  templateUrl: './vendorManagement.component.html',
-  styleUrls: ['./vendorManagement.component.scss']
+  selector: 'app-orgmanagement',
+  templateUrl: './orgManagement.component.html',
+  styleUrls: ['./orgManagement.component.scss']
 })
-export class VendorManagementComponent implements OnInit, DataTableAction  {
+export class OrgManagementComponent implements OnInit, DataTableAction  {
 
   gridData: any;
   dataObject: any = {};
@@ -49,9 +49,8 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     isRowSelection: null,
     isPageLength: true,
     isPagination: true,
-    isTree: true,
     // Any number starting from 1 to ..., but not 0
-    isActionColPosition: 1, // This can not be 0, since zeroth column logic might crash
+    isActionColPosition: 0, // This can not be 0, since zeroth column logic might crash
     // since isActionColPosition is 1, isOrder is also required to be sent,
     // since default ordering assigned in dataTable is [[1, 'asc']]
     isOrder: [[2, 'asc']],
@@ -59,9 +58,9 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   dashboard: any;
   api_fs: any;
   externalAuth: any;
-  @ViewChild('AddVendor') addVendor: PopUpModalComponent;
-  vendorForm: FormGroup;
-  vendorModel: any;
+  @ViewChild('AddOrg') addOrg: PopUpModalComponent;
+  orgForm: FormGroup;
+  orgModel: any;
   error: any;
   showSpinner: boolean;
   widget: any;
@@ -72,10 +71,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     private okta: OktaAuthService,
     private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager) {
 
-    this.vendorForm = new FormGroup({
-      external_vendor_id: new FormControl('', Validators.required),
-      first_name: new FormControl('', Validators.required),
-      last_name: new FormControl('', Validators.required),
+    this.orgForm = new FormGroup({
       company_name: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       address_1: new FormControl('', Validators.required),
@@ -85,10 +81,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
       country: new FormControl('', Validators.required)
     });
 
-    this.vendorModel = {
-      external_vendor_id: '',
-      first_name: '',
-      last_name: '',
+    this.orgModel = {
       company_name: '',
       email: '',
       address_1: '',
@@ -117,9 +110,9 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
           if (response) {
             console.log('response >>')
             console.log(response);
-            if (response && response.length) {
+            if (response.data && response.data.length) {
               this.showSpinner = false;
-              this.populateDataTable(response, true);
+              this.populateDataTable(response.data, true);
             } else {
               this.resultStatus = 'No data found'
               this.showSpinner = false;
@@ -163,7 +156,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
 
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/vendors';
+    var url = this.api_fs.api + '/api/orgs';
     return this.http
       .get(url, options)
       .map(res => {
@@ -208,48 +201,48 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     console.log(dataObj.data);
     this.editID = dataObj.data.id;
 
-    this.vendorModel.external_vendor_id = dataObj.data.external_vendor_id;
-    this.vendorForm.patchValue({
+    this.orgModel.external_vendor_id = dataObj.data.external_vendor_id;
+    this.orgForm.patchValue({
       external_vendor_id : dataObj.data.external_vendor_id
     });
-    this.vendorModel.first_name = dataObj.data.first_name;
-    this.vendorForm.patchValue({
+    this.orgModel.first_name = dataObj.data.first_name;
+    this.orgForm.patchValue({
       first_name : dataObj.data.first_name
     });
-    this.vendorModel.last_name = dataObj.data.last_name;
-    this.vendorForm.patchValue({
+    this.orgModel.last_name = dataObj.data.last_name;
+    this.orgForm.patchValue({
       last_name : dataObj.data.last_name
     });
-    this.vendorModel.company_name = dataObj.data.company_name;
-    this.vendorForm.patchValue({
+    this.orgModel.company_name = dataObj.data.company_name;
+    this.orgForm.patchValue({
       company_name : dataObj.data.company_name
     });
-    this.vendorModel.email = dataObj.data.email;
-    this.vendorForm.patchValue({
+    this.orgModel.email = dataObj.data.email;
+    this.orgForm.patchValue({
       email : dataObj.data.email
     });
-    this.vendorModel.address_1 = dataObj.data.address_1;
-    this.vendorForm.patchValue({
+    this.orgModel.address_1 = dataObj.data.address_1;
+    this.orgForm.patchValue({
       address_1 : dataObj.data.address_1
     });
-    this.vendorModel.address_2 = dataObj.data.address_2;
-    this.vendorForm.patchValue({
+    this.orgModel.address_2 = dataObj.data.address_2;
+    this.orgForm.patchValue({
       address_2 : dataObj.data.address_2
     });
-    this.vendorModel.city = dataObj.data.city;
-    this.vendorForm.patchValue({
+    this.orgModel.city = dataObj.data.city;
+    this.orgForm.patchValue({
       city : dataObj.data.city
     });
-    this.vendorModel.state = dataObj.data.state;
-    this.vendorForm.patchValue({
+    this.orgModel.state = dataObj.data.state;
+    this.orgForm.patchValue({
       state : dataObj.data.state
     });
-    this.vendorModel.country = dataObj.data.country;
-    this.vendorForm.patchValue({
+    this.orgModel.country = dataObj.data.country;
+    this.orgForm.patchValue({
       country : dataObj.data.country
     });
 
-    this.addVendor.show();
+    this.addOrg.show();
 
   //  this.router.navigate(['/app/reports/adHocReportBuilder', rowData.id]);
   }
@@ -291,16 +284,16 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.showSpinner = true;
     this.error = '';
     const dataObj: any = {};
-    dataObj.external_vendor_id = this.vendorForm.controls['external_vendor_id'].value;
-    dataObj.first_name = this.vendorForm.controls['first_name'].value;
-    dataObj.last_name = this.vendorForm.controls['last_name'].value;
-    dataObj.company_name = this.vendorForm.controls['company_name'].value;
-    dataObj.email = this.vendorForm.controls['email'].value;
-    dataObj.address_1 = this.vendorForm.controls['address_1'].value;
-    dataObj.address_2 = this.vendorForm.controls['address_2'].value;
-    dataObj.city = this.vendorForm.controls['city'].value;
-    dataObj.state = this.vendorForm.controls['state'].value;
-    dataObj.country = this.vendorForm.controls['country'].value;
+    dataObj.external_vendor_id = this.orgForm.controls['external_vendor_id'].value;
+    dataObj.first_name = this.orgForm.controls['first_name'].value;
+    dataObj.last_name = this.orgForm.controls['last_name'].value;
+    dataObj.company_name = this.orgForm.controls['company_name'].value;
+    dataObj.email = this.orgForm.controls['email'].value;
+    dataObj.address_1 = this.orgForm.controls['address_1'].value;
+    dataObj.address_2 = this.orgForm.controls['address_2'].value;
+    dataObj.city = this.orgForm.controls['city'].value;
+    dataObj.state = this.orgForm.controls['state'].value;
+    dataObj.country = this.orgForm.controls['country'].value;
 
     this.performVendorAdditionRequest(dataObj);
   }
@@ -426,44 +419,44 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.error = '';
     this.editID = '';
 
-    this.vendorModel.external_vendor_id = '';
-    this.vendorForm.patchValue({
+    this.orgModel.external_vendor_id = '';
+    this.orgForm.patchValue({
       external_vendor_id : ''
     });
-    this.vendorModel.first_name = '';
-    this.vendorForm.patchValue({
+    this.orgModel.first_name = '';
+    this.orgForm.patchValue({
       first_name : ''
     });
-    this.vendorModel.last_name = '';
-    this.vendorForm.patchValue({
+    this.orgModel.last_name = '';
+    this.orgForm.patchValue({
       last_name : ''
     });
-    this.vendorModel.company_name = '';
-    this.vendorForm.patchValue({
+    this.orgModel.company_name = '';
+    this.orgForm.patchValue({
       company_name : ''
     });
-    this.vendorModel.email = '';
-    this.vendorForm.patchValue({
+    this.orgModel.email = '';
+    this.orgForm.patchValue({
       email : ''
     });
-    this.vendorModel.address_1 = '';
-    this.vendorForm.patchValue({
+    this.orgModel.address_1 = '';
+    this.orgForm.patchValue({
       address_1 : ''
     });
-    this.vendorModel.address_2 = '';
-    this.vendorForm.patchValue({
+    this.orgModel.address_2 = '';
+    this.orgForm.patchValue({
       address_2 : ''
     });
-    this.vendorModel.city = '';
-    this.vendorForm.patchValue({
+    this.orgModel.city = '';
+    this.orgForm.patchValue({
       city : ''
     });
-    this.vendorModel.state = '';
-    this.vendorForm.patchValue({
+    this.orgModel.state = '';
+    this.orgForm.patchValue({
       state : ''
     });
-    this.vendorModel.country = '';
-    this.vendorForm.patchValue({
+    this.orgModel.country = '';
+    this.orgForm.patchValue({
       country : ''
     });
 
