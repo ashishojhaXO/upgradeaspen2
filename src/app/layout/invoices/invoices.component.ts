@@ -168,8 +168,6 @@ export class InvoicesComponent implements OnInit  {
       }
     }
 
-    console.log("HEADD::: ", headers);
-
     this.gridData['result'] = tableData;
     this.gridData['headers'] = headers;
     this.gridData['options'] = this.options[0];

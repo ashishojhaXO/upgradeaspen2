@@ -51,7 +51,8 @@ export class OrdersComponent implements OnInit  {
     // since isActionColPosition is 1, isOrder is also required to be sent,
     // since default ordering assigned in dataTable is [[1, 'asc']]
     isOrder: [[2, 'asc']],
-    isTree: true
+    isTree: true,
+    isHideColumns: [ "Vendor_Receipt_Id"]
   }];
   dashboard: any;
   api_fs: any;
@@ -166,6 +167,8 @@ export class OrdersComponent implements OnInit  {
         });
       }
     }
+
+    console.log("Orders HEADD::: ", headers);
 
     this.gridData['result'] = tableData;
     this.gridData['headers'] = headers;
