@@ -382,19 +382,19 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                 if (this.dataObject.gridData.options.isHideColumns) {
                     let targ: Array<Number>;
-                    targ = columns.map( 
-                        (v, k) => { 
-                            if( v.id 
-                                && 
-                                this.dataObject.gridData.options.isHideColumns.indexOf(v.id) != -1 
+                    targ = columns.map(
+                        (v, k) => {
+                            if( v.id
+                                &&
+                                this.dataObject.gridData.options.isHideColumns.indexOf(v.id) != -1
                             ) {
-                                return k; 
+                                return k;
                             }
-                        } 
+                        }
                     ).filter( (v, k) => v != undefined);
 
                     columnDefs.push({
-                        targets: targ, 
+                        targets: targ,
                         visible: false,
                     })
                 }
@@ -497,16 +497,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     if (__this.dataObject.gridData.options.isDownloadOption && __this.dataObject.gridData.options.isDownloadOption.dependency && __this.dataObject.gridData.options.isDownloadOption.dependency.length) {
                         let isValid = true;
                         __this.dataObject.gridData.options.isDownloadOption.dependency.forEach(function (ele) {
-                            const headerColumnField = __this.dataObject.gridData.headers.find(x=> x.key === ele);
-                            if (headerColumnField) {
-                                let columnIndex = __this.dataObject.gridData.headers.indexOf(headerColumnField);
-                                if (__this.dataObject.gridData.options.isRowSelection || ( __this.dataObject.gridData.options.isActionColPosition !== null && (__this.dataObject.gridData.options.isActionColPosition + 1) < columnIndex)) {
-                                    columnIndex++;
-                                }
-
-                                if (!$('td', row).eq(columnIndex).text()) {
-                                    isValid = false;
-                                }
+                            if(!__this.dataObject.gridData.result[index][ele]) {
+                                isValid = false;
                             }
                         });
 
