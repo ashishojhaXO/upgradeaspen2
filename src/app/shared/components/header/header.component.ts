@@ -213,7 +213,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
 
         if (removeMenuItems) {
           var reducedMenu = this.mainmenu.filter(function (res) {
-            return res.id !== 'payments' && res.id !== 'admin';
+            return res.id !== 'payments' && res.id !== 'admin' && res.id !== 'reports';
           });
           this.mainmenu = reducedMenu;
         }
