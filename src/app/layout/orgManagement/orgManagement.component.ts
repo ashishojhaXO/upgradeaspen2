@@ -35,12 +35,12 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     isEditOption: {
       value : true,
       icon : '',
-      tooltip: 'Edit Vendor'
+      tooltip: 'Edit Org'
     },
     isDeleteOption: {
       value : true,
       icon : '',
-      tooltip: 'Delete Vendor'
+      tooltip: 'Delete Org'
     },
     isAddRow: false,
     isColVisibility: true,
@@ -72,22 +72,28 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager) {
 
     this.orgForm = new FormGroup({
-      company_name: new FormControl('', Validators.required),
-      email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
+      org_name: new FormControl('', Validators.required),
+      first_name: new FormControl('', Validators.required),
+      last_name: new FormControl('', Validators.required),
+      email_id: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       address_1: new FormControl('', Validators.required),
       address_2: new FormControl(''),
       city: new FormControl('', Validators.required),
       state: new FormControl('', Validators.required),
+      zip: new FormControl('', Validators.required),
       country: new FormControl('', Validators.required)
     });
 
     this.orgModel = {
-      company_name: '',
-      email: '',
+      org_name: '',
+      first_name: '',
+      last_name: '',
+      email_id: '',
       address_1: '',
       address_2: '',
       city: '',
       state: '',
+      zip: '',
       country: ''
     };
 
@@ -201,9 +207,9 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     console.log(dataObj.data);
     this.editID = dataObj.data.id;
 
-    this.orgModel.external_vendor_id = dataObj.data.external_vendor_id;
+    this.orgModel.org_name = dataObj.data.org_name;
     this.orgForm.patchValue({
-      external_vendor_id : dataObj.data.external_vendor_id
+      org_name : dataObj.data.org_name
     });
     this.orgModel.first_name = dataObj.data.first_name;
     this.orgForm.patchValue({
@@ -213,13 +219,9 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     this.orgForm.patchValue({
       last_name : dataObj.data.last_name
     });
-    this.orgModel.company_name = dataObj.data.company_name;
+    this.orgModel.email_id = dataObj.data.email_id;
     this.orgForm.patchValue({
-      company_name : dataObj.data.company_name
-    });
-    this.orgModel.email = dataObj.data.email;
-    this.orgForm.patchValue({
-      email : dataObj.data.email
+      email_id : dataObj.data.email_id
     });
     this.orgModel.address_1 = dataObj.data.address_1;
     this.orgForm.patchValue({
@@ -236,6 +238,10 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     this.orgModel.state = dataObj.data.state;
     this.orgForm.patchValue({
       state : dataObj.data.state
+    });
+    this.orgModel.state = dataObj.data.zip;
+    this.orgForm.patchValue({
+      zip : dataObj.data.zip
     });
     this.orgModel.country = dataObj.data.country;
     this.orgForm.patchValue({
@@ -261,11 +267,11 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
       if (dataObj.data.id.no_of_orders > 0 && dataObj.data.id.no_of_users) {
         if (!this.showError) {
           this.showError = true;
-          this.toastr.error('ERROR!', 'Vendor cannot be deleted since it has existing order(s) or user(s) associated with it');
+          this.toastr.error('ERROR!', 'Org cannot be deleted since it has existing order(s) or user(s) associated with it');
           this.showError = false;
         }
       } else {
-        this.performVendorDeletionRequest(dataObj.data.id);
+        this.performOrgDeletionRequest(dataObj.data.id);
       }
     }
   }
@@ -284,28 +290,28 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     this.showSpinner = true;
     this.error = '';
     const dataObj: any = {};
-    dataObj.external_vendor_id = this.orgForm.controls['external_vendor_id'].value;
     dataObj.first_name = this.orgForm.controls['first_name'].value;
     dataObj.last_name = this.orgForm.controls['last_name'].value;
-    dataObj.company_name = this.orgForm.controls['company_name'].value;
-    dataObj.email = this.orgForm.controls['email'].value;
+    dataObj.org_name = this.orgForm.controls['org_name'].value;
+    dataObj.email_id = this.orgForm.controls['email_id'].value;
     dataObj.address_1 = this.orgForm.controls['address_1'].value;
     dataObj.address_2 = this.orgForm.controls['address_2'].value;
     dataObj.city = this.orgForm.controls['city'].value;
     dataObj.state = this.orgForm.controls['state'].value;
+    dataObj.zip = this.orgForm.controls['zip'].value;
     dataObj.country = this.orgForm.controls['country'].value;
 
-    this.performVendorAdditionRequest(dataObj);
+    this.performOrgAdditionRequest(dataObj);
   }
 
-  performVendorAdditionRequest(dataObj) {
-    return this.performVendorAddition(dataObj).subscribe(
+  performOrgAdditionRequest(dataObj) {
+    return this.performOrgAddition(dataObj).subscribe(
         response => {
-          console.log('response from vendor creation >>>')
+          console.log('response from Org creation >>>')
           console.log(response);
           if (response) {
             this.showSpinner = false;
-            this.error = { type : response.data ? 'success' : 'fail' , message : response.data ?  'Vendor successfully ' + ( this.editID ? 'updated' : 'created' ) : 'Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
+            this.error = { type : response.data ? 'success' : 'fail' , message : response.data ?  'Org successfully ' + ( this.editID ? 'updated' : 'created' ) : 'Org ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
           }
         },
         err => {
@@ -315,7 +321,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
                   .then(function (newToken) {
                     localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
-                    this.performVendorAdditionRequest(dataObj);
+                    this.performOrgAdditionRequest(dataObj);
                   })
                   .catch(function (err1) {
                     console.log('error >>')
@@ -335,7 +341,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     );
   }
 
-  performVendorAddition(dataObj) {
+  performOrgAddition(dataObj) {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
@@ -345,7 +351,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     const data = JSON.stringify(dataObj);
-    const url = this.editID ? this.api_fs.api + '/api/vendors/' + this.editID : this.api_fs.api + '/api/vendors';
+    const url = this.editID ? this.api_fs.api + '/api/orgs/' + this.editID : this.api_fs.api + '/api/orgs';
     if (this.editID) {
       return this.http
           .put(url, data, options)
@@ -361,13 +367,13 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     }
   }
 
-  performVendorDeletionRequest(id) {
-    return this.performVendorDeletion(id).subscribe(
+  performOrgDeletionRequest(id) {
+    return this.performOrgDeletion(id).subscribe(
         response => {
           if (response) {
             this.showSpinner = false;
             this.searchDataRequest();
-           // this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Vendor successfully deleted ' : 'Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
+           // this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Org successfully deleted ' : 'Org ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
            // this.editID = '';
           }
         },
@@ -378,7 +384,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
                   .then(function (newToken) {
                     localStorage.setItem('accessToken', newToken);
                     this.showSpinner = false;
-                    this.performVendorDeletionRequest(id);
+                    this.performOrgDeletionRequest(id);
                   })
                   .catch(function (err1) {
                     console.log('error >>')
@@ -398,7 +404,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     );
   }
 
-  performVendorDeletion(id) {
+  performOrgDeletion(id) {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
@@ -407,7 +413,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
-    const url = this.api_fs.api + '/api/vendors/' + id;
+    const url = this.api_fs.api + '/api/Orgs/' + id;
     return this.http
         .delete(url, options)
         .map(res => {
@@ -419,10 +425,6 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     this.error = '';
     this.editID = '';
 
-    this.orgModel.external_vendor_id = '';
-    this.orgForm.patchValue({
-      external_vendor_id : ''
-    });
     this.orgModel.first_name = '';
     this.orgForm.patchValue({
       first_name : ''
@@ -431,13 +433,13 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     this.orgForm.patchValue({
       last_name : ''
     });
-    this.orgModel.company_name = '';
+    this.orgModel.org_name = '';
     this.orgForm.patchValue({
-      company_name : ''
+      org_name : ''
     });
-    this.orgModel.email = '';
+    this.orgModel.email_id = '';
     this.orgForm.patchValue({
-      email : ''
+      email_id : ''
     });
     this.orgModel.address_1 = '';
     this.orgForm.patchValue({
@@ -454,6 +456,10 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     this.orgModel.state = '';
     this.orgForm.patchValue({
       state : ''
+    });
+    this.orgModel.zip = '';
+    this.orgForm.patchValue({
+      zip : ''
     });
     this.orgModel.country = '';
     this.orgForm.patchValue({

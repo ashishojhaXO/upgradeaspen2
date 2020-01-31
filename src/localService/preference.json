@@ -126,6 +126,13 @@
       "url":"app/admin",
       "submenu": [
         {
+          "index": 1,
+          "name": "orgmanagement",
+          "title": "Org Management",
+          "id": "orgmanagement",
+          "url": "app/admin/orgmanagement"
+        },
+        {
           "index": 2,
           "name": "usermanagement",
           "title": "User Management",

@@ -377,14 +377,14 @@ const routes: Routes = [
                             text: 'Vendor Management'
                         },
                     },
-                    // {
-                    //     path: 'orgmanagement',
-                    //     component: OrgManagementComponent,
-                    //     data: {
-                    //         breadcrumbs: true,
-                    //         text: 'Org Management'
-                    //     },
-                    // },
+                    {
+                        path: 'orgmanagement',
+                        component: OrgManagementComponent,
+                        data: {
+                            breadcrumbs: true,
+                            text: 'Org Management'
+                        },
+                    },
                     {
                       path: 'ordertemplate',
                       component: OrderTemplateComponent,
