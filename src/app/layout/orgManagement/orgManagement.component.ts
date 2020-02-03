@@ -239,7 +239,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     this.orgForm.patchValue({
       state : dataObj.data.state
     });
-    this.orgModel.state = dataObj.data.zip;
+    this.orgModel.zip = dataObj.data.zip;
     this.orgForm.patchValue({
       zip : dataObj.data.zip
     });
