@@ -38,7 +38,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
       tooltip: 'Edit Org'
     },
     isDeleteOption: {
-      value : true,
+      value : false,
       icon : '',
       tooltip: 'Delete Org'
     },
