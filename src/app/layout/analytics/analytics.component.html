@@ -1,0 +1,29 @@
+<h3>
+  Analytics
+</h3>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12">
+    <label for="">Start Date: </label> <span>{{startDate}}</span> <br>
+    <label for="">End Date: </label> <span>{{endDate}}</span> <br>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-12">
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th *ngFor="let header of analyticsResponseHeader">{{header.name.replace(regexSpace, ' $1').replace('ga:','') | titlecase}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let body of analyticsResponseBody">
+          <td *ngFor="let col of body">{{col}}</td>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
