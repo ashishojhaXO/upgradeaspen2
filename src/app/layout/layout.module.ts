@@ -56,6 +56,7 @@ import { OrdersTemplateListComponent } from './orders-template-list/orders-templ
 import { OrdersListComponent } from './orders-list/orders-list.component';
 import { NumericDirective } from '../shared/directives/Numeric.directive';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
+import { AnalyticsComponent } from './analytics/analytics.component';
 
 @NgModule({
     imports: [
@@ -116,7 +117,8 @@ import { UserSettingsComponent } from './user-settings/user-settings.component';
         InvoicesComponent,
         InvoiceComponent,
         UserSettingsComponent,
-        OrgManagementComponent
+        OrgManagementComponent,
+        AnalyticsComponent
     ],
     providers: [
         AuthGuard,

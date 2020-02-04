@@ -180,6 +180,13 @@
           "title": "Template List",
           "id": "ordertemplatelist",
           "url": "app/admin/ordertemplatelist"
+        },
+        {
+          "index": 9,
+          "name": "analytics",
+          "title": "Analytics",
+          "id": "analyticsReport",
+          "url": "app/admin/analytics"
         }
       ]
     }

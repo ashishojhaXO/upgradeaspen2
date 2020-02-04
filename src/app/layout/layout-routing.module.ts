@@ -26,6 +26,7 @@ import {InvoicesComponent} from './invoices/invoices.component';
 import {InvoiceComponent} from './invoice/invoice.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import {OrgManagementComponent} from './../layout/orgManagement/orgManagement.component';
+import { AnalyticsComponent } from './analytics/analytics.component';
 
 const routes: Routes = [
     {
@@ -408,6 +409,14 @@ const routes: Routes = [
                         breadcrumbs: true,
                         text: 'Order Template List'
                       },
+                    },
+                    {
+                        path: 'analytics',
+                        component: AnalyticsComponent,
+                        data: {
+                            breadcrumbs: true,
+                            text: 'Analytics'
+                        }
                     }
                 ]
             },
