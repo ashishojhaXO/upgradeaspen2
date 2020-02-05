@@ -21,6 +21,7 @@ export class AppComponent {
         const userID = localStorage.getItem('loggedInUserID') || '';
         (<any>window).ga('set', 'page', event.urlAfterRedirects);
         (<any>window).ga('set', 'userId', userID);
+        (<any>window).ga('set', 'dimension1', 'go'+userID);
         (<any>window).ga('send', 'pageview');
         // console.log("analytics log-------->", event, event.urlAfterRedirects, userID);
       }
