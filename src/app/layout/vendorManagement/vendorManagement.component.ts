@@ -82,6 +82,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
       address_2: new FormControl(''),
       city: new FormControl('', Validators.required),
       state: new FormControl('', Validators.required),
+      zip: new FormControl('', Validators.required),
       country: new FormControl('', Validators.required)
     });
 
@@ -95,6 +96,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
       address_2: '',
       city: '',
       state: '',
+      zip: '',
       country: ''
     };
 
@@ -244,6 +246,10 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.vendorForm.patchValue({
       state : dataObj.data.state
     });
+    this.vendorModel.zip = dataObj.data.zip;
+    this.vendorForm.patchValue({
+      zip : dataObj.data.zip
+    });
     this.vendorModel.country = dataObj.data.country;
     this.vendorForm.patchValue({
       country : dataObj.data.country
@@ -300,6 +306,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     dataObj.address_2 = this.vendorForm.controls['address_2'].value;
     dataObj.city = this.vendorForm.controls['city'].value;
     dataObj.state = this.vendorForm.controls['state'].value;
+    dataObj.zip = this.vendorForm.controls['zip'].value;
     dataObj.country = this.vendorForm.controls['country'].value;
 
     this.performVendorAdditionRequest(dataObj);
@@ -461,6 +468,10 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.vendorModel.state = '';
     this.vendorForm.patchValue({
       state : ''
+    });
+    this.vendorModel.zip = '';
+    this.vendorForm.patchValue({
+      zip : ''
     });
     this.vendorModel.country = '';
     this.vendorForm.patchValue({

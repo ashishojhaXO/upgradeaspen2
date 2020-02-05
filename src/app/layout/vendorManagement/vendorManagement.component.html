@@ -108,6 +108,15 @@
               </div>
             </div>
             <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">Zip : </label>
+              <input formControlName="zip" [(ngModel)]="vendorModel.zip" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="vendorForm.controls['zip'].invalid && (vendorForm.controls['zip'].dirty || vendorForm.controls['zip'].touched)" class="alert alert-danger">
+              <div *ngIf="vendorForm.controls['zip'].errors.required">
+                Zip is required.
+              </div>
+            </div>
+            <div class="form-group-fields">
               <label class="col-lg-4 col-md-4">Country : </label>
               <input formControlName="country" [(ngModel)]="vendorModel.country" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
@@ -124,7 +133,7 @@
       </div>
     </div>
     <div class="app-modal-footer">
-      <button type="button" [disabled]="!vendorForm.valid" [style.cursor]="!vendorForm.valid ? 'not-allowed' : 'pointer'" class="action-btn" (click)="OnSubmit(AddVendor)">
+      <button type="button" [disabled]="!vendorForm.valid" [style.cursor]="!vendorForm.valid ? 'not-allowed' : 'pointer'" [style.opacity]="!vendorForm.valid ? 0.7 : 1" class="action-btn" (click)="OnSubmit(AddVendor)">
         {{ editID ? ' Update' : ' Add ' }}
       </button>
       <button type="button" class="inaction-btn" (click)="handleCloseModal(AddVendor)">
