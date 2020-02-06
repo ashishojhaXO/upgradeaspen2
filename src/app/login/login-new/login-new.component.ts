@@ -75,7 +75,7 @@ export class LoginNewComponent implements OnInit {
     const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
     const api_url_part = "/api";
-    const endPoint = "/users/token";
+    const endPoint = "/users/token/signin";
     const url = this.api_fs.api + api_url_part + endPoint;
 
     this.showSpinner = true;
@@ -184,7 +184,7 @@ export class LoginNewComponent implements OnInit {
     const options = new RequestOptions({headers: headers});
 
     const api_url_part = "/api";
-    const endPoint = "/users/token";
+    const endPoint = "/users/token/signin";
     const url = this.api_fs.api + api_url_part + endPoint;
     // const body = {username: username, password: password};
 
