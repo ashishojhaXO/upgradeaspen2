@@ -105,11 +105,15 @@ export class OrdersComponent implements OnInit  {
 
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
+
+              // Recursively call this.main function where
+              // the 401 response came in
               let successCallback = function (response) {
                 localStorage.setItem('accessToken', response.newToken);
                 this.showSpinner = false;
                 this.searchDataRequest();
               }
+
               let errorCallback = function (err) {
                 console.log('error >>')
                 console.log(err);
