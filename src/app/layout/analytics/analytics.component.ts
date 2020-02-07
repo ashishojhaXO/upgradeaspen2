@@ -49,30 +49,28 @@ export class AnalyticsComponent implements OnInit {
   getToken() {
     return this.getTokenService().subscribe(
         response => {
-          if (response) {
-            // console.log('response >>>')
-            // console.log(response);
-            if(response && response.data){
-              this.googleToken = response.data.access_token;
-              this.analyticsReport().subscribe(
-                response => {
-                  if (response) {
-                    this.analyticsResponseHeader = response.columnHeaders;
-                    this.analyticsResponseBody = response.rows;
-                    this.startDate = response.query['start-date'];
-                    this.endDate = response.query['end-date'];
-                    // console.log(response);
-                    this.showSpinner = false;
-                  }
-                  else {
-                    console.log('No response from google analytics api')
-                  }
-                },
-                err => {
-                  console.log('error occured: ', err);
+          // console.log('response >>>')
+          // console.log(response);
+          if(response && response.data){
+            this.googleToken = response.data.access_token;
+            this.analyticsReport().subscribe(
+              response => {
+                if (response) {
+                  this.analyticsResponseHeader = response.columnHeaders;
+                  this.analyticsResponseBody = response.rows;
+                  this.startDate = response.query['start-date'];
+                  this.endDate = response.query['end-date'];
+                  // console.log(response);
+                  this.showSpinner = false;
                 }
-              );
-            }
+                else {
+                  console.log('No response from google analytics api')
+                }
+              },
+              err => {
+                console.log('error occured: ', err);
+              }
+            );
           }
         },
         err => {
