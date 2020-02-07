@@ -58,7 +58,7 @@ export class OktaAuthService {
       return localStorage.getItem(keyName);
     },
     
-    refresh: (accessToken, func) => {
+    refresh: (accessToken, successCB, errorCB) => {
       // @params `accessToken`: some string value
       // @params `func`: A function passed from the Controller file, Signature: func(response)
 
@@ -68,7 +68,7 @@ export class OktaAuthService {
     
     
       let refresh_token = this.tokenManager.getLocalStorageKey("refresh_token");
-      let url = "";
+      let url = "/api/users/token/refresh";
       let body = {
         "refresh_token": refresh_token,
       };
@@ -77,7 +77,8 @@ export class OktaAuthService {
       return this.http.post(url, body)
       .subscribe( 
         // on subscribe run the passed function `func`
-        func 
+        successCB,
+        errorCB
       );
 
     }

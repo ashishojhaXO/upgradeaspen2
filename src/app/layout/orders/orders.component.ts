@@ -105,16 +105,17 @@ export class OrdersComponent implements OnInit  {
 
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchDataRequest();
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
+              let successCallback = function (response) {
+                localStorage.setItem('accessToken', response.newToken);
+                this.showSpinner = false;
+                this.searchDataRequest();
+              }
+              let errorCallback = function (err) {
+                console.log('error >>')
+                console.log(err);
+              }
+              this.widget.tokenManager.refresh('accessToken', successCallback, errorCallback);
+
             } else {
               this.widget.signOut(() => {
                 localStorage.removeItem('accessToken');
