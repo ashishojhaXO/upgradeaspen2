@@ -94,17 +94,20 @@ export class OrdersComponent implements OnInit  {
   // Recursively call this.main function where
   // the 401 response came in
   successCallback = function (response) {
-    localStorage.setItem('accessToken', response.newToken);
+    console.log('success >>', response);
+    localStorage.setItem('accessToken', response.access_token);
     this.showSpinner = false;
     this.searchDataRequest();
   }
 
   errorCallback = function (err) {
-    console.log('error >>')
+    console.log('error >>', err);
     console.log(err);
   }
 
   searchDataRequest() {
+    console.log("SDR");
+
     return this.searchData().subscribe(
         response => {
           if (response) {
@@ -118,6 +121,7 @@ export class OrdersComponent implements OnInit  {
 
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
+              console.log("accTOK NOT");
 
               this.widget.tokenManager.refresh('accessToken', this.successCallback, this.errorCallback);
 

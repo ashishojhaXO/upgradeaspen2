@@ -65,16 +65,23 @@ export class OktaAuthService {
       console.log("refresh: ", accessToken);
 
       // return this.logOut.apply(this, [accessToken]);
-    
-    
-      let refresh_token = this.tokenManager.getLocalStorageKey("refresh_token");
-      let url = "/api/users/token/refresh";
+
+      const headers = new Headers({
+        'Content-Type': 'application/json', 
+        'callingapp' : 'aspen', 
+        // "scope": "openid offline_access"
+      });
+      const options = new RequestOptions({headers: headers});
+
+      let refresh_token = this.tokenManager.getLocalStorageKey("refreshToken");
+      const api_url_part = "/api";
+      let endPoint = "/users/token/refresh";
+      const url = this.api_fs.api + api_url_part + endPoint;
       let body = {
         "refresh_token": refresh_token,
       };
 
-
-      return this.http.post(url, body)
+      return this.http.post(url, body, options)
       .subscribe( 
         // on subscribe run the passed function `func`
         successCB,

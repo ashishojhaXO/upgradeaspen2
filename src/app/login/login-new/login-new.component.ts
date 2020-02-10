@@ -72,7 +72,11 @@ export class LoginNewComponent implements OnInit {
   }
 
   loginService(body: Object) {
-    const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen' });
+    const headers = new Headers({
+      'Content-Type': 'application/json' , 
+      'callingapp' : 'aspen',
+      // "scope": "openid offline_access"
+    });
     const options = new RequestOptions({headers: headers});
     const api_url_part = "/api";
     const endPoint = "/users/token/signin";
@@ -91,6 +95,7 @@ export class LoginNewComponent implements OnInit {
 
     localStorage.setItem('accessToken', res.access_token);
     localStorage.setItem('idToken', res.id_token);
+    localStorage.setItem('refreshToken', res.refresh_token);
     localStorage.setItem('loggedInUserName', res.first_name.trim() + " " + res.last_name.trim());
     localStorage.setItem('loggedInUserID', res.external_id);
     localStorage.setItem('loggedInUserGroup', JSON.stringify([res.user_role ? res.user_role.name.toUpperCase() : '']));
