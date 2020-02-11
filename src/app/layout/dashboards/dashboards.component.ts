@@ -309,6 +309,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     this.dashboardConfig.filterProps = JSON.parse(JSON.stringify(this.defaultFilters));
 
     if (this.dashboardType === 'pacing' || this.dashboardType === 'spend') {
+      let self = this;
       this
         .getFilter(this.dashboardType)
         .then(
@@ -331,6 +332,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
                       }, error => {
                         if(error.status === 401) {
                           if(localStorage.getItem('accessToken')) {
+
                             this.widget.tokenManager.refresh('accessToken')
                                 .then(function (newToken) {
                                   localStorage.setItem('accessToken', newToken);
@@ -341,6 +343,12 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
                                   console.log('error >>')
                                   console.log(err1);
                                 });
+              
+                                this.widget.tokenManager.refresh(
+                                  'accessToken',
+                                  // self.searchDataRequest.bind(self),
+                                );
+
                           } else {
                             this.widget.signOut(() => {
                               localStorage.removeItem('accessToken');

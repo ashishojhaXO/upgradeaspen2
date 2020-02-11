@@ -122,7 +122,7 @@ export class OrdersComponent implements OnInit  {
         err => {
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken', self.searchDataRequest.bind(self),self.errorCallback.bind(self));
+              this.widget.tokenManager.refresh('accessToken', self.searchDataRequest.bind(self), self.errorCallback.bind(self));
             } else {
               this.widget.signOut(() => {
                 localStorage.removeItem('accessToken');

@@ -62,15 +62,19 @@ export class OktaAuthService {
       return localStorage.setItem(keyName, value);
     },
 
+    noCallback: (str) => {
+      console.log("No callback: ", str)
+    },
+
     successCallback: (response, successCB) => {
       console.log("tokMAN resp succCB: ", response, successCB)
-      successCB();
+      successCB ? successCB() : this.tokenManager.noCallback("No successCallback");
     },
 
     errorCallback: (response, errorCB) => {
       console.log("tokMAN resp errCB: ", response, errorCB)
       console.log('error response >>', response);
-      errorCB ? errorCB() : "";
+      errorCB ? errorCB() : this.tokenManager.noCallback("No errorCallback");
     },
 
     refresh: (accessToken, successCB, errorCB) => {
