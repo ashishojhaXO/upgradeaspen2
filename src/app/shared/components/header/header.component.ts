@@ -198,11 +198,18 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
           });
         }
 
+        let isRoot = false;
+        let isAdmin = false;
         let removeMenuItems = true;
         if (groupArr.length) {
           groupArr.forEach(function (grp) {
-            if (grp === 'ADMIN') {
-
+            if (grp === 'ADMIN' || grp === 'ROOT') {
+              if(grp === 'ADMIN') {
+                isAdmin = true;
+              }
+              if (grp === 'ROOT') {
+                isRoot = true;
+              }
               removeMenuItems = false;
             }
           });
@@ -210,12 +217,23 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
 
         this.mainmenu = response['admin'];
 
-
         if (removeMenuItems) {
           var reducedMenu = this.mainmenu.filter(function (res) {
             return res.id !== 'payments' && res.id !== 'admin' && res.id !== 'reports';
           });
           this.mainmenu = reducedMenu;
+        }
+
+        if (isAdmin && !isRoot) {
+          const menu = JSON.parse(JSON.stringify(response['admin']));
+          this.mainmenu = menu.map(function (m){
+            if (m.name === 'admin') {
+              m.submenu = m.submenu.filter(function (ele: any) {
+                 return ele.name !== 'orgmanagement';
+              });
+            }
+            return m;
+          });
         }
 
         if (window.location.pathname) {
