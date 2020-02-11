@@ -74,6 +74,8 @@ export class OktaAuthService {
     },
 
     refresh: (accessToken, successCB, errorCB) => {
+      // Refresh accessToken only
+      // TODO: Later add, refresh of other tokens like: id_token, refresh_token etc
       // @params `accessToken`: some string value
       // @params `func`: A function passed from the Controller file, Signature: func(response)
 
