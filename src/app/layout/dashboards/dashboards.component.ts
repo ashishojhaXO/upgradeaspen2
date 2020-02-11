@@ -905,6 +905,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }
 
   getSearchDataRequest(dataObj) {
+    let self = this;
     this.showSpinner = true;
     this.getSearchData(dataObj).subscribe(
         response => {
@@ -927,16 +928,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         err => {
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.getSearchDataRequest();
-                  })
-                  .catch(function (err1) {
-                    console.log('error >>')
-                    console.log(err1);
-                  });
+                this.widget.tokenManager.refresh(
+                  'accessToken',
+                  self.getSearchDataRequest.bind(self)
+                );
             } else {
               this.widget.signOut(() => {
                 localStorage.removeItem('accessToken');
