@@ -57,7 +57,22 @@ export class OktaAuthService {
     getLocalStorageKey: (keyName) => {
       return localStorage.getItem(keyName);
     },
-    
+
+    setLocalStorageKey: (keyName, value) => {
+      return localStorage.setItem(keyName, value);
+    },
+
+    successCallback: (response, successCB) => {
+      console.log("tokMAN resp succCB: ", response, successCB)
+      successCB();
+    },
+
+    errorCallback: (response, errorCB) => {
+      console.log("tokMAN resp errCB: ", response, errorCB)
+      console.log('error response >>', response);
+      errorCB ? errorCB() : "";
+    },
+
     refresh: (accessToken, successCB, errorCB) => {
       // @params `accessToken`: some string value
       // @params `func`: A function passed from the Controller file, Signature: func(response)
@@ -82,10 +97,19 @@ export class OktaAuthService {
       };
 
       return this.http.post(url, body, options)
+      .map(response => {
+        let res = response.json();
+        this.tokenManager.setLocalStorageKey('accessToken', res.data.access_token);
+        return res;
+      })
       .subscribe( 
         // on subscribe run the passed function `func`
-        successCB,
-        errorCB
+        (response) => {
+          this.tokenManager.successCallback.apply(this, [response, successCB])
+        },
+        (error) => {
+          this.tokenManager.errorCallback.apply(this, [error, errorCB])
+        }
       );
 
     }

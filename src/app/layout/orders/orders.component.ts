@@ -93,10 +93,12 @@ export class OrdersComponent implements OnInit  {
 
   // Recursively call this.main function where
   // the 401 response came in
-  successCallback = function (response) {
-    console.log('success >>', response);
-    localStorage.setItem('accessToken', response.access_token);
-    this.showSpinner = false;
+  // Success & Error CBs
+  successCallbackSDR = function (response) {
+    // console.log('success >>', response, )
+    // console.log(" response.body", response.data.body );
+    // localStorage.setItem('accessToken', response.data.access_token);
+    // this.showSpinner = false;
     this.searchDataRequest();
   }
 
@@ -104,10 +106,10 @@ export class OrdersComponent implements OnInit  {
     console.log('error >>', err);
     console.log(err);
   }
+  // Success & Error CBs/
 
   searchDataRequest() {
-    console.log("SDR");
-
+    const self = this;
     return this.searchData().subscribe(
         response => {
           if (response) {
@@ -118,13 +120,9 @@ export class OrdersComponent implements OnInit  {
           }
         },
         err => {
-
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              console.log("accTOK NOT");
-
-              this.widget.tokenManager.refresh('accessToken', this.successCallback, this.errorCallback);
-
+              this.widget.tokenManager.refresh('accessToken', self.searchDataRequest.bind(self),self.errorCallback.bind(self));
             } else {
               this.widget.signOut(() => {
                 localStorage.removeItem('accessToken');
@@ -210,7 +208,7 @@ export class OrdersComponent implements OnInit  {
     const downloadId = dataObj.data.Vendor_Receipt_Id;
     const orderId = dataObj.data.Order_Id;
 
-    console.log('dataObj >>')
+    console.log('handDown dataObj >>')
     console.log(dataObj);
 
     if (downloadId) {
@@ -225,6 +223,7 @@ export class OrdersComponent implements OnInit  {
   }
 
   searchDownloadLink(downloadId, orderId) {
+    var self = this;
     this.getDownloadLink(downloadId).subscribe(
         response => {
           if (response && response.data && response.data.pre_signed_url) {
@@ -244,16 +243,7 @@ export class OrdersComponent implements OnInit  {
         err => {
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchDownloadLink(downloadId, orderId);
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
+              this.widget.tokenManager.refresh('accessToken', self.searchDownloadLink.bind(self, downloadId, orderId),self.errorCallback.bind(self));
             } else {
               this.widget.signOut(() => {
                 localStorage.removeItem('accessToken');
@@ -275,7 +265,6 @@ export class OrdersComponent implements OnInit  {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      // token = AccessToken.accessToken;
       token = AccessToken;
     }
 
