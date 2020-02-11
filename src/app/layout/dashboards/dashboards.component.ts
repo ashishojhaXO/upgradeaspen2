@@ -333,17 +333,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
                         if(error.status === 401) {
                           if(localStorage.getItem('accessToken')) {
 
-                            this.widget.tokenManager.refresh('accessToken')
-                                .then(function (newToken) {
-                                  localStorage.setItem('accessToken', newToken);
-                                  this.showSpinner = false;
-                                  // this.searchDataRequest();
-                                })
-                                .catch(function (err1) {
-                                  console.log('error >>')
-                                  console.log(err1);
-                                });
-              
                                 this.widget.tokenManager.refresh(
                                   'accessToken',
                                   // self.searchDataRequest.bind(self),
@@ -366,16 +355,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
             if(error.status === 401) {
               if(localStorage.getItem('accessToken')) {
-                this.widget.tokenManager.refresh('accessToken')
-                    .then(function (newToken) {
-                      localStorage.setItem('accessToken', newToken);
-                      this.showSpinner = false;
-                     // this.searchDataRequest();
-                    })
-                    .catch(function (err1) {
-                      console.log('error >>')
-                      console.log(err1);
-                    });
+                this.widget.tokenManager.refresh(
+                  'accessToken',
+                  // self.searchDataRequest.bind(self),
+                );
               } else {
                 this.widget.signOut(() => {
                   localStorage.removeItem('accessToken');
