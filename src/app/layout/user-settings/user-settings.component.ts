@@ -63,16 +63,11 @@ export class UserSettingsComponent implements OnInit {
        err => {
          if(err.status === 401) {
            if(localStorage.getItem('accessToken')) {
-             this.widget.tokenManager.refresh('accessToken')
-                 .then(function (newToken) {
-                   localStorage.setItem('accessToken', newToken);
-                   this.showSpinner = false;
-                   this.getUserService();
-                 })
-                 .catch(function (err) {
-                   // console.log('error >>')
-                   // console.log(err);
-                 });
+              let self = this;
+              this.widget.tokenManager.refresh(
+                'accessToken',
+                self.getUserService.bind(self)
+              );
            } else {
              this.widget.signOut(() => {
                localStorage.removeItem('accessToken');
@@ -167,16 +162,11 @@ export class UserSettingsComponent implements OnInit {
        err => {
          if(err.status === 401) {
            if(localStorage.getItem('accessToken')) {
-             this.widget.tokenManager.refresh('accessToken')
-                 .then(function (newToken) {
-                   localStorage.setItem('accessToken', newToken);
-                   this.showSpinner = false;
-                   this.saveUserService();
-                 })
-                 .catch(function (err) {
-                   // console.log('error >>')
-                   // console.log(err);
-                 });
+              let self = this;
+              this.widget.tokenManager.refresh(
+                'accessToken',
+                self.saveUserService.bind(self)
+              );
            } else {
              this.widget.signOut(() => {
                localStorage.removeItem('accessToken');

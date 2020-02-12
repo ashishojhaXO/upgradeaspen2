@@ -75,6 +75,7 @@ export class InvoiceComponent implements OnInit  {
   }
 
   searchDataRequest(invoiceId) {
+    let self = this;
     this.searchData(invoiceId).subscribe(
         response => {
           if (response && response.data) {
@@ -116,16 +117,10 @@ export class InvoiceComponent implements OnInit  {
 
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchDataRequest(invoiceId);
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
+                this.widget.tokenManager.refresh(
+                  'accessToken',
+                  self.searchDataRequest.bind(self, invoiceId),
+                );
             } else {
               this.widget.signOut(() => {
                 localStorage.removeItem('accessToken');
@@ -147,6 +142,7 @@ export class InvoiceComponent implements OnInit  {
   }
 
   getKenshooProfileDetails(invoice, profileName, invoice_header_id) {
+    let self = this;
     this.searchProfileData(profileName, invoice_header_id).subscribe(
         response => {
           if (response && response.data) {
@@ -166,16 +162,10 @@ export class InvoiceComponent implements OnInit  {
 
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.getKenshooProfileDetails(invoice, profileName, invoice_header_id);
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
+                this.widget.tokenManager.refresh(
+                  'accessToken',
+                  self.getKenshooProfileDetails.bind(self, invoice, profileName, invoice_header_id)
+                );
             } else {
               this.widget.signOut(() => {
                 localStorage.removeItem('accessToken');
@@ -294,6 +284,7 @@ export class InvoiceComponent implements OnInit  {
   }
 
   createTransactionRequest(dataObj) {
+    let self = this;
     return this.createTransaction(dataObj).subscribe(
         response => {
           console.log('response from create transaction >>>')
@@ -319,16 +310,10 @@ export class InvoiceComponent implements OnInit  {
 
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.createTransactionRequest(dataObj);
-                  })
-                  .catch(function (err1) {
-                    console.log('error >>')
-                    console.log(err1);
-                  });
+                this.widget.tokenManager.refresh(
+                  'accessToken',
+                  self.createTransactionRequest.bind(self, dataObj)
+                );
             } else {
               this.widget.signOut(() => {
                 localStorage.removeItem('accessToken');

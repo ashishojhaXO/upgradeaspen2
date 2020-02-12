@@ -110,16 +110,11 @@ export class OrdersListComponent implements OnInit  {
 
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchDataRequest(templateValue);
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
+              let self = this;
+              this.widget.tokenManager.refresh(
+                'accessToken',
+                    self.searchDataRequest.bind(self, templateValue)
+              );
             } else {
               this.widget.signOut(() => {
                 this.widget.tokenManager.remove('accessToken');
@@ -239,19 +234,24 @@ export class OrdersListComponent implements OnInit  {
         if(err.status === 401) {
           if(localStorage.getItem('accessToken')) {
             console.log("ord-temp no okt if")
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  localStorage.setItem('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.getOrganizations();
-                })
-                .catch(function (err) {
-                  console.log('error >>')
-                  console.log(err);
-                });
+            // this.widget.tokenManager.refresh('accessToken')
+            //     .then(function (newToken) {
+            //       localStorage.setItem('accessToken', newToken);
+            //       this.showSpinner = false;
+            //       this.getOrganizations();
+            //     })
+            //     .catch(function (err) {
+            //       console.log('error >>')
+            //       console.log(err);
+            //     });
+              let self = this;
+              this.widget.tokenManager.refresh(
+                'accessToken',
+                self.getOrganizations.bind(self)
+              );
           } else {
             console.log("ord-temp no okt else")
-            this.widget.tokenManager.refresh('accessToken')
+            // this.widget.tokenManager.refresh('accessToken')
             this.widget.signOut(() => {
               localStorage.removeItem('accessToken');
               window.location.href = '/login';

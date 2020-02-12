@@ -84,6 +84,7 @@ export class InvoicesComponent implements OnInit  {
   }
 
   searchDataRequest() {
+    let self = this;
      this.searchData().subscribe(
         response => {
           if (response && response.data) {
@@ -95,16 +96,12 @@ export class InvoicesComponent implements OnInit  {
 
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchDataRequest();
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
+              let self = this;
+                this.widget.tokenManager.refresh(
+                  'accessToken',
+                  self.searchDataRequest.bind(self)
+                );
+
             } else {
               this.widget.signOut(() => {
                 localStorage.removeItem('accessToken');
@@ -231,16 +228,11 @@ export class InvoicesComponent implements OnInit  {
         err => {
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchDownloadLink(downloadId, invoiceId);
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
+              let self = this;
+              this.widget.tokenManager.refresh(
+                'accessToken',
+                self.searchDownloadLink.bind(self, downloadId, invoiceId)
+              );
             } else {
               this.widget.signOut(() => {
                 localStorage.removeItem('accessToken');
@@ -332,16 +324,11 @@ export class InvoicesComponent implements OnInit  {
 
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.createTransactionRequest(dataObj);
-                  })
-                  .catch(function (err1) {
-                    console.log('error >>')
-                    console.log(err1);
-                  });
+              let self = this;
+              this.widget.tokenManager.refresh(
+                'accessToken',
+                self.createTransactionRequest.bind(self, dataObj)
+              );
             } else {
               this.widget.signOut(() => {
                 localStorage.removeItem('accessToken');

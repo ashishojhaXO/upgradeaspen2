@@ -75,19 +75,11 @@ export class TransitionComponent implements OnInit {
           console.log(err);
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              const self = this;
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    // TODO: this is undefined here, check
-                    console.log("THIS:: this: ", this, " self: ", self)
-                    this.showSpinner = false;
-                    this.getCustomerInfoRequest();
-                  })
-                  .catch(function (err1) {
-                    console.log('error >>')
-                    console.log(err1);
-                  });
+              let self = this;
+              this.widget.tokenManager.refresh(
+                'accessToken',
+                self.getCustomerInfoRequest.bind(self)
+              );
             } 
             else {
               this.widget.signOut(() => {

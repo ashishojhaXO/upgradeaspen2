@@ -691,16 +691,11 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     }, error => {
       if(error.status === 401) {
         if(localStorage.getItem('accessToken')) {
-          this.widget.tokenManager.refresh('accessToken')
-              .then(function (newToken) {
-                localStorage.setItem('accessToken', newToken);
-                this.showSpinner = false;
-                this.getEmailRequest();
-              })
-              .catch(function (err) {
-                console.log('error >>')
-                console.log(err);
-              });
+              let self = this;
+              this.widget.tokenManager.refresh(
+                'accessToken',
+                self.getEmailRequest.bind(self)
+              );
         } else {
           this.widget.signOut(() => {
             localStorage.removeItem('accessToken');
@@ -1362,16 +1357,11 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
 
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.handleSubmit(null,null);
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
+              let self = this;
+              this.widget.tokenManager.refresh(
+                'accessToken',
+                    self.handleSubmit.bind(self, null,null)
+              );
             } else {
               this.widget.signOut(() => {
                 localStorage.removeItem('accessToken');
@@ -1597,16 +1587,11 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
 
               if(err.status === 401) {
                 if(localStorage.getItem('accessToken')) {
-                  this.widget.tokenManager.refresh('accessToken')
-                      .then(function (newToken) {
-                        localStorage.setItem('accessToken', newToken);
-                        this.showSpinner = false;
-                        this.fetchReportData();
-                      })
-                      .catch(function (err) {
-                        console.log('error >>')
-                        console.log(err);
-                      });
+                  let self = this;
+                  this.widget.tokenManager.refresh(
+                    'accessToken',
+                            self.fetchReportData.bind(self)
+                  );
                 } else {
                   this.widget.signOut(() => {
                     localStorage.removeItem('accessToken');

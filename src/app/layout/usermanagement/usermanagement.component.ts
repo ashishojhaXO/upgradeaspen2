@@ -139,6 +139,7 @@ export class UserManagementComponent implements OnInit  {
 
                     if(err1.status === 401) {
                       if(localStorage.getItem('accessToken')) {
+                        // TODO: New this.widget.tokenManager.refresh to be implemented
                         this.widget.tokenManager.refresh('accessToken')
                             .then(function (newToken) {
                               localStorage.setItem('accessToken', newToken);
@@ -190,16 +191,11 @@ export class UserManagementComponent implements OnInit  {
 
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchDataRequest();
-                  })
-                  .catch(function (err1) {
-                    console.log('error >>')
-                    console.log(err1);
-                  });
+              let self = this;
+              this.widget.tokenManager.refresh(
+                'accessToken',
+                self.searchDataRequest.bind(self)
+              );
             } else {
               this.widget.signOut(() => {
                 localStorage.removeItem('accessToken');
@@ -359,15 +355,11 @@ export class UserManagementComponent implements OnInit  {
       err => {
         if(err.status === 401) {
           if(localStorage.getItem('accessToken')) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  localStorage.setItem('accessToken', newToken);
-                  this.showSpinner = false;
-                })
-                .catch(function (err1) {
-                  console.log('error >>')
-                  console.log(err1);
-                });
+              let self = this;
+              this.widget.tokenManager.refresh(
+                'accessToken',
+                // self.searchDataRequest.bind(self)
+              );
           } else {
             this.widget.signOut(() => {
               localStorage.removeItem('accessToken');
@@ -399,16 +391,11 @@ export class UserManagementComponent implements OnInit  {
 
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.performUserAdditionRequest(dataObj);
-                  })
-                  .catch(function (err1) {
-                    console.log('error >>')
-                    console.log(err1);
-                  });
+              let self = this;
+              this.widget.tokenManager.refresh(
+                'accessToken',
+                self.performUserAdditionRequest.bind(self, dataObj)
+              );
             } else {
               this.widget.signOut(() => {
                 localStorage.removeItem('accessToken');

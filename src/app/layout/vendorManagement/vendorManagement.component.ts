@@ -132,16 +132,11 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
 
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchDataRequest();
-                  })
-                  .catch(function (err1) {
-                    console.log('error >>')
-                    console.log(err1);
-                  });
+              let self = this;
+              this.widget.tokenManager.refresh(
+                'accessToken',
+                self.searchDataRequest.bind(self)
+              );
             } else {
               this.widget.signOut(() => {
                 localStorage.removeItem('accessToken');
@@ -325,16 +320,11 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
         err => {
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.performVendorAdditionRequest(dataObj);
-                  })
-                  .catch(function (err1) {
-                    console.log('error >>')
-                    console.log(err1);
-                  });
+              let self = this;
+              this.widget.tokenManager.refresh(
+                'accessToken',
+                self.performVendorAdditionRequest.bind(self, dataObj)
+              );
             } else {
               this.widget.signOut(() => {
                 localStorage.removeItem('accessToken');
@@ -388,16 +378,11 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
         err => {
           if(err.status === 401) {
             if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.performVendorDeletionRequest(id);
-                  })
-                  .catch(function (err1) {
-                    console.log('error >>')
-                    console.log(err1);
-                  });
+              let self = this;
+              this.widget.tokenManager.refresh(
+                'accessToken',
+                self.performVendorDeletionRequest.bind(self, id)
+              );
             } else {
               this.widget.signOut(() => {
                 localStorage.removeItem('accessToken');
