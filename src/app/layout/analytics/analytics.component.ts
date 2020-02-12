@@ -30,6 +30,7 @@ export class AnalyticsComponent implements OnInit {
   userDetailBody;
   userId;
   emailId;
+  chartConfig;
 
   ngOnInit() {
     this.widget = this.okta.getWidget();
@@ -60,7 +61,22 @@ export class AnalyticsComponent implements OnInit {
                   this.analyticsResponseBody = response.rows;
                   this.startDate = response.query['start-date'];
                   this.endDate = response.query['end-date'];
-                  // console.log(response);
+                  // console.log('analytics report response: ', response);
+                  this.showSpinner = false;
+                }
+                else {
+                  console.log('No response from google analytics api')
+                }
+              },
+              err => {
+                console.log('error occured: ', err);
+              }
+            );
+            this.analyticsChart().subscribe(
+              response => {
+                if (response) {
+                  // console.log('analytics chart response: ', response);
+                  this.setChartConfig(response);
                   this.showSpinner = false;
                 }
                 else {
@@ -125,13 +141,22 @@ export class AnalyticsComponent implements OnInit {
       }).share();
   }
 
+  analyticsChart() {
+    var url = 'https://www.googleapis.com/analytics/v3/data/ga?ids='+this.viewId+'&start-date=30daysAgo&end-date=yesterday&metrics=ga%3Ausers&dimensions=ga%3Adate&access_token='+this.googleToken;
+    return this.http
+      .get(url)
+      .map(res => {
+        return res.json();
+      }).share();
+  }
+
   getgoogleUser(id){
     this.showSpinner = true;
     this.userId = id.replace('go', '');
     this.getUserDetails();
     this.getgoogleUserService(id).subscribe(
       response => {
-        console.log(response);
+        // console.log(response);
         if(response) {
           this.userDetail = response;
           this.userDetailHeader = this.userDetail.columnHeaders;
@@ -147,8 +172,8 @@ export class AnalyticsComponent implements OnInit {
   }
 
   getgoogleUserService(id) {
-    console.log(id);
-    var url = 'https://www.googleapis.com/analytics/v3/data/ga?ids='+this.viewId+'&start-date=30daysAgo&end-date=yesterday&metrics=ga%3Apageviews%2Cga%3AtimeOnPage&dimensions=ga%3ApagePath&filters=ga%3Adimension1%3D%3D'+ id +'&access_token='+this.googleToken;
+    // console.log(id);
+    var url = 'https://www.googleapis.com/analytics/v3/data/ga?ids='+this.viewId+'&start-date=30daysAgo&end-date=yesterday&metrics=ga%3Apageviews%2Cga%3AtimeOnPage&dimensions=ga%3ApagePath%2Cga%3Adate&sort=-ga%3Adate&filters=ga%3Adimension1%3D%3D'+ id +'&access_token='+this.googleToken;
     return this.http
       .get(url)
       .map(res => {
@@ -212,6 +237,21 @@ export class AnalyticsComponent implements OnInit {
         .map(res => {
           return res.json();
         }).share();
+  }
+
+  setChartConfig(data) {
+    this.chartConfig = {
+      type: "line",
+      title: 'Users Vs Date',
+      subTitle: 'Source: Google Analytics',
+      seriesName: ['Users', 'Sessions'],
+      data: data.rows
+    }
+    // console.log("analytics chart config: ", this.chartConfig);
+  }
+
+  dateSet(col) {
+    return col.replace(/(\d{4})(\d{2})(\d{2})/g, '$3-$2-$1');
   }
 
 }
