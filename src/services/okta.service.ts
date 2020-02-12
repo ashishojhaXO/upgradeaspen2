@@ -52,13 +52,13 @@ export class OktaAuthService {
     })
   }
 
-  errorProcedure = (err, successFuncName, errorFuncName) => {
+  errorProcedure(err, successFuncName, errorFuncName) {
 
     if(err.status === 401) {
 
       if(localStorage.getItem('accessToken')) {
 
-        this.widget.tokenManager.refresh(
+        this.tokenManager.refresh(
           'accessToken', 
           successFuncName,
           errorFuncName
