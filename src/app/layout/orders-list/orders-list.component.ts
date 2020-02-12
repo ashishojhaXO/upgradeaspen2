@@ -214,6 +214,10 @@ export class OrdersListComponent implements OnInit  {
     this.router.navigate(['/app/orderPayment/', this.payID]);
   }
 
+  getOrganizations() {
+    console.log("Placeholder function: GetOrganizations");
+  }
+
   getTemplates(){
     this.getTemplateService().subscribe(
       response => {
