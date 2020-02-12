@@ -52,6 +52,29 @@ export class OktaAuthService {
     })
   }
 
+  errorProcedure = (err, successFuncName, errorFuncName) => {
+
+    if(err.status === 401) {
+
+      if(localStorage.getItem('accessToken')) {
+
+        this.widget.tokenManager.refresh(
+          'accessToken', 
+          successFuncName,
+          errorFuncName
+        );
+      } else {
+        this.widget.signOut(() => {
+          localStorage.removeItem('accessToken');
+          window.location.href = '/login';
+        });
+      }
+    } else {
+      this.showSpinner = false;
+    }
+
+  }
+
   tokenManager = {
 
     getLocalStorageKey: (keyName) => {
