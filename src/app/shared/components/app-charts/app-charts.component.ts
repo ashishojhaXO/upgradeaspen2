@@ -33,6 +33,8 @@ export class AppChartsComponent implements OnInit, OnChanges {
         this.renderColumnChart();
       } else if (this.config.type === 'pie') {
         this.renderPieChart();
+      } else if (this.config.type == 'line') {
+        this.renderLineChart();
       }
     }
   }
@@ -310,6 +312,62 @@ export class AppChartsComponent implements OnInit, OnChanges {
 
     console.log('this.chartOptions ## >>')
     console.log(this.chartOptions);
+  }
+
+  renderLineChart() {
+    let config = {
+      chart: {
+        type: this.config.type
+      },    
+      title: {
+          text: this.config.title
+      },
+      subtitle: {
+          text: this.config.subTitle
+      },
+      xAxis: {
+          // tickInterval: 7 * 24 * 3600 * 1000, // one month
+          categories: [],
+          tickWidth: 0,
+          gridLineWidth: 1
+      },
+      yAxis: [
+          { // left y axis
+                title: {
+                    text: null
+                },
+                labels: {
+                    align: 'left',
+                    x: 3,
+                    y: 16,
+                    format: '{value:.,0f}'
+                },
+                showFirstLabel: false
+            }],
+      legend: {
+          align: 'left',
+          verticalAlign: 'top',
+          borderWidth: 0
+      },
+      tooltip: {
+          shared: true,
+          crosshairs: true
+      },
+      series: [{
+          name: this.config.seriesName[0],
+          data: [],
+          lineWidth: 2,
+          marker: {
+              radius: 4
+          }
+      }]
+    };
+    this.config.data.forEach(element => {
+      config.xAxis.categories.push(element[0].replace(/(\d{4})(\d{2})(\d{2})/g, '$3-$2-$1'));
+      config.series[0].data.push(+element[1]); //passing users data
+    });
+    // console.log('from chart', config)
+    this.chartOptions = config;
   }
 
   ngOnInit() {
