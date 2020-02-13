@@ -55,6 +55,10 @@ export class UserManagementComponent implements OnInit  {
   error: any;
   showSpinner: boolean;
   userID: string;
+  isRoot: boolean;
+  orgInfo: any;
+  selectedOrg: any;
+  orgArr: any;
 
   sourceOptions = [
     {
@@ -94,6 +98,20 @@ export class UserManagementComponent implements OnInit  {
       last: ''
     };
 
+    const groups = localStorage.getItem('loggedInUserGroup') || '';
+    const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
+    this.orgInfo = custInfo.org;
+
+    console.log('custInfo >>>')
+    console.log(custInfo);
+
+    const grp = JSON.parse(groups);
+    grp.forEach(function (item) {
+      if(item === 'ROOT') {
+        this.isRoot = true;
+      }
+    }, this);
+
   }
 
   ngOnInit() {
@@ -105,6 +123,71 @@ export class UserManagementComponent implements OnInit  {
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
     this.searchDataRequest();
+    this.searchOrgRequest();
+  }
+
+  searchOrgRequest() {
+    return this.searchOrgData().subscribe(
+        response => {
+          if (response && response.data) {
+
+            const orgArr = [];
+            response.data.forEach(function (item) {
+              orgArr.push({
+                id: item.org_uuid,
+                text: item.org_name
+              });
+            });
+
+            this.orgArr = orgArr;
+            if (this.orgArr.length) {
+              this.selectedOrg = this.roleOptions[0].id;
+            }
+          }
+        },
+        err => {
+
+          if(err.status === 401) {
+            if(localStorage.getItem('accessToken')) {
+              this.widget.tokenManager.refresh('accessToken')
+                  .then(function (newToken) {
+                    localStorage.setItem('accessToken', newToken);
+                    this.showSpinner = false;
+                    this.searchOrgRequest();
+                  })
+                  .catch(function (err1) {
+                    console.log('error >>')
+                    console.log(err1);
+                  });
+            } else {
+              this.widget.signOut(() => {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/login';
+              });
+            }
+          } else {
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+
+  searchOrgData() {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/orgs';
+    return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   searchDataRequest() {
@@ -231,6 +314,12 @@ export class UserManagementComponent implements OnInit  {
     }
   }
 
+  OnOrgChanged(e: any) {
+    if (!this.selectedOrg || this.selectedOrg !== e.value ) {
+      this.selectedOrg = e.value;
+    }
+  }
+
   handleRowSelection(rowObj: any, rowData: any) {
 
   }
@@ -308,8 +397,9 @@ export class UserManagementComponent implements OnInit  {
     dataObj.email_id = this.userForm.controls['email'].value;
     dataObj.first_name = this.userForm.controls['first'].value;
     dataObj.last_name = this.userForm.controls['last'].value;
-    dataObj.source = this.selectedSource;
+    // dataObj.source = this.selectedSource;
     dataObj.role_id = this.selectedRole;
+    dataObj.org_uuid = this.isRoot ? this.selectedOrg : this.orgInfo.org_id;
     if (this.selectedSource === 'vendor') {
       dataObj.vendor_id = this.selectedVendor;
     }
