@@ -57,7 +57,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         private http: Http,
         private datePipe: DatePipe,
         // private okta: OktaAuthService
-        ) {
+    ) {
     }
 
     ngOnInit(): void {
@@ -110,7 +110,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             const __this = this;
             // setTimeout(function () {
-                __this.initializeTable();
+            __this.initializeTable();
             // }, 0);
             // this.initializeTable();
         }
@@ -120,16 +120,16 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     attachEvents(row) {
         const __this = this;
         $(".api-action")
-        .on('click', function($event){
-            const elem = this;
-            // __this.triggerActions.emit($event);
-            __this.triggerActions.emit({
-                action: 'handleActions',
-                elem: elem,
-                data: row
-            }
-            );
-        });
+            .on('click', function($event){
+                const elem = this;
+                // __this.triggerActions.emit($event);
+                __this.triggerActions.emit({
+                        action: 'handleActions',
+                        elem: elem,
+                        data: row
+                    }
+                );
+            });
     }
 
     attachInvoiceEvent(row, invoiceHeaderId) {
@@ -300,20 +300,20 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 let columnButtonDefs = '';
                 if (this.dataObject.gridData.options.isEditOption && this.dataObject.gridData.options.isEditOption.value) {
                     columnButtonDefs += '<a class="fa fa-pencil fa-action-view editLink" title="' + (this.dataObject.gridData.options.isEditOption.tooltip ? this.dataObject.gridData.options.isEditOption.tooltip : 'Edit' ) + '" style="margin-right: 15px; cursor: pointer">';
-                   // columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isEditOption.tooltip ? this.dataObject.gridData.options.isEditOption.tooltip : 'Edit' )  + '</span>';
+                    // columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isEditOption.tooltip ? this.dataObject.gridData.options.isEditOption.tooltip : 'Edit' )  + '</span>';
                 }
                 if (this.dataObject.gridData.options.isPlayOption && this.dataObject.gridData.options.isPlayOption.value) {
                     const iconClass = this.dataObject.gridData.options.isPlayOption.icon ? this.dataObject.gridData.options.isPlayOption.icon : 'fa-play';
                     columnButtonDefs += '<a class="fa ' + iconClass  + ' fa-action-view playLink" title="' + (this.dataObject.gridData.options.isPlayOption.tooltip ? this.dataObject.gridData.options.isPlayOption.tooltip : 'Click' ) + '" style="margin-right: 15px; cursor: pointer">';
-                  //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isPlayOption.tooltip ? this.dataObject.gridData.options.isPlayOption.tooltip : 'Click' )  + '</span>';
+                    //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isPlayOption.tooltip ? this.dataObject.gridData.options.isPlayOption.tooltip : 'Click' )  + '</span>';
                 }
                 if (this.dataObject.gridData.options.isDownloadOption && this.dataObject.gridData.options.isDownloadOption.value) {
                     columnButtonDefs += '<a class="fa fa-download fa-action-view downloadLink" title="' + (this.dataObject.gridData.options.isDownloadOption.tooltip ? this.dataObject.gridData.options.isDownloadOption.tooltip : 'Download' ) + '" style="margin-right: 15px; cursor: pointer">';
-                  //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isDownloadOption.tooltip ? this.dataObject.gridData.options.isDownloadOption.tooltip : 'Download' )  + '</span>';
+                    //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isDownloadOption.tooltip ? this.dataObject.gridData.options.isDownloadOption.tooltip : 'Download' )  + '</span>';
                 }
                 if (this.dataObject.gridData.options.isDeleteOption && this.dataObject.gridData.options.isDeleteOption.value) {
                     columnButtonDefs += '<a class="fa fa-trash fa-action-view deleteLink" title="' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete' ) + '" style="cursor: pointer"></a>';
-                  //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete' )  + '</span>';
+                    //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete' )  + '</span>';
                 }
 
                 // if (columnButtonDefs) {
@@ -331,8 +331,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 if (columnButtonDefs) {
                     let actionColPosition =
                         this.dataObject.gridData.options.isActionColPosition && this.dataObject.gridData.options.isActionColPosition != null ?
-                        this.dataObject.gridData.options.isActionColPosition :
-                        0;
+                            this.dataObject.gridData.options.isActionColPosition :
+                            0;
 
                     columns.splice(
                         actionColPosition,
@@ -462,8 +462,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 },
 
                 order: this.dataObject.gridData.options.isOrder ?
-                        this.dataObject.gridData.options.isOrder :
-                        [[1, 'asc']],
+                    this.dataObject.gridData.options.isOrder :
+                    [[1, 'asc']],
 
                 rowCallback: function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                     // Get row ID
@@ -931,41 +931,16 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     }
                                 );
                             } else if (__this.identity === 'usermanagement') {
-                                const retHtml = `<div>
-                                    <button 
-                                        class="btn action-btn api-action" 
-                                        data-action="resendEmail"
-                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
-                                    >
-                                        <span style="margin-right: 5px; position: relative;">
-                                            <i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i>
-                                            <i class="fa fa-arrow-right" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i>
-                                        </span>
-                                        Resend Activation Email
-                                    </button>
-                                    <button 
-                                        class="btn action-btn api-action" 
-                                        data-action="deactivate"
-                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
-                                    >
-                                        <span style="margin-right: 5px; position: relative;">
-                                            <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i>
-                                            <i class="fa fa-times" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i>
-                                        </span>
-                                        DEACTIVATE
-                                    </button>
-                                    <button
-                                        class="btn action-btn api-action"
-                                        data-action="unlock"
-                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
-                                    >
-                                        <span style="margin-right: 5px; position: relative;">
-                                            <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i>
-                                            <i class="fa fa-unlock" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i>
-                                        </span>
-                                        Unlock and Resend Activation email
-                                    </button>
-                                </div>`;
+
+                                const disableActivation = !(rowData['external_status'] === 'EXPIRED' || rowData['external_status'] === 'PROVISIONED');
+                                const disableDeActivate = !(rowData['external_status'] !== 'DEACTIVATED');
+                                const disableUnlock = !(rowData['external_status'] === 'DEACTIVATED');
+
+                                const retHtml = '<div>' +
+                                    '<button  class="btn action-btn api-action"  data-action="resendEmail" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + (disableActivation ? ' disabled="disabled" ' : '') + '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-arrow-right" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span> Resend Activation Email</button>' +
+                                    '<button class="btn action-btn api-action" data-action="deactivate" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + (disableDeActivate ? ' disabled="disabled" ' : '') + '><span style="margin-right: 5px; position: relative;"> <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-times" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>DEACTIVATE</button>' +
+                                    '<button class="btn action-btn api-action" data-action="unlock" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + (disableUnlock ? ' disabled="disabled" ' : '') + '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-unlock" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Unlock and Resend Activation email</button>' +
+                                    '</div>';
                                 row.child(retHtml).show();
                                 __this.attachEvents(row);
                                 tr.addClass('shown');
@@ -1445,7 +1420,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 console.log('__this.dataObject.gridData.headers[columnIndex].key >>>')
                 console.log(__this.dataObject.gridData.headers[columnIndex].key);
 
-              //  __this.dataObject.gridData.result[rowIndex][__this.dataObject.gridData.headers[columnIndex].key] = $(this).val();
+                //  __this.dataObject.gridData.result[rowIndex][__this.dataObject.gridData.headers[columnIndex].key] = $(this).val();
 
                 console.log('__this.dataObject.gridData.result >>>')
                 console.log(__this.dataObject.gridData);
@@ -1529,26 +1504,26 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             $(document).off('click', '.metric-info');
             $(document).on('click', '.metric-info', function () {
                 const index1 = $('.metric-info').index(this);
-                    $('.metric-info').each(function (index) {
-                        if (index1 !== index && $(this).next('.metric-details').hasClass('shown')) {
-                            $(this).next('.metric-details').removeClass('shown');
-                            $(this).next('.metric-details').hide(500);
-                        }
-                    });
-                    if (!$(this).next('.metric-details').hasClass('shown')) {
-                        $(this).next('.metric-details').addClass('shown');
-                        $(this).next('.metric-details').show(500);
-                    } else {
+                $('.metric-info').each(function (index) {
+                    if (index1 !== index && $(this).next('.metric-details').hasClass('shown')) {
                         $(this).next('.metric-details').removeClass('shown');
                         $(this).next('.metric-details').hide(500);
                     }
+                });
+                if (!$(this).next('.metric-details').hasClass('shown')) {
+                    $(this).next('.metric-details').addClass('shown');
+                    $(this).next('.metric-details').show(500);
+                } else {
+                    $(this).next('.metric-details').removeClass('shown');
+                    $(this).next('.metric-details').hide(500);
+                }
             });
 
             $(document).off('change', '.select-control');
             $(document).on('change', '.select-control', function () {
                 const required = $(this).data('validation');
                 if(!$(this).val() && required) {
-                   $(this).closest('td').find('div.alert-danger').show();
+                    $(this).closest('td').find('div.alert-danger').show();
                 } else {
                     $(this).closest('td').find('div.alert-danger').hide();
                 }

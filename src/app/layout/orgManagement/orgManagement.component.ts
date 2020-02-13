@@ -70,8 +70,8 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
   resultStatus: any;
 
   constructor(
-    private okta: OktaAuthService,
-    private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager) {
+      private okta: OktaAuthService,
+      private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager) {
 
     this.orgForm = new FormGroup({
       org_name: new FormControl('', Validators.required),
@@ -155,10 +155,10 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/orgs';
     return this.http
-      .get(url, options)
-      .map(res => {
-        return res.json();
-      }).share();
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   populateDataTable(response, initialLoad) {
@@ -241,7 +241,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
 
     this.addOrg.show();
 
-  //  this.router.navigate(['/app/reports/adHocReportBuilder', rowData.id]);
+    //  this.router.navigate(['/app/reports/adHocReportBuilder', rowData.id]);
   }
 
   handleRun(rowObj: any, rowData: any) {
@@ -295,6 +295,69 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     this.performOrgAdditionRequest(dataObj);
   }
 
+  performVendorAdditionRequest(dataObj) {
+    return this.performVendorAddition(dataObj).subscribe(
+        response => {
+          console.log('response from vendor creation >>>')
+          console.log(response);
+          if (response) {
+            this.showSpinner = false;
+            this.error = { type : response.data ? 'success' : 'fail' , message : response.data ?  'Default Vendor successfully ' + ( this.editID ? 'updated' : 'created' ) : 'Default Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
+          }
+        },
+        err => {
+          if(err.status === 401) {
+            if(localStorage.getItem('accessToken')) {
+              this.widget.tokenManager.refresh('accessToken')
+                  .then(function (newToken) {
+                    localStorage.setItem('accessToken', newToken);
+                    this.showSpinner = false;
+                    this.performVendorAdditionRequest(dataObj);
+                  })
+                  .catch(function (err1) {
+                    console.log('error >>')
+                    console.log(err1);
+                  });
+            } else {
+              this.widget.signOut(() => {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/login';
+              });
+            }
+          } else {
+            this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+
+  performVendorAddition(dataObj) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    const data = JSON.stringify(dataObj);
+    const url = this.editID ? this.api_fs.api + '/api/vendors/' + this.editID : this.api_fs.api + '/api/vendors';
+    if (this.editID) {
+      return this.http
+          .put(url, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    } else {
+      return this.http
+          .post(url, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    }
+  }
+
   performOrgAdditionRequest(dataObj) {
     return this.performOrgAddition(dataObj).subscribe(
         response => {
@@ -303,6 +366,22 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
           if (response) {
             this.showSpinner = false;
             this.error = { type : response.data ? 'success' : 'fail' , message : response.data ?  'Org successfully ' + ( this.editID ? 'updated' : 'created' ) : 'Org ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
+            if (!this.editID) {
+              const vendorObj: any = {};
+              vendorObj.org_uuid = response.data.org_uuid;
+              vendorObj.external_vendor_id = Math.floor(1000000000 + Math.random() * 9000000000);
+              vendorObj.first_name = dataObj.first_name;
+              vendorObj.last_name = dataObj.last_name;
+              vendorObj.company_name = response.data.org_name;
+              vendorObj.email = dataObj.email_id;
+              vendorObj.address_1 = dataObj.address_1;
+              vendorObj.address_2 = dataObj.address_2;
+              vendorObj.city = dataObj.city;
+              vendorObj.state = dataObj.state;
+              vendorObj.zip = dataObj.zip;
+              vendorObj.country = dataObj.country;
+              this.performVendorAdditionRequest(vendorObj);
+            }
           }
         },
         err => {
@@ -353,8 +432,8 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
           if (response) {
             this.showSpinner = false;
             this.searchDataRequest();
-           // this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Org successfully deleted ' : 'Org ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
-           // this.editID = '';
+            // this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Org successfully deleted ' : 'Org ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
+            // this.editID = '';
           }
         },
         err => {
