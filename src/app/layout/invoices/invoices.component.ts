@@ -95,19 +95,12 @@ export class InvoicesComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              let self = this;
-                this.widget.tokenManager.refresh(
-                  'accessToken',
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
                   self.searchDataRequest.bind(self)
-                );
-
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            );
           } else {
             this.showSpinner = false;
           }
@@ -227,18 +220,12 @@ export class InvoicesComponent implements OnInit  {
         },
         err => {
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              let self = this;
-              this.widget.tokenManager.refresh(
-                'accessToken',
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
                 self.searchDownloadLink.bind(self, downloadId, invoiceId)
-              );
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            );
           } else {
             Swal({
               title: 'Unable to download the invoice',
@@ -323,18 +310,12 @@ export class InvoicesComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              let self = this;
-              this.widget.tokenManager.refresh(
-                'accessToken',
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
                 self.createTransactionRequest.bind(self, dataObj)
-              );
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            );
           } else {
             this.showSpinner = false;
             Swal({

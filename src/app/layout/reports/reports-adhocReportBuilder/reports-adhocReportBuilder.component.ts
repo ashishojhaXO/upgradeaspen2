@@ -688,20 +688,14 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
         this.getReportDetails();
       }
 
-    }, error => {
-      if(error.status === 401) {
-        if(localStorage.getItem('accessToken')) {
-              let self = this;
-              this.widget.tokenManager.refresh(
-                'accessToken',
-                self.getEmailRequest.bind(self)
-              );
-        } else {
-          this.widget.signOut(() => {
-            localStorage.removeItem('accessToken');
-            window.location.href = '/login';
-          });
-        }
+    }, err => {
+      if(err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.getEmailRequest.bind(self)
+            );
       } else {
         this.showSpinner = false;
       }
@@ -1356,18 +1350,12 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              let self = this;
-              this.widget.tokenManager.refresh(
-                'accessToken',
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
                     self.handleSubmit.bind(self, null,null)
-              );
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            );
           } else {
             this.showSpinner = false;
           }
@@ -1586,18 +1574,12 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
             err => {
 
               if(err.status === 401) {
-                if(localStorage.getItem('accessToken')) {
-                  let self = this;
-                  this.widget.tokenManager.refresh(
-                    'accessToken',
-                            self.fetchReportData.bind(self)
-                  );
-                } else {
-                  this.widget.signOut(() => {
-                    localStorage.removeItem('accessToken');
-                    window.location.href = '/login';
-                  });
-                }
+                let self = this;
+                this.widget.refreshElseSignout(
+                  this,
+                  err, 
+                  self.fetchReportData.bind(self)
+                );
               } else {
                 this.showSpinner = false;
               }

@@ -71,18 +71,12 @@ export class AlertNoticationdashboardsComponent implements OnInit {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              let self = this;
-              this.widget.tokenManager.refresh(
-                'accessToken',
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
                 self.searchDataRequest.bind(self)
-              );
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            );
           } else {
             this.showSpinner = false;
           }

@@ -38,12 +38,19 @@ export class OktaAuthService {
 
 
 
-  signOut() {
+  signOut(func?: Function) {
     // TODO: SignOut to be implemented
+    if (func){
+      console.log("signO IF FUNC")
+      func()
+    }
+    else {
+      console.log("signO nofunc else")
+      localStorage.removeItem('accessToken');
+      window.location.href = '/login';
+    }
 
   }
-
-
 
   refresh(accessToken){
     console.log("acccc: refresh", accessToken)
@@ -52,25 +59,16 @@ export class OktaAuthService {
     })
   }
 
-  errorProcedure(err, successFuncName, errorFuncName) {
-
-    if(err.status === 401) {
-
-      if(localStorage.getItem('accessToken')) {
-
-        this.tokenManager.refresh(
-          'accessToken', 
-          successFuncName,
-          errorFuncName
-        );
-      } else {
-        this.widget.signOut(() => {
-          localStorage.removeItem('accessToken');
-          window.location.href = '/login';
-        });
-      }
+  refreshElseSignout(obj, err, successFuncName, errorFuncName) {
+    if(localStorage.getItem('accessToken')) {
+      this.tokenManager.refresh(
+        'accessToken', 
+        successFuncName,
+        errorFuncName
+      );
     } else {
-      this.showSpinner = false;
+      console.log("ELSE SIGNOUT")
+      this.signOut();
     }
 
   }

@@ -207,18 +207,12 @@ export class OrderTemplateComponent implements OnInit {
         console.log('err >>>')
         console.log(err)
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-              let self = this;
-              this.widget.tokenManager.refresh(
-                'accessToken',
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
                 self.createTemplateService.bind(self, template)
-              );
-          } else {
-            this.widget.signOut(() => {
-              localStorage.removeItem('accessToken');
-              window.location.href = '/login';
-            });
-          }
+            );
         } else {
           Swal({
             title: 'Error',
@@ -294,18 +288,12 @@ export class OrderTemplateComponent implements OnInit {
         console.log('err >>')
         console.log(err);
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-              let self = this;
-              this.widget.tokenManager.refresh(
-                'accessToken',
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
                 self.getTemplateService.bind(self, templateId)
-              );
-          } else {
-            this.widget.signOut(() => {
-              localStorage.removeItem('accessToken');
-              window.location.href = '/login';
-            });
-          }
+            );
         } else {
           Swal({
             title: 'Error',

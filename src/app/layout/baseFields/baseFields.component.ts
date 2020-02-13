@@ -70,14 +70,12 @@ export class BaseFieldsComponent implements OnInit {
       },
       err => {
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken', self.createBaseService.bind(self, template) );
-          } else {
-            this.widget.signOut(() => {
-              localStorage.removeItem('accessToken');
-              window.location.href = '/login';
-            });
-          }
+          let self = this;
+          this.widget.refreshElseSignout(
+            this,
+            err, 
+            self.createBaseService.bind(self, template) 
+          );
         } else {
           Swal({
             title: 'Error',

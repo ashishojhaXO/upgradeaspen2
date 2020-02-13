@@ -120,11 +120,18 @@ export class OrdersComponent implements OnInit  {
           }
         },
         err => {
-          this.widget.errorProcedure(
-            err, 
-            self.searchDataRequest.bind(self), 
-            self.errorCallback.bind(self) 
-          );
+          if(err.status === 401) {
+            console.log("this:  ", this, "this.widget:", this.widget)
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.searchDataRequest.bind(self), 
+              self.errorCallback.bind(self) 
+            );
+          } else {
+            this.showSpinner = false;
+          }
+
         }
     );
   }
@@ -235,14 +242,12 @@ export class OrdersComponent implements OnInit  {
         },
         err => {
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken', self.searchDownloadLink.bind(self, downloadId, orderId), self.errorCallback.bind(self));
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.searchDownloadLink.bind(self, downloadId, orderId), 
+              self.errorCallback.bind(self)
+            );
           } else {
             Swal({
               title: 'Unable to download the order details',

@@ -331,19 +331,13 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
                         this.populateDataTable(response2);
                       }, error => {
                         if(error.status === 401) {
-                          if(localStorage.getItem('accessToken')) {
+                          let self = this;
+                          this.widget.refreshElseSignout(
+                            this,
+                            error, 
+                            // self.searchDataRequest.bind(self),
+                          );
 
-                                this.widget.tokenManager.refresh(
-                                  'accessToken',
-                                  // self.searchDataRequest.bind(self),
-                                );
-
-                          } else {
-                            this.widget.signOut(() => {
-                              localStorage.removeItem('accessToken');
-                              window.location.href = '/login';
-                            });
-                          }
                         } else {
                           this.showSpinner = false;
                         }
@@ -354,17 +348,12 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           error => {
 
             if(error.status === 401) {
-              if(localStorage.getItem('accessToken')) {
-                this.widget.tokenManager.refresh(
-                  'accessToken',
-                  // self.searchDataRequest.bind(self),
-                );
-              } else {
-                this.widget.signOut(() => {
-                  localStorage.removeItem('accessToken');
-                  window.location.href = '/login';
-                });
-              }
+              let self = this;
+              this.widget.refreshElseSignout(
+                this,
+                error, 
+                    // self.searchDataRequest.bind(self),
+              );
             } else {
               this.showSpinner = false;
             }
@@ -927,17 +916,14 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         },
         err => {
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-                this.widget.tokenManager.refresh(
-                  'accessToken',
+
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
                   self.getSearchDataRequest.bind(self)
-                );
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            );
+
           } else {
             this.showSpinner = false;
           }

@@ -116,17 +116,13 @@ export class InvoiceComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-                this.widget.tokenManager.refresh(
-                  'accessToken',
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
                   self.searchDataRequest.bind(self, invoiceId),
-                );
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            );
+
           } else {
             Swal({
               title: 'No Invoices found',
@@ -161,17 +157,12 @@ export class InvoiceComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-                this.widget.tokenManager.refresh(
-                  'accessToken',
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
                   self.getKenshooProfileDetails.bind(self, invoice, profileName, invoice_header_id)
-                );
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            );
           } else {
             this.showSpinner = false;
           }
@@ -309,17 +300,12 @@ export class InvoiceComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-                this.widget.tokenManager.refresh(
-                  'accessToken',
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
                   self.createTransactionRequest.bind(self, dataObj)
-                );
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            );
           } else {
             this.showSpinner = false;
             Swal({

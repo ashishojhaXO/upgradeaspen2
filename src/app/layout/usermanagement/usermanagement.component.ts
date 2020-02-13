@@ -165,7 +165,6 @@ export class UserManagementComponent implements OnInit  {
                   err1 => {
 
                     if(err1.status === 401) {
-                      if(localStorage.getItem('accessToken')) {
                         // TODO: New this.widget.tokenManager.refresh to be implemented
                         // this.widget.tokenManager.refresh('accessToken')
                         //     .then(function (newToken) {
@@ -178,16 +177,12 @@ export class UserManagementComponent implements OnInit  {
                         //       console.log(err);
                         //     });
                         let self = this;
-                        this.widget.tokenManager.refresh(
-                          'accessToken',
-                          self.getVendorsService.bind(self)
+                        this.widget.refreshElseSignout(
+                          this,
+                          err1, 
+                                      self.getVendorsService.bind(self)
                         );
-                      } else {
-                        this.widget.signOut(() => {
-                          localStorage.removeItem('accessToken');
-                          window.location.href = '/login';
-                        });
-                      }
+
                     } else {
                       this.showSpinner = false;
                     }
@@ -199,18 +194,12 @@ export class UserManagementComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              let self = this;
-              this.widget.tokenManager.refresh(
-                'accessToken',
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
                 self.searchDataRequest.bind(self)
-              );
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            );
           } else {
             this.showSpinner = false;
           }
@@ -363,18 +352,12 @@ export class UserManagementComponent implements OnInit  {
       },
       err => {
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-              let self = this;
-              this.widget.tokenManager.refresh(
-                'accessToken',
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
                 // self.searchDataRequest.bind(self)
-              );
-          } else {
-            this.widget.signOut(() => {
-              localStorage.removeItem('accessToken');
-              window.location.href = '/login';
-            });
-          }
+            );
         } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
           this.showSpinner = false;
@@ -399,18 +382,12 @@ export class UserManagementComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              let self = this;
-              this.widget.tokenManager.refresh(
-                'accessToken',
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
                 self.performUserAdditionRequest.bind(self, dataObj)
-              );
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            );
           } else {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
             this.showSpinner = false;

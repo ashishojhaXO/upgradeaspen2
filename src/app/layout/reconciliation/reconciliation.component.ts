@@ -110,11 +110,12 @@ export class ReconciliationComponent implements OnInit  {
         },
         err => {
           if(err.status === 401) {
-              let self = this;
-              this.widget.tokenManager.refresh(
-                'accessToken',
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
                   self.searchDataRequest.bind(self)
-              );
+            );
           } else {
             this.showSpinner = false;
             console.log('err')

@@ -74,19 +74,12 @@ export class TransitionComponent implements OnInit {
           console.log('err >>>')
           console.log(err);
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              let self = this;
-              this.widget.tokenManager.refresh(
-                'accessToken',
+                let self = this;
+                this.widget.refreshElseSignout(
+                  this,
+                  err, 
                 self.getCustomerInfoRequest.bind(self)
-              );
-            } 
-            else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+                );
           } else {
             this.showSpinner = false;
             this.error = err;

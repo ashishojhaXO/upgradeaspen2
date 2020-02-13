@@ -5,6 +5,7 @@ import { Common } from '../../shared/util/common';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { USER_CLIENT_NAME } from '../../../constants/organization';
 import {ENV} from '../../../constants/env';
+import { OktaAuthService } from '../../../../src/services/okta.service';
 
 // interface User {
 //   body: Object({
@@ -28,8 +29,10 @@ export class LoginNewComponent implements OnInit {
   api_fs: any;
   showSpinner: boolean;
   version: any;
+  widget: any;
 
   constructor(
+    private okta: OktaAuthService,
     private common:Common,
     private http: Http,
     private route: ActivatedRoute,
@@ -50,6 +53,7 @@ export class LoginNewComponent implements OnInit {
   }
 
   private formOnInit(){
+    this.widget = this.okta.getWidget();
     this.loginForm = new FormGroup({
       'userData': new FormGroup({
         'userEmail': new FormControl(null, Validators.required),
@@ -142,11 +146,14 @@ export class LoginNewComponent implements OnInit {
             err => {
               this.showSpinner = false;
               if (err.status === 401) {
-                if (localStorage.getItem('accessToken')) {
 
-                } else {
+                let self = this;
+                this.widget .refreshElseSignout(
+                  this,
+                  err, 
+                    // self.searchDataRequest.bind(self, org)
+                );
 
-                }
               } else {
 
               }

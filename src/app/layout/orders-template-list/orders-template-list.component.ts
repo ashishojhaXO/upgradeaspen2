@@ -94,18 +94,12 @@ export class OrdersTemplateListComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              let self = this;
-              this.widget.tokenManager.refresh(
-                'accessToken',
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
                     self.searchDataRequest.bind(self)
-              );
-            } else {
-              this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            );
           } else {
             this.showSpinner = false;
           }
