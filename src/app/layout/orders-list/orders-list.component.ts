@@ -113,7 +113,7 @@ export class OrdersListComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                    self.searchDataRequest.bind(self, templateValue)
+              self.searchDataRequest.bind(self, templateValue)
             );
           } else {
             this.showSpinner = false;
@@ -234,7 +234,7 @@ export class OrdersListComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                self.getOrganizations.bind(self)
+              self.getOrganizations.bind(self)
             );
         } else {
           this.showSpinner = false;

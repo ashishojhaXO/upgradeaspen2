@@ -352,7 +352,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               this.widget.refreshElseSignout(
                 this,
                 error, 
-                    // self.searchDataRequest.bind(self),
+                // self.searchDataRequest.bind(self),
               );
             } else {
               this.showSpinner = false;
@@ -921,7 +921,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                  self.getSearchDataRequest.bind(self)
+              self.getSearchDataRequest.bind(self)
             );
 
           } else {

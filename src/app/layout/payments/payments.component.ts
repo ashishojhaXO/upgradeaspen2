@@ -238,7 +238,7 @@ export class PaymentsComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                    self.searchDataRequest.bind(self)
+              self.searchDataRequest.bind(self)
             );
           } else {
             this.showSpinner = false;
@@ -363,7 +363,7 @@ export class PaymentsComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                  self.getOrganizations.bind(self)
+              self.getOrganizations.bind(self)
             );
 
         } else {
@@ -408,7 +408,7 @@ export class PaymentsComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                  self.getPayees.bind(self)
+              self.getPayees.bind(self)
             );
 
         } else {
@@ -463,7 +463,7 @@ export class PaymentsComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                  self.getVendors.bind(self, orgid)
+              self.getVendors.bind(self, orgid)
             );
         } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
@@ -635,7 +635,7 @@ export class PaymentsComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                    self.createTransactionRequest.bind(self, dataObj)
+              self.createTransactionRequest.bind(self, dataObj)
             );
           } else {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};

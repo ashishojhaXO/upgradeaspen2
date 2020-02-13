@@ -78,7 +78,7 @@ export class TransitionComponent implements OnInit {
                 this.widget.refreshElseSignout(
                   this,
                   err, 
-                self.getCustomerInfoRequest.bind(self)
+                  self.getCustomerInfoRequest.bind(self)
                 );
           } else {
             this.showSpinner = false;

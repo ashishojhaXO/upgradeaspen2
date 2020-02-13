@@ -261,12 +261,12 @@ export class CustomFormbuilderComponent implements OnInit {
       },
       err => {
         if(err.status === 401) {
-                let self = this;
-                this.widget.refreshElseSignout(
-                  this,
-                  err, 
-                self.getAttributeService.bind(self)
-                );
+          let self = this;
+          this.widget.refreshElseSignout(
+            this,
+            err, 
+            self.getAttributeService.bind(self)
+          );
         } else {
           this.showSpinner = false;
         }

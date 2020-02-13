@@ -166,7 +166,7 @@ export class LoginComponent implements OnInit {
                 this.widget.refreshElseSignout(
                   this,
                   err, 
-                self.performActions.bind(self)
+                  self.performActions.bind(self)
                 );
         } else {
           this.error = err;

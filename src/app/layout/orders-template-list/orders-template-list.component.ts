@@ -98,7 +98,7 @@ export class OrdersTemplateListComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                    self.searchDataRequest.bind(self)
+              self.searchDataRequest.bind(self)
             );
           } else {
             this.showSpinner = false;

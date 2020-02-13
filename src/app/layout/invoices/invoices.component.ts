@@ -99,7 +99,7 @@ export class InvoicesComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                  self.searchDataRequest.bind(self)
+              self.searchDataRequest.bind(self)
             );
           } else {
             this.showSpinner = false;
@@ -224,7 +224,7 @@ export class InvoicesComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                self.searchDownloadLink.bind(self, downloadId, invoiceId)
+              self.searchDownloadLink.bind(self, downloadId, invoiceId)
             );
           } else {
             Swal({
@@ -314,7 +314,7 @@ export class InvoicesComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                self.createTransactionRequest.bind(self, dataObj)
+              self.createTransactionRequest.bind(self, dataObj)
             );
           } else {
             this.showSpinner = false;

@@ -66,7 +66,7 @@ export class UserSettingsComponent implements OnInit {
             this.widget.refreshElseSignout(
               this,
               err, 
-                self.getUserService.bind(self)
+              self.getUserService.bind(self)
             );
          } else {
            this.showSpinner = false;
@@ -159,7 +159,7 @@ export class UserSettingsComponent implements OnInit {
             this.widget.refreshElseSignout(
               this,
               err, 
-                self.saveUserService.bind(self)
+              self.saveUserService.bind(self)
             );
          } else {
            this.showSpinner = false;

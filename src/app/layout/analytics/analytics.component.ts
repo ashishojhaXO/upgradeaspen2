@@ -95,7 +95,7 @@ export class AnalyticsComponent implements OnInit {
             this.widget.refreshElseSignout(
               this,
               err, 
-                self.getTokenService.bind(self) 
+              self.getTokenService.bind(self) 
             );
           } else {
             this.showSpinner = false;
@@ -185,7 +185,7 @@ export class AnalyticsComponent implements OnInit {
             this.widget.refreshElseSignout(
               this,
               err, 
-                self.getUserService.bind(self)
+              self.getUserService.bind(self)
             );
          } else {
            this.showSpinner = false;

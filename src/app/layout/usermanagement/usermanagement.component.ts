@@ -180,7 +180,7 @@ export class UserManagementComponent implements OnInit  {
                         this.widget.refreshElseSignout(
                           this,
                           err1, 
-                                      self.getVendorsService.bind(self)
+                          self.getVendorsService.bind(self)
                         );
 
                     } else {
@@ -198,7 +198,7 @@ export class UserManagementComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                self.searchDataRequest.bind(self)
+              self.searchDataRequest.bind(self)
             );
           } else {
             this.showSpinner = false;
@@ -356,7 +356,7 @@ export class UserManagementComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                // self.searchDataRequest.bind(self)
+              // self.searchDataRequest.bind(self)
             );
         } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
@@ -386,7 +386,7 @@ export class UserManagementComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                self.performUserAdditionRequest.bind(self, dataObj)
+              self.performUserAdditionRequest.bind(self, dataObj)
             );
           } else {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};

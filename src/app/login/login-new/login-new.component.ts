@@ -151,7 +151,7 @@ export class LoginNewComponent implements OnInit {
                 this.widget .refreshElseSignout(
                   this,
                   err, 
-                    // self.searchDataRequest.bind(self, org)
+                  // self.searchDataRequest.bind(self, org)
                 );
 
               } else {

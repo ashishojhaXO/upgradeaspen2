@@ -93,15 +93,7 @@ export class OrdersComponent implements OnInit  {
 
   // Recursively call this.main function where
   // the 401 response came in
-  // Success & Error CBs
-  successCallbackSDR = function (response) {
-    // console.log('success >>', response, )
-    // console.log(" response.body", response.data.body );
-    // localStorage.setItem('accessToken', response.data.access_token);
-    // this.showSpinner = false;
-    this.searchDataRequest();
-  }
-
+  // Error CBs
   errorCallback = function (err) {
     console.log('error >>', err);
     console.log(err);
@@ -208,7 +200,7 @@ export class OrdersComponent implements OnInit  {
     const downloadId = dataObj.data.Vendor_Receipt_Id;
     const orderId = dataObj.data.Order_Id;
 
-    console.log('handDown dataObj >>')
+    console.log('dataObj >>')
     console.log(dataObj);
 
     if (downloadId) {

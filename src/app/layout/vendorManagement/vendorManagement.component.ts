@@ -160,8 +160,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                // self.searchDataRequest.bind(self)
-                    self.searchOrgRequest.bind(self)
+              self.searchOrgRequest.bind(self)
             );
           } else {
             this.showSpinner = false;
@@ -210,7 +209,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                self.searchDataRequest.bind(self, org)
+              self.searchDataRequest.bind(self, org)
             );
           } else {
             this.showSpinner = false;
@@ -405,7 +404,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                self.performVendorAdditionRequest.bind(self, dataObj)
+              self.performVendorAdditionRequest.bind(self, dataObj)
             );
           } else {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
@@ -457,7 +456,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                self.performVendorDeletionRequest.bind(self, id)
+              self.performVendorDeletionRequest.bind(self, id)
             );
           } else {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};

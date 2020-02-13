@@ -120,7 +120,7 @@ export class InvoiceComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                  self.searchDataRequest.bind(self, invoiceId),
+              self.searchDataRequest.bind(self, invoiceId),
             );
 
           } else {
@@ -161,7 +161,7 @@ export class InvoiceComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                  self.getKenshooProfileDetails.bind(self, invoice, profileName, invoice_header_id)
+              self.getKenshooProfileDetails.bind(self, invoice, profileName, invoice_header_id)
             );
           } else {
             this.showSpinner = false;
@@ -304,7 +304,7 @@ export class InvoiceComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                  self.createTransactionRequest.bind(self, dataObj)
+              self.createTransactionRequest.bind(self, dataObj)
             );
           } else {
             this.showSpinner = false;

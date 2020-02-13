@@ -1354,7 +1354,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
             this.widget.refreshElseSignout(
               this,
               err, 
-                    self.handleSubmit.bind(self, null,null)
+              self.handleSubmit.bind(self, null,null)
             );
           } else {
             this.showSpinner = false;

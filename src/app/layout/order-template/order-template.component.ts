@@ -211,7 +211,7 @@ export class OrderTemplateComponent implements OnInit {
             this.widget.refreshElseSignout(
               this,
               err, 
-                self.createTemplateService.bind(self, template)
+              self.createTemplateService.bind(self, template)
             );
         } else {
           Swal({
@@ -292,7 +292,7 @@ export class OrderTemplateComponent implements OnInit {
             this.widget.refreshElseSignout(
               this,
               err, 
-                self.getTemplateService.bind(self, templateId)
+              self.getTemplateService.bind(self, templateId)
             );
         } else {
           Swal({

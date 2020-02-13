@@ -134,7 +134,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                    self.searchDataRequest.bind(self)
+              self.searchDataRequest.bind(self)
             );
           } else {
             this.showSpinner = false;
@@ -311,7 +311,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                    self.performVendorAdditionRequest.bind(self, dataObj)
+              self.performVendorAdditionRequest.bind(self, dataObj)
             );
           } else {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
@@ -379,7 +379,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                    self.performOrgAdditionRequest.bind(self, dataObj)
+              self.performOrgAdditionRequest.bind(self, dataObj)
             );
           } else {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
@@ -431,7 +431,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
             this.widget.refreshElseSignout(
               this,
               err, 
-                    self.performOrgDeletionRequest.bind(self, id)
+              self.performOrgDeletionRequest.bind(self, id)
             );
           } else {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
