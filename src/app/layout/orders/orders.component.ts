@@ -91,7 +91,17 @@ export class OrdersComponent implements OnInit  {
     }
   }
 
+  // Recursively call this.main function where
+  // the 401 response came in
+  // Error CBs
+  errorCallback = function (err) {
+    console.log('error >>', err);
+    console.log(err);
+  }
+  // Success & Error CBs/
+
   searchDataRequest() {
+    const self = this;
     return this.searchData().subscribe(
         response => {
           if (response) {
@@ -102,28 +112,18 @@ export class OrdersComponent implements OnInit  {
           }
         },
         err => {
-
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchDataRequest();
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            console.log("this:  ", this, "this.widget:", this.widget)
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.searchDataRequest.bind(self), 
+              self.errorCallback.bind(self) 
+            );
           } else {
             this.showSpinner = false;
           }
+
         }
     );
   }
@@ -215,6 +215,7 @@ export class OrdersComponent implements OnInit  {
   }
 
   searchDownloadLink(downloadId, orderId) {
+    var self = this;
     this.getDownloadLink(downloadId).subscribe(
         response => {
           if (response && response.data && response.data.pre_signed_url) {
@@ -233,23 +234,12 @@ export class OrdersComponent implements OnInit  {
         },
         err => {
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchDownloadLink(downloadId, orderId);
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.searchDownloadLink.bind(self, downloadId, orderId), 
+              self.errorCallback.bind(self)
+            );
           } else {
             Swal({
               title: 'Unable to download the order details',
@@ -265,7 +255,6 @@ export class OrdersComponent implements OnInit  {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      // token = AccessToken.accessToken;
       token = AccessToken;
     }
 

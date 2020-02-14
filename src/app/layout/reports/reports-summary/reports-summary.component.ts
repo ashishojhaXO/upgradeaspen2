@@ -226,23 +226,12 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    this.showSpinner = false;
-                    localStorage.setItem('accessToken', newToken);
-                    this.populateReportDataTable();
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.populateReportDataTable.bind(self)
+            );
           } else {
             this.showSpinner = false;
           }

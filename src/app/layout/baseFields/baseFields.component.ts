@@ -53,6 +53,7 @@ export class BaseFieldsComponent implements OnInit {
   }
 
   createBase(template){
+    let self = this;
     this.createBaseService(template).subscribe(
       response => {
         console.log('response >>')
@@ -69,23 +70,12 @@ export class BaseFieldsComponent implements OnInit {
       },
       err => {
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  localStorage.setItem('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.createBaseService(template);
-                })
-                .catch(function (err) {
-                  console.log('error >>')
-                  console.log(err);
-                });
-          } else {
-            this.widget.signOut(() => {
-              localStorage.removeItem('accessToken');
-              window.location.href = '/login';
-            });
-          }
+          let self = this;
+          this.widget.refreshElseSignout(
+            this,
+            err, 
+            self.createBaseService.bind(self, template) 
+          );
         } else {
           Swal({
             title: 'Error',

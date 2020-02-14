@@ -62,23 +62,12 @@ export class UserSettingsComponent implements OnInit {
        },
        err => {
          if(err.status === 401) {
-           if(localStorage.getItem('accessToken')) {
-             this.widget.tokenManager.refresh('accessToken')
-                 .then(function (newToken) {
-                   localStorage.setItem('accessToken', newToken);
-                   this.showSpinner = false;
-                   this.getUserService();
-                 })
-                 .catch(function (err) {
-                   // console.log('error >>')
-                   // console.log(err);
-                 });
-           } else {
-             this.widget.signOut(() => {
-               localStorage.removeItem('accessToken');
-               window.location.href = '/login';
-             });
-           }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.getUserService.bind(self)
+            );
          } else {
            this.showSpinner = false;
            Swal({
@@ -166,23 +155,12 @@ export class UserSettingsComponent implements OnInit {
        },
        err => {
          if(err.status === 401) {
-           if(localStorage.getItem('accessToken')) {
-             this.widget.tokenManager.refresh('accessToken')
-                 .then(function (newToken) {
-                   localStorage.setItem('accessToken', newToken);
-                   this.showSpinner = false;
-                   this.saveUserService();
-                 })
-                 .catch(function (err) {
-                   // console.log('error >>')
-                   // console.log(err);
-                 });
-           } else {
-             this.widget.signOut(() => {
-               localStorage.removeItem('accessToken');
-               window.location.href = '/login';
-             });
-           }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.saveUserService.bind(self)
+            );
          } else {
            this.showSpinner = false;
            Swal({

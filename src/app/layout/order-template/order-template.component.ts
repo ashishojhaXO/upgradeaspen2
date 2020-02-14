@@ -207,23 +207,12 @@ export class OrderTemplateComponent implements OnInit {
         console.log('err >>>')
         console.log(err)
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  localStorage.setItem('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.createTemplateService(template);
-                })
-                .catch(function (err) {
-                  console.log('error >>')
-                  console.log(err);
-                });
-          } else {
-            this.widget.signOut(() => {
-              localStorage.removeItem('accessToken');
-              window.location.href = '/login';
-            });
-          }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.createTemplateService.bind(self, template)
+            );
         } else {
           Swal({
             title: 'Error',
@@ -299,23 +288,12 @@ export class OrderTemplateComponent implements OnInit {
         console.log('err >>')
         console.log(err);
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  localStorage.setItem('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.getTemplateService(templateId);
-                })
-                .catch(function (err) {
-                  console.log('error >>')
-                  console.log(err);
-                });
-          } else {
-            this.widget.signOut(() => {
-              localStorage.removeItem('accessToken');
-              window.location.href = '/login';
-            });
-          }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.getTemplateService.bind(self, templateId)
+            );
         } else {
           Swal({
             title: 'Error',

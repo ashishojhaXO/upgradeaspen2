@@ -5,6 +5,7 @@ import { Common } from '../../shared/util/common';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { USER_CLIENT_NAME } from '../../../constants/organization';
 import {ENV} from '../../../constants/env';
+import { OktaAuthService } from '../../../../src/services/okta.service';
 
 // interface User {
 //   body: Object({
@@ -28,8 +29,10 @@ export class LoginNewComponent implements OnInit {
   api_fs: any;
   showSpinner: boolean;
   version: any;
+  widget: any;
 
   constructor(
+    private okta: OktaAuthService,
     private common:Common,
     private http: Http,
     private route: ActivatedRoute,
@@ -50,6 +53,7 @@ export class LoginNewComponent implements OnInit {
   }
 
   private formOnInit(){
+    this.widget = this.okta.getWidget();
     this.loginForm = new FormGroup({
       'userData': new FormGroup({
         'userEmail': new FormControl(null, Validators.required),
@@ -72,7 +76,11 @@ export class LoginNewComponent implements OnInit {
   }
 
   loginService(body: Object) {
-    const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen' });
+    const headers = new Headers({
+      'Content-Type': 'application/json' , 
+      'callingapp' : 'aspen',
+      // "scope": "openid offline_access"
+    });
     const options = new RequestOptions({headers: headers});
     const api_url_part = "/api";
     const endPoint = "/users/token/signin";
@@ -91,6 +99,7 @@ export class LoginNewComponent implements OnInit {
 
     localStorage.setItem('accessToken', res.access_token);
     localStorage.setItem('idToken', res.id_token);
+    localStorage.setItem('refreshToken', res.refresh_token);
     localStorage.setItem('loggedInUserName', res.first_name.trim() + " " + res.last_name.trim());
     localStorage.setItem('loggedInUserID', res.external_id);
     localStorage.setItem('loggedInUserGroup', JSON.stringify([res.user_role ? res.user_role.name.toUpperCase() : '']));
@@ -137,11 +146,14 @@ export class LoginNewComponent implements OnInit {
             err => {
               this.showSpinner = false;
               if (err.status === 401) {
-                if (localStorage.getItem('accessToken')) {
 
-                } else {
+                let self = this;
+                this.widget .refreshElseSignout(
+                  this,
+                  err, 
+                  // self.searchDataRequest.bind(self, org)
+                );
 
-                }
               } else {
 
               }

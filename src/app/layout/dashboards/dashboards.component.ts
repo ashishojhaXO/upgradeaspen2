@@ -309,6 +309,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     this.dashboardConfig.filterProps = JSON.parse(JSON.stringify(this.defaultFilters));
 
     if (this.dashboardType === 'pacing' || this.dashboardType === 'spend') {
+      let self = this;
       this
         .getFilter(this.dashboardType)
         .then(
@@ -330,23 +331,13 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
                         this.populateDataTable(response2);
                       }, error => {
                         if(error.status === 401) {
-                          if(localStorage.getItem('accessToken')) {
-                            this.widget.tokenManager.refresh('accessToken')
-                                .then(function (newToken) {
-                                  localStorage.setItem('accessToken', newToken);
-                                  this.showSpinner = false;
-                                  // this.searchDataRequest();
-                                })
-                                .catch(function (err1) {
-                                  console.log('error >>')
-                                  console.log(err1);
-                                });
-                          } else {
-                            this.widget.signOut(() => {
-                              localStorage.removeItem('accessToken');
-                              window.location.href = '/login';
-                            });
-                          }
+                          let self = this;
+                          this.widget.refreshElseSignout(
+                            this,
+                            error, 
+                            // self.searchDataRequest.bind(self),
+                          );
+
                         } else {
                           this.showSpinner = false;
                         }
@@ -357,23 +348,12 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           error => {
 
             if(error.status === 401) {
-              if(localStorage.getItem('accessToken')) {
-                this.widget.tokenManager.refresh('accessToken')
-                    .then(function (newToken) {
-                      localStorage.setItem('accessToken', newToken);
-                      this.showSpinner = false;
-                     // this.searchDataRequest();
-                    })
-                    .catch(function (err1) {
-                      console.log('error >>')
-                      console.log(err1);
-                    });
-              } else {
-                this.widget.signOut(() => {
-                  localStorage.removeItem('accessToken');
-                  window.location.href = '/login';
-                });
-              }
+              let self = this;
+              this.widget.refreshElseSignout(
+                this,
+                error, 
+                // self.searchDataRequest.bind(self),
+              );
             } else {
               this.showSpinner = false;
             }
@@ -914,6 +894,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }
 
   getSearchDataRequest(dataObj) {
+    let self = this;
     this.showSpinner = true;
     this.getSearchData(dataObj).subscribe(
         response => {
@@ -935,23 +916,14 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         },
         err => {
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.getSearchDataRequest();
-                  })
-                  .catch(function (err1) {
-                    console.log('error >>')
-                    console.log(err1);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.getSearchDataRequest.bind(self)
+            );
+
           } else {
             this.showSpinner = false;
           }

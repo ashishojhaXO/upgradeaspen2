@@ -233,25 +233,13 @@ export class PaymentsComponent implements OnInit  {
           }
         },
         err => {
-
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchDataRequest();
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.searchDataRequest.bind(self)
+            );
           } else {
             this.showSpinner = false;
           }
@@ -371,23 +359,13 @@ export class PaymentsComponent implements OnInit  {
       err => {
 
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  localStorage.setItem('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.getOrganizations();
-                })
-                .catch(function (err1) {
-                  console.log('error >>')
-                  console.log(err1);
-                });
-          } else {
-            this.widget.signOut(() => {
-              localStorage.removeItem('accessToken');
-              window.location.href = '/login';
-            });
-          }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.getOrganizations.bind(self)
+            );
+
         } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
           this.showSpinner = false;
@@ -426,23 +404,13 @@ export class PaymentsComponent implements OnInit  {
       err => {
 
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  localStorage.setItem('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.getPayees();
-                })
-                .catch(function (err1) {
-                  console.log('error >>')
-                  console.log(err1);
-                });
-          } else {
-            this.widget.signOut(() => {
-              this.widget.tokenManager.remove('accessToken');
-              window.location.href = '/login';
-            });
-          }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.getPayees.bind(self)
+            );
+
         } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
           this.showSpinner = false;
@@ -491,23 +459,12 @@ export class PaymentsComponent implements OnInit  {
       },
       err => {
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  localStorage.setItem('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.getVendors(orgid);
-                })
-                .catch(function (err1) {
-                  console.log('error >>')
-                  console.log(err1);
-                });
-          } else {
-            this.widget.signOut(() => {
-              localStorage.removeItem('accessToken');
-              window.location.href = '/login';
-            });
-          }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.getVendors.bind(self, orgid)
+            );
         } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
           this.showSpinner = false;
@@ -674,23 +631,12 @@ export class PaymentsComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.createTransactionRequest(dataObj);
-                  })
-                  .catch(function (err1) {
-                    console.log('error >>')
-                    console.log(err1);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.createTransactionRequest.bind(self, dataObj)
+            );
           } else {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
             this.showSpinner = false;
@@ -847,23 +793,13 @@ export class PaymentsComponent implements OnInit  {
       },
       err => {
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  localStorage.setItem('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.updateApService(formData);
-                })
-                .catch(function (err1) {
-                  console.log('error >>')
-                  console.log(err1);
-                });
-          } else {
-            this.widget.signOut(() => {
-              this.widget.tokenManager.remove('accessToken');
-              window.location.href = '/login';
-            });
-          }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.updateApService.bind(self, formData),
+            );
+
         } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
           swal({

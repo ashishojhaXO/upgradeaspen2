@@ -107,6 +107,34 @@ export class UserManagementComponent implements OnInit  {
     this.searchDataRequest();
   }
 
+  getVendorsService() {
+    return this.getVendors().subscribe(
+      response2 => {
+        console.log('response1');
+        console.log(JSON.stringify(response2));
+        if (response2 && response2.body) {
+          const vendorOptions = [];
+          response2.body.forEach(function (item) {
+            vendorOptions.push({
+              id: item.id,
+              text: item.client_id + ' - ' + item.company_name
+            });
+          });
+          this.vendorOptions = vendorOptions;
+          if(response2.body.length) {
+            this.selectedVendor = response2.body[0].id;
+          }
+        }
+      },
+      err2 => {
+        this.showSpinner = false;
+        console.log('err')
+        console.log(err2);
+      }
+    )
+
+  }
+
   searchDataRequest() {
     return this.searchData().subscribe(
         response => {
@@ -116,7 +144,6 @@ export class UserManagementComponent implements OnInit  {
             if (response) {
               this.showSpinner = false;
               this.populateDataTable(response, true);
-
               return this.getVendors().subscribe(
                   response1 => {
                     console.log('response1');
@@ -138,46 +165,24 @@ export class UserManagementComponent implements OnInit  {
                   err1 => {
 
                     if(err1.status === 401) {
-                      if(localStorage.getItem('accessToken')) {
-                        this.widget.tokenManager.refresh('accessToken')
-                            .then(function (newToken) {
-                              localStorage.setItem('accessToken', newToken);
-                              this.showSpinner = false;
-                              return this.getVendors().subscribe(
-                                  response2 => {
-                                    console.log('response1');
-                                    console.log(JSON.stringify(response2));
-                                    if (response2 && response2.body) {
-                                      const vendorOptions = [];
-                                      response2.body.forEach(function (item) {
-                                        vendorOptions.push({
-                                          id: item.id,
-                                          text: item.client_id + ' - ' + item.company_name
-                                        });
-                                      });
-                                      this.vendorOptions = vendorOptions;
-                                      if(response2.body.length) {
-                                        this.selectedVendor = response2.body[0].id;
-                                      }
-                                    }
-                                  },
-                                  err2 => {
-                                    this.showSpinner = false;
-                                    console.log('err')
-                                    console.log(err2);
-                                  }
-                              )
-                            })
-                            .catch(function (err) {
-                              console.log('error >>')
-                              console.log(err);
-                            });
-                      } else {
-                        this.widget.signOut(() => {
-                          localStorage.removeItem('accessToken');
-                          window.location.href = '/login';
-                        });
-                      }
+                        // TODO: New this.widget.tokenManager.refresh to be implemented
+                        // this.widget.tokenManager.refresh('accessToken')
+                        //     .then(function (newToken) {
+                        //       localStorage.setItem('accessToken', newToken);
+                        //       this.showSpinner = false;
+                        //       this.getVendorsService();
+                        //     })
+                        //     .catch(function (err) {
+                        //       console.log('error >>')
+                        //       console.log(err);
+                        //     });
+                        let self = this;
+                        this.widget.refreshElseSignout(
+                          this,
+                          err1, 
+                          self.getVendorsService.bind(self)
+                        );
+
                     } else {
                       this.showSpinner = false;
                     }
@@ -189,23 +194,12 @@ export class UserManagementComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchDataRequest();
-                  })
-                  .catch(function (err1) {
-                    console.log('error >>')
-                    console.log(err1);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.searchDataRequest.bind(self)
+            );
           } else {
             this.showSpinner = false;
           }
@@ -358,22 +352,12 @@ export class UserManagementComponent implements OnInit  {
       },
       err => {
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  localStorage.setItem('accessToken', newToken);
-                  this.showSpinner = false;
-                })
-                .catch(function (err1) {
-                  console.log('error >>')
-                  console.log(err1);
-                });
-          } else {
-            this.widget.signOut(() => {
-              localStorage.removeItem('accessToken');
-              window.location.href = '/login';
-            });
-          }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              // self.searchDataRequest.bind(self)
+            );
         } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
           this.showSpinner = false;
@@ -398,23 +382,12 @@ export class UserManagementComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.performUserAdditionRequest(dataObj);
-                  })
-                  .catch(function (err1) {
-                    console.log('error >>')
-                    console.log(err1);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.performUserAdditionRequest.bind(self, dataObj)
+            );
           } else {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
             this.showSpinner = false;
