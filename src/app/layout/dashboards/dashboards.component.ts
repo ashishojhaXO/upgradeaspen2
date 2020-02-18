@@ -336,6 +336,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
                             this,
                             error, 
                             // self.searchDataRequest.bind(self),
+                            self.getSeedDashboard.bind(self)
                           );
 
                         } else {
@@ -353,6 +354,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
                 this,
                 error, 
                 // self.searchDataRequest.bind(self),
+                self.getFilter.bind(self)
               );
             } else {
               this.showSpinner = false;
@@ -400,6 +402,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       type: 'daily',
       clientCode: 'homd'
     };
+
+    this.showSpinner = false;
 
     const dataObj = JSON.stringify(obj);
     return this.http.post(
