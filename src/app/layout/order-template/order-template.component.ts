@@ -36,7 +36,7 @@ export class OrderTemplateComponent implements OnInit {
 
   ngOnInit() {
     this.showSpinner = true;
-    // this.widget = this.okta.getWidget();
+    this.widget = this.okta.getWidget();
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
 
@@ -65,7 +65,7 @@ export class OrderTemplateComponent implements OnInit {
   getOrganizations(){
     this.getOrganizationService().subscribe(
       response => {
-        console.log('response >>')
+        console.log('getOrgani response >>')
         console.log(response);
         if (response && response.org_list) {
           response.org_list.forEach(function (ele) {
@@ -80,26 +80,12 @@ export class OrderTemplateComponent implements OnInit {
       },
       err => {
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-            console.log("ord-temp no okt if")
-            // this.widget.tokenManager.refresh('accessToken')
-            //     .then(function (newToken) {
-            //       localStorage.setItem('accessToken', newToken);
-            //       this.showSpinner = false;
-            //       this.getOrganizations();
-            //     })
-            //     .catch(function (err) {
-            //       console.log('error >>')
-            //       console.log(err);
-            //     });
-          } else {
-            console.log("ord-temp no okt else")
-            // this.widget.tokenManager.refresh('accessToken')
-            // this.widget.signOut(() => {
-            //   localStorage.removeItem('accessToken');
-            //   window.location.href = '/login';
-            // });
-          }
+          let self = this;
+          this.widget.refreshElseSignout(
+            this,
+            err, 
+            self.getOrganizations.bind(self) 
+          );
         } else {
           this.showSpinner = false;
         }
@@ -292,7 +278,7 @@ export class OrderTemplateComponent implements OnInit {
             this.widget.refreshElseSignout(
               this,
               err, 
-              self.getTemplateService.bind(self, templateId)
+              self.getTemplate.bind(self, templateId)
             );
         } else {
           Swal({

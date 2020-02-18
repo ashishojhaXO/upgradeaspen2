@@ -95,7 +95,7 @@ export class AnalyticsComponent implements OnInit {
             this.widget.refreshElseSignout(
               this,
               err, 
-              self.getTokenService.bind(self) 
+              self.getToken.bind(self) 
             );
           } else {
             this.showSpinner = false;
