@@ -265,7 +265,7 @@ export class CustomFormbuilderComponent implements OnInit {
           this.widget.refreshElseSignout(
             this,
             err, 
-            self.getAttributeService.bind(self)
+            self.getAttributes.bind(self)
           );
         } else {
           this.showSpinner = false;
