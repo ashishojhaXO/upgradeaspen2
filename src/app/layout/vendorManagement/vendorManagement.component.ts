@@ -87,7 +87,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
 
     const grp = JSON.parse(groups);
     grp.forEach(function (item) {
-      if(item === 'ROOT') {
+      if(item === 'ROOT' || item === 'SUPER_USER') {
         this.isRoot = true;
       }
     }, this);
@@ -159,7 +159,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.searchOrgRequest.bind(self)
             );
           } else {
@@ -208,7 +208,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.searchDataRequest.bind(self, org)
             );
           } else {
@@ -403,7 +403,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.performVendorAdditionRequest.bind(self, dataObj)
             );
           } else {
@@ -455,7 +455,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.performVendorDeletionRequest.bind(self, id)
             );
           } else {

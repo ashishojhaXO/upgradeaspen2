@@ -203,11 +203,11 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
         let removeMenuItems = true;
         if (groupArr.length) {
           groupArr.forEach(function (grp) {
-            if (grp === 'ADMIN' || grp === 'ROOT') {
+            if (grp === 'ADMIN' || grp === 'ROOT' || grp === 'SUPER_USER') {
               if(grp === 'ADMIN') {
                 isAdmin = true;
               }
-              if (grp === 'ROOT') {
+              if (grp === 'ROOT' || grp === 'SUPER_USER') {
                 isRoot = true;
               }
               removeMenuItems = false;
