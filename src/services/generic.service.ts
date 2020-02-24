@@ -21,6 +21,81 @@ export class GenericService {
     this.service = new Service(router, http, toastr);
   }
 
+  /**
+   * POST Retry Charge
+   * @param dataObj
+   */
+  public retryCharge(dataObj: any) {
+
+    const data = JSON.stringify(dataObj);
+    console.log("retry Charge dataObj: ", dataObj, " data; ", data);
+
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+    return this.service.Call(
+      'post',
+      apiPath.api +
+      this.base.API +
+      this.base.POST_RETRY_CHARGE_ENDPOINT,
+      data
+    );
+  }
+
+  /**
+   * POST Regenerate Receipt
+   * @param dataObj
+   */
+  public regenerateReceipt(dataObj: any) {
+
+    const data = JSON.stringify(dataObj);
+    console.log("regen dataObj: ", dataObj, " data; ", data);
+
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+    return this.service.Call(
+      'post',
+      apiPath.api +
+      this.base.API +
+      this.base.POST_REGENERATE_RECEIPT_ENDPOINT,
+      data
+    );
+  }
+
+  /**
+   * POST Reprocess
+   * @param dataObj
+   */
+  public reprocess(dataObj: any) {
+
+    const data = JSON.stringify(dataObj);
+    console.log("reprocess dataObj: ", dataObj, " data; ", data);
+
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+    return this.service.Call(
+      'post',
+      apiPath.api +
+      this.base.API +
+      this.base.POST_REPROCESS_ENDPOINT,
+      data
+    );
+  }
+
+  /**
+   * POST Recalculate
+   * @param dataObj
+   */
+  public recalculate(dataObj: any) {
+
+    const data = JSON.stringify(dataObj);
+    console.log("recalculate dataObj: ", dataObj, " data; ", data);
+
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+    return this.service.Call(
+      'post',
+      apiPath.api +
+      this.base.API +
+      this.base.POST_RECALCULATE_ENDPOINT,
+      data
+    );
+  }
 
   /**
    * POST Payments Methods

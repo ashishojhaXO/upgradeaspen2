@@ -15,11 +15,13 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import Swal from 'sweetalert2';
+import { GenericService } from '../../../services/generic.service';
 
 @Component({
   selector: 'app-orders',
   templateUrl: './orders.component.html',
-  styleUrls: ['./orders.component.scss']
+  styleUrls: ['./orders.component.scss'],
+  providers: [GenericService],
 })
 export class OrdersComponent implements OnInit  {
 
@@ -47,11 +49,40 @@ export class OrdersComponent implements OnInit  {
     isPagination: true,
     sendResponseOnCheckboxClick: true,
     // Any number starting from 1 to ..., but not 0
-    isActionColPosition: 0, // This can not be 0, since zeroth column logic might crash
+    isActionColPosition: 1, // This can not be 0, since zeroth column logic might crash
     // since isActionColPosition is 1, isOrder is also required to be sent,
     // since default ordering assigned in dataTable is [[1, 'asc']]
-    isOrder: [[2, 'asc']],
-    isHideColumns: [ "Vendor_Receipt_Id"]
+    isOrder: [[3, 'asc']],
+    isHideColumns: [ "Vendor_Receipt_Id"],
+
+    isTree: true,
+    // inheritHeadersForTree: true,
+    isChildRowActions: {
+      buttons: {
+      },
+      buttonCondition: {
+      },
+
+      htmlFunction: (rowData) => {
+        // const disableActivation = !(rowData['external_status'] === 'EXPIRED' || rowData['external_status'] === 'PROVISIONED');
+        // const disableDeActivate = !(rowData['external_status'] !== 'DEACTIVATED');
+        // const disableUnlock = !(rowData['external_status'] === 'DEACTIVATED');
+
+        const retHtml = '<div>' +
+          '<button class="btn action-btn api-action" data-action="retryCharge" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
+          '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-arrow-right" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span> Retry Charge</button>' +
+          '<button class="btn action-btn api-action" data-action="regenerateReceipt" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
+          '><span style="margin-right: 5px; position: relative;"> <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-times" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Regenerate Receipt</button>' +
+          '<button class="btn action-btn api-action" data-action="reprocess" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
+          '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-unlock" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Reprocess</button>' +
+          '<button class="btn action-btn api-action" data-action="recalculate" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
+          '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-unlock" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Recalculate</button>' +
+          '</div>';
+
+        return retHtml;
+      }
+
+    }
   }];
   dashboard: any;
   api_fs: any;
@@ -63,7 +94,12 @@ export class OrdersComponent implements OnInit  {
   private appDataTable2Component : AppDataTable2Component;
   selectedRow: any;
 
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
+  constructor(
+    private okta: OktaAuthService, 
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private genericService: GenericService,
+    private http: Http) {
   }
 
   ngOnInit() {
@@ -272,10 +308,111 @@ export class OrdersComponent implements OnInit  {
         }).share();
   }
 
-  reLoad(){
+  reLoad() {
     this.showSpinner = true;
     this.dataObject.isDataAvailable = false;
     this.searchDataRequest();
+  }
+
+  successCB(res) {
+    // TODO: Some success callback here
+
+  }
+
+  errorCB(rej) {
+    // TODO: Some error callback here
+
+  }
+
+  retryCharge(option) {
+    this.showSpinner = true;
+    // Compile option/data
+    let data = {};
+
+    return this.genericService
+      .retryCharge(data)
+      .subscribe(
+        (res) => {
+          this.showSpinner = false;
+          this.successCB(res)
+        },
+        (rej) => {
+          this.showSpinner = false;
+          this.errorCB(rej)
+        }
+      )
+  }
+
+  regenerateReceipt(option) {
+    this.showSpinner = true;
+    // Compile option/data
+    let data = {};
+
+    return this.genericService
+      .regenerateReceipt(data)
+      .subscribe(
+        (res) => {
+          this.showSpinner = false;
+          this.successCB(res)
+        },
+        (rej) => {
+          this.showSpinner = false;
+          this.errorCB(rej)
+        }
+      )
+  }
+
+  reprocess(option) {
+    this.showSpinner = true;
+    // Compile option/data
+    let data = {};
+
+    return this.genericService
+      .reprocess(data)
+      .subscribe(
+        (res) => {
+          this.showSpinner = false;
+          this.successCB(res)
+        },
+        (rej) => {
+          this.showSpinner = false;
+          this.errorCB(rej)
+        }
+      )
+  }
+
+  recalculate(option) {
+    this.showSpinner = true;
+    // Compile option/data
+    let data = {};
+
+    return this.genericService
+      .recalculate(data)
+      .subscribe(
+        (res) => {
+          this.showSpinner = false;
+          this.successCB(res)
+        },
+        (rej) => {
+          this.showSpinner = false;
+          this.errorCB(rej)
+        }
+      )
+  }
+
+  handleActions(ev: any) {
+    const action = $(ev.elem).data('action');
+    // this.userID = ev.data.data()[4];
+
+    console.log("Handle Actions: Orders: ", action, ev);
+    if(this[action]) {
+      this[action](ev);
+    } else {
+      // Some problem
+      // Function does not exists in this class, if data-action string is correct
+      // Else if all functions exists, then, data-action string coming from html is not correct
+      console.log(`Orders Error: Problem executing function: ${action}`)
+    }
   }
 
 }

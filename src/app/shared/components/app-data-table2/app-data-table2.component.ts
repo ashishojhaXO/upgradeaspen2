@@ -945,102 +945,119 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 __this.attachEvents(row);
                                 tr.addClass('shown');
                             } else if (__this.identity === 'orders') {
-                                let retHtml = '';
-                                const orderSteps = [];
-                                orderSteps.push({
-                                    title: 'Order Started',
-                                    subTitle: '10/01/2019',
-                                    state : 'done',
-                                    description: 'Order details during started'
-                                });
-                                orderSteps.push({
-                                    title: 'Payment Received',
-                                    subTitle: '10/01/2019',
-                                    state : 'done',
-                                    description: 'Order details during payment received'
-                                });
-                                orderSteps.push({
-                                    title: 'Payment Processed',
-                                    subTitle: '10/04/2019',
-                                    state : 'done',
-                                    description: 'Payment Processing Completed'
-                                });
-                                orderSteps.push({
-                                    title: 'Order In Progress',
-                                    subTitle: '10/07/2019',
-                                    state : 'current',
-                                    description: 'Order details during started'
-                                });
-                                const id = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
-                                retHtml += __this.smartSteps1(id, orderSteps);
-                                //  retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="width: 450px; border-radius: 4px; overflow-y: scroll;"><h4>Order History</h4><ul></ul><li>10/03/2019 - Order Modified</li><li>10/01/2019 - Payment Received - AMEX xxxx0747 </li><li>10/01/2019 - Order Created</li></div>';
-                                retHtml += '<p style="clear: both">';
-                                retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-bottom: 20px"><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600; padding: 4px; font-size: 10px"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 15px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Extend</button></div>';
-                                retHtml += '<p style="clear: both">';
-                                // retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" id="' + accordian + '" style="width: 700px; height: 50px; background: lavender; margin-left: 15px"><h5 style="margin-top: 17px">Line Item 1</h5><div><p>Some Details</p></div><h5 style="margin-top: 17px">Line Item 2</h5><div><p>Some Details</p></div><h5 style="margin-top: 17px">Line Item 3</h5><div><p>Some Details</p></div></div>';
-                                const items = [];
-                                items.push({
-                                    header: 'Google',
-                                    content: 'Line Item 1 details goes here',
-                                    steps : [{
-                                        title: 'Campaign Start',
+                                // If not childRowAction buttons present
+                                if(!__this.dataObject.gridData.options.isChildRowActions) {
+
+                                    let retHtml = '';
+                                    const orderSteps = [];
+                                    orderSteps.push({
+                                        title: 'Order Started',
                                         subTitle: '10/01/2019',
                                         state : 'done',
-                                        description: 'Information on Line Item 1 start'
-                                    },{
-                                        title: 'Campaign End',
-                                        subTitle: '10/31/2019',
-                                        state : 'done'
-                                    }],
-                                    actions : [
-                                        'Extend','Refund','RollOver'
-                                    ],
-                                    adGroup : 'North America'
-                                });
-                                items.push({
-                                    header: 'Facebook',
-                                    content: 'Line Item 2 details goes here',
-                                    steps : [{
-                                        title: 'Campaign Start',
-                                        subTitle: '11/01/2019',
+                                        description: 'Order details during started'
+                                    });
+                                    orderSteps.push({
+                                        title: 'Payment Received',
+                                        subTitle: '10/01/2019',
                                         state : 'done',
-                                        description: 'Information on Line Item 2 start'
-                                    },{
-                                        title: 'Campaign End',
-                                        subTitle: '11/30/2019',
-                                        state : 'invalid'
-                                    }],
-                                    actions : [
-                                        'Extend', 'Cancel'
-                                    ],
-                                    adGroup : 'Europe'
-                                });
-                                items.push({
-                                    header: 'Pinterest',
-                                    content: 'Line Item 3 details goes here',
-                                    steps : [{
-                                        title: 'Campaign Start',
-                                        subTitle: '12/01/2019',
-                                        state : 'invalid'
-                                    },{
-                                        title: 'Campaign End',
-                                        subTitle: '12/31/2019',
-                                        state : 'invalid'
-                                    }],
-                                    actions : [
-                                        'Extend', 'Cancel', ' Refund', 'Modify'
-                                    ],
-                                    adGroup : 'Asia'
-                                });
-                                retHtml += __this.lineItemDetails(items);
+                                        description: 'Order details during payment received'
+                                    });
+                                    orderSteps.push({
+                                        title: 'Payment Processed',
+                                        subTitle: '10/04/2019',
+                                        state : 'done',
+                                        description: 'Payment Processing Completed'
+                                    });
+                                    orderSteps.push({
+                                        title: 'Order In Progress',
+                                        subTitle: '10/07/2019',
+                                        state : 'current',
+                                        description: 'Order details during started'
+                                    });
+                                    const id = Math.floor(Math.random() * (10000 - 1 + 1)) + 1;
+                                    retHtml += __this.smartSteps1(id, orderSteps);
+                                    //  retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="width: 450px; border-radius: 4px; overflow-y: scroll;"><h4>Order History</h4><ul></ul><li>10/03/2019 - Order Modified</li><li>10/01/2019 - Payment Received - AMEX xxxx0747 </li><li>10/01/2019 - Order Created</li></div>';
+                                    retHtml += '<p style="clear: both">';
+                                    retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" style="margin-top: -20px; margin-bottom: 20px"><button class="btn action-btn" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600; padding: 4px; font-size: 10px"><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 15px" aria-hidden="true"></i><i class="fa fa-check" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span>Extend</button></div>';
+                                    retHtml += '<p style="clear: both">';
+                                    // retHtml += '<div class="col-lg-6 col-md-6 col-sm-12" id="' + accordian + '" style="width: 700px; height: 50px; background: lavender; margin-left: 15px"><h5 style="margin-top: 17px">Line Item 1</h5><div><p>Some Details</p></div><h5 style="margin-top: 17px">Line Item 2</h5><div><p>Some Details</p></div><h5 style="margin-top: 17px">Line Item 3</h5><div><p>Some Details</p></div></div>';
+                                    const items = [];
+                                    items.push({
+                                        header: 'Google',
+                                        content: 'Line Item 1 details goes here',
+                                        steps : [{
+                                            title: 'Campaign Start',
+                                            subTitle: '10/01/2019',
+                                            state : 'done',
+                                            description: 'Information on Line Item 1 start'
+                                        },{
+                                            title: 'Campaign End',
+                                            subTitle: '10/31/2019',
+                                            state : 'done'
+                                        }],
+                                        actions : [
+                                            'Extend','Refund','RollOver'
+                                        ],
+                                        adGroup : 'North America'
+                                    });
+                                    items.push({
+                                        header: 'Facebook',
+                                        content: 'Line Item 2 details goes here',
+                                        steps : [{
+                                            title: 'Campaign Start',
+                                            subTitle: '11/01/2019',
+                                            state : 'done',
+                                            description: 'Information on Line Item 2 start'
+                                        },{
+                                            title: 'Campaign End',
+                                            subTitle: '11/30/2019',
+                                            state : 'invalid'
+                                        }],
+                                        actions : [
+                                            'Extend', 'Cancel'
+                                        ],
+                                        adGroup : 'Europe'
+                                    });
+                                    items.push({
+                                        header: 'Pinterest',
+                                        content: 'Line Item 3 details goes here',
+                                        steps : [{
+                                            title: 'Campaign Start',
+                                            subTitle: '12/01/2019',
+                                            state : 'invalid'
+                                        },{
+                                            title: 'Campaign End',
+                                            subTitle: '12/31/2019',
+                                            state : 'invalid'
+                                        }],
+                                        actions : [
+                                            'Extend', 'Cancel', ' Refund', 'Modify'
+                                        ],
+                                        adGroup : 'Asia'
+                                    });
+                                    retHtml += __this.lineItemDetails(items);
 
-                                row.child(retHtml).show();
-                                tr.addClass('shown');
+                                    row.child(retHtml).show();
+                                    tr.addClass('shown');
 
-                                // Register Accordian click event
-                                $('.accordion .accordion-header').on('click', function() {
-                                    $(this).toggleClass('active').next().slideToggle();
-                                });
+                                    // Register Accordian click event
+                                    $('.accordion .accordion-header').on('click', function() {
+                                        $(this).toggleClass('active').next().slideToggle();
+                                    });
+
+                                } else if (__this.dataObject.gridData.options.isChildRowActions) {
+                                    // If child Row Action buttons are present
+                                    // Put child row Action buttons here
+                                    console.log("Orders CHILD ROW ACTs, row: ", row, ",,, rowData: ", rowData);
+                                    let retHtml = __this.dataObject.gridData.options.isChildRowActions.htmlFunction(row);
+                                    row.child(retHtml).show();
+                                    __this.attachEvents(row);
+                                    tr.addClass('shown');
+
+                                } else {
+                                    console.log("Else, something in orders else condition")
+                                }
+
                             } else if (__this.identity === 'invoices') {
                                 __this.getInvoiceDetails(rowData.id).subscribe(
                                     response => {
