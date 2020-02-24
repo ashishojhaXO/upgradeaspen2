@@ -107,7 +107,7 @@ export class UserManagementComponent implements OnInit  {
 
     const grp = JSON.parse(groups);
     grp.forEach(function (item) {
-      if(item === 'ROOT') {
+      if(item === 'ROOT' || item === 'SUPER_USER') {
         this.isRoot = true;
       }
     }, this);
@@ -262,7 +262,7 @@ export class UserManagementComponent implements OnInit  {
                         let self = this;
                         this.widget.refreshElseSignout(
                           this,
-                          err1, 
+                          err1,
                           self.getVendorsService.bind(self)
                         );
 
@@ -280,7 +280,7 @@ export class UserManagementComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.searchDataRequest.bind(self)
             );
           } else {
@@ -445,7 +445,7 @@ export class UserManagementComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               // self.searchDataRequest.bind(self)
             );
         } else {
@@ -475,7 +475,7 @@ export class UserManagementComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.performUserAdditionRequest.bind(self, dataObj)
             );
           } else {
