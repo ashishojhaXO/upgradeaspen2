@@ -174,20 +174,14 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
     // console.log('rowData >>>!!!!')
     // console.log(rowData);
 
-    console.log('dataObj >>')
-    console.log(dataObj);
+    console.log('this.selected >>!!!!')
+    console.log(this.selected);
 
-    if (dataObj.data.id) {
-      if (dataObj.data.id.no_of_orders > 0 && dataObj.data.id.no_of_users) {
-        if (!this.showError) {
-          this.showError = true;
-          this.toastr.error('ERROR!', 'email cannot be deleted since it has existing order(s) or user(s) associated with it');
-          this.showError = false;
-        }
-      } else {
-        this.performemailDeletionRequest(dataObj.data.id);
-      }
-    }
+    const obj = { 'email_ids' : this.selected.map(function (m) {
+        return m.id;
+      })};
+
+    this.performEmailDeletionRequest(obj);
   }
 
   handleDownload(rowObj: any, rowData: any) {
@@ -201,76 +195,23 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
   }
 
   OnSubmit(modalComponent: PopUpModalComponent) {
-
-    console.log('emails >>')
-    console.log(this.emails);
-
-    // this.showSpinner = true;
-    // this.error = '';
-    // const dataObj: any = {};
-    // this.performEmailAdditionRequest(dataObj);
-  }
-
-  performVendorAdditionRequest(dataObj) {
-    return this.performVendorAddition(dataObj).subscribe(
-        response => {
-          console.log('response from vendor creation >>>')
-          console.log(response);
-          if (response) {
-            this.showSpinner = false;
-            this.error = { type : response.data ? 'success' : 'fail' , message : response.data ?  'Default Vendor successfully ' + ( this.editID ? 'updated' : 'created' ) : 'Default Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
-          }
-        },
-        err => {
-          if(err.status === 401) {
-            let self = this;
-            this.widget.refreshElseSignout(
-              this,
-              err,
-              self.performVendorAdditionRequest.bind(self, dataObj)
-            );
-          } else {
-            this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
-            this.showSpinner = false;
-          }
-        }
-    );
-  }
-
-  performVendorAddition(dataObj) {
-    const AccessToken: any = localStorage.getItem('accessToken');
-    let token = '';
-    if (AccessToken) {
-      // token = AccessToken.accessToken;
-      token = AccessToken;
-    }
-    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
-    const options = new RequestOptions({headers: headers});
-    const data = JSON.stringify(dataObj);
-    const url = this.editID ? this.api_fs.api + '/api/vendors/' + this.editID : this.api_fs.api + '/api/vendors';
-    if (this.editID) {
-      return this.http
-          .put(url, data, options)
-          .map(res => {
-            return res.json();
-          }).share();
-    } else {
-      return this.http
-          .post(url, data, options)
-          .map(res => {
-            return res.json();
-          }).share();
-    }
+    this.showSpinner = true;
+    this.error = '';
+    const dataObj: any = { emails : this.emails.map(function (email) {
+      return email.value;
+    })};
+     this.performEmailAdditionRequest(dataObj);
   }
 
   performEmailAdditionRequest(dataObj) {
-    return this.performemailAddition(dataObj).subscribe(
+    return this.performEmailAddition(dataObj).subscribe(
         response => {
           console.log('response from email creation >>>')
           console.log(response);
           if (response) {
             this.showSpinner = false;
-            this.error = { type : response.data ? 'success' : 'fail' , message : response.data ?  'email successfully ' + ( this.editID ? 'updated' : 'created' ) : 'email ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
+            this.error = { type : response.status === 'success' ? 'success' : 'fail' , message : response.message };
+            this.emails = [];
           }
         },
         err => {
@@ -289,7 +230,7 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
     );
   }
 
-  performemailAddition(dataObj) {
+  performEmailAddition(dataObj) {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
@@ -299,7 +240,7 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     const data = JSON.stringify(dataObj);
-    const url = this.editID ? this.api_fs.api + '/api/emails/' + this.editID : this.api_fs.api + '/api/emails';
+    const url = this.editID ? this.api_fs.api + '/api/users/email/blocked/' + this.editID : this.api_fs.api + '/api/users/email/blocked';
     if (this.editID) {
       return this.http
           .put(url, data, options)
@@ -315,14 +256,15 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
     }
   }
 
-  performemailDeletionRequest(id) {
-    return this.performemailDeletion(id).subscribe(
+  performEmailDeletionRequest(obj) {
+    return this.performEmailDeletion(obj).subscribe(
         response => {
           if (response) {
             this.showSpinner = false;
+            this.dataObject.isDataAvailable = false;
             this.searchDataRequest();
-            // this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'email successfully deleted ' : 'email ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
-            // this.editID = '';
+            // this.error = { type : response.status === 'success' ? 'success' : 'fail' , message : response.message };
+            //  this.editID = '';
           }
         },
         err => {
@@ -331,7 +273,7 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
             this.widget.refreshElseSignout(
               this,
               err,
-              self.performemailDeletionRequest.bind(self, id)
+              self.performEmailDeletionRequest.bind(self, obj)
             );
           } else {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
@@ -341,7 +283,8 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
     );
   }
 
-  performemailDeletion(id) {
+  performEmailDeletion(obj) {
+    const dataObj = JSON.stringify(obj);
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
@@ -349,8 +292,8 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
       token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
-    const options = new RequestOptions({headers: headers});
-    const url = this.api_fs.api + '/api/emails/' + id;
+    const options = new RequestOptions({headers: headers, body : dataObj});
+    const url = this.api_fs.api + '/api/users/email/blocked';
     return this.http
         .delete(url, options)
         .map(res => {

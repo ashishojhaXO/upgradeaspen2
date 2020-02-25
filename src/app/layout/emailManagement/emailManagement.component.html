@@ -28,6 +28,9 @@
           <app-tag2 [dataModel]="emails" primaryPlaceholder="Add Email Addresses" validation_func="email_validation" validationMessages="Please be sure to use a valid email format"
              secondaryPlaceholder="Add Email" (updateDataModel)="_updateDataModel($event)" ></app-tag2>
       </div>
+      <div *ngIf="error && error.message" style="text-align: center">
+        <span [class]="error.type === 'success' ? 'success' : 'fail'">{{error.message}}</span>
+      </div>
     </div>
     <div class="app-modal-footer">
       <button type="button" class="action-btn" (click)="OnSubmit(AddEmails)">
