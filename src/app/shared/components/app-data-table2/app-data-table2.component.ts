@@ -1055,7 +1055,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     tr.addClass('shown');
 
                                 } else {
-                                    console.log("Else, something in orders else condition")
+                                    console.log("Error Code: ADT2C-001: Else, something in orders else condition")
                                 }
 
                             } else if (__this.identity === 'invoices') {

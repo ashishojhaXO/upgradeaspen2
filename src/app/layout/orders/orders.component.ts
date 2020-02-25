@@ -44,7 +44,9 @@ export class OrdersComponent implements OnInit  {
       dependency: ['Vendor_Receipt_Id'],
       tooltip: 'Download Vendor Receipt'
     },
-    fixedColumn: 1,
+
+    // Commenting out fixedColumn, as we need subRow isTree children child row, to show action buttons
+    // fixedColumn: 1,
     isPageLength: true,
     isPagination: true,
     sendResponseOnCheckboxClick: true,
@@ -55,14 +57,14 @@ export class OrdersComponent implements OnInit  {
     isOrder: [[3, 'asc']],
     isHideColumns: [ "Vendor_Receipt_Id"],
 
+
+    // isRowSelection: null,
+
     isTree: true,
     // inheritHeadersForTree: true,
     isChildRowActions: {
-      buttons: {
-      },
-      buttonCondition: {
-      },
-
+      buttons: {},
+      buttonCondition: {},
       htmlFunction: (rowData) => {
         // const disableActivation = !(rowData['external_status'] === 'EXPIRED' || rowData['external_status'] === 'PROVISIONED');
         // const disableDeActivate = !(rowData['external_status'] !== 'DEACTIVATED');
@@ -70,19 +72,19 @@ export class OrdersComponent implements OnInit  {
 
         const retHtml = '<div>' +
           '<button class="btn action-btn api-action" data-action="retryCharge" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
-          '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-arrow-right" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span> Retry Charge</button>' +
+          '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-credit-card" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span> Retry Charge</button>' +
           '<button class="btn action-btn api-action" data-action="regenerateReceipt" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
-          '><span style="margin-right: 5px; position: relative;"> <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-times" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Regenerate Receipt</button>' +
+          '><span style="margin-right: 5px; position: relative;"> <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-newspaper-o" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Regenerate Receipt</button>' +
           '<button class="btn action-btn api-action" data-action="reprocess" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
-          '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-unlock" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Reprocess</button>' +
+          '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-cogs" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Reprocess</button>' +
           '<button class="btn action-btn api-action" data-action="recalculate" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
-          '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-unlock" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Recalculate</button>' +
+          '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-calculator" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Recalculate</button>' +
           '</div>';
 
         return retHtml;
       }
-
     }
+
   }];
   dashboard: any;
   api_fs: any;
