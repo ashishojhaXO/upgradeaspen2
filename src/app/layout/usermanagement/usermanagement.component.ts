@@ -59,6 +59,7 @@ export class UserManagementComponent implements OnInit  {
   orgInfo: any;
   selectedOrg: any;
   orgArr: any;
+  orgValue = '';
 
   sourceOptions = [
     {
@@ -218,8 +219,8 @@ export class UserManagementComponent implements OnInit  {
 
   }
 
-  searchDataRequest() {
-    return this.searchData().subscribe(
+  searchDataRequest(org = null) {
+    return this.searchData(org).subscribe(
         response => {
           if (response) {
             console.log('response >>')
@@ -335,7 +336,7 @@ export class UserManagementComponent implements OnInit  {
       }).share();
   }
 
-  searchData() {
+  searchData(org) {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
@@ -351,6 +352,11 @@ export class UserManagementComponent implements OnInit  {
         return res.json();
       }).share();
   }
+
+    orgChange(value) {
+        this.dataObject.isDataAvailable = false;
+        this.searchDataRequest(value);
+    }
 
   populateDataTable(response, initialLoad) {
     const tableData = response;
