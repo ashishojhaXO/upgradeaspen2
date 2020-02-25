@@ -141,7 +141,7 @@ export class UserManagementComponent implements OnInit  {
 
             this.orgArr = orgArr;
             if (this.orgArr.length) {
-              this.selectedOrg = this.roleOptions[0].id;
+              this.selectedOrg = this.orgArr[0].id;
             }
           }
         },
