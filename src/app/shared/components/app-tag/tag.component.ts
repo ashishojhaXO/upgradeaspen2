@@ -3,7 +3,7 @@ import {Router} from '@angular/router';
 import {TagSettings} from './tag.settings';
 
 @Component({
-  selector: 'app-tag2',
+  selector: 'app-tag',
   templateUrl: './tag.component.html',
   styleUrls: ['./tag.component.scss']
 })

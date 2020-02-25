@@ -754,13 +754,25 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                 // Check/uncheck all checkboxes in the table
                 const rows = table.rows({'search': 'applied'}).nodes();
-                $('input.check-row-selection', rows).prop('checked', this.checked);
-                this.checked ? table.rows().select() : table.rows().deselect();
 
-                if (__this.sendResponseOnCheckboxClick) {
+                const selectedRowsIndexes = rows.map(function (r) {
+                    return r._DT_RowIndex;
+                });
+
+                const selectedRows = __this.dataObject.gridData.result.filter(function (r) {
+                    return selectedRowsIndexes.indexOf(__this.dataObject.gridData.result.indexOf(r)) !== -1;
+                });
+
+                console.log('table.rows() >>')
+                console.log(table.rows());
+
+                $('input.check-row-selection', rows).prop('checked', this.checked);
+                this.checked ? rows.select() : table.rows().deselect();
+
+                if (__this.dataObject.gridData.options.sendResponseOnCheckboxClick) {
                     __this.triggerActions.emit({
                         action: 'handleHeaderCheckboxSelection',
-                        data: this.checked ? __this.dataObject.gridData.result : []
+                        data: this.checked ? selectedRows : []
                     });
                 }
             });
@@ -1860,7 +1872,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         // Handle table row deselect event
         table.on('deselect', function (e, dt, type, indexes) {
             table[type](indexes).nodes().to$().find('td input.check-row-selection').prop('checked', false);
-            if (__this.sendResponseOnCheckboxClick) {
+            if (__this.dataObject.gridData.options.sendResponseOnCheckboxClick) {
                 __this.triggerActions.emit({
                     action: 'handleUnCheckboxSelection',
                     data: __this.dataObject.gridData.result[indexes[0]],

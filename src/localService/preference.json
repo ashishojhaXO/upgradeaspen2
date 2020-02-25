@@ -155,34 +155,41 @@
         },
         {
           "index": 5,
+          "name": "emailmanagement",
+          "title": "Email Management",
+          "id": "emailmanagement",
+          "url": "app/admin/emailmanagement"
+        },
+        {
+          "index": 6,
           "name": "support",
           "title": "Support",
           "id": "support",
           "url": "app/admin/support"
         },
         {
-          "index": 6,
+          "index": 7,
           "name": "baseFields",
           "title": "Configure Base Fields",
           "id": "baseFields",
           "url": "app/admin/baseFields"
         },
         {
-          "index": 7,
+          "index": 8,
           "name": "ordertemplate",
           "title": "Configure Template",
           "id": "ordertemplate",
           "url": "app/admin/ordertemplate"
         },
         {
-          "index": 8,
+          "index": 9,
           "name": "ordertemplatelist",
           "title": "Template List",
           "id": "ordertemplatelist",
           "url": "app/admin/ordertemplatelist"
         },
         {
-          "index": 9,
+          "index": 10,
           "name": "analytics",
           "title": "Analytics",
           "id": "analyticsReport",
