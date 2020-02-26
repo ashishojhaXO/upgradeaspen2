@@ -40,7 +40,7 @@ export class InvoicesComponent implements OnInit  {
       tooltip: 'Pay Invoice'
     },
     isColVisibility: true,
-    isRowHighlight: false,
+    isRowHighlight: true,
     isDownloadAsCsv: true,
     isDownloadOption: {
       value: true,
@@ -67,6 +67,8 @@ export class InvoicesComponent implements OnInit  {
   selectedInvoiceDetails: any;
   memo: string;
   @ViewChild('AddPayment') addPayment: PopUpModalComponent;
+  hideTable: boolean;
+  selectedInvoice: any;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
   }
@@ -98,7 +100,7 @@ export class InvoicesComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.searchDataRequest.bind(self)
             );
           } else {
@@ -175,7 +177,9 @@ export class InvoicesComponent implements OnInit  {
   handleRun(dataObj: any) {
     const invoiceId = dataObj.data.id;
     if (invoiceId) {
-      this.router.navigate(['/app/admin/invoices/invoice/' + invoiceId]);
+      this.selectedInvoice = invoiceId;
+      this.hideTable = true;
+     // this.router.navigate(['/app/admin/invoices/invoice/' + invoiceId]);
     } else {
       Swal({
         title: 'No invoice ID found',
@@ -223,7 +227,7 @@ export class InvoicesComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.searchDownloadLink.bind(self, downloadId, invoiceId)
             );
           } else {
@@ -260,11 +264,16 @@ export class InvoicesComponent implements OnInit  {
   }
 
   reLoad(){
+   // this.hideTable = !this.hideTable;
     this.showSpinner = true;
     this.dataObject.isDataAvailable = false;
     this.searchDataRequest();
   }
 
+  showInvoices() {
+    this.hideTable = false;
+    this.selectedInvoice = null;
+  }
 
   handleInvoicePay(dataObj: any) {
     console.log('dataObj >>>')
@@ -313,7 +322,7 @@ export class InvoicesComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.createTransactionRequest.bind(self, dataObj)
             );
           } else {

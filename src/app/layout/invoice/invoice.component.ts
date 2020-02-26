@@ -26,12 +26,13 @@ export class InvoiceComponent implements OnInit  {
   externalAuth: any;
   showSpinner: boolean;
   widget: any;
-  invoiceId: any;
+  // invoiceId: any;
   selectedRow: any;
   invoices = [];
   memo: string;
   selectedInvoice: any;
   @ViewChild('AddPayment') addPayment: PopUpModalComponent;
+  @Input() invoiceId: any;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
   }
@@ -43,20 +44,25 @@ export class InvoiceComponent implements OnInit  {
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
 
-    this.route.params.subscribe(params => {
-      if (params['id']) {
-        this.invoiceId = params['id'];
-        this.searchDataRequest(this.invoiceId);
-      } else {
-        Swal({
-          title: 'No Invoice ID found',
-          text: 'We did not find an invoice ID in the request',
-          type: 'error'
-        }).then( () => {
-          this.router.navigate(['/app/payment/invoices']);
-        });
-      }
-    });
+    this.searchDataRequest(this.invoiceId);
+
+    console.log('this.invoiceId >>')
+    console.log(this.invoiceId);
+
+    // this.route.params.subscribe(params => {
+    //   if (params['id']) {
+    //     this.invoiceId = params['id'];
+    //     this.searchDataRequest(this.invoiceId);
+    //   } else {
+    //     Swal({
+    //       title: 'No Invoice ID found',
+    //       text: 'We did not find an invoice ID in the request',
+    //       type: 'error'
+    //     }).then( () => {
+    //       this.router.navigate(['/app/payment/invoices']);
+    //     });
+    //   }
+    // });
   }
 
   onTabClick(invoice) {
@@ -119,7 +125,7 @@ export class InvoiceComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.searchDataRequest.bind(self, invoiceId),
             );
 
@@ -129,7 +135,7 @@ export class InvoiceComponent implements OnInit  {
               text: 'We did not find any invoices associated with ID : ' + invoiceId,
               type: 'error'
             }).then( () => {
-              this.router.navigate(['/app/admin/invoices']);
+             // this.router.navigate(['/app/admin/invoices']);
             });
             this.showSpinner = false;
           }
@@ -160,7 +166,7 @@ export class InvoiceComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.getKenshooProfileDetails.bind(self, invoice, profileName, invoice_header_id)
             );
           } else {
@@ -287,7 +293,9 @@ export class InvoiceComponent implements OnInit  {
               text: 'Payment for the selected invoice : ' + this.invoiceId  +  ' was successfully submitted',
               type: 'success'
             }).then( () => {
-              this.router.navigate(['/app/admin/invoices']);
+              this.invoices = [];
+              this.searchDataRequest(this.invoiceId);
+             // this.router.navigate(['/app/admin/invoices']);
             });
           } else {
             Swal({
@@ -303,7 +311,7 @@ export class InvoiceComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.createTransactionRequest.bind(self, dataObj)
             );
           } else {
