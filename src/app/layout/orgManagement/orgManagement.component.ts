@@ -12,7 +12,7 @@ import 'bootstrap';
 import {Router, ActivatedRoute} from '@angular/router';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-modal.component';
-import { FormControl, FormGroup, Validators} from '@angular/forms';
+import { FormControl, FormGroup, Validators, ValidatorFn, ValidationErrors} from '@angular/forms';
 import { OktaAuthService } from '../../../services/okta.service';
 import {DataTableAction } from '../../shared/components/app-data-table/data-table-action';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
@@ -70,27 +70,29 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
   resultStatus: any;
 
   constructor(
-      private okta: OktaAuthService,
-      private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager) {
+    private okta: OktaAuthService,
+    private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager) {
 
     this.orgForm = new FormGroup({
       org_name: new FormControl('', Validators.required),
       first_name: new FormControl('', Validators.required),
       last_name: new FormControl('', Validators.required),
       email_id: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
+      alternate_email_id: new FormControl('', [Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       address_1: new FormControl('', Validators.required),
       address_2: new FormControl(''),
       city: new FormControl('', Validators.required),
       state: new FormControl('', Validators.required),
       zip: new FormControl('', Validators.required),
       country: new FormControl('', Validators.required)
-    });
+    }, this.alternateEmailValidator);
 
     this.orgModel = {
       org_name: '',
       first_name: '',
       last_name: '',
       email_id: '',
+      alternate_email_id: '',
       address_1: '',
       address_2: '',
       city: '',
@@ -114,32 +116,32 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
 
   searchDataRequest() {
     return this.searchData().subscribe(
-        response => {
-          if (response) {
-            console.log('response >>')
-            console.log(response);
-            if (response.data && response.data.length) {
-              this.showSpinner = false;
-              this.populateDataTable(response.data, true);
-            } else {
-              this.resultStatus = 'No data found'
-              this.showSpinner = false;
-            }
-          }
-        },
-        err => {
-
-          if(err.status === 401) {
-            let self = this;
-            this.widget.refreshElseSignout(
-              this,
-              err, 
-              self.searchDataRequest.bind(self)
-            );
+      response => {
+        if (response) {
+          console.log('response >>')
+          console.log(response);
+          if (response.data && response.data.length) {
+            this.showSpinner = false;
+            this.populateDataTable(response.data, true);
           } else {
+            this.resultStatus = 'No data found'
             this.showSpinner = false;
           }
         }
+      },
+      err => {
+
+        if(err.status === 401) {
+          let self = this;
+          this.widget.refreshElseSignout(
+            this,
+            err,
+            self.searchDataRequest.bind(self)
+          );
+        } else {
+          this.showSpinner = false;
+        }
+      }
     );
   }
 
@@ -155,10 +157,10 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/orgs';
     return this.http
-        .get(url, options)
-        .map(res => {
-          return res.json();
-        }).share();
+      .get(url, options)
+      .map(res => {
+        return res.json();
+      }).share();
   }
 
   populateDataTable(response, initialLoad) {
@@ -213,6 +215,10 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     this.orgModel.email_id = dataObj.data.email_id;
     this.orgForm.patchValue({
       email_id : dataObj.data.email_id
+    });
+    this.orgModel.alternate_email_id = dataObj.data.alternate_email_id;
+    this.orgForm.patchValue({
+      alternate_email_id: dataObj.data.alternate_email_id
     });
     this.orgModel.address_1 = dataObj.data.address_1;
     this.orgForm.patchValue({
@@ -285,6 +291,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     dataObj.last_name = this.orgForm.controls['last_name'].value;
     dataObj.org_name = this.orgForm.controls['org_name'].value;
     dataObj.email_id = this.orgForm.controls['email_id'].value;
+    dataObj.alternate_email_id = this.orgForm.controls['alternate_email_id'].value;
     dataObj.address_1 = this.orgForm.controls['address_1'].value;
     dataObj.address_2 = this.orgForm.controls['address_2'].value;
     dataObj.city = this.orgForm.controls['city'].value;
@@ -297,27 +304,27 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
 
   performVendorAdditionRequest(dataObj) {
     return this.performVendorAddition(dataObj).subscribe(
-        response => {
-          console.log('response from vendor creation >>>')
-          console.log(response);
-          if (response) {
-            this.showSpinner = false;
-            this.error = { type : response.data ? 'success' : 'fail' , message : response.data ?  'Default Vendor successfully ' + ( this.editID ? 'updated' : 'created' ) : 'Default Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
-          }
-        },
-        err => {
-          if(err.status === 401) {
-            let self = this;
-            this.widget.refreshElseSignout(
-              this,
-              err, 
-              self.performVendorAdditionRequest.bind(self, dataObj)
-            );
-          } else {
-            this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
-            this.showSpinner = false;
-          }
+      response => {
+        console.log('response from vendor creation >>>')
+        console.log(response);
+        if (response) {
+          this.showSpinner = false;
+          this.error = { type : response.data ? 'success' : 'fail' , message : response.data ?  'Default Vendor successfully ' + ( this.editID ? 'updated' : 'created' ) : 'Default Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
         }
+      },
+      err => {
+        if(err.status === 401) {
+          let self = this;
+          this.widget.refreshElseSignout(
+            this,
+            err,
+            self.performVendorAdditionRequest.bind(self, dataObj)
+          );
+        } else {
+          this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
+          this.showSpinner = false;
+        }
+      }
     );
   }
 
@@ -334,58 +341,59 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     const url = this.editID ? this.api_fs.api + '/api/vendors/' + this.editID : this.api_fs.api + '/api/vendors';
     if (this.editID) {
       return this.http
-          .put(url, data, options)
-          .map(res => {
-            return res.json();
-          }).share();
+        .put(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
     } else {
       return this.http
-          .post(url, data, options)
-          .map(res => {
-            return res.json();
-          }).share();
+        .post(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
     }
   }
 
   performOrgAdditionRequest(dataObj) {
     return this.performOrgAddition(dataObj).subscribe(
-        response => {
-          console.log('response from Org creation >>>')
-          console.log(response);
-          if (response) {
-            this.showSpinner = false;
-            this.error = { type : response.data ? 'success' : 'fail' , message : response.data ?  'Org successfully ' + ( this.editID ? 'updated' : 'created' ) : 'Org ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
-            if (!this.editID) {
-              const vendorObj: any = {};
-              vendorObj.org_uuid = response.data.org_uuid;
-              vendorObj.external_vendor_id = Math.floor(1000000000 + Math.random() * 9000000000);
-              vendorObj.first_name = dataObj.first_name;
-              vendorObj.last_name = dataObj.last_name;
-              vendorObj.company_name = response.data.org_name;
-              vendorObj.email = dataObj.email_id;
-              vendorObj.address_1 = dataObj.address_1;
-              vendorObj.address_2 = dataObj.address_2;
-              vendorObj.city = dataObj.city;
-              vendorObj.state = dataObj.state;
-              vendorObj.zip = dataObj.zip;
-              vendorObj.country = dataObj.country;
-              this.performVendorAdditionRequest(vendorObj);
-            }
-          }
-        },
-        err => {
-          if(err.status === 401) {
-            let self = this;
-            this.widget.refreshElseSignout(
-              this,
-              err, 
-              self.performOrgAdditionRequest.bind(self, dataObj)
-            );
-          } else {
-            this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
-            this.showSpinner = false;
+      response => {
+        console.log('response from Org creation >>>')
+        console.log(response);
+        if (response) {
+          this.showSpinner = false;
+          this.error = { type : response.data ? 'success' : 'fail' , message : response.data ?  'Org successfully ' + ( this.editID ? 'updated' : 'created' ) : 'Org ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
+          if (!this.editID) {
+            const vendorObj: any = {};
+            vendorObj.org_uuid = response.data.org_uuid;
+            vendorObj.external_vendor_id = Math.floor(1000000000 + Math.random() * 9000000000);
+            vendorObj.first_name = dataObj.first_name;
+            vendorObj.last_name = dataObj.last_name;
+            vendorObj.company_name = response.data.org_name;
+            vendorObj.email = dataObj.email_id;
+            vendorObj.alternate_email_id = dataObj.alternate_email_id;
+            vendorObj.address_1 = dataObj.address_1;
+            vendorObj.address_2 = dataObj.address_2;
+            vendorObj.city = dataObj.city;
+            vendorObj.state = dataObj.state;
+            vendorObj.zip = dataObj.zip;
+            vendorObj.country = dataObj.country;
+            this.performVendorAdditionRequest(vendorObj);
           }
         }
+      },
+      err => {
+        if(err.status === 401) {
+          let self = this;
+          this.widget.refreshElseSignout(
+            this,
+            err,
+            self.performOrgAdditionRequest.bind(self, dataObj)
+          );
+        } else {
+          this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
+          this.showSpinner = false;
+        }
+      }
     );
   }
 
@@ -402,42 +410,42 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     const url = this.editID ? this.api_fs.api + '/api/orgs/' + this.editID : this.api_fs.api + '/api/orgs';
     if (this.editID) {
       return this.http
-          .put(url, data, options)
-          .map(res => {
-            return res.json();
-          }).share();
+        .put(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
     } else {
       return this.http
-          .post(url, data, options)
-          .map(res => {
-            return res.json();
-          }).share();
+        .post(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
     }
   }
 
   performOrgDeletionRequest(id) {
     return this.performOrgDeletion(id).subscribe(
-        response => {
-          if (response) {
-            this.showSpinner = false;
-            this.searchDataRequest();
-            // this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Org successfully deleted ' : 'Org ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
-            // this.editID = '';
-          }
-        },
-        err => {
-          if(err.status === 401) {
-            let self = this;
-            this.widget.refreshElseSignout(
-              this,
-              err, 
-              self.performOrgDeletionRequest.bind(self, id)
-            );
-          } else {
-            this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
-            this.showSpinner = false;
-          }
+      response => {
+        if (response) {
+          this.showSpinner = false;
+          this.searchDataRequest();
+          // this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Org successfully deleted ' : 'Org ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
+          // this.editID = '';
         }
+      },
+      err => {
+        if(err.status === 401) {
+          let self = this;
+          this.widget.refreshElseSignout(
+            this,
+            err,
+            self.performOrgDeletionRequest.bind(self, id)
+          );
+        } else {
+          this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
+          this.showSpinner = false;
+        }
+      }
     );
   }
 
@@ -452,10 +460,10 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     const options = new RequestOptions({headers: headers});
     const url = this.api_fs.api + '/api/Orgs/' + id;
     return this.http
-        .delete(url, options)
-        .map(res => {
-          return res.json();
-        }).share();
+      .delete(url, options)
+      .map(res => {
+        return res.json();
+      }).share();
   }
 
   handleCloseModal(modalComponent: PopUpModalComponent) {
@@ -477,6 +485,10 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     this.orgModel.email_id = '';
     this.orgForm.patchValue({
       email_id : ''
+    });
+    this.orgModel.alternate_email_id = '';
+    this.orgForm.patchValue({
+      alternate_email_id: ''
     });
     this.orgModel.address_1 = '';
     this.orgForm.patchValue({
@@ -517,5 +529,12 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     this.dataObject.isDataAvailable = false;
     this.searchDataRequest();
   }
+  alternateEmailValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+    if (this.orgForm) {
+      const email = control.value['email_id'];
+      const alternateEemailId = control.value['alternate_email_id'];
+      return (email && alternateEemailId && email === alternateEemailId) ? { 'alternateEmailMatch': true } : null;
+    }
+  };
 
 }
