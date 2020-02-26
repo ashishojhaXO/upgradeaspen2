@@ -60,6 +60,7 @@ export class UserManagementComponent implements OnInit  {
   selectedOrg: any;
   orgArr: any;
   orgValue = '';
+  hasData: boolean;
 
   sourceOptions = [
     {
@@ -220,59 +221,59 @@ export class UserManagementComponent implements OnInit  {
   }
 
   searchDataRequest(org = null) {
+    this.hasData = false;
     return this.searchData(org).subscribe(
         response => {
-          if (response) {
-            console.log('response >>')
-            console.log(JSON.stringify(response));
-            if (response) {
-              this.showSpinner = false;
-              this.populateDataTable(response, true);
-              return this.getVendors().subscribe(
-                  response1 => {
-                    console.log('response1');
-                    console.log(JSON.stringify(response1));
-                    if (response1) {
-                      const vendorOptions = [];
-                      response1.forEach(function (item) {
-                        vendorOptions.push({
-                          id: item.id,
-                          text: item.external_vendor_id + ' - ' + item.company_name
-                        });
+          if (response && response.length) {
+            this.showSpinner = false;
+            this.hasData = true;
+            this.populateDataTable(response, true);
+            return this.getVendors().subscribe(
+                response1 => {
+                  console.log('response1');
+                  console.log(JSON.stringify(response1));
+                  if (response1) {
+                    const vendorOptions = [];
+                    response1.forEach(function (item) {
+                      vendorOptions.push({
+                        id: item.id,
+                        text: item.external_vendor_id + ' - ' + item.company_name
                       });
-                      this.vendorOptions = vendorOptions;
-                      if(response1.length) {
-                        this.selectedVendor = response1[0].id;
-                      }
-                    }
-                  },
-                  err1 => {
-
-                    if(err1.status === 401) {
-                        // TODO: New this.widget.tokenManager.refresh to be implemented
-                        // this.widget.tokenManager.refresh('accessToken')
-                        //     .then(function (newToken) {
-                        //       localStorage.setItem('accessToken', newToken);
-                        //       this.showSpinner = false;
-                        //       this.getVendorsService();
-                        //     })
-                        //     .catch(function (err) {
-                        //       console.log('error >>')
-                        //       console.log(err);
-                        //     });
-                        let self = this;
-                        this.widget.refreshElseSignout(
-                          this,
-                          err1,
-                          self.getVendorsService.bind(self)
-                        );
-
-                    } else {
-                      this.showSpinner = false;
+                    });
+                    this.vendorOptions = vendorOptions;
+                    if(response1.length) {
+                      this.selectedVendor = response1[0].id;
                     }
                   }
-              )
-            }
+                },
+                err1 => {
+
+                  if(err1.status === 401) {
+                    // TODO: New this.widget.tokenManager.refresh to be implemented
+                    // this.widget.tokenManager.refresh('accessToken')
+                    //     .then(function (newToken) {
+                    //       localStorage.setItem('accessToken', newToken);
+                    //       this.showSpinner = false;
+                    //       this.getVendorsService();
+                    //     })
+                    //     .catch(function (err) {
+                    //       console.log('error >>')
+                    //       console.log(err);
+                    //     });
+                    let self = this;
+                    this.widget.refreshElseSignout(
+                        this,
+                        err1,
+                        self.getVendorsService.bind(self)
+                    );
+
+                  } else {
+                    this.showSpinner = false;
+                  }
+                }
+            )
+          } else {
+            this.dataObject.isDataAvailable = true;
           }
         },
         err => {
@@ -345,7 +346,7 @@ export class UserManagementComponent implements OnInit  {
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/users';
+    var url = this.api_fs.api + '/api/users' + ( org ? ('?org_uuid=' + org) : '');
     return this.http
       .get(url, options)
       .map(res => {
