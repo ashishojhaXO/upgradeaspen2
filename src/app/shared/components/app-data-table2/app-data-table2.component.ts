@@ -807,6 +807,26 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 __this.adjustHeight(__this);
             });
 
+            // If we decide to get data of only 1 page to show in the table and not all data
+            if (__this.dataObject.gridData.options.isApiCallForNextPage ) {
+                table.on('page.dt', function () {
+                    // var info = table.page.info();
+                    // $('#pageInfo').html( 'Showing page: '+info.page+' of '+info.pages );
+
+                    console.log("PAGE CHANGEDDD, table", table, " table.page", table.page);
+                    __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table);
+                } );
+
+
+                $(document).off('change', 'select.input-sm');
+                $(document).on('change', 'select.input-sm', function (ev) {
+                    console.log("CLICK CHANGE: ", ev, " tab::: ", table);
+                    __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table, ev);
+                });
+            }
+
+
+
             // Highlight pre checked rows
             if (__this.dataObject.gridData && __this.dataObject.gridData.result) {
                 __this.dataObject.gridData.result.forEach(function (data, index) {

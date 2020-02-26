@@ -11,6 +11,7 @@ export class BaseService {
   POST_PAYMENTS_METHODS_ENDPOINT = '/payments/methods';
   POST_PAYMENTS_CHARGE_ENDPOINT = '/payments/charge';
   PUT_DEFAULT_PAYMENTS_METHOD = '/payments/methods/default';
+  GET_ORDERS_ENDPOINT = '/orders'
 
   LOGIN_URL = this.BASE_URL + '/v4/login';
 

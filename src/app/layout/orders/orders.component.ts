@@ -15,10 +15,12 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import Swal from 'sweetalert2';
+import { GenericService } from '../../../services/generic.service';
 
 @Component({
   selector: 'app-orders',
   templateUrl: './orders.component.html',
+  providers: [GenericService],
   styleUrls: ['./orders.component.scss']
 })
 export class OrdersComponent implements OnInit  {
@@ -51,7 +53,21 @@ export class OrdersComponent implements OnInit  {
     // since isActionColPosition is 1, isOrder is also required to be sent,
     // since default ordering assigned in dataTable is [[1, 'asc']]
     isOrder: [[2, 'asc']],
-    isHideColumns: [ "Vendor_Receipt_Id"]
+    isHideColumns: [ "Vendor_Receipt_Id"],
+
+
+    // TODO: Check for PageLen change event also...
+    isApiCallForNextPage: {
+      value: true,
+      apiMethod: (table) => {
+        console.log(
+          "apiMethod here, table here: ", table, 
+          " this: ", this, " run blah: ", this.getOrders()
+        );
+        // Make ApiCall to backend with PageNo, Limit, 
+      }
+    }
+
   }];
   dashboard: any;
   api_fs: any;
@@ -63,7 +79,42 @@ export class OrdersComponent implements OnInit  {
   private appDataTable2Component : AppDataTable2Component;
   selectedRow: any;
 
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
+  constructor(
+    private okta: OktaAuthService, 
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private genericService: GenericService,
+    private http: Http) {
+  }
+
+  successCB(res) {
+    console.log("getOrders successCB")
+
+  }
+
+  erroCB(rej) {
+
+    console.log("getOrders errorCB")
+  }
+
+  getOrders() {
+    console.log("BLAH")
+
+    let data = {};
+
+    this.genericService.getOrders(data)
+    .subscribe(
+      (res) => {
+        this.showSpinner = false;
+        // this.successCB.apply(this, [res])
+        this.successCB(res)
+      },
+      (rej) => {
+        this.showSpinner = false;
+        this.errorCB(rej)
+      }
+    )
+
   }
 
   ngOnInit() {
