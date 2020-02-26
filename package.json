@@ -1,7 +1,8 @@
 {
   "name": "FusionSeven",
   "version": "1.0.0",
-  "license": "F7",
+  "private": true,
+  "license": "UNLICENSED",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --ec=true",
@@ -11,7 +12,6 @@
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^4.4.7",
     "@angular/common": "^4.2.4",
