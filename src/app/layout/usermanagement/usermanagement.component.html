@@ -19,13 +19,17 @@
   </div>
   <div class="">
     <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject.isDataAvailable">
-      <app-data-table2
-        [dataObject]="dataObject"
-        height="48vh"
-        identity="usermanagement"
-        (triggerActions)="this[$event.action]($event)">
-      </app-data-table2>
-      <!--<app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height"></app-data-table1>-->
+      <div *ngIf="hasData; else nodata">
+        <app-data-table2
+                [dataObject]="dataObject"
+                height="48vh"
+                identity="usermanagement"
+                (triggerActions)="this[$event.action]($event)">
+        </app-data-table2>
+      </div>
+      <ng-template #nodata>
+        <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">No results found</div>
+      </ng-template>
     </div>
     <div class="clearfix"></div>
     <div class="page-header" *ngIf="!dataObject.isDataAvailable">
