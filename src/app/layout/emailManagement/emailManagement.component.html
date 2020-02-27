@@ -1,0 +1,44 @@
+<div>
+  <div class="col-lg-12 col-md-12">
+    <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">EMAIL MANAGEMENT</p>
+    <div class="alert-btn type-create pull-right">
+      <a title="create" class="button btn btn-success" (click)="handleShowModal(AddEmails)" href="javascript:void(0)">ADD EMAILS</a>
+      <a (click)="reLoad()" class="button btn btn-success" style="background-color: #0777bc"><i class="fa fa-fw fa-refresh" aria-hidden="true"></i>Reload</a>
+    </div>
+  </div>
+  <div class="">
+    <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject.isDataAvailable">
+      <app-data-table2 [dataObject]="dataObject" identity="email" (triggerActions)="this[$event.action]($event)"></app-data-table2>
+      <!--<app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height" [dataTableAction]="this"></app-data-table1>-->
+    </div>
+    <div class="clearfix"></div>
+    <div class="page-header" *ngIf="!dataObject.isDataAvailable">
+      <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">{{resultStatus}}</div>
+    </div>
+    <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
+  </div>
+</div>
+<div style="width:100%">
+  <app-pop-up-modal #AddEmails>
+    <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
+      {{ editID ? ' Update' : ' Add ' }} Emails
+    </div>
+    <div class="app-modal-body">
+      <div class="content">
+          <app-tag2 [dataModel]="emails" primaryPlaceholder="Add Email Addresses" validation_func="email_validation" validationMessages="Please be sure to use a valid email format"
+             secondaryPlaceholder="Add Email" (updateDataModel)="_updateDataModel($event)" ></app-tag2>
+      </div>
+      <div *ngIf="error && error.message" style="text-align: center">
+        <span [class]="error.type === 'success' ? 'success' : 'fail'">{{error.message}}</span>
+      </div>
+    </div>
+    <div class="app-modal-footer">
+      <button type="button" class="action-btn" (click)="OnSubmit(AddEmails)">
+        {{ editID ? ' Update' : ' Add ' }}
+      </button>
+      <button type="button" class="inaction-btn" (click)="handleCloseModal(AddEmails)">
+        Close
+      </button>
+    </div>
+  </app-pop-up-modal>
+</div>

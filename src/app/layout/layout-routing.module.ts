@@ -27,6 +27,7 @@ import {InvoiceComponent} from './invoice/invoice.component';
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import {OrgManagementComponent} from './../layout/orgManagement/orgManagement.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
+import {EmailManagementComponent} from './../layout/emailManagement/emailManagement.component';
 
 const routes: Routes = [
     {
@@ -345,6 +346,14 @@ const routes: Routes = [
                                 },
                             }
                         ]
+                    },
+                    {
+                        path: 'emailmanagement',
+                        component: EmailManagementComponent,
+                        data: {
+                            breadcrumbs: true,
+                            text: 'Email Management'
+                        }
                     },
                     {
                         path: 'tasks',

@@ -203,11 +203,11 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
         let removeMenuItems = true;
         if (groupArr.length) {
           groupArr.forEach(function (grp) {
-            if (grp === 'ADMIN' || grp === 'ROOT') {
+            if (grp === 'ADMIN' || grp === 'ROOT' || grp === 'SUPER_USER') {
               if(grp === 'ADMIN') {
                 isAdmin = true;
               }
-              if (grp === 'ROOT') {
+              if (grp === 'ROOT' || grp === 'SUPER_USER') {
                 isRoot = true;
               }
               removeMenuItems = false;
@@ -229,7 +229,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
           this.mainmenu = menu.map(function (m){
             if (m.name === 'admin') {
               m.submenu = m.submenu.filter(function (ele: any) {
-                 return ele.name !== 'orgmanagement';
+                 return ele.name !== 'orgmanagement' && ele.name !== 'emailmanagement';
               });
             }
             return m;

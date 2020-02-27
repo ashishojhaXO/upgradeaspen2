@@ -1,0 +1,19 @@
+<tag-input [(ngModel)]='dataModel'
+           name="dataModel"
+           [errorMessages]="errorMessages"
+           [validators]="validators"
+           [editable]='true'
+           (onTagEdited)="onTagEdited($event)"
+           [separatorKeyCodes]="[32,188,186,13,9]"
+           [placeholder]="secondaryPlaceholder"
+           [secondaryPlaceholder]="primaryPlaceholder"
+           [clearOnBlur]="false"
+           [addOnPaste]="true"
+           [addOnBlur]="false"
+           [pasteSplitPattern]="splitPattern"
+           theme='bootstrap'
+           required
+           (onAdd)="OnAddingtag($event)"
+           (onRemove)="OnRemovingTag($event)"
+>
+</tag-input>

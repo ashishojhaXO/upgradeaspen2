@@ -25,6 +25,7 @@ import { DatepickerModule, BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { AppScriptEmbedderModule} from './../shared/components/app-script-embedder/app-script-embedder.module';
 import {A2Edatetimepicker} from 'ng2-eonasdan-datetimepicker';
 import { TooltipModule } from './../shared/directives/tooltip.module';
+import { AppTag2Module } from './../shared/components/app-tag2/app-tag2.module';
 
 //declarations
 import { DashboardsComponent } from './dashboards/dashboards.component';
@@ -46,6 +47,9 @@ import { OrderSummaryComponent } from './orderSummary/orderSummary.component';
 import { InvoicesComponent } from './invoices/invoices.component';
 import { InvoiceComponent } from './invoice/invoice.component';
 import {OrgManagementComponent} from './../layout/orgManagement/orgManagement.component';
+import { UserSettingsComponent } from './user-settings/user-settings.component';
+import { AnalyticsComponent } from './analytics/analytics.component';
+import {EmailManagementComponent} from './../layout/emailManagement/emailManagement.component';
 
 // providers
 import { AuthGuard } from './../shared';
@@ -55,8 +59,7 @@ import { CustomFormBuilderModule } from '../shared/components/customformbuilder/
 import { OrdersTemplateListComponent } from './orders-template-list/orders-template-list.component';
 import { OrdersListComponent } from './orders-list/orders-list.component';
 import { NumericDirective } from '../shared/directives/Numeric.directive';
-import { UserSettingsComponent } from './user-settings/user-settings.component';
-import { AnalyticsComponent } from './analytics/analytics.component';
+
 
 @NgModule({
     imports: [
@@ -87,7 +90,8 @@ import { AnalyticsComponent } from './analytics/analytics.component';
         AppScriptEmbedderModule,
         CustomFormBuilderModule,
         A2Edatetimepicker,
-        TooltipModule
+        TooltipModule,
+        AppTag2Module
     ],
     declarations: [
         LayoutComponent,
@@ -118,7 +122,8 @@ import { AnalyticsComponent } from './analytics/analytics.component';
         InvoiceComponent,
         UserSettingsComponent,
         OrgManagementComponent,
-        AnalyticsComponent
+        AnalyticsComponent,
+        EmailManagementComponent
     ],
     providers: [
         AuthGuard,
