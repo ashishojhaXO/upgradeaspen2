@@ -465,6 +465,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     this.dataObject.gridData.options.isOrder :
                     [[1, 'asc']],
 
+                // TODO: FTM Random
+                // recordsTotal: 100, // recordsTotal Looks wrong
+
                 rowCallback: function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                     // Get row ID
                     // console.log('ROW SELECTED >>')

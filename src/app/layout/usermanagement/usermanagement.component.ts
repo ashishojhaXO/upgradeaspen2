@@ -394,7 +394,7 @@ export class UserManagementComponent implements OnInit  {
     this.gridData['options'] = this.options[0];
     this.dashboard = 'paymentGrid';
     this.dataObject.gridData = this.gridData;
-    console.log(this.gridData);
+    console.log(" GRIDDATA: ", this.gridData);
     this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
     // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
   }
@@ -723,8 +723,15 @@ export class UserManagementComponent implements OnInit  {
   }
 
   successCB(res) {
-    console.log("getUsers successCB: res ", res)
+    console.log("getUsers successCB: res ", res, " this: ", this)
     // console.log( " res.json(): ", res.json())
+
+    // In order to refresh DataTable, we have to reassign the data variable, dataObject here.
+    // TODO: Data to send to html 
+    // NumberOfPages: Send number of rowCount/limit 
+    // CurrentPageNo:
+    // TotalCountofRows:
+    this.dataObject = {};
     this.populateDataTable(res.data.rows, false);
   }
 
