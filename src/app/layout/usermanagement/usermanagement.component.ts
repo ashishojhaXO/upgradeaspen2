@@ -91,7 +91,10 @@ export class UserManagementComponent implements OnInit  {
     this.userForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       first: new FormControl('', Validators.required),
-      last: new FormControl('', Validators.required)
+      last: new FormControl('', Validators.required),
+      role: new FormControl('', Validators.required),
+      org: new FormControl('', Validators.required),
+      vendor: new FormControl('', Validators.required),
     });
 
     this.userModel = {
@@ -144,8 +147,23 @@ export class UserManagementComponent implements OnInit  {
             this.orgArr = orgArr;
             if (this.orgArr.length) {
               this.selectedOrg = this.orgArr[0].id;
+              this.userForm.patchValue({
+                org : this.orgArr[0].id
+              });
             }
           }
+
+          if(!this.isRoot) {
+            this.selectedOrg = this.orgInfo.org_id;
+            this.userForm.patchValue({
+              org : this.orgInfo.org_id
+            });
+          }
+
+          if (this.selectedOrg) {
+            this.getVendorsService(this.selectedOrg);
+          }
+
         },
         err => {
 
@@ -192,32 +210,39 @@ export class UserManagementComponent implements OnInit  {
         }).share();
   }
 
-  getVendorsService() {
-    return this.getVendors().subscribe(
-      response2 => {
-        console.log('response1');
-        console.log(JSON.stringify(response2));
-        if (response2 && response2.body) {
+  getVendorsService(org = null) {
+    return this.getVendors(org).subscribe(
+      response => {
+        this.showSpinner = false;
+        if (response) {
           const vendorOptions = [];
-          response2.body.forEach(function (item) {
+          response.forEach(function (item) {
             vendorOptions.push({
-              id: item.id,
-              text: item.client_id + ' - ' + item.company_name
+              id: item.vendor_id,
+              text: item.external_vendor_id + ' - ' + item.company_name
             });
           });
           this.vendorOptions = vendorOptions;
-          if(response2.body.length) {
-            this.selectedVendor = response2.body[0].id;
+          if(response.length) {
+            this.selectedVendor = response[0].vendor_id;
+            this.userForm.patchValue({
+              vendor : response[0].vendor_id
+            });
           }
         }
       },
-      err2 => {
+      err => {
         this.showSpinner = false;
-        console.log('err')
-        console.log(err2);
+        if(err.status === 401) {
+          let self = this;
+          this.widget.refreshElseSignout(
+              this,
+              err,
+              self.getVendorsService.bind(self, org)
+          );
+        }
       }
     )
-
   }
 
   searchDataRequest(org = null) {
@@ -228,50 +253,6 @@ export class UserManagementComponent implements OnInit  {
             this.showSpinner = false;
             this.hasData = true;
             this.populateDataTable(response, true);
-            return this.getVendors().subscribe(
-                response1 => {
-                  console.log('response1');
-                  console.log(JSON.stringify(response1));
-                  if (response1) {
-                    const vendorOptions = [];
-                    response1.forEach(function (item) {
-                      vendorOptions.push({
-                        id: item.id,
-                        text: item.external_vendor_id + ' - ' + item.company_name
-                      });
-                    });
-                    this.vendorOptions = vendorOptions;
-                    if(response1.length) {
-                      this.selectedVendor = response1[0].id;
-                    }
-                  }
-                },
-                err1 => {
-
-                  if(err1.status === 401) {
-                    // TODO: New this.widget.tokenManager.refresh to be implemented
-                    // this.widget.tokenManager.refresh('accessToken')
-                    //     .then(function (newToken) {
-                    //       localStorage.setItem('accessToken', newToken);
-                    //       this.showSpinner = false;
-                    //       this.getVendorsService();
-                    //     })
-                    //     .catch(function (err) {
-                    //       console.log('error >>')
-                    //       console.log(err);
-                    //     });
-                    let self = this;
-                    this.widget.refreshElseSignout(
-                        this,
-                        err1,
-                        self.getVendorsService.bind(self)
-                    );
-
-                  } else {
-                    this.showSpinner = false;
-                  }
-                }
-            )
           } else {
             this.dataObject.isDataAvailable = true;
           }
@@ -295,6 +276,9 @@ export class UserManagementComponent implements OnInit  {
   OnRoleChanged(e: any): void {
     if (!this.selectedRole || this.selectedRole !== e.value ) {
       this.selectedRole = e.value;
+      this.userForm.patchValue({
+        role : e.value
+      });
     }
   }
 
@@ -305,14 +289,29 @@ export class UserManagementComponent implements OnInit  {
   }
 
   OnVendorChanged(e: any): void {
+    console.log('e.value >>>')
+    console.log(e.value);
+    console.log('this.selectedVendor')
+    console.log(this.selectedVendor);
     if (this.selectedVendor !== e.value ) {
       this.selectedVendor = e.value;
+      this.userForm.patchValue({
+        vendor : e.value
+      });
     }
   }
 
   OnOrgChanged(e: any) {
     if (!this.selectedOrg || this.selectedOrg !== e.value ) {
+      this.userForm.patchValue({
+        org : e.value
+      });
       this.selectedOrg = e.value;
+      this.showSpinner = true;
+      this.userForm.patchValue({
+        vendor : ''
+      });
+      this.getVendorsService(this.selectedOrg);
     }
   }
 
@@ -320,18 +319,22 @@ export class UserManagementComponent implements OnInit  {
 
   }
 
-  getVendors() {
+  getVendors(org = null) {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
       // token = AccessToken.accessToken;
       token = AccessToken;
     }
+
+    const obj = JSON.stringify({
+      'org_uuid': org
+    });
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token , 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/vendors';
+    var url = this.api_fs.api + '/api/vendors/list';
     return this.http
-      .get(url, options)
+      .post(url, obj, options)
       .map(res => {
         return res.json();
       }).share();
@@ -400,10 +403,11 @@ export class UserManagementComponent implements OnInit  {
     dataObj.last_name = this.userForm.controls['last'].value;
     // dataObj.source = this.selectedSource;
     dataObj.role_id = this.selectedRole;
-    dataObj.org_uuid = this.isRoot ? this.selectedOrg : this.orgInfo.org_id;
-    if (this.selectedSource === 'vendor') {
-      dataObj.vendor_id = this.selectedVendor;
-    }
+    dataObj.org_uuid = this.selectedOrg;
+    dataObj.vendor_id = this.selectedVendor;
+    // if (this.selectedSource === 'vendor') {
+    //
+    // }
 
     this.performUserAdditionRequest(dataObj);
   }
@@ -444,6 +448,9 @@ export class UserManagementComponent implements OnInit  {
 
           if(this.roleOptions.length) {
             this.selectedRole = String(this.roleOptions[0].id );
+            this.userForm.patchValue({
+              role : String(this.roleOptions[0].id )
+            });
           }
         }
       },
