@@ -16,12 +16,13 @@ import { OktaAuthService } from '../../../services/okta.service';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import Swal from 'sweetalert2';
 import { GenericService } from '../../../services/generic.service';
+import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up.component';
 
 @Component({
   selector: 'app-orders',
   templateUrl: './orders.component.html',
   styleUrls: ['./orders.component.scss'],
-  providers: [GenericService],
+  providers: [GenericService, AppPopUpComponent],
 })
 export class OrdersComponent implements OnInit  {
 
@@ -96,6 +97,7 @@ export class OrdersComponent implements OnInit  {
     private route: ActivatedRoute, 
     private router: Router, 
     private genericService: GenericService,
+    private popUp: AppPopUpComponent,
     private http: Http) {
   }
 
@@ -315,11 +317,16 @@ export class OrdersComponent implements OnInit  {
     this.showSpinner = false;
     let body = res.json();
     if (res && res.status == 200) {
-      Swal({
+      let popUpOptions = {
         title: 'Success',
         text: body.message,
-        type: 'success'
-      })
+        type: 'success',
+        reverseButtons: true,
+        showCloseButton: true,
+        showCancelButton: true,
+        cancelButtonText: "Cancel"
+      };
+      this.popUp.showPopUp(popUpOptions);
     }
   }
 
@@ -328,11 +335,16 @@ export class OrdersComponent implements OnInit  {
     this.showSpinner = false;
     let body = res.json();
     if (res && res.status == 400) {
-      Swal({
+      let popUpOptions = {
         title: 'Error',
         text: body.message,
-        type: 'error'
-      })
+        type: 'error',
+        reverseButtons: true,
+        showCloseButton: true,
+        showCancelButton: true,
+        cancelButtonText: "Cancel"
+      }
+      this.popUp.showPopUp(popUpOptions);
     }
   }
 
