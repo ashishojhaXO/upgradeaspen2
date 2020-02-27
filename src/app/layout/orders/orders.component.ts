@@ -57,29 +57,24 @@ export class OrdersComponent implements OnInit  {
     isOrder: [[3, 'asc']],
     isHideColumns: [ "Vendor_Receipt_Id"],
 
-
-    // isRowSelection: null,
-
     isTree: true,
-    // inheritHeadersForTree: true,
+    // isChildRowActions required when there need to be actions below every row.
     isChildRowActions: {
       buttons: {},
       buttonCondition: {},
-      htmlFunction: (rowData) => {
-        // const disableActivation = !(rowData['external_status'] === 'EXPIRED' || rowData['external_status'] === 'PROVISIONED');
-        // const disableDeActivate = !(rowData['external_status'] !== 'DEACTIVATED');
-        // const disableUnlock = !(rowData['external_status'] === 'DEACTIVATED');
-
-        const retHtml = '<div>' +
-          '<button class="btn action-btn api-action" data-action="retryCharge" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
-          '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-credit-card" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span> Retry Charge</button>' +
-          '<button class="btn action-btn api-action" data-action="regenerateReceipt" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
-          '><span style="margin-right: 5px; position: relative;"> <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-newspaper-o" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Regenerate Receipt</button>' +
-          '<button class="btn action-btn api-action" data-action="reprocess" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
-          '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-cogs" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Reprocess</button>' +
-          '<button class="btn action-btn api-action" data-action="recalculate" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
+      htmlFunction: (row) => {
+        let retHtml = '<div>' +
+          // '<button class="btn action-btn api-action" data-action="retryCharge" data-order-id=DATA_ORDER_ID style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
+          // '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-credit-card" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span> Retry Charge</button>' +
+          // '<button class="btn action-btn api-action" data-action="regenerateReceipt" data-order-id=DATA_ORDER_ID style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
+          // '><span style="margin-right: 5px; position: relative;"> <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-newspaper-o" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Regenerate Receipt</button>' +
+          // '<button class="btn action-btn api-action" data-action="reprocess" data-order-id="DATA_ORDER_ID" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
+          // '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-cogs" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Reprocess</button>' +
+          '<button class="btn action-btn api-action" data-action="recalculate" data-order-id="DATA_ORDER_ID" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
           '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-calculator" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Recalculate</button>' +
-          '</div>';
+        '</div>';
+
+        retHtml = retHtml.replace(/DATA_ORDER_ID/g, row.Order_Id);
 
         return retHtml;
       }
@@ -151,7 +146,6 @@ export class OrdersComponent implements OnInit  {
         },
         err => {
           if(err.status === 401) {
-            console.log("this:  ", this, "this.widget:", this.widget)
             this.widget.refreshElseSignout(
               this,
               err, 
@@ -318,12 +312,28 @@ export class OrdersComponent implements OnInit  {
 
   successCB(res) {
     // TODO: Some success callback here
-
+    this.showSpinner = false;
+    let body = res.json();
+    if (res && res.status == 200) {
+      Swal({
+        title: 'Success',
+        text: body.message,
+        type: 'success'
+      })
+    }
   }
 
-  errorCB(rej) {
+  errorCB(res) {
     // TODO: Some error callback here
-
+    this.showSpinner = false;
+    let body = res.json();
+    if (res && res.status == 400) {
+      Swal({
+        title: 'Error',
+        text: body.message,
+        type: 'error'
+      })
+    }
   }
 
   retryCharge(option) {
@@ -385,8 +395,10 @@ export class OrdersComponent implements OnInit  {
 
   recalculate(option) {
     this.showSpinner = true;
+
     // Compile option/data
-    let data = {};
+    let order_id = $(option.elem).data("orderId");
+    let data = {"order_id": order_id};
 
     return this.genericService
       .recalculate(data)
@@ -404,9 +416,7 @@ export class OrdersComponent implements OnInit  {
 
   handleActions(ev: any) {
     const action = $(ev.elem).data('action');
-    // this.userID = ev.data.data()[4];
 
-    console.log("Handle Actions: Orders: ", action, ev);
     if(this[action]) {
       this[action](ev);
     } else {

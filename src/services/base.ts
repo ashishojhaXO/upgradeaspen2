@@ -15,7 +15,7 @@ export class BaseService {
   POST_RETRY_CHARGE_ENDPOINT = '/retry-charge';
   POST_REGENERATE_RECEIPT_ENDPOINT = '/regenerate-receipt';
   POST_REPROCESS_ENDPOINT = '/reprocess';
-  POST_RECALCULATE_ENDPOINT = '/recalculate';
+  POST_RECALCULATE_ENDPOINT = '/orders/recalculate';
 
   LOGIN_URL = this.BASE_URL + '/v4/login';
 

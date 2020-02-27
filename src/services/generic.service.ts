@@ -28,7 +28,6 @@ export class GenericService {
   public retryCharge(dataObj: any) {
 
     const data = JSON.stringify(dataObj);
-    console.log("retry Charge dataObj: ", dataObj, " data; ", data);
 
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
     return this.service.Call(
@@ -47,7 +46,6 @@ export class GenericService {
   public regenerateReceipt(dataObj: any) {
 
     const data = JSON.stringify(dataObj);
-    console.log("regen dataObj: ", dataObj, " data; ", data);
 
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
     return this.service.Call(
@@ -66,7 +64,6 @@ export class GenericService {
   public reprocess(dataObj: any) {
 
     const data = JSON.stringify(dataObj);
-    console.log("reprocess dataObj: ", dataObj, " data; ", data);
 
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
     return this.service.Call(
@@ -85,7 +82,6 @@ export class GenericService {
   public recalculate(dataObj: any) {
 
     const data = JSON.stringify(dataObj);
-    console.log("recalculate dataObj: ", dataObj, " data; ", data);
 
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
     return this.service.Call(
@@ -104,7 +100,6 @@ export class GenericService {
   public postPaymentsMethods(dataObj: any) {
 
     const data = JSON.stringify(dataObj);
-    console.log("dataObj: ", dataObj, " data; ", data);
 
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
     return this.service.Call(
@@ -123,7 +118,6 @@ export class GenericService {
   public postPaymentsCharge(dataObj: any) {
 
     const data = JSON.stringify(dataObj);
-    console.log("dataObj: ", dataObj, " data; ", data);
 
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
 
@@ -143,7 +137,6 @@ export class GenericService {
   public setDefaultPaymentMethod(dataObj: any) {
 
     const data = JSON.stringify(dataObj);
-    console.log("dataObj: ", dataObj, " data; ", data);
 
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
 

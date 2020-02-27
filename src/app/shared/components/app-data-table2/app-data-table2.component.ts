@@ -1048,8 +1048,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 } else if (__this.dataObject.gridData.options.isChildRowActions) {
                                     // If child Row Action buttons are present
                                     // Put child row Action buttons here
-                                    console.log("Orders CHILD ROW ACTs, row: ", row, ",,, rowData: ", rowData);
-                                    let retHtml = __this.dataObject.gridData.options.isChildRowActions.htmlFunction(row);
+                                    let retHtml = __this.dataObject.gridData.options.isChildRowActions.htmlFunction(rowData);
                                     row.child(retHtml).show();
                                     __this.attachEvents(row);
                                     tr.addClass('shown');
