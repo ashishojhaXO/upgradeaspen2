@@ -16,12 +16,13 @@ import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-m
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { OktaAuthService } from '../../../services/okta.service';
 import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up.component';
+import { GenericService } from '../../../services/generic.service';
 
 @Component({
   selector: 'app-usermanagement',
   templateUrl: './usermanagement.component.html',
   styleUrls: ['./usermanagement.component.scss'],
-  providers: [AppPopUpComponent]
+  providers: [AppPopUpComponent, GenericService]
 })
 export class UserManagementComponent implements OnInit  {
 
@@ -41,7 +42,20 @@ export class UserManagementComponent implements OnInit  {
     isRowSelection: null,
     isPageLength: true,
     isPagination: true,
-    isTree: true
+    isTree: true,
+
+    // For limited pagewise data
+    isApiCallForNextPage: {
+      value: true,
+      apiMethod: (table) => {
+        console.log(
+          "apiMethod here, table here: ", table, 
+          " this: ", this, " run blah: ", this.getOrders()
+        );
+        // Make ApiCall to backend with PageNo, Limit, 
+      }
+    }
+
   }];
   dashboard: any;
   api_fs: any;
@@ -83,7 +97,8 @@ export class UserManagementComponent implements OnInit  {
     private route: ActivatedRoute,
     private router: Router,
     private http: Http,
-    private popUp: AppPopUpComponent
+    private popUp: AppPopUpComponent,
+    private genericService: GenericService
   ) {
 
     this.userForm = new FormGroup({
@@ -705,6 +720,36 @@ export class UserManagementComponent implements OnInit  {
     this.showSpinner = true;
     this.dataObject.isDataAvailable = false;
     this.searchDataRequest();
+  }
+
+  successCB(res) {
+    console.log("getUsers successCB: res ", res)
+    // console.log( " res.json(): ", res.json())
+    this.populateDataTable(res.data.rows, false);
+  }
+
+  errorCB(rej) {
+    console.log("getUsers errorCB: ", rej)
+  }
+
+  getOrders() {
+    console.log("BLAH")
+
+    let data = {};
+
+    this.genericService.getUsers(data)
+    .subscribe(
+      (res) => {
+        this.showSpinner = false;
+        // this.successCB.apply(this, [res])
+        this.successCB(res)
+      },
+      (rej) => {
+        this.showSpinner = false;
+        this.errorCB(rej)
+      }
+    )
+
   }
 
 }

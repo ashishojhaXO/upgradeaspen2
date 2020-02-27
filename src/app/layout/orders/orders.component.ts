@@ -57,16 +57,16 @@ export class OrdersComponent implements OnInit  {
 
 
     // TODO: Check for PageLen change event also...
-    isApiCallForNextPage: {
-      value: true,
-      apiMethod: (table) => {
-        console.log(
-          "apiMethod here, table here: ", table, 
-          " this: ", this, " run blah: ", this.getOrders()
-        );
-        // Make ApiCall to backend with PageNo, Limit, 
-      }
-    }
+    // isApiCallForNextPage: {
+    //   value: true,
+    //   apiMethod: (table) => {
+    //     console.log(
+    //       "apiMethod here, table here: ", table, 
+    //       " this: ", this, " run blah: ", this.getOrders()
+    //     );
+    //     // Make ApiCall to backend with PageNo, Limit, 
+    //   }
+    // }
 
   }];
   dashboard: any;
@@ -301,12 +301,14 @@ export class OrdersComponent implements OnInit  {
   }
 
   successCB(res) {
-    console.log("getOrders successCB")
+    console.log("getOrders successCB: res ", res)
+    // console.log( " res.json(): ", res.json())
+    this.populateDataTable(res.data.rows, false);
 
   }
 
   errorCB(rej) {
-    console.log("getOrders errorCB")
+    console.log("getOrders errorCB: ", rej)
   }
 
   getOrders() {
