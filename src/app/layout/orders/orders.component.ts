@@ -87,35 +87,6 @@ export class OrdersComponent implements OnInit  {
     private http: Http) {
   }
 
-  successCB(res) {
-    console.log("getOrders successCB")
-
-  }
-
-  erroCB(rej) {
-
-    console.log("getOrders errorCB")
-  }
-
-  getOrders() {
-    console.log("BLAH")
-
-    let data = {};
-
-    this.genericService.getOrders(data)
-    .subscribe(
-      (res) => {
-        this.showSpinner = false;
-        // this.successCB.apply(this, [res])
-        this.successCB(res)
-      },
-      (rej) => {
-        this.showSpinner = false;
-        this.errorCB(rej)
-      }
-    )
-
-  }
 
   ngOnInit() {
 
@@ -327,6 +298,35 @@ export class OrdersComponent implements OnInit  {
     this.showSpinner = true;
     this.dataObject.isDataAvailable = false;
     this.searchDataRequest();
+  }
+
+  successCB(res) {
+    console.log("getOrders successCB")
+
+  }
+
+  errorCB(rej) {
+    console.log("getOrders errorCB")
+  }
+
+  getOrders() {
+    console.log("BLAH")
+
+    let data = {};
+
+    this.genericService.getOrders(data)
+    .subscribe(
+      (res) => {
+        this.showSpinner = false;
+        // this.successCB.apply(this, [res])
+        this.successCB(res)
+      },
+      (rej) => {
+        this.showSpinner = false;
+        this.errorCB(rej)
+      }
+    )
+
   }
 
 }
