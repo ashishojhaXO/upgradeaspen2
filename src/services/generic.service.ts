@@ -56,7 +56,7 @@ export class GenericService {
       'get', 
       apiPath.api +
       this.base.API +
-      this.base.GET_ORDERS_ENDPOINT + '?limit='+limit+'&page='+pageNo 
+      this.base.GET_USERS_ENDPOINT + '?limit='+limit+'&page='+pageNo 
     );
   }
 

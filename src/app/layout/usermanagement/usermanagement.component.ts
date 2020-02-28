@@ -50,8 +50,9 @@ export class UserManagementComponent implements OnInit  {
       apiMethod: (table) => {
         console.log(
           "apiMethod here, table here: ", table, 
-          " this: ", this, " run blah: ", this.getOrders()
+          " this: ", this, " run blah: ", 
         );
+        this.getUsers(table);
         // Make ApiCall to backend with PageNo, Limit, 
       }
     }
@@ -137,7 +138,10 @@ export class UserManagementComponent implements OnInit  {
     this.height = '50vh';
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
-    this.searchDataRequest();
+
+    // this.searchDataRequest();
+    this.getUsers();
+
     this.searchOrgRequest();
   }
 
@@ -722,9 +726,36 @@ export class UserManagementComponent implements OnInit  {
     this.searchDataRequest();
   }
 
-  successCB(res) {
-    console.log("getUsers successCB: res ", res, " this: ", this)
+  calc(res) {
+    console.log("CALALAL: ", res);
+    let rest = res.data.count - res.data.rows.length;
+    // res.data.rows = res.data.rows.concat( new Array(rest));
+    console.log("calc rest: ", rest, " res: ", res);
+
+    for(let i = 0; i <= rest; i++) {
+      res.data.rows.push({i: i});
+    }
+  }
+
+  successCB(res, table) {
     // console.log( " res.json(): ", res.json())
+
+    // TODO: Temporarily
+    let resp = {data: ''};
+    resp.data = '{"count":509,"rows":[{"email_id":"fusionseven.io+F7890@gmail.com","first_name":"Ratnakar","last_name":"Verma","external_id":"00ujji8z14WARDUBE0h7","external_status":"EXPIRED","last_login (GMT)":"2019-11-05 10:00:52","company_name":"FusionSeven","created_at (GMT)":"2019-02-26 02:17:52","updated_at (GMT)":null},{"email_id":"fusionseven.io+F9999@gmail.com","first_name":"Fusion","last_name":"7even","external_id":"00ujjiomvmcEVJ1mD0h7","external_status":"EXPIRED","last_login (GMT)":"2019-08-16 22:45:46","company_name":"FusionSeven","created_at (GMT)":"2019-02-26 02:19:50","updated_at (GMT)":null},{"email_id":"fusionseven.io+vendorF911@gmail.com","first_name":"Fusion","last_name":"7","external_id":"00ujjixorq5tFQSuC0h7","external_status":"EXPIRED","last_login (GMT)":"2019-09-17 17:15:14","company_name":"FusionSeven","created_at (GMT)":"2019-02-26 02:33:59","updated_at (GMT)":null},{"email_id":"fusionseven.io+f7test123@gmail.com","first_name":"f7","last_name":"test123","external_id":"00ujk9uvgpT1tUbJl0h7","external_status":"EXPIRED","last_login (GMT)":"2019-03-19 18:51:56","company_name":"FusionSeven","created_at (GMT)":"2019-02-27 06:09:45","updated_at (GMT)":null},{"email_id":"fusionseven.io+123123123@gmail.com","first_name":"F","last_name":"7","external_id":"00ujkawh0rnnglJgm0h7","external_status":"EXPIRED","last_login (GMT)":null,"company_name":"FusionSeven","created_at (GMT)":"2019-02-27 06:54:32","updated_at (GMT)":null},{"email_id":"fusionseven.io+123123123123@gmail.com","first_name":"F","last_name":"7","external_id":"00ujkaz1biuZPC8eH0h7","external_status":"EXPIRED","last_login (GMT)":null,"company_name":"FusionSeven","created_at (GMT)":"2019-02-27 07:05:44","updated_at (GMT)":null},{"email_id":"rverma@fusionseven.com","first_name":"Ratnakar","last_name":"Verma","external_id":"00uitnykfeqD2rKaK0h7","external_status":"ACTIVE","last_login (GMT)":"2020-02-06 19:29:10","company_name":"FusionSeven","created_at (GMT)":"2019-02-27 00:00:00","updated_at (GMT)":null},{"email_id":"gurur@fusionseven.com","first_name":"Guru","last_name":"Prasad","external_id":"00uiuhnomqp9UiRtg0h7","external_status":"EXPIRED","last_login (GMT)":"2019-07-12 21:34:20","company_name":"FusionSeven","created_at (GMT)":"2019-02-27 17:51:42","updated_at (GMT)":null},{"email_id":"fusionseven.io+f7876@gmail.com","first_name":"F7","last_name":"f7876","external_id":"00ujkxq70v6trYDGD0h7","external_status":"EXPIRED","last_login (GMT)":null,"company_name":"FusionSeven","created_at (GMT)":"2019-02-28 04:30:02","updated_at (GMT)":null},{"email_id":"fusionseven.io+f7678@gmail.com","first_name":"F7","last_name":"f767","external_id":"00ujkxphu1x7f4PGS0h7","external_status":"EXPIRED","last_login (GMT)":null,"company_name":"FusionSeven","created_at (GMT)":"2019-02-28 04:30:45","updated_at (GMT)":null},{"email_id":"hbirdi@fusionseven.com","first_name":"Harman","last_name":"Birdi","external_id":"00uj93p5lnm96pZdi0h7","external_status":"EXPIRED","last_login (GMT)":"2019-05-08 03:44:51","company_name":"FusionSeven","created_at (GMT)":"2019-02-28 10:55:17","updated_at (GMT)":null},{"email_id":"mlynch@fusionseven.com","first_name":"Martin","last_name":"Lynch","external_id":"00ujdzo713ooKJxpe0h7","external_status":"EXPIRED","last_login (GMT)":"2019-03-29 22:23:41","company_name":"FusionSeven","created_at (GMT)":"2019-02-28 03:07:07","updated_at (GMT)":null},{"email_id":"fusionseven.io+f79876@gmail.com","first_name":"FusionsSeven","last_name":"F79876","external_id":"00ujn20nx1B4uxu3p0h7","external_status":"EXPIRED","last_login (GMT)":null,"company_name":"FusionSeven","created_at (GMT)":"2019-03-06 21:48:47","updated_at (GMT)":null},{"email_id":"fusionseven.io+f79877@gmail.com","first_name":"FusionsSeven","last_name":"F79877","external_id":"00ujn207hw4f2tEk20h7","external_status":"EXPIRED","last_login (GMT)":null,"company_name":"FusionSeven","created_at (GMT)":"2019-03-06 21:58:19","updated_at (GMT)":null},{"email_id":"fusionseven.io+testuser123@gmail.com","first_name":"Fu","last_name":"Se","external_id":"00ujn4cbulGGGki9L0h7","external_status":"EXPIRED","last_login (GMT)":null,"company_name":"FusionSeven","created_at (GMT)":"2019-03-07 00:23:59","updated_at (GMT)":null},{"email_id":"fusionseven.io+FS2019@gmail.com","first_name":"Fu","last_name":"Se","external_id":"00ujn4te1pueJoJpu0h7","external_status":"EXPIRED","last_login (GMT)":"2019-03-08 06:54:49","company_name":"FusionSeven","created_at (GMT)":"2019-03-07 01:27:57","updated_at (GMT)":null},{"email_id":"lombardi@fusionseven.com","first_name":"David","last_name":"Lombardi","external_id":"00ujdzo0c8irs5KRs0h7","external_status":"EXPIRED","last_login (GMT)":"2019-03-14 17:54:09","company_name":"FusionSeven","created_at (GMT)":null,"updated_at (GMT)":null},{"email_id":"fusionseven.io+f7abc@gmail.com","first_name":"F7","last_name":"ABC","external_id":"00ujn63oi4F1gebpw0h7","external_status":"EXPIRED","last_login (GMT)":"2019-03-07 04:16:11","company_name":"FusionSeven","created_at (GMT)":"2019-03-07 04:14:47","updated_at (GMT)":null},{"email_id":"fusionseven.io+FS2211@gmail.com","first_name":"Fus","last_name":"Sev","external_id":"00ujnesodk3TZ5wQ20h7","external_status":"EXPIRED","last_login (GMT)":null,"company_name":"FusionSeven","created_at (GMT)":"2019-03-07 19:19:46","updated_at (GMT)":null},{"email_id":"fusionseven.io+f70000@gmail.com","first_name":"FusionsSeven","last_name":"F70000","external_id":"00ujnjv4yucXqSkY80h7","external_status":"EXPIRED","last_login (GMT)":"2019-03-08 01:04:37","company_name":"FusionSeven","created_at (GMT)":"2019-03-08 01:03:15","updated_at (GMT)":null},{"email_id":"fusionseven.io+f7abcde@gmail.com","first_name":"FusionsSeven","last_name":"f7abcde","external_id":"00ujnjzuniqDWloRO0h7","external_status":"EXPIRED","last_login (GMT)":"2019-03-08 01:28:18","company_name":"FusionSeven","created_at (GMT)":"2019-03-08 01:27:11","updated_at (GMT)":null},{"email_id":"ratnakarverma+fs1@gmail.com","first_name":"Ratnakar","last_name":"FS1","external_id":null,"external_status":"EXPIRED","last_login (GMT)":null,"company_name":"FusionSeven","created_at (GMT)":"2019-03-08 05:00:22","updated_at (GMT)":null},{"email_id":"ratnakarverma+fs2@gmail.com","first_name":"Ratnakar","last_name":"FS2","external_id":null,"external_status":"EXPIRED","last_login (GMT)":null,"company_name":"FusionSeven","created_at (GMT)":"2019-03-08 05:01:52","updated_at (GMT)":null},{"email_id":"ratnakarverma+fs20190308906@gmail.com","first_name":"Ratnakar","last_name":"fs20190308906","external_id":"00ujnmxassZ7qSQii0h7","external_status":"EXPIRED","last_login (GMT)":"2019-03-08 05:08:28","company_name":"FusionSeven","created_at (GMT)":"2019-03-08 05:06:58","updated_at (GMT)":null},{"email_id":"fusionseven.io+vendor388@gmail.com","first_name":"Ratnakar","last_name":"Junk","external_id":null,"external_status":"EXPIRED","last_login (GMT)":null,"company_name":"FusionSeven","created_at (GMT)":"2019-03-08 05:13:33","updated_at (GMT)":null}]}';
+    resp.data = JSON.parse(resp.data);
+    console.log("getUsers successCB: resp ", resp, 
+      " table: ", table, " this: ", this
+    );
+    // Page 3, shows for page:2, but start: 50
+    // also multiple clicks are getting registered, 
+    // multiple times table is rendering
+    // table.page.info = 
+    // '{"page":2,"pages":21,"start":50,"end":75,"length":25,"recordsTotal":510,"recordsDisplay":510,"serverSide":false}'
+
+    this.calc(resp);
+    res = resp;
+    //
 
     // In order to refresh DataTable, we have to reassign the data variable, dataObject here.
     // TODO: Data to send to html 
@@ -739,8 +770,11 @@ export class UserManagementComponent implements OnInit  {
     console.log("getUsers errorCB: ", rej)
   }
 
-  getOrders() {
+  getUsers(table?) {
     console.log("BLAH")
+
+    // if no table, then send all default, page=1 & limit=25
+    // else, send table data
 
     let data = {};
 
@@ -749,7 +783,7 @@ export class UserManagementComponent implements OnInit  {
       (res) => {
         this.showSpinner = false;
         // this.successCB.apply(this, [res])
-        this.successCB(res)
+        this.successCB(res, table)
       },
       (rej) => {
         this.showSpinner = false;

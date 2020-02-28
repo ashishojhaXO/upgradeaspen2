@@ -451,7 +451,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 scrollX: true,
                 retrieve: true,
                 columns: columns,
-                pageLength: localStorage.getItem('gridPageCount') || 25,
                 data: dataSet,
                 dom: domConfig, // l - length changing input control ,f - filtering input ,t - The table!,i - Table information summary,p - pagination control
                 buttons: gridButtons,
@@ -466,7 +465,40 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     [[1, 'asc']],
 
                 // TODO: FTM Random
-                // recordsTotal: 100, // recordsTotal Looks wrong
+                // ajax: function(data, callback, settings){ 
+                    // console.log("ajax: ");
+                    // __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table);
+                // },
+                // serverSide: true,
+                // recordsTotal Looks wrong
+                // recordsTotal: dataSet.length, 
+                // displayStart: 2,
+                // recordsFiltered: 25,
+                // totalPages: 10,
+                // currentPage: 4,
+
+                // processing: true,
+                // serverSide: true,
+                // ajax: {
+                //     data: function() {
+                //         var info = $('#' + __this.tableId).DataTable().page.info();
+
+                //         $('#' + __this.tableId).DataTable().ajax.url(
+                //             'https://plazo-dev.fusionseven.net/api/test?limit=25'+''+'&page='+info.page+1
+                //         )
+
+                //     },
+                //     dataSrc: function (params) {
+                //         console.log("dataSrc paramas: ", params);
+                //         return params.data.rows
+                //     }
+                // },
+
+                pageLength: localStorage.getItem('gridPageCount') || 25,
+                sort: false,
+                // displayStart: 50,
+
+                // FTM/
 
                 rowCallback: function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                     // Get row ID
@@ -816,7 +848,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     // var info = table.page.info();
                     // $('#pageInfo').html( 'Showing page: '+info.page+' of '+info.pages );
 
-                    console.log("PAGE CHANGEDDD, table", table, " table.page", table.page);
+                    console.log("PAGE CHANGEDDD, table", table, " table.page", table.page, " table.page.info: ", table.page.info() );
                     __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table);
                 } );
 
@@ -826,6 +858,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     console.log("CLICK CHANGE: ", ev, " tab::: ", table);
                     __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table, ev);
                 });
+
             }
 
 
@@ -841,7 +874,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             // FIX *** FOR PROBLEM WHERE THE COLUMN WIDTH IS RENDERED INCORRECTLY
             setTimeout(function () {
-                table.columns.adjust().draw();
+                console.log("SETTTT")
+                table.columns.adjust().draw(false);
             }, 0);
 
             __this.registerCheckboxSelection(table, __this);
