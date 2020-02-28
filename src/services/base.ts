@@ -12,6 +12,11 @@ export class BaseService {
   POST_PAYMENTS_CHARGE_ENDPOINT = '/payments/charge';
   PUT_DEFAULT_PAYMENTS_METHOD = '/payments/methods/default';
 
+  POST_RETRY_CHARGE_ENDPOINT = '/retry-charge';
+  POST_REGENERATE_RECEIPT_ENDPOINT = '/regenerate-receipt';
+  POST_REPROCESS_ENDPOINT = '/reprocess';
+  POST_RECALCULATE_ENDPOINT = '/orders/recalculate';
+
   LOGIN_URL = this.BASE_URL + '/v4/login';
 
   ORGANIZATION_BASE_URL = this.BASE_URL + '/usermgmt/organization';

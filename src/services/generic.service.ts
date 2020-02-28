@@ -21,6 +21,77 @@ export class GenericService {
     this.service = new Service(router, http, toastr);
   }
 
+  /**
+   * POST Retry Charge
+   * @param dataObj
+   */
+  public retryCharge(dataObj: any) {
+
+    const data = JSON.stringify(dataObj);
+
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+    return this.service.Call(
+      'post',
+      apiPath.api +
+      this.base.API +
+      this.base.POST_RETRY_CHARGE_ENDPOINT,
+      data
+    );
+  }
+
+  /**
+   * POST Regenerate Receipt
+   * @param dataObj
+   */
+  public regenerateReceipt(dataObj: any) {
+
+    const data = JSON.stringify(dataObj);
+
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+    return this.service.Call(
+      'post',
+      apiPath.api +
+      this.base.API +
+      this.base.POST_REGENERATE_RECEIPT_ENDPOINT,
+      data
+    );
+  }
+
+  /**
+   * POST Reprocess
+   * @param dataObj
+   */
+  public reprocess(dataObj: any) {
+
+    const data = JSON.stringify(dataObj);
+
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+    return this.service.Call(
+      'post',
+      apiPath.api +
+      this.base.API +
+      this.base.POST_REPROCESS_ENDPOINT,
+      data
+    );
+  }
+
+  /**
+   * POST Recalculate
+   * @param dataObj
+   */
+  public recalculate(dataObj: any) {
+
+    const data = JSON.stringify(dataObj);
+
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+    return this.service.Call(
+      'post',
+      apiPath.api +
+      this.base.API +
+      this.base.POST_RECALCULATE_ENDPOINT,
+      data
+    );
+  }
 
   /**
    * POST Payments Methods
@@ -29,7 +100,6 @@ export class GenericService {
   public postPaymentsMethods(dataObj: any) {
 
     const data = JSON.stringify(dataObj);
-    console.log("dataObj: ", dataObj, " data; ", data);
 
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
     return this.service.Call(
@@ -48,7 +118,6 @@ export class GenericService {
   public postPaymentsCharge(dataObj: any) {
 
     const data = JSON.stringify(dataObj);
-    console.log("dataObj: ", dataObj, " data; ", data);
 
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
 
@@ -68,7 +137,6 @@ export class GenericService {
   public setDefaultPaymentMethod(dataObj: any) {
 
     const data = JSON.stringify(dataObj);
-    console.log("dataObj: ", dataObj, " data; ", data);
 
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
 

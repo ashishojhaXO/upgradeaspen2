@@ -15,11 +15,14 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import Swal from 'sweetalert2';
+import { GenericService } from '../../../services/generic.service';
+import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up.component';
 
 @Component({
   selector: 'app-orders',
   templateUrl: './orders.component.html',
-  styleUrls: ['./orders.component.scss']
+  styleUrls: ['./orders.component.scss'],
+  providers: [GenericService, AppPopUpComponent],
 })
 export class OrdersComponent implements OnInit  {
 
@@ -42,16 +45,42 @@ export class OrdersComponent implements OnInit  {
       dependency: ['Vendor_Receipt_Id'],
       tooltip: 'Download Vendor Receipt'
     },
-    fixedColumn: 1,
+
+    // Commenting out fixedColumn, as we need subRow isTree children child row, to show action buttons
+    // fixedColumn: 1,
     isPageLength: true,
     isPagination: true,
     sendResponseOnCheckboxClick: true,
     // Any number starting from 1 to ..., but not 0
-    isActionColPosition: 0, // This can not be 0, since zeroth column logic might crash
+    isActionColPosition: 1, // This can not be 0, since zeroth column logic might crash
     // since isActionColPosition is 1, isOrder is also required to be sent,
     // since default ordering assigned in dataTable is [[1, 'asc']]
-    isOrder: [[2, 'asc']],
-    isHideColumns: [ "Vendor_Receipt_Id"]
+    isOrder: [[3, 'asc']],
+    isHideColumns: [ "Vendor_Receipt_Id"],
+
+    isTree: true,
+    // isChildRowActions required when there need to be actions below every row.
+    isChildRowActions: {
+      buttons: {},
+      buttonCondition: {},
+      htmlFunction: (row) => {
+        let retHtml = '<div>' +
+          // '<button class="btn action-btn api-action" data-action="retryCharge" data-order-id=DATA_ORDER_ID style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
+          // '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-credit-card" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span> Retry Charge</button>' +
+          // '<button class="btn action-btn api-action" data-action="regenerateReceipt" data-order-id=DATA_ORDER_ID style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
+          // '><span style="margin-right: 5px; position: relative;"> <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-newspaper-o" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Regenerate Receipt</button>' +
+          // '<button class="btn action-btn api-action" data-action="reprocess" data-order-id="DATA_ORDER_ID" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
+          // '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-cogs" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Reprocess</button>' +
+          '<button class="btn action-btn api-action" data-action="recalculate" data-order-id="DATA_ORDER_ID" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
+          '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-calculator" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Recalculate</button>' +
+        '</div>';
+
+        retHtml = retHtml.replace(/DATA_ORDER_ID/g, row.Order_Id);
+
+        return retHtml;
+      }
+    }
+
   }];
   dashboard: any;
   api_fs: any;
@@ -63,7 +92,13 @@ export class OrdersComponent implements OnInit  {
   private appDataTable2Component : AppDataTable2Component;
   selectedRow: any;
 
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
+  constructor(
+    private okta: OktaAuthService, 
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private genericService: GenericService,
+    private popUp: AppPopUpComponent,
+    private http: Http) {
   }
 
   ngOnInit() {
@@ -113,7 +148,6 @@ export class OrdersComponent implements OnInit  {
         },
         err => {
           if(err.status === 401) {
-            console.log("this:  ", this, "this.widget:", this.widget)
             this.widget.refreshElseSignout(
               this,
               err, 
@@ -272,10 +306,137 @@ export class OrdersComponent implements OnInit  {
         }).share();
   }
 
-  reLoad(){
+  reLoad() {
     this.showSpinner = true;
     this.dataObject.isDataAvailable = false;
     this.searchDataRequest();
+  }
+
+  successCB(res) {
+    // TODO: Some success callback here
+    this.showSpinner = false;
+    let body = res.json();
+    if (res && res.status == 200) {
+      let popUpOptions = {
+        title: 'Success',
+        text: body.message,
+        type: 'success',
+        reverseButtons: true,
+        showCloseButton: true,
+        showCancelButton: true,
+        cancelButtonText: "Cancel"
+      };
+      this.popUp.showPopUp(popUpOptions);
+    }
+  }
+
+  errorCB(res) {
+    // TODO: Some error callback here
+    this.showSpinner = false;
+    let body = res.json();
+    if (res && res.status == 400) {
+      let popUpOptions = {
+        title: 'Error',
+        text: body.message,
+        type: 'error',
+        reverseButtons: true,
+        showCloseButton: true,
+        showCancelButton: true,
+        cancelButtonText: "Cancel"
+      }
+      this.popUp.showPopUp(popUpOptions);
+    }
+  }
+
+  retryCharge(option) {
+    this.showSpinner = true;
+    // Compile option/data
+    let data = {};
+
+    return this.genericService
+      .retryCharge(data)
+      .subscribe(
+        (res) => {
+          this.showSpinner = false;
+          this.successCB(res)
+        },
+        (rej) => {
+          this.showSpinner = false;
+          this.errorCB(rej)
+        }
+      )
+  }
+
+  regenerateReceipt(option) {
+    this.showSpinner = true;
+    // Compile option/data
+    let data = {};
+
+    return this.genericService
+      .regenerateReceipt(data)
+      .subscribe(
+        (res) => {
+          this.showSpinner = false;
+          this.successCB(res)
+        },
+        (rej) => {
+          this.showSpinner = false;
+          this.errorCB(rej)
+        }
+      )
+  }
+
+  reprocess(option) {
+    this.showSpinner = true;
+    // Compile option/data
+    let data = {};
+
+    return this.genericService
+      .reprocess(data)
+      .subscribe(
+        (res) => {
+          this.showSpinner = false;
+          this.successCB(res)
+        },
+        (rej) => {
+          this.showSpinner = false;
+          this.errorCB(rej)
+        }
+      )
+  }
+
+  recalculate(option) {
+    this.showSpinner = true;
+
+    // Compile option/data
+    let order_id = $(option.elem).data("orderId");
+    let data = {"order_id": order_id};
+
+    return this.genericService
+      .recalculate(data)
+      .subscribe(
+        (res) => {
+          this.showSpinner = false;
+          this.successCB(res)
+        },
+        (rej) => {
+          this.showSpinner = false;
+          this.errorCB(rej)
+        }
+      )
+  }
+
+  handleActions(ev: any) {
+    const action = $(ev.elem).data('action');
+
+    if(this[action]) {
+      this[action](ev);
+    } else {
+      // Some problem
+      // Function does not exists in this class, if data-action string is correct
+      // Else if all functions exists, then, data-action string coming from html is not correct
+      console.log(`Orders Error: Problem executing function: ${action}`)
+    }
   }
 
 }
