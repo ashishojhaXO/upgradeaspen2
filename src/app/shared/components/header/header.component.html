@@ -12,9 +12,9 @@
           </div>
           <!-- This is the main menu -->
           <div class="collapse navbar-collapse" id="navbar-collapse-1">
-            <app-nav 
-              #navItems 
-              [mainmenu]="mainmenu" 
+            <app-nav
+              #navItems
+              [mainmenu]="mainmenu"
               [urlPath]="router.url"
             ></app-nav>
             <!-- <ul class="nav navbar-nav main-menu">
@@ -30,12 +30,13 @@
       <div style="float: right; margin-top: 8px">
         <div style="float: right">
           <button style="background-color: #242424; border: none" (click)="toggleMenu($event)">
-            <span class="prof-img" style="position: relative;top: -4px;">
+            <span class="prof-img" style="position: relative;top: -15px;">
                 <i class="fa fa-user-circle" style="font-size: 2.7em"></i>
               </span>
-            <span class="welcome-user-text-wrap" style="color: #ffffff !important;" [title]=loggedInUser>
+            <span class="welcome-user-text-wrap" style="color: #ffffff !important;" title="{{loggedInUser}} ( {{loggedInVendor}} )">
               <span class="welcome-txt">Welcome </span>
               <span class="welcome-user-text">{{loggedInUser}}</span>
+              <span class="welcome-user-text">( {{loggedInVendor}} )</span>
               <!---->
               <i aria-hidden="true" class="fa fa-caret-down"></i></span>
           </button>

@@ -31,6 +31,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   @ViewChild('navItems') navItems: AppNavComponent;
 
   loggedInUser: string;
+  loggedInVendor: string;
   loggedInOrg: string;
   mainmenu: any;
   urlMatching: string;
@@ -98,6 +99,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
 
     this.localData = this.auth.getIdentityInfo('org-context');
     this.loggedInUser = this.auth.getIdentityInfo('loggedInUserName');
+    this.loggedInVendor = this.auth.getIdentityInfo('loggedInVendor');
     this.loggedInOrg = localStorage.getItem('loggedInOrg');
     this.popoverOpen = false;
     if (!_.isNull(this.loggedInUser) || !_.isUndefined(this.loggedInUser)) {
@@ -179,9 +181,6 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
         const groupArr = [];
         const groups = localStorage.getItem('loggedInUserGroup') || '';
 
-        console.log('groups >>')
-        console.log(groups);
-
         // if (groups) {
         //   const grp = JSON.parse(groups);
         //   grp.forEach(function (item) {
@@ -203,8 +202,8 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
         let removeMenuItems = true;
         if (groupArr.length) {
           groupArr.forEach(function (grp) {
-            if (grp === 'ADMIN' || grp === 'ROOT' || grp === 'SUPER_USER') {
-              if(grp === 'ADMIN') {
+            if (grp === 'ADMIN' || grp === 'ROOT' || grp === 'SUPER_USER' || grp === 'ORG_ADMIN') {
+              if(grp === 'ADMIN' || grp === 'ORG_ADMIN') {
                 isAdmin = true;
               }
               if (grp === 'ROOT' || grp === 'SUPER_USER') {
@@ -229,7 +228,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
           this.mainmenu = menu.map(function (m){
             if (m.name === 'admin') {
               m.submenu = m.submenu.filter(function (ele: any) {
-                 return ele.name !== 'orgmanagement';
+                return ele.name !== 'orgmanagement' && ele.name !== 'emailmanagement' && ele.name !== 'analytics' && ele.name !== 'support';
               });
             }
             return m;

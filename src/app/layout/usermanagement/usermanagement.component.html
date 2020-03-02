@@ -6,15 +6,30 @@
       <a (click)="reLoad()" class="button btn btn-success" style="background-color: #0777bc"><i class="fa fa-fw fa-refresh" aria-hidden="true"></i>Reload</a>
     </div>
   </div>
+  <div *ngIf="isRoot">
+    <label class="col-xs-12 col-sm-2">Select Org: </label>
+    <div class="col-xs-12 col-sm-6">
+      <select [(ngModel)]="orgValue" class="form-control" (change)='orgChange(orgValue)'>
+        <option [value]="''" >All</option>
+        <option *ngFor="let org of orgArr" [value]="org.id">
+          {{ org.text }}
+        </option>
+      </select>
+    </div>
+  </div>
   <div class="">
     <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject.isDataAvailable">
-      <app-data-table2
-        [dataObject]="dataObject"
-        height="48vh"
-        identity="usermanagement"
-        (triggerActions)="this[$event.action]($event)">
-      </app-data-table2>
-      <!--<app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height"></app-data-table1>-->
+      <div *ngIf="hasData; else nodata">
+        <app-data-table2
+                [dataObject]="dataObject"
+                height="48vh"
+                identity="usermanagement"
+                (triggerActions)="this[$event.action]($event)">
+        </app-data-table2>
+      </div>
+      <ng-template #nodata>
+        <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">No results found</div>
+      </ng-template>
     </div>
     <div class="clearfix"></div>
     <div class="page-header" *ngIf="!dataObject.isDataAvailable">
@@ -86,13 +101,13 @@
                        <!--(valueChanged)="OnSourceChanged($event);"-->
                        <!--[data]="sourceOptions"></select2>-->
             <!--</div>-->
-            <!--<div class="form-group-fields" *ngIf="selectedSource === 'vendor'">-->
-              <!--<label class="col-lg-4 col-md-4">Vendor ID : </label>-->
-              <!--<select2 width="100%" placeholder="Select" class="col-lg-8 col-md-8" style="padding: 0px; line-height: 1.42857143"-->
-                       <!--[value]="selectedVendor"-->
-                       <!--(valueChanged)="OnVendorChanged($event);"-->
-                       <!--[data]="vendorOptions"></select2>-->
-            <!--</div>-->
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">Vendor ID : </label>
+              <select2 width="100%" placeholder="Select" class="col-lg-8 col-md-8" style="padding: 0px; line-height: 1.42857143"
+                       [value]="selectedVendor"
+                       (valueChanged)="OnVendorChanged($event);"
+                       [data]="vendorOptions"></select2>
+            </div>
             <div *ngIf="error && error.message" style="text-align: center">
               <span [class]="error.type === 'success' ? 'success' : 'fail'">{{error.message}}</span>
             </div>

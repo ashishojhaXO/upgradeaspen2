@@ -26,12 +26,14 @@ export class InvoiceComponent implements OnInit  {
   externalAuth: any;
   showSpinner: boolean;
   widget: any;
-  invoiceId: any;
+  // invoiceId: any;
   selectedRow: any;
   invoices = [];
   memo: string;
   selectedInvoice: any;
   @ViewChild('AddPayment') addPayment: PopUpModalComponent;
+  @Input() invoiceId: any;
+  @Input() invoiceNumber: any;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
   }
@@ -43,20 +45,25 @@ export class InvoiceComponent implements OnInit  {
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
 
-    this.route.params.subscribe(params => {
-      if (params['id']) {
-        this.invoiceId = params['id'];
-        this.searchDataRequest(this.invoiceId);
-      } else {
-        Swal({
-          title: 'No Invoice ID found',
-          text: 'We did not find an invoice ID in the request',
-          type: 'error'
-        }).then( () => {
-          this.router.navigate(['/app/payment/invoices']);
-        });
-      }
-    });
+    this.searchDataRequest(this.invoiceId);
+
+    console.log('this.invoiceId >>')
+    console.log(this.invoiceId);
+
+    // this.route.params.subscribe(params => {
+    //   if (params['id']) {
+    //     this.invoiceId = params['id'];
+    //     this.searchDataRequest(this.invoiceId);
+    //   } else {
+    //     Swal({
+    //       title: 'No Invoice ID found',
+    //       text: 'We did not find an invoice ID in the request',
+    //       type: 'error'
+    //     }).then( () => {
+    //       this.router.navigate(['/app/payment/invoices']);
+    //     });
+    //   }
+    // });
   }
 
   onTabClick(invoice) {
@@ -82,9 +89,9 @@ export class InvoiceComponent implements OnInit  {
             const kenshoo_data = response.data.find(x=> x.site_name.toLowerCase() === 'kenshoo');
             if (!kenshoo_data) {
               const invoiceItems = response.data;
-              invoiceItems.forEach(function (item) {
-                item.pay = item.discrepancy_amount === 0 ? item.billed_amount : '';
-              }, this);
+              // invoiceItems.forEach(function (item) {
+              //   item.pay = item.discrepancy_amount === 0 ? item.billed_amount : '';
+              // }, this);
               this.invoices.push({
                 isKenshoo: false,
                 invoiceNumber: invoiceItems.length ? invoiceItems[0].invoice_number : '',
@@ -94,14 +101,16 @@ export class InvoiceComponent implements OnInit  {
               });
             } else {
               const invoiceItems = response.data;
-              invoiceItems.forEach(function (item) {
-                item.pay = item.discrepancy_amount === 0 ? item.calculated_amount : '';
-              }, this);
+              // invoiceItems.forEach(function (item) {
+              //   item.pay = item.discrepancy_amount === 0 ? item.calculated_amount : '';
+              // }, this);
               invoiceItems.forEach(function (d) {
                 this.invoices.push({
                   isKenshoo: true,
                   profileName: d.profile_name,
                   invoiceNumber: d.invoice_number,
+                  billingPeriod: d.billing_period,
+                  supplier: d.supplier,
                   invoiceHeaderId: d.invoice_header_id,
                   invoiceItems : [],
                   billedAmount : d.billed_amount,
@@ -119,7 +128,7 @@ export class InvoiceComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.searchDataRequest.bind(self, invoiceId),
             );
 
@@ -129,7 +138,7 @@ export class InvoiceComponent implements OnInit  {
               text: 'We did not find any invoices associated with ID : ' + invoiceId,
               type: 'error'
             }).then( () => {
-              this.router.navigate(['/app/admin/invoices']);
+             // this.router.navigate(['/app/admin/invoices']);
             });
             this.showSpinner = false;
           }
@@ -160,7 +169,7 @@ export class InvoiceComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.getKenshooProfileDetails.bind(self, invoice, profileName, invoice_header_id)
             );
           } else {
@@ -287,7 +296,9 @@ export class InvoiceComponent implements OnInit  {
               text: 'Payment for the selected invoice : ' + this.invoiceId  +  ' was successfully submitted',
               type: 'success'
             }).then( () => {
-              this.router.navigate(['/app/admin/invoices']);
+              this.invoices = [];
+              this.searchDataRequest(this.invoiceId);
+             // this.router.navigate(['/app/admin/invoices']);
             });
           } else {
             Swal({
@@ -303,7 +314,7 @@ export class InvoiceComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.createTransactionRequest.bind(self, dataObj)
             );
           } else {
@@ -343,5 +354,34 @@ export class InvoiceComponent implements OnInit  {
   handleCloseModal(modalComponent: PopUpModalComponent) {
     modalComponent.hide();
     this.memo = '';
+  }
+
+  OnHeaderChecked(e, invoice) {
+    if (e.target.checked) {
+      invoice.totalAmount = 0;
+      invoice.invoiceItems.forEach(function (item) {
+        if (!item.checked) {
+          const hasDiscrepancy = invoice.isKenshoo ? invoice.discrepancyAmount !== 0 : item.discrepancy_amount !== 0;
+          if (!hasDiscrepancy) {
+            item.checked = true;
+            item.pay = invoice.isKenshoo ? (item.total_spend - (item.paid_amount ? item.paid_amount : 0 )) : (item.calculated_amount - (item.paid_amount ? item.paid_amount : 0 ));
+          }
+        }
+        invoice.totalAmount += item.pay ? parseFloat(item.pay) : 0;
+      });
+    } else {
+      invoice.invoiceItems.forEach(function (item) {
+        item.checked = false;
+      });
+    }
+  }
+
+  OnCheckChecked(e, invoice, item) {
+    invoice.totalAmount = invoice.totalAmount ? invoice.totalAmount : 0;
+    if (e.target.checked) {
+      item.checked = true;
+      item.pay = invoice.isKenshoo ? (item.total_spend - (item.paid_amount ? item.paid_amount : 0 )) : (item.calculated_amount - (item.paid_amount ? item.paid_amount : 0 ));
+      invoice.totalAmount += item.pay ? parseFloat(item.pay) : 0;
+    }
   }
 }

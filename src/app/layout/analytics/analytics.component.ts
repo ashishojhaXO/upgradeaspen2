@@ -38,7 +38,7 @@ export class AnalyticsComponent implements OnInit {
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.getToken();
     // console.log('from init', this.hostname);
-    if (this.hostname === "aspen.fusionseven.io"){
+    if (this.hostname === "aspen.fusionseven.io" || this.hostname === "aspen.accelitas.io"){
       this.viewId = 'ga:210064983';
     } else if (this.hostname === "aspen-qa.fusionseven.net"){
       this.viewId = 'ga:209804732';

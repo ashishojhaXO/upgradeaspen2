@@ -819,6 +819,10 @@ ul.main-menu li a {
   padding: 15px 32px;
 }
 
+.bottom-menu {
+  margin-top: 10px;
+}
+
 .bottom-menu li a {
   &:hover {
     border-bottom: 2px solid $quaternary-border;
