@@ -49,14 +49,14 @@ export class GenericService {
   getUsers(data) {
 
     let limit = data.limit || 25;
-    let pageNo = data.pageNo || 1;
+    let page = data.page || 1;
 
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
     return this.service.Call(
       'get', 
       apiPath.api +
       this.base.API +
-      this.base.GET_USERS_ENDPOINT + '?limit='+limit+'&page='+pageNo 
+      this.base.GET_USERS_ENDPOINT + '?limit='+limit+'&page='+page
     );
   }
 

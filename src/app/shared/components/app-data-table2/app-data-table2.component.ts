@@ -446,6 +446,13 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 domConfig = 'fBtilp';
             }
 
+            let pageLength = 25;
+            if( localStorage.getItem('gridPageCount') ){
+                pageLength = +localStorage.getItem('gridPageCount');
+            } else if(this.dataObject.gridData.options.isDisplayStart) {
+                pageLength = this.dataObject.gridData.options.isDisplayStart;
+            }
+
             const dataTableOptions = {
                 scrollY: this.height ? this.height : 320,
                 scrollX: true,
@@ -494,9 +501,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 //     }
                 // },
 
-                pageLength: localStorage.getItem('gridPageCount') || 25,
+                pageLength: pageLength,
                 sort: false,
-                // displayStart: 50,
+                displayStart: this.dataObject.gridData.options.isDisplayStart || 0,
 
                 // FTM/
 
@@ -844,24 +851,18 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             // If we decide to get data of only 1 page to show in the table and not all data
             if (__this.dataObject.gridData.options.isApiCallForNextPage ) {
+                table.off('page.dt');
                 table.on('page.dt', function () {
-                    // var info = table.page.info();
-                    // $('#pageInfo').html( 'Showing page: '+info.page+' of '+info.pages );
-
-                    console.log("PAGE CHANGEDDD, table", table, " table.page", table.page, " table.page.info: ", table.page.info() );
                     __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table);
                 } );
 
-
                 $(document).off('change', 'select.input-sm');
                 $(document).on('change', 'select.input-sm', function (ev) {
-                    console.log("CLICK CHANGE: ", ev, " tab::: ", table);
-                    __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table, ev);
+                    localStorage.setItem('gridPageCount', table.page.len() );
+                    __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table, table.page.len() );
                 });
 
             }
-
-
 
             // Highlight pre checked rows
             if (__this.dataObject.gridData && __this.dataObject.gridData.result) {
