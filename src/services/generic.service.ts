@@ -93,6 +93,44 @@ export class GenericService {
     );
   }
 
+  
+
+  /**
+   * Get Orders Method
+   * @param dataObj
+   */
+  getOrders(data) {
+
+    let limit = data.limit || 25;
+    let pageNo = data.pageNo || 1;
+
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+    return this.service.Call(
+      'get', 
+      apiPath.api +
+      this.base.API +
+      this.base.GET_ORDERS_ENDPOINT + '?limit='+limit+'&page='+pageNo 
+    );
+  }
+
+  /**
+   * GET Users Method
+   * @param dataObj
+   */
+  getUsers(data) {
+
+    let limit = data.limit || 25;
+    let page = data.page || 1;
+
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+    return this.service.Call(
+      'get', 
+      apiPath.api +
+      this.base.API +
+      this.base.GET_USERS_ENDPOINT + '?limit='+limit+'&page='+page
+    );
+  }
+
   /**
    * POST Payments Methods
    * @param dataObj

@@ -446,12 +446,18 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 domConfig = 'fBtilp';
             }
 
+            let pageLength = 25;
+            if( localStorage.getItem('gridPageCount') ){
+                pageLength = +localStorage.getItem('gridPageCount');
+            } else if(this.dataObject.gridData.options.isDisplayStart) {
+                pageLength = this.dataObject.gridData.options.isDisplayStart;
+            }
+
             const dataTableOptions = {
                 scrollY: this.height ? this.height : 320,
                 scrollX: true,
                 retrieve: true,
                 columns: columns,
-                pageLength: localStorage.getItem('gridPageCount') || 25,
                 data: dataSet,
                 dom: domConfig, // l - length changing input control ,f - filtering input ,t - The table!,i - Table information summary,p - pagination control
                 buttons: gridButtons,
@@ -464,6 +470,42 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 order: this.dataObject.gridData.options.isOrder ?
                     this.dataObject.gridData.options.isOrder :
                     [[1, 'asc']],
+
+                // TODO: FTM Random
+                // ajax: function(data, callback, settings){ 
+                    // console.log("ajax: ");
+                    // __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table);
+                // },
+                // serverSide: true,
+                // recordsTotal Looks wrong
+                // recordsTotal: dataSet.length, 
+                // displayStart: 2,
+                // recordsFiltered: 25,
+                // totalPages: 10,
+                // currentPage: 4,
+
+                // processing: true,
+                // serverSide: true,
+                // ajax: {
+                //     data: function() {
+                //         var info = $('#' + __this.tableId).DataTable().page.info();
+
+                //         $('#' + __this.tableId).DataTable().ajax.url(
+                //             'https://plazo-dev.fusionseven.net/api/test?limit=25'+''+'&page='+info.page+1
+                //         )
+
+                //     },
+                //     dataSrc: function (params) {
+                //         console.log("dataSrc paramas: ", params);
+                //         return params.data.rows
+                //     }
+                // },
+
+                pageLength: pageLength,
+                sort: false,
+                displayStart: this.dataObject.gridData.options.isDisplayStart || 0,
+
+                // FTM/
 
                 rowCallback: function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                     // Get row ID
@@ -807,6 +849,21 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 __this.adjustHeight(__this);
             });
 
+            // If we decide to get data of only 1 page to show in the table and not all data
+            if (__this.dataObject.gridData.options.isApiCallForNextPage ) {
+                table.off('page.dt');
+                table.on('page.dt', function () {
+                    __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table);
+                } );
+
+                $(document).off('change', 'select.input-sm');
+                $(document).on('change', 'select.input-sm', function (ev) {
+                    localStorage.setItem('gridPageCount', table.page.len() );
+                    __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table, table.page.len() );
+                });
+
+            }
+
             // Highlight pre checked rows
             if (__this.dataObject.gridData && __this.dataObject.gridData.result) {
                 __this.dataObject.gridData.result.forEach(function (data, index) {
@@ -818,7 +875,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             // FIX *** FOR PROBLEM WHERE THE COLUMN WIDTH IS RENDERED INCORRECTLY
             setTimeout(function () {
-                table.columns.adjust().draw();
+                console.log("SETTTT")
+                table.columns.adjust().draw(false);
             }, 0);
 
             __this.registerCheckboxSelection(table, __this);

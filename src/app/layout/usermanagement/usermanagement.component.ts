@@ -16,12 +16,13 @@ import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-m
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { OktaAuthService } from '../../../services/okta.service';
 import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up.component';
+import { GenericService } from '../../../services/generic.service';
 
 @Component({
   selector: 'app-usermanagement',
   templateUrl: './usermanagement.component.html',
   styleUrls: ['./usermanagement.component.scss'],
-  providers: [AppPopUpComponent]
+  providers: [AppPopUpComponent, GenericService]
 })
 export class UserManagementComponent implements OnInit  {
 
@@ -40,8 +41,36 @@ export class UserManagementComponent implements OnInit  {
     isDownloadOption: false,
     isRowSelection: null,
     isPageLength: true,
+    isPageLengthNo: 25,
     isPagination: true,
-    isTree: true
+    isTree: true,
+    // To start the DataTables from a particular page number
+    isDisplayStart: 0,
+
+    // For limited pagewise data
+    isApiCallForNextPage: {
+      value: true,
+      apiMethod: (table, pageLength) => {
+
+        this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
+
+        // If pageLength was sent, 
+        // which means a click on dropdown was made, and so, reset to page 1
+        if(pageLength) {
+          // TODO: If we change the page dropdown suddenly in the middle from links, 
+          // table.start comes as adjust pageNo, 
+          // for eg. page3 Of 25 rows -> shift to -> 10 rows gives start page no. as 6
+
+          // Reset
+          // this.options[0].isDisplayStart = 0;
+          // Set new pageLenght for menu
+          this.options[0].isPageLengthNo = pageLength;
+        }
+        this.getUsers(table);
+        // Make ApiCall to backend with PageNo, Limit, 
+      }
+    },
+
   }];
   dashboard: any;
   api_fs: any;
@@ -59,6 +88,7 @@ export class UserManagementComponent implements OnInit  {
   orgInfo: any;
   selectedOrg: any;
   orgArr: any;
+  response: any;
   orgValue = '';
   hasData: boolean;
 
@@ -85,7 +115,8 @@ export class UserManagementComponent implements OnInit  {
     private route: ActivatedRoute,
     private router: Router,
     private http: Http,
-    private popUp: AppPopUpComponent
+    private popUp: AppPopUpComponent,
+    private genericService: GenericService
   ) {
 
     this.userForm = new FormGroup({
@@ -127,7 +158,10 @@ export class UserManagementComponent implements OnInit  {
     this.height = '50vh';
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
-    this.searchDataRequest();
+
+    // this.searchDataRequest();
+    this.getUsers();
+
     this.searchOrgRequest();
   }
 
@@ -289,7 +323,7 @@ export class UserManagementComponent implements OnInit  {
   }
 
   OnVendorChanged(e: any): void {
-    console.log('e.value >>>')
+    console.log('e.value >>>') 
     console.log(e.value);
     console.log('this.selectedVendor')
     console.log(this.selectedVendor);
@@ -357,16 +391,14 @@ export class UserManagementComponent implements OnInit  {
       }).share();
   }
 
-    orgChange(value) {
-        this.dataObject.isDataAvailable = false;
-        this.searchDataRequest(value);
-    }
+  orgChange(value) {
+      this.dataObject.isDataAvailable = false;
+      this.searchDataRequest(value);
+  }  
 
-  populateDataTable(response, initialLoad) {
-    const tableData = response;
-    this.gridData = {};
-    this.gridData['result'] = [];
-    const headers = [];
+  setDataTableHeaders( ) {
+    let tableData = this.response;
+    let headers = [];
 
     if (tableData && tableData.length) {
       const keys = Object.keys(tableData[0]);
@@ -384,14 +416,25 @@ export class UserManagementComponent implements OnInit  {
       }
     }
 
+    return headers;
+  }
+
+  populateDataTable(response, initialLoad) {
+    const tableData = response;
+    this.gridData = {};
+    this.gridData['result'] = [];
+    const headers = [];
+
+
     this.gridData['result'] = tableData;
-    this.gridData['headers'] = headers;
+    this.gridData['headers'] = this.setDataTableHeaders();
     this.gridData['options'] = this.options[0];
     this.dashboard = 'paymentGrid';
     this.dataObject.gridData = this.gridData;
-    console.log(this.gridData);
     this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
     // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
+
+    console.log("SUC pDT: ", this.gridData  );
   }
 
   OnSubmit(modalComponent: PopUpModalComponent) {
@@ -719,6 +762,118 @@ export class UserManagementComponent implements OnInit  {
     this.showSpinner = true;
     this.dataObject.isDataAvailable = false;
     this.searchDataRequest();
+  }
+
+  calc(res, table) {
+    let li = [];
+    let keyNames = {};
+    let keyNamesList = Object.keys(res.data.rows[0]);
+    for(let i = 0; i < keyNamesList.length; i++ ) {
+      keyNames[keyNamesList[i]] = null;
+    }
+
+    // Even when table is not there, still we need to ru this,
+    // Since, data will be of the first page.
+    // If !table
+    // If in the start
+    if (!table || table.page.info().start == 0) {
+      li.push(...res.data.rows);
+      for(let i = res.data.rows.length; i < res.data.count; i++) {
+        // res.data.rows.push({i: i});
+        li.push( keyNames )
+      }
+
+    }
+
+    if(table) {
+      let tab = table.page.info();
+      if(tab.start != 0 && tab.start + +tab.length != res.data.count) {
+
+        // Then fill in the middle
+        for(let i = 0; i < tab.start; i++) {
+          // res.data.rows.push({i: i});
+          li.push(keyNames )
+        }
+        li.push(...res.data.rows);
+        for(let i = tab.start + res.data.rows.length; i < res.data.count; i++) {
+          // res.data.rows.push({i: i});
+          li.push( keyNames )
+        }
+      }
+
+
+      // Fill at the end
+      if( tab.start != 0 && tab.start + +tab.length == res.data.count 
+        // table.page.info().end == res.data.count 
+        ) {
+        let tab = table.page.info();
+
+        for(let i = 0; i < tab.start; i++) {
+          // res.data.rows.push({i: i});
+          li.push(keyNames)
+        }
+        li.push(...res.data.rows);
+      }
+
+    }
+
+    return li;
+  }
+
+  successCB(res, table) {
+
+    // Set this.response, before calc
+    this.response = res.data.rows;
+    let li = this.calc(res, table);
+
+    // In order to refresh DataTable, we have to reassign the data variable, dataObject here.
+    // TODO: Data to send to html 
+    // NumberOfPages: Send number of rowCount/limit 
+    // CurrentPageNo:
+    // TotalCountofRows:
+    this.dataObject = {};
+    // this.populateDataTable(res.data.rows, false);
+    this.populateDataTable(li, false);
+  }
+
+  errorCB(rej) {
+    console.log("errorCB: ", rej)
+  }
+
+  getUsers(table?) {
+    // if no table, then send all default, page=1 & limit=25
+    // else, send table data
+
+    let data = { 
+      page: 1, 
+      limit: +localStorage.getItem("gridPageCount")
+    };
+
+    if(table) {
+      let tab = table.page.info();
+
+      data = {
+        page:  tab.page + 1,
+        limit: tab.length
+      };
+    }
+
+    this.hasData = false;
+    this.showSpinner = true;
+    this.genericService.getUsers(data)
+    .subscribe(
+      (res) => {
+        this.hasData = true;
+        this.showSpinner = false;
+        // this.successCB.apply(this, [res])
+        this.successCB(res, table)
+      },
+      (rej) => {
+        this.showSpinner = false;
+        this.errorCB(rej)
+      }
+    )
+
   }
 
 }

@@ -55,8 +55,21 @@ export class OrdersComponent implements OnInit  {
     isActionColPosition: 1, // This can not be 0, since zeroth column logic might crash
     // since isActionColPosition is 1, isOrder is also required to be sent,
     // since default ordering assigned in dataTable is [[1, 'asc']]
+    // isOrder: [[2, 'asc']],
     isOrder: [[3, 'asc']],
     isHideColumns: [ "Vendor_Receipt_Id"],
+
+    // TODO: Check for PageLen change event also...
+    // isApiCallForNextPage: {
+    //   value: true,
+    //   apiMethod: (table) => {
+    //     console.log(
+    //       "apiMethod here, table here: ", table, 
+    //       " this: ", this, " run blah: ", this.getOrders()
+    //     );
+    //     // Make ApiCall to backend with PageNo, Limit, 
+    //   }
+    // }
 
     isTree: true,
     // isChildRowActions required when there need to be actions below every row.
@@ -100,6 +113,7 @@ export class OrdersComponent implements OnInit  {
     private popUp: AppPopUpComponent,
     private http: Http) {
   }
+
 
   ngOnInit() {
 
@@ -312,7 +326,30 @@ export class OrdersComponent implements OnInit  {
     this.searchDataRequest();
   }
 
+  getOrders() {
+    console.log("BLAH")
+
+    let data = {};
+
+    this.genericService.getOrders(data)
+    .subscribe(
+      (res) => {
+        this.showSpinner = false;
+        // this.successCB.apply(this, [res])
+        this.successCB(res)
+      },
+      (rej) => {
+        this.showSpinner = false;
+        this.errorCB(rej)
+      }
+    )
+  }
+
   successCB(res) {
+    console.log("getOrders successCB: res ", res)
+    // console.log( " res.json(): ", res.json())
+    this.populateDataTable(res.data.rows, false);
+
     // TODO: Some success callback here
     this.showSpinner = false;
     let body = res.json();
