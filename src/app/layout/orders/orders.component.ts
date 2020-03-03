@@ -348,12 +348,13 @@ export class OrdersComponent implements OnInit  {
   successCB(res) {
     console.log("getOrders successCB: res ", res)
     // console.log( " res.json(): ", res.json())
-    this.populateDataTable(res.data.rows, false);
+    // this.populateDataTable(res.data.rows, false);
 
     // TODO: Some success callback here
     this.showSpinner = false;
-    let body = res.json();
-    if (res && res.status == 200) {
+    // let body = res.json();
+    let body = res;
+    // if (res && res.status == 200) {
       let popUpOptions = {
         title: 'Success',
         text: body.message,
@@ -364,14 +365,14 @@ export class OrdersComponent implements OnInit  {
         cancelButtonText: "Cancel"
       };
       this.popUp.showPopUp(popUpOptions);
-    }
+    // }
   }
 
   errorCB(res) {
     // TODO: Some error callback here
     this.showSpinner = false;
     let body = res.json();
-    if (res && res.status == 400) {
+    // if (res && res.status == 400) {
       let popUpOptions = {
         title: 'Error',
         text: body.message,
@@ -382,7 +383,7 @@ export class OrdersComponent implements OnInit  {
         cancelButtonText: "Cancel"
       }
       this.popUp.showPopUp(popUpOptions);
-    }
+    // }
   }
 
   retryCharge(option) {
