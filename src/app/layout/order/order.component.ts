@@ -413,7 +413,7 @@ export class OrderComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.getTemplateDetails.bind(self, templateID)
             );
           } else {
@@ -666,7 +666,7 @@ export class OrderComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.searchDataRequest.bind(self)
             );
           } else {
@@ -767,6 +767,7 @@ export class OrderComponent implements OnInit  {
     const reqObj: any = {};
     if (!this.orderId) {
       reqObj.vendor_id =  customerInfo.vendor.vendor_id;
+      reqObj.org_id = customerInfo.org.org_id;
       reqObj.template_id = this.originalResponseObj.orderTemplateData.template.template_id;
     };
     reqObj.orderDetail = {

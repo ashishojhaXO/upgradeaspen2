@@ -84,7 +84,7 @@ export class OrderPaymentComponent {
         text: 'We did not find an order to be paid for',
         type: 'error'
       }).then( () => {
-        this.router.navigate(['/app/admin/orderslist']);
+        this.router.navigate(['/app/order/orderslist']);
       });
     }
   }
@@ -205,7 +205,7 @@ export class OrderPaymentComponent {
                 text: 'Your payment for the order ' + this.orderId + ' was successfully charged',
                 type: 'success'
               }).then( () => {
-                this.router.navigate(['/app/admin/orderslist']);
+                this.router.navigate(['/app/order/orderslist']);
               });
             },
             (rej) => {
