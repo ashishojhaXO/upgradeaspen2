@@ -472,13 +472,13 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     [[1, 'asc']],
 
                 // TODO: FTM Random
-                // ajax: function(data, callback, settings){ 
+                // ajax: function(data, callback, settings){
                     // console.log("ajax: ");
                     // __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table);
                 // },
                 // serverSide: true,
                 // recordsTotal Looks wrong
-                // recordsTotal: dataSet.length, 
+                // recordsTotal: dataSet.length,
                 // displayStart: 2,
                 // recordsFiltered: 25,
                 // totalPages: 10,
@@ -500,7 +500,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 //         return params.data.rows
                 //     }
                 // },
-
+                initComplete: function(settings) {
+                    $('#' + __this.tableId + ' tbody td').each(function () {
+                        $(this).attr('title', $(this).text());
+                    });
+                },
                 pageLength: pageLength,
                 sort: false,
                 displayStart: this.dataObject.gridData.options.isDisplayStart || 0,

@@ -3225,8 +3225,10 @@ table.dataContainer thead th {
 table.dataContainer tbody td {
   padding: 15px 10px;
   font-size: 12px;
-  vertical-align: baseline !important;
-  white-space: pre-wrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  //white-space: normal !important;
+  //overflow-wrap: break-word;
 }
 
 //.dataTables_scrollBody {
