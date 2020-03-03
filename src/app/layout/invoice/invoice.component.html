@@ -74,7 +74,7 @@
                                         class="paymentText">{{item.discrepancy_amount | currency:"USD":true:'1.2-2'}}</span></div>
                                 <div  class="col-sm-1" style="text-align: right" ><span
                                         class="paymentText">{{item.paid_amount ? (item.paid_amount  | currency:"USD":true:'1.2-2') : 0}}</span></div>
-                                <div class="col-sm-1" style="text-align: center">
+                                <div class="col-sm-1" style="left: 6px">
                                     <span class="paymentText">
                                       <input [disabled]="(invoice.isKenshoo ? ( invoice.discrepancyAmount !== 0 ? 'disabled' : null) : (item.discrepancy_amount !== 0 ? 'disabled' : null))" type="checkbox" (change)="OnCheckChecked($event, invoice, item)" [(ngModel)]="item.checked"/>
                                     </span>

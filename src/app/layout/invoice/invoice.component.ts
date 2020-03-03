@@ -365,6 +365,9 @@ export class InvoiceComponent implements OnInit  {
           if (!hasDiscrepancy) {
             item.checked = true;
             item.pay = invoice.isKenshoo ? (item.total_spend - (item.paid_amount ? item.paid_amount : 0 )) : (item.calculated_amount - (item.paid_amount ? item.paid_amount : 0 ));
+            if (item.pay < 0) {
+              item.pay = 0;
+            }
           }
         }
         invoice.totalAmount += item.pay ? parseFloat(item.pay) : 0;
@@ -377,11 +380,14 @@ export class InvoiceComponent implements OnInit  {
   }
 
   OnCheckChecked(e, invoice, item) {
-    invoice.totalAmount = invoice.totalAmount ? invoice.totalAmount : 0;
+    invoice.totalAmount = 0;
     if (e.target.checked) {
       item.checked = true;
       item.pay = invoice.isKenshoo ? (item.total_spend - (item.paid_amount ? item.paid_amount : 0 )) : (item.calculated_amount - (item.paid_amount ? item.paid_amount : 0 ));
-      invoice.totalAmount += item.pay ? parseFloat(item.pay) : 0;
+      if (item.pay < 0) {
+        item.pay = 0;
+      }
     }
+    invoice.totalAmount += item.pay ? parseFloat(item.pay) : 0;
   }
 }
