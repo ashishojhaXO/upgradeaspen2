@@ -30,6 +30,9 @@ export class OrdersComponent implements OnInit  {
   dataObject: any = {};
   isDataAvailable: boolean;
   height: any;
+  isRoot: boolean;
+  orgArr: any;
+  orgValue: any;
   options: Array<any> = [{
     isSearchColumn: true,
     isTableInfo: true,
@@ -64,10 +67,10 @@ export class OrdersComponent implements OnInit  {
     //   value: true,
     //   apiMethod: (table) => {
     //     console.log(
-    //       "apiMethod here, table here: ", table, 
+    //       "apiMethod here, table here: ", table,
     //       " this: ", this, " run blah: ", this.getOrders()
     //     );
-    //     // Make ApiCall to backend with PageNo, Limit, 
+    //     // Make ApiCall to backend with PageNo, Limit,
     //   }
     // }
 
@@ -78,13 +81,13 @@ export class OrdersComponent implements OnInit  {
       buttonCondition: {},
       htmlFunction: (row) => {
         let retHtml = '<div>' +
-          // '<button class="btn action-btn api-action" data-action="retryCharge" data-order-id=DATA_ORDER_ID style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
+          // '<button class="btn action-btn api-action" data-action="retryCharge" data-order-id=DATA_ORDER_ID style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
           // '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-credit-card" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span> Retry Charge</button>' +
-          // '<button class="btn action-btn api-action" data-action="regenerateReceipt" data-order-id=DATA_ORDER_ID style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
+          // '<button class="btn action-btn api-action" data-action="regenerateReceipt" data-order-id=DATA_ORDER_ID style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
           // '><span style="margin-right: 5px; position: relative;"> <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-newspaper-o" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Regenerate Receipt</button>' +
-          // '<button class="btn action-btn api-action" data-action="reprocess" data-order-id="DATA_ORDER_ID" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
+          // '<button class="btn action-btn api-action" data-action="reprocess" data-order-id="DATA_ORDER_ID" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
           // '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-cogs" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Reprocess</button>' +
-          '<button class="btn action-btn api-action" data-action="recalculate" data-order-id="DATA_ORDER_ID" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + 
+          '<button class="btn action-btn api-action" data-action="recalculate" data-order-id="DATA_ORDER_ID" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
           '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-calculator" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Recalculate</button>' +
         '</div>';
 
@@ -106,9 +109,9 @@ export class OrdersComponent implements OnInit  {
   selectedRow: any;
 
   constructor(
-    private okta: OktaAuthService, 
-    private route: ActivatedRoute, 
-    private router: Router, 
+    private okta: OktaAuthService,
+    private route: ActivatedRoute,
+    private router: Router,
     private genericService: GenericService,
     private popUp: AppPopUpComponent,
     private http: Http) {
@@ -124,7 +127,78 @@ export class OrdersComponent implements OnInit  {
 
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
+
+    const groups = localStorage.getItem('loggedInUserGroup') || '';
+    const grp = JSON.parse(groups);
+    grp.forEach(function (item) {
+      if(item === 'ROOT' || item === 'SUPER_USER') {
+        this.isRoot = true;
+      }
+    }, this);
+
     this.searchDataRequest();
+    this.searchOrgRequest();
+  }
+
+  searchOrgRequest() {
+    return this.searchOrgData().subscribe(
+        response => {
+          if (response && response.data) {
+
+            const orgArr = [];
+            response.data.forEach(function (item) {
+              orgArr.push({
+                id: item.org_uuid,
+                text: item.org_name
+              });
+            });
+
+            this.orgArr = orgArr;
+          }
+        },
+        err => {
+
+          if(err.status === 401) {
+            if(localStorage.getItem('accessToken')) {
+              this.widget.tokenManager.refresh('accessToken')
+                  .then(function (newToken) {
+                    localStorage.setItem('accessToken', newToken);
+                    this.showSpinner = false;
+                    this.searchOrgRequest();
+                  })
+                  .catch(function (err1) {
+                    console.log('error >>')
+                    console.log(err1);
+                  });
+            } else {
+              this.widget.signOut(() => {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/login';
+              });
+            }
+          } else {
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+
+  searchOrgData() {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/orgs';
+    return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   cancelOrder() {
@@ -149,9 +223,9 @@ export class OrdersComponent implements OnInit  {
   }
   // Success & Error CBs/
 
-  searchDataRequest() {
+  searchDataRequest(org = null) {
     const self = this;
-    return this.searchData().subscribe(
+    return this.searchData(org).subscribe(
         response => {
           if (response) {
             if (response) {
@@ -164,9 +238,9 @@ export class OrdersComponent implements OnInit  {
           if(err.status === 401) {
             this.widget.refreshElseSignout(
               this,
-              err, 
-              self.searchDataRequest.bind(self), 
-              self.errorCallback.bind(self) 
+              err,
+              self.searchDataRequest.bind(self),
+              self.errorCallback.bind(self)
             );
           } else {
             this.showSpinner = false;
@@ -176,21 +250,27 @@ export class OrdersComponent implements OnInit  {
     );
   }
 
-  searchData() {
+  searchData(org = null) {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
       // token = AccessToken.accessToken;
       token = AccessToken;
     }
+
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/orders/line-items';
+    var url = this.api_fs.api + '/api/orders/line-items' + (this.isRoot ? ('?org_uuid=' + org) : '');
     return this.http
         .get(url, options)
         .map(res => {
           return res.json();
         }).share();
+  }
+
+  orgChange(value) {
+    this.dataObject.isDataAvailable = false;
+    this.searchDataRequest(value);
   }
 
   populateDataTable(response, initialLoad) {
@@ -284,8 +364,8 @@ export class OrdersComponent implements OnInit  {
           if(err.status === 401) {
             this.widget.refreshElseSignout(
               this,
-              err, 
-              self.searchDownloadLink.bind(self, downloadId, orderId), 
+              err,
+              self.searchDownloadLink.bind(self, downloadId, orderId),
               self.errorCallback.bind(self)
             );
           } else {
