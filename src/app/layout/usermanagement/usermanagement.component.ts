@@ -665,10 +665,11 @@ export class UserManagementComponent implements OnInit  {
     this.selectedSource = 'f7';
     this.selectedVendor = '';
     modalComponent.hide();
-    this.dataObject.isDataAvailable = false;
 
-    this.searchDataRequest();
-    // this.getUsers();
+    // TODO: Temporarily deactivating these 2 lines, 
+    // since they may not be needed on modal close
+    // this.dataObject.isDataAvailable = false;
+    // this.searchDataRequest();
   }
 
   handleShowModal(modalComponent: PopUpModalComponent) {
