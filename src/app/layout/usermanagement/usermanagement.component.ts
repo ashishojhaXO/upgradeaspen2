@@ -66,7 +66,10 @@ export class UserManagementComponent implements OnInit  {
           // Set new pageLenght for menu
           this.options[0].isPageLengthNo = pageLength;
         }
-        this.getUsers(table);
+
+        // this.getUsers(table);
+        this.searchDataRequest(null, table);
+
         // Make ApiCall to backend with PageNo, Limit, 
       }
     },
@@ -159,8 +162,8 @@ export class UserManagementComponent implements OnInit  {
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
 
-    // this.searchDataRequest();
-    this.getUsers();
+    this.searchDataRequest();
+    // this.getUsers();
 
     this.searchOrgRequest();
   }
@@ -279,32 +282,132 @@ export class UserManagementComponent implements OnInit  {
     )
   }
 
-  searchDataRequest(org = null) {
-    this.hasData = false;
-    return this.searchData(org).subscribe(
-        response => {
-          if (response && response.length) {
-            this.showSpinner = false;
-            this.hasData = true;
-            this.populateDataTable(response, true);
-          } else {
-            this.dataObject.isDataAvailable = true;
-          }
-        },
-        err => {
+  searchDataRequest(org = null, table?) {
+    // if no table, then send all default, page=1 & limit=25
+    // else, send table data
+    let data = { 
+      page: 1, 
+      limit: +localStorage.getItem("gridPageCount"),
+      org: org ? org : ''
+    };
 
-          if(err.status === 401) {
-            let self = this;
-            this.widget.refreshElseSignout(
-              this,
-              err,
-              self.searchDataRequest.bind(self)
-            );
-          } else {
-            this.showSpinner = false;
-          }
+    if(table) {
+      let tab = table.page.info();
+      data = {
+        page: tab.page + 1,
+        limit: tab.length,
+        org: org ? org : ''
+      };
+    }
+
+    this.hasData = false;
+    this.showSpinner = true;
+
+    // return this.searchData(org)
+    // .subscribe(
+    //     response => {
+    //       if (response && response.length) {
+    //         this.showSpinner = false;
+    //         this.hasData = true;
+    //         this.populateDataTable(response, true);
+    //       } else {
+    //         this.dataObject.isDataAvailable = true;
+    //       }
+    //     },
+    //     err => {
+    //       if(err.status === 401) {
+    //         let self = this;
+    //         this.widget.refreshElseSignout(
+    //           this,
+    //           err,
+    //           self.searchDataRequest.bind(self)
+    //         );
+    //       } else {
+    //         this.showSpinner = false;
+    //       }
+    //     }
+    // );
+
+
+    return this.genericService.getUsers(data)
+    .subscribe(
+      (res) => {
+        this.hasData = true;
+        this.showSpinner = false;
+        // this.successCB.apply(this, [res])
+        this.successCB(res, table)
+      },
+      (err) => {
+        this.showSpinner = false;
+        this.errorCB(err)
+
+        if(err.status === 401) {
+          let self = this;
+          this.widget.refreshElseSignout(
+            this,
+            err,
+            self.searchDataRequest.bind(self, org, table)
+          );
+        } else {
+          this.showSpinner = false;
         }
+      }
     );
+
+  }
+
+  // TODO: Not in use at the moment, replaced by this.searchDataRequest
+  getUsers(table?) {
+    // if no table, then send all default, page=1 & limit=25
+    // else, send table data
+    let data = { 
+      page: 1, 
+      limit: +localStorage.getItem("gridPageCount")
+    };
+
+    if(table) {
+      let tab = table.page.info();
+      data = {
+        page: tab.page + 1,
+        limit: tab.length
+      };
+    }
+
+    this.hasData = false;
+    this.showSpinner = true;
+
+    this.genericService.getUsers(data)
+    .subscribe(
+      (res) => {
+        this.hasData = true;
+        this.showSpinner = false;
+        // this.successCB.apply(this, [res])
+        this.successCB(res, table)
+      },
+      (rej) => {
+        this.showSpinner = false;
+        this.errorCB(rej)
+      }
+    )
+  }
+
+  // TODO: Not in use at the moment, replaced by generic.getUsers
+  searchData(org) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/users' + ( org ? ('?org_uuid=' + org) : '');
+
+    return this.http
+      .get(url, options)
+      .map(res => {
+        return res.json();
+      }).share();
   }
 
   OnRoleChanged(e: any): void {
@@ -374,22 +477,6 @@ export class UserManagementComponent implements OnInit  {
       }).share();
   }
 
-  searchData(org) {
-    const AccessToken: any = localStorage.getItem('accessToken');
-    let token = '';
-    if (AccessToken) {
-      // token = AccessToken.accessToken;
-      token = AccessToken;
-    }
-    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
-    const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/users' + ( org ? ('?org_uuid=' + org) : '');
-    return this.http
-      .get(url, options)
-      .map(res => {
-        return res.json();
-      }).share();
-  }
 
   orgChange(value) {
       this.dataObject.isDataAvailable = false;
@@ -579,7 +666,9 @@ export class UserManagementComponent implements OnInit  {
     this.selectedVendor = '';
     modalComponent.hide();
     this.dataObject.isDataAvailable = false;
+
     this.searchDataRequest();
+    // this.getUsers();
   }
 
   handleShowModal(modalComponent: PopUpModalComponent) {
@@ -840,40 +929,5 @@ export class UserManagementComponent implements OnInit  {
     console.log("errorCB: ", rej)
   }
 
-  getUsers(table?) {
-    // if no table, then send all default, page=1 & limit=25
-    // else, send table data
-
-    let data = { 
-      page: 1, 
-      limit: +localStorage.getItem("gridPageCount")
-    };
-
-    if(table) {
-      let tab = table.page.info();
-
-      data = {
-        page:  tab.page + 1,
-        limit: tab.length
-      };
-    }
-
-    this.hasData = false;
-    this.showSpinner = true;
-    this.genericService.getUsers(data)
-    .subscribe(
-      (res) => {
-        this.hasData = true;
-        this.showSpinner = false;
-        // this.successCB.apply(this, [res])
-        this.successCB(res, table)
-      },
-      (rej) => {
-        this.showSpinner = false;
-        this.errorCB(rej)
-      }
-    )
-
-  }
 
 }
