@@ -346,7 +346,6 @@ export class OrdersComponent implements OnInit  {
   }
 
   successCB(res) {
-    console.log("getOrders successCB: res ", res)
     // console.log( " res.json(): ", res.json())
     // this.populateDataTable(res.data.rows, false);
 
@@ -369,13 +368,14 @@ export class OrdersComponent implements OnInit  {
   }
 
   errorCB(res) {
+    let genericErrorString = "Some error occured, please contact the Server Admin with code: ORD_RC"
     // TODO: Some error callback here
     this.showSpinner = false;
     let body = res.json();
     // if (res && res.status == 400) {
       let popUpOptions = {
         title: 'Error',
-        text: body.message,
+        text: body.message || genericErrorString,
         type: 'error',
         reverseButtons: true,
         showCloseButton: true,
@@ -444,8 +444,8 @@ export class OrdersComponent implements OnInit  {
   }
 
   recalculate(option) {
+    // Function Code: ORD_RC
     this.showSpinner = true;
-
     // Compile option/data
     let order_id = $(option.elem).data("orderId");
     let data = {"order_id": order_id};
