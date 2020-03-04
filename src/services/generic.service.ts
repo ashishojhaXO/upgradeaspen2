@@ -114,6 +114,27 @@ export class GenericService {
   }
 
   /**
+   * Success Mock Call
+   * @param dataObj
+   */
+  successMockCall() {
+
+
+    let json = {"data":{"count":479,"rows":[{"email_id":"fusionseven.io+F7890@gmail.com","first_name":"Ratnakar","last_name":"Verma","external_id":"00ujji8z14WARDUBE0h7","external_status":"EXPIRED","last_login (GMT)":"2019-11-05 10:00:52","company_name":"FusionSeven","created_at (GMT)":"2019-02-26 02:17:52","updated_at (GMT)":null},{"email_id":"fusionseven.io+F9999@gmail.com","first_name":"Fusion","last_name":"7even","external_id":"00ujjiomvmcEVJ1mD0h7","external_status":"EXPIRED","last_login (GMT)":"2019-08-16 22:45:46","company_name":"FusionSeven","created_at (GMT)":"2019-02-26 02:19:50","updated_at (GMT)":null},{"email_id":"fusionseven.io+vendorF911@gmail.com","first_name":"Fusion","last_name":"7","external_id":"00ujjixorq5tFQSuC0h7","external_status":"EXPIRED","last_login (GMT)":"2019-09-17 17:15:14","company_name":"FusionSeven","created_at (GMT)":"2019-02-26 02:33:59","updated_at (GMT)":null},{"email_id":"fusionseven.io+f7test123@gmail.com","first_name":"f7","last_name":"test123","external_id":"00ujk9uvgpT1tUbJl0h7","external_status":"EXPIRED","last_login (GMT)":"2019-03-19 18:51:56","company_name":"FusionSeven","created_at (GMT)":"2019-02-27 06:09:45","updated_at (GMT)":null},{"email_id":"fusionseven.io+123123123@gmail.com","first_name":"F","last_name":"7","external_id":"00ujkawh0rnnglJgm0h7","external_status":"EXPIRED","last_login (GMT)":null,"company_name":"FusionSeven","created_at (GMT)":"2019-02-27 06:54:32","updated_at (GMT)":null},{"email_id":"fusionseven.io+123123123123@gmail.com","first_name":"F","last_name":"7","external_id":"00ujkaz1biuZPC8eH0h7","external_status":"EXPIRED","last_login (GMT)":null,"company_name":"FusionSeven","created_at (GMT)":"2019-02-27 07:05:44","updated_at (GMT)":null},{"email_id":"rverma@fusionseven.com","first_name":"Ratnakar","last_name":"Verma","external_id":"00uitnykfeqD2rKaK0h7","external_status":"ACTIVE","last_login (GMT)":"2020-02-06 19:29:10","company_name":"FusionSeven","created_at (GMT)":"2019-02-27 00:00:00","updated_at (GMT)":null},{"email_id":"gurur@fusionseven.com","first_name":"Guru","last_name":"Prasad","external_id":"00uiuhnomqp9UiRtg0h7","external_status":"EXPIRED","last_login (GMT)":"2019-07-12 21:34:20","company_name":"FusionSeven","created_at (GMT)":"2019-02-27 17:51:42","updated_at (GMT)":null},{"email_id":"fusionseven.io+f7876@gmail.com","first_name":"F7","last_name":"f7876","external_id":"00ujkxq70v6trYDGD0h7","external_status":"EXPIRED","last_login (GMT)":null,"company_name":"FusionSeven","created_at (GMT)":"2019-02-28 04:30:02","updated_at (GMT)":null},{"email_id":"fusionseven.io+f7678@gmail.com","first_name":"F7","last_name":"f767","external_id":"00ujkxphu1x7f4PGS0h7","external_status":"EXPIRED","last_login (GMT)":null,"company_name":"FusionSeven","created_at (GMT)":"2019-02-28 04:30:45","updated_at (GMT)":null}]}}
+    return json;
+  }
+
+  /**
+   * Error Mock Call
+   * @param dataObj
+   */
+  errorMockCall() {
+
+  }
+
+
+
+  /**
    * GET Users Method
    * @param dataObj
    */
@@ -124,6 +145,7 @@ export class GenericService {
     let org = data.org;
 
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+
     return this.service.Call(
       'get', 
       apiPath.api +
