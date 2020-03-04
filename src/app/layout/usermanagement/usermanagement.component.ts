@@ -17,6 +17,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { OktaAuthService } from '../../../services/okta.service';
 import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up.component';
 import { GenericService } from '../../../services/generic.service';
+import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 
 @Component({
   selector: 'app-usermanagement',
@@ -79,6 +80,8 @@ export class UserManagementComponent implements OnInit  {
   api_fs: any;
   externalAuth: any;
   @ViewChild('AddUser') addUser: PopUpModalComponent;
+  @ViewChild ( AppDataTable2Component )
+  private appDataTable2Component : AppDataTable2Component;
   userForm: FormGroup;
   userModel: any;
   selectedRole: any;
@@ -283,6 +286,8 @@ export class UserManagementComponent implements OnInit  {
   }
 
   searchDataRequest(org = null, table?) {
+
+
     // if no table, then send all default, page=1 & limit=25
     // else, send table data
     let data = { 
@@ -851,7 +856,11 @@ export class UserManagementComponent implements OnInit  {
   reLoad(){
     this.showSpinner = true;
     this.dataObject.isDataAvailable = false;
-    this.searchDataRequest();
+
+    let org = ""
+    let table = this.appDataTable2Component.table;
+
+    this.searchDataRequest(org, table);
   }
 
   calc(res, table) {
