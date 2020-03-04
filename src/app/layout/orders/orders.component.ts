@@ -39,6 +39,9 @@ export class OrdersComponent implements OnInit  {
     isColVisibility: true,
     isRowHighlight: false,
     isDownloadAsCsv: true,
+
+    isDownloadAsCsvFunction: () => {},
+
     isDownloadOption: {
       value: true,
       icon: '',
@@ -116,6 +119,8 @@ export class OrdersComponent implements OnInit  {
 
 
   ngOnInit() {
+
+    console.log("YOYOY")
 
     this.showSpinner = true;
     this.widget = this.okta.getWidget();
