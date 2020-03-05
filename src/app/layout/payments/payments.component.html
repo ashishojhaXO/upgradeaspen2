@@ -17,7 +17,8 @@
     </select>
   </div>
 </div>
-<div *ngIf="summary.length" style="background-color: #FFF; width: 100%;margin-top: 50px; padding: 10px 0px">
+<p style="clear: both"></p>
+<div *ngIf="summary.length" style="background-color: #FFF; width: 100%;margin-top: 10px; padding: 10px 0px">
   <div style="margin:0px 0px 20px 13px; font-size: 18px;">
     <span>Summary</span>
   </div>
@@ -34,7 +35,7 @@
       <!--<app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height"></app-data-table1>-->
     </div>
     <div class="clearfix"></div>
-    <div class="page-header" *ngIf="!dataObject.isDataAvailable">
+    <div class="page-header" style="margin: 0px" *ngIf="!dataObject.isDataAvailable">
       <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
       <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%; margin-top: 10px">There is no data to display.</div>
     </div>
