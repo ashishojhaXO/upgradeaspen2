@@ -32,7 +32,7 @@ export class OrdersComponent implements OnInit  {
   height: any;
   isRoot: boolean;
   orgArr: any;
-  orgValue: any;
+  orgValue = '';
   options: Array<any> = [{
     isSearchColumn: true,
     isTableInfo: true,
