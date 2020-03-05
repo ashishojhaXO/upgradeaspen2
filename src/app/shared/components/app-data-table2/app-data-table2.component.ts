@@ -446,11 +446,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 domConfig = 'fBtilp';
             }
 
-            let pageLength = 25;
+            let pageLength: Number = 25;
             if( localStorage.getItem('gridPageCount') ){
                 pageLength = +localStorage.getItem('gridPageCount');
-            } else if(this.dataObject.gridData.options.isDisplayStart) {
-                pageLength = this.dataObject.gridData.options.isDisplayStart;
+            } else if(this.dataObject.gridData.options.isPageLengthNo ) {
+                pageLength = this.dataObject.gridData.options.isPageLengthNo;
             }
 
             const dataTableOptions = {
