@@ -160,6 +160,7 @@ export class PaymentsComponent implements OnInit  {
 
     this.searchDataRequest();
     this.getOrganizations();
+    this.searchOrgRequest();
     console.log(this.selectedStatus);
     this.paymentFormNew.controls['payPartialCheck'].valueChanges.subscribe(change => {
       console.log('tick change', change);
@@ -346,6 +347,68 @@ export class PaymentsComponent implements OnInit  {
     this.searchDataRequest();
 
   }
+
+  searchOrgRequest() {
+    return this.searchOrgData().subscribe(
+        response => {
+          if (response && response.data) {
+
+            const orgArr = [];
+            response.data.forEach(function (item) {
+              orgArr.push({
+                id: item.org_uuid,
+                text: item.org_name
+              });
+            });
+
+            this.orgArr = orgArr;
+          }
+        },
+        err => {
+
+          if(err.status === 401) {
+            if(localStorage.getItem('accessToken')) {
+              this.widget.tokenManager.refresh('accessToken')
+                  .then(function (newToken) {
+                    localStorage.setItem('accessToken', newToken);
+                    this.showSpinner = false;
+                    this.searchOrgRequest();
+                  })
+                  .catch(function (err1) {
+                    console.log('error >>')
+                    console.log(err1);
+                  });
+            } else {
+              this.widget.signOut(() => {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/login';
+              });
+            }
+          } else {
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+
+  searchOrgData() {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/orgs';
+    return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
   getOrganizations(){
     this.getAllOrganizations().subscribe(
       response => {
