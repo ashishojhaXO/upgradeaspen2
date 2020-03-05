@@ -114,10 +114,9 @@ export class PaymentsComponent implements OnInit  {
   inSearchMode: boolean = false;
   dropList: boolean = false;
   payeeObject: any;
-
-
-
-
+  isRoot: boolean;
+  orgArr: any;
+  orgValue = '';
 
   constructor(private okta: OktaAuthService, private organizationService: OrganizationService, private route: ActivatedRoute, private router: Router, private http: Http) {
     this.paymentForm = new FormGroup({
@@ -150,6 +149,15 @@ export class PaymentsComponent implements OnInit  {
     this.height = '50vh';
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
+
+    const groups = localStorage.getItem('loggedInUserGroup') || '';
+    const grp = JSON.parse(groups);
+    grp.forEach(function (item) {
+      if(item === 'ROOT' || item === 'SUPER_USER') {
+        this.isRoot = true;
+      }
+    }, this);
+
     this.searchDataRequest();
     this.getOrganizations();
     console.log(this.selectedStatus);
@@ -167,6 +175,11 @@ export class PaymentsComponent implements OnInit  {
         this.getInvoiceItems(this.selectedInvoice);
       }
     });
+  }
+
+  orgChange(value) {
+    this.dataObject.isDataAvailable = false;
+    this.searchDataRequest(value);
   }
 
   onSearchChange(e){
@@ -215,8 +228,8 @@ export class PaymentsComponent implements OnInit  {
     }, 100);
 }
 
-  searchDataRequest() {
-    return this.searchData().subscribe(
+  searchDataRequest(org = null) {
+    return this.searchData(org).subscribe(
         response => {
           if (response) {
             console.log('response >>>')
@@ -237,7 +250,7 @@ export class PaymentsComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.searchDataRequest.bind(self)
             );
           } else {
@@ -247,7 +260,7 @@ export class PaymentsComponent implements OnInit  {
     );
   }
 
-  searchData() {
+  searchData(org = null) {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
@@ -256,7 +269,7 @@ export class PaymentsComponent implements OnInit  {
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/payments/transactions';
+    var url = this.api_fs.api + '/api/payments/transactions' + ( this.isRoot ? ('?org_uuid=' + org) : '');
     return this.http
       .get(url, options)
       .map(res => {
@@ -362,7 +375,7 @@ export class PaymentsComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.getOrganizations.bind(self)
             );
 
@@ -407,7 +420,7 @@ export class PaymentsComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.getPayees.bind(self)
             );
 
@@ -462,7 +475,7 @@ export class PaymentsComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.getVendors.bind(self, orgid)
             );
         } else {
@@ -634,7 +647,7 @@ export class PaymentsComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.createTransactionRequest.bind(self, dataObj)
             );
           } else {
@@ -796,7 +809,7 @@ export class PaymentsComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.updateApService.bind(self, formData),
             );
 

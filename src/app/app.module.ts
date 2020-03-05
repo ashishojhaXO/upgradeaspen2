@@ -17,6 +17,7 @@ import { TagInputModule } from 'ngx-chips';
 import { Ng2MultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
 import { AppPopUpComponent } from './shared/components/app-pop-up/app-pop-up.component';
+import { RouteGuard } from './shared/guard/route.guard';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
@@ -51,6 +52,7 @@ export function HttpLoaderFactory(http: Http) {
     ],
     providers: [
         // AuthGuard, 
+        RouteGuard,
         Validator, Common, Title
     ],
     bootstrap: [AppComponent]
