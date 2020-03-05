@@ -114,6 +114,35 @@ export class GenericService {
   }
 
   /**
+   * Success Mock Call
+   * @param dataObj
+   */
+  successMockCall() {
+
+
+    let json = {
+      "data":
+      {
+        "count":479,
+        "rows":[
+          {"email_id":"fu.io+F7@gmail.com","first_name":"Ra","last_name":"Ve","external_id":"00ujj","external_status":"EX","last_login (GMT)":"2019-11-05 10:00:52","company_name":"Fu","created_at (GMT)":"2019-02-26 02:17:52","updated_at (GMT)":null}
+        ]
+      }
+    }
+    return json;
+  }
+
+  /**
+   * Error Mock Call
+   * @param dataObj
+   */
+  errorMockCall() {
+
+  }
+
+
+
+  /**
    * GET Users Method
    * @param dataObj
    */
@@ -121,13 +150,15 @@ export class GenericService {
 
     let limit = data.limit || 25;
     let page = data.page || 1;
+    let org = data.org;
 
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+
     return this.service.Call(
       'get', 
       apiPath.api +
       this.base.API +
-      this.base.GET_USERS_ENDPOINT + '?limit='+limit+'&page='+page
+      this.base.GET_USERS_ENDPOINT + '?limit='+limit+'&page='+page+ ( org ? ('&org_uuid=' + org) : '')
     );
   }
 
