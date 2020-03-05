@@ -43,8 +43,6 @@ export class AppNavComponent implements OnInit, OnChanges {
 
         let customerInfo =  JSON.parse( localStorage.getItem('customerInfo'));
 
-        console.log("cuINFO: ", customerInfo);
-
         if( customerInfo && customerInfo.org && "hasTemplates" in customerInfo.org ) {
             // Rules for Order Submenu
             var hasTemplates = customerInfo.org.hasTemplates;
