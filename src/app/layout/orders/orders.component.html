@@ -9,7 +9,7 @@
     </div>
   </div>
   <div *ngIf="isRoot">
-    <label class="col-xs-12 col-sm-2">Select Org: </label>
+    <label class="col-xs-12 col-sm-2" style="position: relative; top: 7px">Select Org: </label>
     <div class="col-xs-12 col-sm-6">
       <select [(ngModel)]="orgValue" class="form-control" (change)='orgChange(orgValue)'>
         <option [value]="''" >All</option>
