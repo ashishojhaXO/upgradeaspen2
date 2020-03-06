@@ -53,6 +53,8 @@ export class UserManagementComponent implements OnInit  {
       value: true,
       apiMethod: (table, pageLength) => {
 
+        console.log("apiM: ", table);
+
         this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
 
         // If pageLength was sent, 

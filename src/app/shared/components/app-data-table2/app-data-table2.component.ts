@@ -849,8 +849,10 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             // Handle table draw event ( like pagination, sorting )
             table.on('draw', function () {
                 // Update state of "Select all" control
-                console.log('drawn ....');
+                console.log('drawn....');
                 __this.adjustHeight(__this);
+
+                table.off('draw');
             });
 
             // If we decide to get data of only 1 page to show in the table and not all data
@@ -866,14 +868,15 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table, table.page.len() );
                 });
 
-                // $('#myInput')
+                let currentPage = table.page.info().page;
+                console.log("cP 1: ", currentPage );
+                $(document).off( 'keyup', 'input.input-sm');
                 $(document).on( 'keyup', 'input.input-sm', function () {
-                    console.log("Loooooooo");
+                    console.log("Loooooooo: cP: ", currentPage, " info: ", table.page.info() );
                     // table.search( this.value ).draw();
                     // table.search( this.value ).draw(false);
+                    table.page(currentPage).draw(false);
                 });
-
-
 
 
             }
@@ -1972,6 +1975,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     }
 
     adjustHeight(context){
+        console.log("adHEI context: ", context);
         if(context.fixedColumnFlag){
             // console.log('context.height>>>>>>', context.height);
             let height = context.height - 18;
