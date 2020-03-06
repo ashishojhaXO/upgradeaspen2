@@ -866,6 +866,16 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table, table.page.len() );
                 });
 
+                // $('#myInput')
+                $(document).on( 'keyup', 'input.input-sm', function () {
+                    console.log("Loooooooo");
+                    // table.search( this.value ).draw();
+                    // table.search( this.value ).draw(false);
+                });
+
+
+
+
             }
 
             // Highlight pre checked rows
