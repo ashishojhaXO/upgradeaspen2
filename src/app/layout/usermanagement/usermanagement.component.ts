@@ -339,14 +339,14 @@ export class UserManagementComponent implements OnInit  {
       org: org ? org : ''
     };
 
-    this.hasData = false;
-    this.showSpinner = true;
+    // this.hasData = false;
+    // this.showSpinner = true;
 
     return this.genericService.getUsersCsv(data)
     .subscribe(
       (res) => {
         this.hasData = true;
-        this.showSpinner = false;
+        // this.showSpinner = false;
         // this.successCB.apply(this, [res])
         this.successCBCsv(res, table)
       },
@@ -949,7 +949,7 @@ export class UserManagementComponent implements OnInit  {
     this.response = res.data.rows;
     // let li = this.calc(res, table);
 
-    this.dataObject = {};
+    // this.dataObject = {};
     console.log("Download Csv Here...")
   }
 
