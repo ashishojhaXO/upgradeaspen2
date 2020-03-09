@@ -409,8 +409,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     }
                     if(__this.dataObject.gridData.options.isDownloadAsCsvFunc) {
                         dict['action'] = function ( e, dt, node, config ) {
-                            console.log("actionssssssss: ", __this);
-                            // offset to 0 and limit to MAX_SIZE(100000000);
                             // __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod.apply(__this, [table, table.page.len(), "csv" ] );
                             __this.dataObject.gridData.options.isDownloadAsCsvFunc(table, table.page.len(), "csv");
                         }
