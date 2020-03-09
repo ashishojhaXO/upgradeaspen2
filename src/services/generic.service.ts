@@ -140,8 +140,6 @@ export class GenericService {
 
   }
 
-
-
   /**
    * GET Users Method
    * @param dataObj
@@ -156,9 +154,27 @@ export class GenericService {
 
     return this.service.Call(
       'get', 
-      apiPath.api +
-      this.base.API +
-      this.base.GET_USERS_ENDPOINT + '?limit='+limit+'&page='+page+ ( org ? ('&org_uuid=' + org) : '')
+      apiPath.api + this.base.API + this.base.GET_USERS_ENDPOINT + '?limit='+limit+'&page='+page+ ( org ? ('&org_uuid=' + org) : '')
+    );
+  }
+
+  /**
+   * GET UsersCsv Method
+   * @param dataObj
+   */
+  getUsersCsv(data) {
+
+    let limit = data.limit != null ? data.limit : 25;
+    let page = data.page != null ? data.page : 1;
+    let org = data.org;
+
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+
+    return this.service.Call(
+      'get', 
+      apiPath.api + this.base.API + this.base.GET_USERS_ENDPOINT + '?limit='+limit+'&page='+page+ ( org ? ('&org_uuid=' + org) : ''),
+      {},
+      {"Content-Type": "application/csv"}
     );
   }
 
