@@ -40,7 +40,6 @@ export class UserManagementComponent implements OnInit  {
     isColVisibility: true,
     isDownloadAsCsv: true,
     isDownloadAsCsvFunc: ( table, pageLength, csv?) => {
-      // limit=10000000&page=0
       this.apiMethod(table, pageLength, csv);
     },
     isDownloadOption: false,
@@ -56,7 +55,6 @@ export class UserManagementComponent implements OnInit  {
     isApiCallForNextPage: {
       value: true,
       apiMethod: ( table, pageLength, csv?) => {
-        // limit=10000000&page=0
         this.apiMethod(table, pageLength, csv);
       },
 
@@ -159,9 +157,6 @@ export class UserManagementComponent implements OnInit  {
   }
 
   apiMethod = (table, pageLength, csv?) => {
-    // In case of Download, page=0 & limit=MAX
-    // limit=10000000&page=0
-
     this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
     
     if(csv){
