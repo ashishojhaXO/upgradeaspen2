@@ -453,6 +453,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 pageLength = this.dataObject.gridData.options.isPageLengthNo;
             }
 
+            // TODO: HERE
             const dataTableOptions = {
                 scrollY: this.height ? this.height : 320,
                 scrollX: true,
@@ -857,27 +858,39 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             // If we decide to get data of only 1 page to show in the table and not all data
             if (__this.dataObject.gridData.options.isApiCallForNextPage ) {
-                table.off('page.dt');
-                table.on('page.dt', function () {
-                    __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table);
-                } );
 
-                $(document).off('change', 'select.input-sm');
-                $(document).on('change', 'select.input-sm', function (ev) {
+                // Can't have page.dt event as, when the page.draw event fires, this function starts
+                // table.off('page.dt', 'click');
+                // table.on('page.dt', 'click', function () {
+                //     console.log('ON.page.dt....');
+                //     __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table);
+                // } );
+
+                // Instead of 'page.dt' page change event, call this on the onClick event on pagination numbers
+                $(document).off('click', 'li.paginate_button');
+                $(document).on('click', "li.paginate_button", function (ev) {
+                    if (! $(ev.target).parent().is(".active") ) {
+                        localStorage.setItem('gridPageCount', table.page.len() );
+                        __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table, table.page.len() );
+                    }
+                });
+
+                table.on("length", function (ev) {
                     localStorage.setItem('gridPageCount', table.page.len() );
                     __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table, table.page.len() );
+
+                    table.off("length");
                 });
+                
 
                 let currentPage = table.page.info().page;
-                console.log("cP 1: ", currentPage );
                 $(document).off( 'keyup', 'input.input-sm');
-                $(document).on( 'keyup', 'input.input-sm', function () {
-                    console.log("Loooooooo: cP: ", currentPage, " info: ", table.page.info() );
-                    // table.search( this.value ).draw();
-                    // table.search( this.value ).draw(false);
-                    table.page(currentPage).draw(false);
+                $(document).on( 'keyup', 'input.input-sm', function (ev) {
+                    // If currentPage exists, currentPage is not the same as table's page & also input value goes empty
+                    if(currentPage && currentPage != table.page.info().page && ev.currentTarget.value.trim() == "" ){
+                        table.page(currentPage).draw(false);
+                    }
                 });
-
 
             }
 
