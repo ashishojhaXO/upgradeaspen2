@@ -51,7 +51,7 @@ export class Service {
         let opts = {};
         opts = {...Options};
         if(options){
-          opts = {...options}
+          opts = {...opts, ...options}
         }
           
         return this.http
