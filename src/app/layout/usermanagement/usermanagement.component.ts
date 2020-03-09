@@ -359,7 +359,7 @@ export class UserManagementComponent implements OnInit  {
           this.widget.refreshElseSignout(
             this,
             err,
-            self.searchDataRequest.bind(self, org, table)
+            self.searchDataRequestCsv.bind(self, org, table)
           );
         } else {
           this.showSpinner = false;
