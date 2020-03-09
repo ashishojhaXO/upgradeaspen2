@@ -348,7 +348,7 @@ export class UserManagementComponent implements OnInit  {
         this.hasData = true;
         this.showSpinner = false;
         // this.successCB.apply(this, [res])
-        this.successCB(res, table)
+        this.successCBCsv(res, table)
       },
       (err) => {
         this.showSpinner = false;
@@ -941,6 +941,16 @@ export class UserManagementComponent implements OnInit  {
     this.dataObject = {};
     // this.populateDataTable(res.data.rows, false);
     this.populateDataTable(li, false);
+  }
+
+  successCBCsv(res, table) {
+
+    // Set this.response, before calc
+    this.response = res.data.rows;
+    // let li = this.calc(res, table);
+
+    this.dataObject = {};
+    console.log("Download Csv Here...")
   }
 
   errorCB(rej) {
