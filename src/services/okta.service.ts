@@ -59,15 +59,19 @@ export class OktaAuthService {
     })
   }
 
-  refreshElseSignout(obj, err, successFuncName, errorFuncName) {
-    if(localStorage.getItem('accessToken')) {
+  refreshCounter = 0;
+
+  refreshElseSignout(obj, err, successFuncName, errorFuncName ) {
+    this.refreshCounter++;
+
+    if(localStorage.getItem('accessToken') || this.refreshCounter < 3) {
       this.tokenManager.refresh(
         'accessToken', 
         successFuncName,
         errorFuncName
       );
     } else {
-      console.log("ELSE SIGNOUT")
+      console.log("ELSE SIGNOUT & RefreshCounter > 3")
       this.signOut();
     }
 

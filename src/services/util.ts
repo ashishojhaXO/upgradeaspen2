@@ -48,10 +48,12 @@ export class Service {
       }
 
       case 'get': {
-        let opts = Options;
+        let opts = {};
+        opts = {...Options};
         if(options){
-          opts = options;
+          opts = {...options}
         }
+          
         return this.http
           .get(Url, opts)
           .map(res => {
