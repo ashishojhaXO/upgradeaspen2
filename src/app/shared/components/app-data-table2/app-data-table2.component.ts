@@ -1990,7 +1990,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     }
 
     adjustHeight(context){
-        console.log("adHEI context: ", context);
         if(context.fixedColumnFlag){
             // console.log('context.height>>>>>>', context.height);
             let height = context.height - 18;
