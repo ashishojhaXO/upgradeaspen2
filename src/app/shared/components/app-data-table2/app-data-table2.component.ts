@@ -400,13 +400,22 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 }
 
                 if (this.dataObject.gridData.options.isDownloadAsCsv) {
-                    gridButtons.push({
+                    let dict = {
                         extend: 'csv',
                         text: '<span><i class="fa fa-download fa-Idown" aria-hidden="true"></i></span>',
                         exportOptions: {
                             columns: ":visible"
                         }
-                    });
+                    }
+                    if(__this.dataObject.gridData.options.isDownloadAsCsvFunc) {
+                        dict['action'] = function ( e, dt, node, config ) {
+                            console.log("actionssssssss: ", __this);
+                            // offset to 0 and limit to MAX_SIZE(100000000);
+                            // __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod.apply(__this, [table, table.page.len(), "csv" ] );
+                            __this.dataObject.gridData.options.isDownloadAsCsvFunc(table, table.page.len(), "csv");
+                        }
+                    }
+                    gridButtons.push(dict);
                 }
 
                 if (this.dataObject.gridData.options.isColVisibility) {
@@ -859,25 +868,20 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             // If we decide to get data of only 1 page to show in the table and not all data
             if (__this.dataObject.gridData.options.isApiCallForNextPage ) {
 
-                // Can't have page.dt event as, when the page.draw event fires, this function starts
-                // table.off('page.dt', 'click');
-                // table.on('page.dt', 'click', function () {
-                //     console.log('ON.page.dt....');
-                //     __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table);
-                // } );
-
                 // Instead of 'page.dt' page change event, call this on the onClick event on pagination numbers
                 $(document).off('click', 'li.paginate_button');
                 $(document).on('click', "li.paginate_button", function (ev) {
                     if (! $(ev.target).parent().is(".active") ) {
                         localStorage.setItem('gridPageCount', table.page.len() );
-                        __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table, table.page.len() );
+                        __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod.apply(__this, [table, table.page.len()] );
                     }
                 });
 
                 table.on("length", function (ev) {
+                    __this.dataObject.gridData.options.isPageLengthNo = table.page.len();
                     localStorage.setItem('gridPageCount', table.page.len() );
-                    __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table, table.page.len() );
+                    // __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table, table.page.len() );
+                    __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod.apply(__this, [table, table.page.len() ] );
 
                     table.off("length");
                 });

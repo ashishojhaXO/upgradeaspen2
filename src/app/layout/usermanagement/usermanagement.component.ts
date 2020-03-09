@@ -39,6 +39,10 @@ export class UserManagementComponent implements OnInit  {
     isAddRow: false,
     isColVisibility: true,
     isDownloadAsCsv: true,
+    isDownloadAsCsvFunc: ( table, pageLength, csv?) => {
+      // limit=10000000&page=0
+      this.apiMethod(table, pageLength, csv);
+    },
     isDownloadOption: false,
     isRowSelection: null,
     isPageLength: true,
@@ -51,30 +55,11 @@ export class UserManagementComponent implements OnInit  {
     // For limited pagewise data
     isApiCallForNextPage: {
       value: true,
-      apiMethod: (table, pageLength) => {
+      apiMethod: ( table, pageLength, csv?) => {
+        // limit=10000000&page=0
+        this.apiMethod(table, pageLength, csv);
+      },
 
-        console.log("apiM: ", table);
-
-        this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
-
-        // If pageLength was sent, 
-        // which means a click on dropdown was made, and so, reset to page 1
-        if(pageLength) {
-          // TODO: If we change the page dropdown suddenly in the middle from links, 
-          // table.start comes as adjust pageNo, 
-          // for eg. page3 Of 25 rows -> shift to -> 10 rows gives start page no. as 6
-
-          // Reset
-          // this.options[0].isDisplayStart = 0;
-          // Set new pageLenght for menu
-          this.options[0].isPageLengthNo = pageLength;
-        }
-
-        // this.getUsers(table);
-        this.searchDataRequest(null, table);
-
-        // Make ApiCall to backend with PageNo, Limit, 
-      }
     },
 
   }];
@@ -171,6 +156,19 @@ export class UserManagementComponent implements OnInit  {
     // this.getUsers();
 
     this.searchOrgRequest();
+  }
+
+  apiMethod = (table, pageLength, csv?) => {
+    // In case of Download, page=0 & limit=MAX
+    // limit=10000000&page=0
+
+    this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
+    
+    if(csv){
+      this.searchDataRequestCsv(null, table);
+    }
+    else
+      this.searchDataRequest(null, table);
   }
 
   searchOrgRequest() {
@@ -287,18 +285,17 @@ export class UserManagementComponent implements OnInit  {
     )
   }
 
-  searchDataRequest(org = null, table?) {
-
+  searchDataRequest(org = null, table?, page=null, limit=null) {
 
     // if no table, then send all default, page=1 & limit=25
     // else, send table data
     let data = { 
-      page: 1, 
-      limit: +localStorage.getItem("gridPageCount"),
+      page: page != null ? page : 1, 
+      limit: limit != null ? limit : +localStorage.getItem("gridPageCount"),
       org: org ? org : ''
     };
 
-    if(table) {
+    if(table && page != null && limit != null) {
       let tab = table.page.info();
       data = {
         page: tab.page + 1,
@@ -310,33 +307,47 @@ export class UserManagementComponent implements OnInit  {
     this.hasData = false;
     this.showSpinner = true;
 
-    // return this.searchData(org)
-    // .subscribe(
-    //     response => {
-    //       if (response && response.length) {
-    //         this.showSpinner = false;
-    //         this.hasData = true;
-    //         this.populateDataTable(response, true);
-    //       } else {
-    //         this.dataObject.isDataAvailable = true;
-    //       }
-    //     },
-    //     err => {
-    //       if(err.status === 401) {
-    //         let self = this;
-    //         this.widget.refreshElseSignout(
-    //           this,
-    //           err,
-    //           self.searchDataRequest.bind(self)
-    //         );
-    //       } else {
-    //         this.showSpinner = false;
-    //       }
-    //     }
-    // );
-
-
     return this.genericService.getUsers(data)
+    .subscribe(
+      (res) => {
+        this.hasData = true;
+        this.showSpinner = false;
+        // this.successCB.apply(this, [res])
+        this.successCB(res, table)
+      },
+      (err) => {
+        this.showSpinner = false;
+        this.errorCB(err)
+
+        if(err.status === 401) {
+          let self = this;
+          this.widget.refreshElseSignout(
+            this,
+            err,
+            self.searchDataRequest.bind(self, org, table)
+          );
+        } else {
+          this.showSpinner = false;
+        }
+      }
+    );
+
+  }
+
+  searchDataRequestCsv(org = null, table?) {
+
+    // if no table, then send all default, page=1 & limit=25
+    // else, send table data
+    let data = { 
+      page: 0, 
+      limit: 10000000,
+      org: org ? org : ''
+    };
+
+    this.hasData = false;
+    this.showSpinner = true;
+
+    return this.genericService.getUsersCsv(data)
     .subscribe(
       (res) => {
         this.hasData = true;

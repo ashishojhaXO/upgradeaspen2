@@ -19,7 +19,7 @@ export class Service {
    * @param url
    * @param data
    */
-  Call(method: any, url: any, data: any) {
+  Call(method: any, url: any, data: any, options?: any) {
 
     const Url = url;
     const Method = method;
@@ -48,8 +48,12 @@ export class Service {
       }
 
       case 'get': {
+        let opts = Options;
+        if(options){
+          opts = options;
+        }
         return this.http
-          .get(Url, Options)
+          .get(Url, opts)
           .map(res => {
             return res.json();
           }).share();
@@ -90,9 +94,16 @@ export class Service {
    * @returns Header Object
    */
   getHeaders() {
+    // TODO: Need to accept Dynamic headers here
     const token = localStorage.getItem('accessToken'); // "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1YWRkYjAxODA4MzZjMDA5ODRiY2UyN2UiLCJlbWFpbCI6ImZ1c2lvbnNldmVuLmlvK2J0aWxAZ21haWwuY29tIiwibmFtZSI6IkRFVl9CVElMIiwiY2xpZW50Q29kZSI6ImJ0aWwiLCJleHAiOjE1NTAxNDA4NjUsImlhdCI6MTU0OTUzNjA2NX0.nNwbKih3u9Yby4hlV0gXW7qXWs22V5Gq6QaB5aRjhCg";
     // const token = localStorage.getItem('token')
-    const headers = new Headers({ 'Content-Type': 'application/json', token: token, callingapp : 'aspen' });
+    const headers = new Headers(
+      { 
+        'Content-Type': 'application/json', 
+        token: token, 
+        callingapp : 'aspen' 
+      }
+    );
     return new RequestOptions({ headers: headers });
   }
 
