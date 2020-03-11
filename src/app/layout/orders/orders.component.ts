@@ -17,6 +17,8 @@ import { AppDataTable2Component } from '../../shared/components/app-data-table2/
 import Swal from 'sweetalert2';
 import { GenericService } from '../../../services/generic.service';
 import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up.component';
+import { PopUpModalComponent } from '../../shared/components/pop-up-modal/pop-up-modal.component';
+import { modalConfigDefaults } from 'ngx-bootstrap/modal/modal-options.class';
 
 @Component({
   selector: 'app-orders',
@@ -42,9 +44,7 @@ export class OrdersComponent implements OnInit  {
     isColVisibility: true,
     isRowHighlight: false,
     isDownloadAsCsv: true,
-
     isDownloadAsCsvFunction: () => {},
-
     isDownloadOption: {
       value: true,
       icon: '',
@@ -110,6 +110,7 @@ export class OrdersComponent implements OnInit  {
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
   selectedRow: any;
+  @ViewChild('AddUser') addUser: PopUpModalComponent;
 
   constructor(
     private okta: OktaAuthService,
@@ -122,8 +123,6 @@ export class OrdersComponent implements OnInit  {
 
 
   ngOnInit() {
-
-    console.log("YOYOY")
 
     this.showSpinner = true;
     this.widget = this.okta.getWidget();
@@ -328,8 +327,47 @@ export class OrdersComponent implements OnInit  {
     if(this[rowObj.action])
       this[rowObj.action](rowObj);
   }
-
+  
+  receiptList: Array<Object>;
   handleDownload(dataObj: any) {
+    // Show modal with Downloadable Receipts and their Download links
+    console.log("dO : ", dataObj, " adUs: ", this.addUser)
+    // Call all receipts & then call this.handleDownloadLink or this.searchDownloadLink
+
+    let data = dataObj;
+    this.showSpinner = true;
+
+    this.genericService.getOrderReceiptList(data)
+    .subscribe(
+      (res) => {
+        this.showSpinner = false;
+        // this.receiptList = res.data;
+        this.receiptList = [
+          {start_date: "s1", end_date: "e1", download: "d1"},
+          {start_date: "s2", end_date: "e2", download: "d2"}
+        ];
+        
+        // Show modal popUp, from there run this.handleDownloadLink(receiptId)
+        this.addUser.show();
+      },
+      (rej) => {
+        this.showSpinner = false;
+
+        // TODO: FTM remove later
+        this.receiptList = [
+          {start_date: "s1", end_date: "e1", download: "d1"},
+          {start_date: "s2", end_date: "e2", download: "d2"}
+        ];
+        this.addUser.show();
+        // TODO: FTM remove later/
+
+        this.errorCB(rej);
+      }
+
+    )
+  }
+
+  handleDownloadLink(dataObj: any) {
     const downloadId = dataObj.data.Vendor_Receipt_Id;
     const orderId = dataObj.data.Order_Id;
 

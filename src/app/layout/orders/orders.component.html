@@ -50,4 +50,35 @@
     </div>
   </div>
 </div>
+
+<div style="width:100%">
+  <app-pop-up-modal #AddUser>
+    <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
+      Add User
+    </div>
+    <div class="app-modal-body">
+      <div class="content">
+        Some content...
+        <div class="row">
+          <div class="col-md-3">Start Date</div>
+          <div class="col-md-3">End Date</div>
+          <div class="col-md-3">Download Link</div>
+        </div>
+        <div class="row" *ngFor="let rec of receiptList">
+          <div class="col-md-3">{{rec.start_date}}</div>
+          <div class="col-md-3">{{rec.end_date}}</div>
+          <div class="col-md-3" (click)="handleDownloadLink()">{{rec.download}}</div>
+        </div>
+
+      </div>
+    </div>
+    <div class="app-modal-footer">
+        Adduser: {{addUser}}
+      <button type="button" class="inaction-btn" (click)="addUser.hide()">
+        Close
+      </button>
+    </div>
+  </app-pop-up-modal>
+</div>
+
 <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
