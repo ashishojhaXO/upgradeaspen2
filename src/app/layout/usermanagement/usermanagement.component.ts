@@ -497,6 +497,7 @@ export class UserManagementComponent implements OnInit  {
   }  
 
   setDataTableHeaders( ) {
+    // Ideally pass data into this function & then set the DataTableHeaders
     let tableData = this.response;
     let headers = [];
 
@@ -520,6 +521,7 @@ export class UserManagementComponent implements OnInit  {
   }
 
   populateDataTable(response, initialLoad) {
+    // @param: response: response is not longer actual Api_Response, its a differently compiled response from successCB function
     const tableData = response;
     this.gridData = {};
     this.gridData['result'] = [];
@@ -533,8 +535,6 @@ export class UserManagementComponent implements OnInit  {
     this.dataObject.gridData = this.gridData;
     this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
     // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
-
-    console.log("SUC pDT: ", this.gridData  );
   }
 
   OnSubmit(modalComponent: PopUpModalComponent) {
@@ -879,10 +879,10 @@ export class UserManagementComponent implements OnInit  {
       keyNames[keyNamesList[i]] = null;
     }
 
-    // Even when table is not there, still we need to ru this,
+    // Even when table is not there, still we need to run this,
     // Since, data will be of the first page.
     // If !table
-    // If in the start
+    // Data is in the start, It is the 1st page data, fill the array in the starting
     if (!table || table.page.info().start == 0) {
       li.push(...res.data.rows);
       for(let i = res.data.rows.length; i < res.data.count; i++) {
@@ -896,20 +896,21 @@ export class UserManagementComponent implements OnInit  {
       let tab = table.page.info();
       if(tab.start != 0 && tab.start + +tab.length != res.data.count) {
 
-        // Then fill in the middle
+        // Then fill the array in the middle
+        // Empty in start
         for(let i = 0; i < tab.start; i++) {
-          // res.data.rows.push({i: i});
           li.push(keyNames )
         }
+        // Data in Middle
         li.push(...res.data.rows);
+        // Empty data in the end
         for(let i = tab.start + res.data.rows.length; i < res.data.count; i++) {
-          // res.data.rows.push({i: i});
           li.push( keyNames )
         }
       }
 
 
-      // Fill at the end
+      // Fill Data at the end of the Array 
       if( tab.start != 0 && tab.start + +tab.length == res.data.count 
         // table.page.info().end == res.data.count 
         ) {
@@ -930,6 +931,9 @@ export class UserManagementComponent implements OnInit  {
   successCB(res, table) {
 
     // Set this.response, before calc
+    // Since now, populateDataTable is getting made up, 
+    // EmptyData_ActualData_EmptyData response, & not the actualy API_Response
+    // 
     this.response = res.data.rows;
     let li = this.calc(res, table);
 
@@ -939,18 +943,32 @@ export class UserManagementComponent implements OnInit  {
     // CurrentPageNo:
     // TotalCountofRows:
     this.dataObject = {};
-    // this.populateDataTable(res.data.rows, false);
     this.populateDataTable(li, false);
   }
 
   successCBCsv(res, table) {
-
     // Set this.response, before calc
-    this.response = res.data.rows;
+    let rows = res.data.rows;
     // let li = this.calc(res, table);
+    console.log("Download Csv Here...");
 
-    // this.dataObject = {};
-    console.log("Download Csv Here...")
+    let arr: Array<String> = [];
+
+    if (rows && rows.length) {
+      arr.push( Object.keys(rows[0]).join(",") );
+      let dataRows = rows.map( (k, v) => { return Object.values(k).join(", "); } ) 
+      arr = arr.concat(dataRows);
+    }
+
+    let csvStr: String = "";
+    csvStr = arr.join("\n");
+
+    // var data = encode(csvStr);
+    let b64 = btoa(csvStr as string);
+    let a = "data:text/csv;base64," + b64;
+    $('<a href='+a+' download="data.csv">')[0].click();
+
+    return arr;
   }
 
   errorCB(rej) {
