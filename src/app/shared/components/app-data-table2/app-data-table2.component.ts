@@ -400,13 +400,20 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 }
 
                 if (this.dataObject.gridData.options.isDownloadAsCsv) {
-                    gridButtons.push({
+                    let dict = {
                         extend: 'csv',
                         text: '<span><i class="fa fa-download fa-Idown" aria-hidden="true"></i></span>',
                         exportOptions: {
                             columns: ":visible"
                         }
-                    });
+                    }
+                    if(__this.dataObject.gridData.options.isDownloadAsCsvFunc) {
+                        dict['action'] = function ( e, dt, node, config ) {
+                            // __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod.apply(__this, [table, table.page.len(), "csv" ] );
+                            __this.dataObject.gridData.options.isDownloadAsCsvFunc(table, table.page.len(), "csv");
+                        }
+                    }
+                    gridButtons.push(dict);
                 }
 
                 if (this.dataObject.gridData.options.isColVisibility) {
@@ -453,6 +460,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 pageLength = this.dataObject.gridData.options.isPageLengthNo;
             }
 
+            // TODO: HERE
             const dataTableOptions = {
                 scrollY: this.height ? this.height : 320,
                 scrollX: true,
@@ -849,21 +857,41 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             // Handle table draw event ( like pagination, sorting )
             table.on('draw', function () {
                 // Update state of "Select all" control
-                console.log('drawn ....');
+                console.log('drawn....');
                 __this.adjustHeight(__this);
+
+                table.off('draw');
             });
 
             // If we decide to get data of only 1 page to show in the table and not all data
             if (__this.dataObject.gridData.options.isApiCallForNextPage ) {
-                table.off('page.dt');
-                table.on('page.dt', function () {
-                    __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table);
-                } );
 
-                $(document).off('change', 'select.input-sm');
-                $(document).on('change', 'select.input-sm', function (ev) {
+                // Instead of 'page.dt' page change event, call this on the onClick event on pagination numbers
+                $(document).off('click', 'li.paginate_button');
+                $(document).on('click', "li.paginate_button", function (ev) {
+                    if (! $(ev.target).parent().is(".active") ) {
+                        localStorage.setItem('gridPageCount', table.page.len() );
+                        __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod.apply(__this, [table, table.page.len()] );
+                    }
+                });
+
+                table.on("length", function (ev) {
+                    __this.dataObject.gridData.options.isPageLengthNo = table.page.len();
                     localStorage.setItem('gridPageCount', table.page.len() );
-                    __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table, table.page.len() );
+                    // __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table, table.page.len() );
+                    __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod.apply(__this, [table, table.page.len() ] );
+
+                    table.off("length");
+                });
+                
+
+                let currentPage = table.page.info().page;
+                $(document).off( 'keyup', 'input.input-sm');
+                $(document).on( 'keyup', 'input.input-sm', function (ev) {
+                    // If currentPage exists, currentPage is not the same as table's page & also input value goes empty
+                    if(currentPage && currentPage != table.page.info().page && ev.currentTarget.value.trim() == "" ){
+                        table.page(currentPage).draw(false);
+                    }
                 });
 
             }
