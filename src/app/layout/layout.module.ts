@@ -50,6 +50,7 @@ import {OrgManagementComponent} from './../layout/orgManagement/orgManagement.co
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
 import {EmailManagementComponent} from './../layout/emailManagement/emailManagement.component';
+import {OrderDashboardComponent} from './../layout/orderDashboard/orderDashboard.component';
 
 // providers
 import { AuthGuard } from './../shared';
@@ -123,7 +124,8 @@ import { NumericDirective } from '../shared/directives/Numeric.directive';
         UserSettingsComponent,
         OrgManagementComponent,
         AnalyticsComponent,
-        EmailManagementComponent
+        EmailManagementComponent,
+        OrderDashboardComponent
     ],
     providers: [
         AuthGuard,

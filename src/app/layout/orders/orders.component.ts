@@ -40,13 +40,18 @@ export class OrdersComponent implements OnInit  {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
-    isRowHighlight: false,
+    isRowHighlight: true,
     isDownloadAsCsv: true,
     isDownloadOption: {
       value: true,
       icon: '',
       dependency: ['Vendor_Receipt_Id'],
       tooltip: 'Download Vendor Receipt'
+    },
+    isPlayOption: {
+      value : true,
+      icon : 'fa-info-circle',
+      tooltip: 'View Details'
     },
 
     // Commenting out fixedColumn, as we need subRow isTree children child row, to show action buttons
@@ -60,7 +65,7 @@ export class OrdersComponent implements OnInit  {
     // since default ordering assigned in dataTable is [[1, 'asc']]
     // isOrder: [[2, 'asc']],
     isOrder: [[3, 'asc']],
-    isHideColumns: [ "Vendor_Receipt_Id"],
+    isHideColumns: [ "Vendor_Receipt_Id","internal_line_item_id","internal_order_id"],
 
     // TODO: Check for PageLen change event also...
     // isApiCallForNextPage: {
@@ -103,6 +108,9 @@ export class OrdersComponent implements OnInit  {
   externalAuth: any;
   showSpinner: boolean;
   widget: any;
+  selectedOrderID: any;
+  selectedLineItemID: any;
+  hideTable: any;
 
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
@@ -342,6 +350,14 @@ export class OrdersComponent implements OnInit  {
     }
   }
 
+  handleRun(dataObj: any) {
+    console.log('dataObj.data >>')
+    console.log(dataObj.data);
+    this.selectedOrderID = dataObj.data.internal_order_id;
+    this.selectedLineItemID = dataObj.data.internal_line_item_id;
+    this.hideTable = true;
+  }
+
   searchDownloadLink(downloadId, orderId) {
     var self = this;
     this.getDownloadLink(downloadId).subscribe(
@@ -557,4 +573,9 @@ export class OrdersComponent implements OnInit  {
     }
   }
 
+  showOrders() {
+    this.hideTable = false;
+    this.selectedOrderID = null;
+    this.selectedLineItemID = null;
+  }
 }
