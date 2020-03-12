@@ -192,4 +192,86 @@ export class OrderDashboardComponent implements OnInit  {
     // Menu의 active를 반전
     this.lineItemDetails[index].active = !this.lineItemDetails[index].active;
   }
+
+  payOrder() {
+    if (!this.orderDetails.payment_received_date) {
+      this.router.navigate(['/app/orderPayment/', this.orderID]);
+    }
+  }
+
+  editOrder() {
+    if (!this.orderDetails.payment_received_date) {
+      this.router.navigate(['/app/order/create', this.orderID]);
+    }
+  }
+
+  cancelOrder() {
+    if (!this.orderDetails.payment_received_date) {
+      Swal({
+        title: 'Are you sure you want to delete this order?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+      }).then((result) => {
+        if (result.value) {
+          this.cancelOrderRequest(this.orderID);
+        }
+      });
+    }
+  }
+
+  cancelOrderRequest(orderID) {
+    let self = this;
+    this.cancelRequest(orderID).subscribe(
+        response => {
+          console.log('response >>')
+          console.log(response);
+          this.showSpinner = false;
+        },
+        err => {
+
+          if(err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+                this,
+                err,
+                self.cancelRequest.bind(self, orderID),
+            );
+
+          } else {
+            // Swal({
+            //   title: 'No Invoices found',
+            //   text: 'We did not find any invoices associated with ID : ' + invoiceId,
+            //   type: 'error'
+            // }).then( () => {
+            //  // this.router.navigate(['/app/admin/invoices']);
+            // });
+            // this.showSpinner = false;
+          }
+        }
+    );
+  }
+
+  cancelRequest(orderID) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    const data: any = {
+      order_id : orderID
+    };
+    var url = this.api_fs.api + '/api/orders/delete' ;
+    return this.http
+        .post(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
 }
