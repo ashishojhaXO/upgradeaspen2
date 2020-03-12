@@ -879,7 +879,12 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 table.on("length", function (ev) {
                     __this.dataObject.gridData.options.isPageLengthNo = table.page.len();
                     localStorage.setItem('gridPageCount', table.page.len() );
-                    // __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table, table.page.len() );
+                    
+                    // Since dataTables adjusts startPage automatically on change of Length Dropdown
+                    // If we need to pagss the previous pageNumber, this below maybe required
+                    // if(currentPage && currentPage != table.page.info().page ){
+                    //     __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod.apply(__this, [table, table.page.len() ] );
+                    // }
                     __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod.apply(__this, [table, table.page.len() ] );
 
                     table.off("length");
