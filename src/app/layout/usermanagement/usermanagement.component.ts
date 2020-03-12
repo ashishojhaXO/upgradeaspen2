@@ -280,17 +280,17 @@ export class UserManagementComponent implements OnInit  {
     )
   }
 
-  searchDataRequest(org = null, table?, page=null, limit=null) {
+  searchDataRequest(org = null, table? ) {
 
     // if no table, then send all default, page=1 & limit=25
     // else, send table data
     let data = { 
-      page: page != null ? page : 1, 
-      limit: limit != null ? limit : +localStorage.getItem("gridPageCount"),
+      page: 1, 
+      limit: +localStorage.getItem("gridPageCount"),
       org: org ? org : ''
     };
 
-    if(table && page != null && limit != null) {
+    if(table) {
       let tab = table.page.info();
       data = {
         page: tab.page + 1,
