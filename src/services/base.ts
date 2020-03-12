@@ -18,7 +18,7 @@ export class BaseService {
   POST_REGENERATE_RECEIPT_ENDPOINT = '/regenerate-receipt';
   POST_REPROCESS_ENDPOINT = '/reprocess';
   POST_RECALCULATE_ENDPOINT = '/orders/recalculate';
-  GET_ORDERS_RECEIPT_ENDPOINT = '/orders/receipt/order_id'
+  POST_ORDERS_RECEIPT_DOWNLOAD_ENDPOINT = '/orders/receipt/download'
 
   LOGIN_URL = this.BASE_URL + '/v4/login';
 

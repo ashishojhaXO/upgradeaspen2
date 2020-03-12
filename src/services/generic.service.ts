@@ -234,13 +234,15 @@ export class GenericService {
     );
   }
   
-  getOrderReceiptList(data) {
+  postOrderReceiptList(dataObj) {
 
+    const data = JSON.stringify(dataObj);
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
 
     return this.service.Call(
-      'get', 
-      apiPath.api + this.base.API + this.base.GET_ORDERS_RECEIPT_ENDPOINT
+      'post', 
+      apiPath.api + this.base.API + this.base.POST_ORDERS_RECEIPT_DOWNLOAD_ENDPOINT,
+      data
     );
   }
 

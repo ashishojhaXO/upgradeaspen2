@@ -331,36 +331,25 @@ export class OrdersComponent implements OnInit  {
   receiptList: Array<Object>;
   handleDownload(dataObj: any) {
     // Show modal with Downloadable Receipts and their Download links
-    console.log("dO : ", dataObj, " adUs: ", this.addUser)
     // Call all receipts & then call this.handleDownloadLink or this.searchDownloadLink
 
-    let data = dataObj;
+    let data = {
+      "line_item_id": dataObj.data.Line_Item_Id
+    }
     this.showSpinner = true;
 
-    this.genericService.getOrderReceiptList(data)
+    this.genericService.postOrderReceiptList(data)
     .subscribe(
       (res) => {
+        console.log("res isss: ", res);
         this.showSpinner = false;
-        // this.receiptList = res.data;
-        this.receiptList = [
-          {start_date: "s1", end_date: "e1", download: "d1"},
-          {start_date: "s2", end_date: "e2", download: "d2"}
-        ];
+        this.receiptList = res.data;
         
         // Show modal popUp, from there run this.handleDownloadLink(receiptId)
         this.addUser.show();
       },
       (rej) => {
         this.showSpinner = false;
-
-        // TODO: FTM remove later
-        this.receiptList = [
-          {start_date: "s1", end_date: "e1", download: "d1"},
-          {start_date: "s2", end_date: "e2", download: "d2"}
-        ];
-        this.addUser.show();
-        // TODO: FTM remove later/
-
         this.errorCB(rej);
       }
 
@@ -368,8 +357,11 @@ export class OrdersComponent implements OnInit  {
   }
 
   handleDownloadLink(dataObj: any) {
-    const downloadId = dataObj.data.Vendor_Receipt_Id;
-    const orderId = dataObj.data.Order_Id;
+    // const downloadId = dataObj.data.Vendor_Receipt_Id;
+    // const orderId = dataObj.data.Order_Id;
+
+    const downloadId = dataObj.vendor_receipt_id;
+    const orderId = "";
 
     console.log('dataObj >>')
     console.log(dataObj);
