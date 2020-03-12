@@ -233,6 +233,18 @@ export class GenericService {
         data
     );
   }
+  
+  postOrderReceiptList(dataObj) {
+
+    const data = JSON.stringify(dataObj);
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+
+    return this.service.Call(
+      'post', 
+      apiPath.api + this.base.API + this.base.POST_ORDERS_RECEIPT_DOWNLOAD_ENDPOINT,
+      data
+    );
+  }
 
   /**
    * Create Admin User Service from formData

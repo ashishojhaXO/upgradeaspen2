@@ -50,6 +50,43 @@
     </div>
   </div>
 </div>
+
+<div style="width:100%">
+  <app-pop-up-modal #AddUser>
+    <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
+      List of Receipts to download
+    </div>
+    <div class="app-modal-body">
+      <div class="content">
+        <div class="row">
+          <div class="col-md-2 font-weight-bold font-size-med">Start Date</div>
+          <div class="col-md-2 font-weight-bold font-size-med">End Date</div>
+          <div class="col-md-8 font-weight-bold font-size-med">Download Link</div>
+        </div>
+        <div class="row" *ngFor="let rec of receiptList">
+          <div class="col-md-2 font-size-larger">{{rec.start_date}}</div>
+          <div class="col-md-2 font-size-larger">{{rec.end_date}}</div>
+          <div class="col-md-8 font-size-larger">
+            <a 
+              class="fa fa-download fa-action-view downloadLink" 
+              (click)="handleDownloadLink(rec)"
+              title="Download" 
+              style="margin-right: 15px; cursor: pointer"
+            >
+            </a>
+          </div> 
+        </div>
+
+      </div>
+    </div>
+    <div class="app-modal-footer">
+      <button type="button" class="inaction-btn" (click)="addUser.hide()">
+        Close
+      </button>
+    </div>
+  </app-pop-up-modal>
+</div>
+
 <div style="position: relative" *ngIf="hideTable">
   <div class="pull-right" style="position: absolute; right: 0; z-index: 1">
     <a (click)="showOrders()" class="button btn btn-success" style="background-color: #0777bc"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Back to Orders</a>

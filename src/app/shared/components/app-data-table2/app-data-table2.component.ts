@@ -784,12 +784,13 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             });
 
             // Download Click
-            $('#' + this.tableId + ' tbody').on('click', '.downloadLink', function () {
+            $('#' + this.tableId + ' tbody').on('click', '.downloadLink', function (ev) {
                 // const data = table.row($(this).parents('tr')).data();
                 __this.triggerActions.emit({
                     action: 'handleDownload',
                     data: __this.dataObject.gridData.result[table.row($(this).parents('tr')).index()],
-                    rowIndex: table.row($(this).parents('tr')).index()
+                    rowIndex: table.row($(this).parents('tr')).index(),
+                    ev: ev
                 });
             });
 

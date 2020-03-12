@@ -17,6 +17,8 @@ import { AppDataTable2Component } from '../../shared/components/app-data-table2/
 import Swal from 'sweetalert2';
 import { GenericService } from '../../../services/generic.service';
 import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up.component';
+import { PopUpModalComponent } from '../../shared/components/pop-up-modal/pop-up-modal.component';
+import { modalConfigDefaults } from 'ngx-bootstrap/modal/modal-options.class';
 
 @Component({
   selector: 'app-orders',
@@ -42,6 +44,7 @@ export class OrdersComponent implements OnInit  {
     isColVisibility: true,
     isRowHighlight: true,
     isDownloadAsCsv: true,
+    isDownloadAsCsvFunction: () => {},
     isDownloadOption: {
       value: true,
       icon: '',
@@ -115,6 +118,7 @@ export class OrdersComponent implements OnInit  {
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
   selectedRow: any;
+  @ViewChild('AddUser') addUser: PopUpModalComponent;
 
   constructor(
     private okta: OktaAuthService,
@@ -331,10 +335,41 @@ export class OrdersComponent implements OnInit  {
     if(this[rowObj.action])
       this[rowObj.action](rowObj);
   }
-
+  
+  receiptList: Array<Object>;
   handleDownload(dataObj: any) {
-    const downloadId = dataObj.data.Vendor_Receipt_Id;
-    const orderId = dataObj.data.Order_Id;
+    // Show modal with Downloadable Receipts and their Download links
+    // Call all receipts & then call this.handleDownloadLink or this.searchDownloadLink
+
+    let data = {
+      "line_item_id": dataObj.data.Line_Item_Id
+    }
+    this.showSpinner = true;
+
+    this.genericService.postOrderReceiptList(data)
+    .subscribe(
+      (res) => {
+        console.log("res isss: ", res);
+        this.showSpinner = false;
+        this.receiptList = res.data;
+        
+        // Show modal popUp, from there run this.handleDownloadLink(receiptId)
+        this.addUser.show();
+      },
+      (rej) => {
+        this.showSpinner = false;
+        this.errorCB(rej);
+      }
+
+    )
+  }
+
+  handleDownloadLink(dataObj: any) {
+    // const downloadId = dataObj.data.Vendor_Receipt_Id;
+    // const orderId = dataObj.data.Order_Id;
+
+    const downloadId = dataObj.vendor_receipt_id;
+    const orderId = "";
 
     console.log('dataObj >>')
     console.log(dataObj);
