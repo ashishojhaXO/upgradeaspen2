@@ -305,6 +305,11 @@ export class OrdersComponent implements OnInit  {
 
     this.gridData['result'] = tableData;
     this.gridData['headers'] = headers;
+
+    const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
+    const displayInfo = customerInfo.org.org_name === 'Home Depot';
+    this.options[0].isPlayOption.value = displayInfo;
+
     this.gridData['options'] = this.options[0];
     this.gridData.columnsToColor = [
       { index: 11, name: 'MERCHANT PROCESSING FEE', color: 'rgb(47,132,234,0.2)'},
