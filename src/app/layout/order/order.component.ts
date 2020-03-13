@@ -63,13 +63,14 @@ export class OrderComponent implements OnInit  {
   dataRowUpdatedLen = 0;
   minDate = new Date();
   orderId: any;
-
+  lineItemId: any;
   dateOptions = {
     format: "YYYY-MM-DD",
     showClear: true
   };
   selectedRow: any;
-  originalResponseObj : any;
+  originalResponseObj: any;
+  paymentReceived: any;
 
   // gridDataResult: Object[] = new Array(Object);
   gridDataResult: Object[] = [];
@@ -96,7 +97,7 @@ export class OrderComponent implements OnInit  {
 
     this.route.params.subscribe(params => {
       if (params['id']) {
-        this.extractOrderDetails(params['id']);
+        this.searchDateRequest(params['id'], params['lineItemId']);
         // if(this.templates.length) {
         //   this.template = '41';
         //   this.searchTemplateDetails(this.template);
@@ -105,18 +106,15 @@ export class OrderComponent implements OnInit  {
     });
   }
 
-  extractOrderDetails(id) {
+  extractOrderDetails(id, lineItemId = null) {
     this.getOrderDetails(id).subscribe(
         response => {
           this.showSpinner = false;
-
-          console.log('response >>')
-          console.log(response);
           this.orderId = id;
           if (response.orders && response.orders.length && response.orders[0].order && response.orders[0].order.temp_id) {
             this.existingOrder = response.orders[0];
             this.template = response.orders[0].order.temp_id;
-            this.searchTemplateDetails(this.template, this.existingOrder);
+            this.searchTemplateDetails(this.template, this.existingOrder, lineItemId);
           }
         },
         err => {
@@ -167,13 +165,7 @@ export class OrderComponent implements OnInit  {
   searchTemplates() {
     this.getTemplates().subscribe(
         response => {
-
-
           this.showSpinner = false;
-
-          console.log('response >>')
-          console.log(response);
-
           if (response && response.orgTemplates && response.orgTemplates.templates && response.orgTemplates.templates.length) {
             response.orgTemplates.templates.forEach(function (ele) {
               this.templates.push({
@@ -212,13 +204,11 @@ export class OrderComponent implements OnInit  {
     );
   }
 
-  searchTemplateDetails(templateID, existingOrderInfo = null) {
+  searchTemplateDetails(templateID, existingOrderInfo = null, lineItemId = null) {
     this.templateDefinition = [];
-    this.dataFieldConfiguration = [];
     this.getTemplateDetails(templateID).subscribe(
         response => {
           this.originalResponseObj = response;
-
           // Build Order Info
           if (response && response.orderTemplateData && response.orderTemplateData.orderFields && response.orderTemplateData.orderFields.length) {
             response.orderTemplateData.orderFields.forEach(function (ele) {
@@ -297,7 +287,7 @@ export class OrderComponent implements OnInit  {
             }
 
             if (this.dataFieldConfiguration.length) {
-              this.buildLineItem(this.dataFieldConfiguration, existingOrderInfo);
+              this.buildLineItem(this.dataFieldConfiguration, existingOrderInfo, lineItemId);
             }
 
             // Perform API Lookup order field configuration
@@ -374,7 +364,7 @@ export class OrderComponent implements OnInit  {
 
           } else {
             this.buildTemplateForm();
-            this.buildLineItem(this.dataFieldConfiguration, existingOrderInfo);
+            this.buildLineItem(this.dataFieldConfiguration, existingOrderInfo, lineItemId);
 
             // Perform API Lookup for line item configuration
             if(!this.existingOrder) {
@@ -421,6 +411,54 @@ export class OrderComponent implements OnInit  {
           }
         }
     );
+  }
+
+  searchDateRequest(orderID, lineItemId) {
+
+    console.log('lineItemId >>>>@@@')
+    console.log(lineItemId);
+
+    this.lineItemId = lineItemId;
+    let self = this;
+    this.searchDate(orderID).subscribe(
+        response => {
+          console.log('payment response >>')
+          this.paymentReceived = !!response.data.order.payment_received_date;
+          this.extractOrderDetails(orderID, lineItemId);
+        },
+        err => {
+          if(err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+                this,
+                err,
+                self.searchDateRequest.bind(self, orderID),
+            );
+
+          } else {
+          }
+        }
+    );
+  }
+
+  searchDate(orderID) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    const data: any = {
+      order_id : orderID
+    };
+    var url = this.api_fs.api + '/api/orders/dates' ;
+    return this.http
+        .post(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   getTemplates() {
@@ -579,7 +617,8 @@ export class OrderComponent implements OnInit  {
     }, this);
   }
 
-  buildLineItem(lineItemDef, existingOrderInfo = null) {
+  buildLineItem(lineItemDef, existingOrderInfo = null, lineItemId = null) {
+
     this.dataObject = {};
     this.gridData = {};
     this.gridData['result'] = [];
@@ -603,16 +642,22 @@ export class OrderComponent implements OnInit  {
     if (existingOrderInfo && existingOrderInfo.lineItems && existingOrderInfo.lineItems.length) {
 
       existingOrderInfo.lineItems.forEach(function (ele, index) {
-
-        const obj = {};
+        const obj: any = {};
         lineItemDef.forEach(function (line) {
           if (ele[line.name] !== null) {
-             obj[line.name] = ele[line.name] && ele[line.name].toString().indexOf('T00:00:00.000Z') !== -1 ? ele[line.name].split('T')[0] : ele[line.name];
+            if (lineItemId) {
+              obj.suppliedId = lineItemId;
+            }
+            obj.id = ele.id;
+            obj[line.name] = ele[line.name] && ele[line.name].toString().indexOf('T00:00:00.000Z') !== -1 ? ele[line.name].split('T')[0] : ele[line.name];
           }
         });
         lineItemRows.push(obj);
       }, this);
     }
+
+    console.log('lineItemRows >>>')
+    console.log(lineItemRows);
 
     this.gridData['headers'] = headers;
     this.gridData['options'] = this.options[0];
@@ -621,6 +666,10 @@ export class OrderComponent implements OnInit  {
     }
     this.dashboard = 'orderLineItem';
     this.dataObject.gridData = this.gridData;
+    this.dataObject.paymentReceived = this.paymentReceived;
+
+    console.log('this.dataObject >>>')
+    console.log(this.dataObject);
   }
 
   onCheckItem(event, item, itemValue) {
@@ -648,98 +697,6 @@ export class OrderComponent implements OnInit  {
     //item.value = value;
 
     (<FormControl>this.form.controls[item.name]).setValue(value || '');
-  }
-
-  searchDataRequest() {
-    return this.searchData().subscribe(
-        response => {
-          if (response) {
-            if (response) {
-              this.populateDataTable(response, true);
-              this.showSpinner = false;
-            }
-          }
-        },
-        err => {
-
-          if(err.status === 401) {
-            let self = this;
-            this.widget.refreshElseSignout(
-              this,
-              err,
-              self.searchDataRequest.bind(self)
-            );
-          } else {
-            Swal({
-              title: 'Error',
-              text: err._body ? (err._body.indexOf(':') !== -1 ? err._body.split(':')[1] : err._body) : 'An Error occurred',
-              type: 'error'
-            })
-            this.showSpinner = false;
-          }
-        }
-    );
-  }
-
-  searchData() {
-    const AccessToken: any = localStorage.getItem('accessToken');
-    let token = '';
-    if (AccessToken) {
-      // token = AccessToken.accessToken;
-      token = AccessToken;
-    }
-    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
-    const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/orders/line-items';
-    return this.http
-        .get(url, options)
-        .map(res => {
-          return res.json();
-        }).share();
-  }
-
-  populateDataTable(response, initialLoad) {
-
-    this.dataObject = {};
-    const tableData = response;
-    this.gridData = {};
-    this.gridData['result'] = [];
-    const headers = [];
-
-    console.log('tableData >>>')
-    console.log(tableData);
-
-    if (tableData.length) {
-      const keys = Object.keys(tableData[0]);
-      for (let i = 0; i < keys.length; i++) {
-        headers.push({
-          key: keys[i],
-          title: keys[i].replace(/_/g,' ').toUpperCase(),
-          data: keys[i],
-          isFilterRequired: true,
-          isCheckbox: false,
-          class: 'nocolvis',
-          editButton: false,
-          width: '150'
-        });
-      }
-    }
-
-    this.gridData['result'] = tableData;
-    this.gridData['headers'] = headers;
-    this.gridData['options'] = this.options[0];
-    this.gridData.columnsToColor = [
-      { index: 11, name: 'MERCHANT PROCESSING FEE', color: 'rgb(47,132,234,0.2)'},
-      { index: 15, name: 'LINE ITEM MEDIA BUDGET', color: 'rgb(47,132,234,0.2)'},
-      { index: 16, name: 'KENSHOO FEE', color: 'rgb(47,132,234,0.2)'},
-      { index: 17, name: 'THD FEE', color: 'rgb(47,132,234,0.2)'},
-      { index: 10, name: 'LINE ITEM TOTAL BUDGET', color: 'rgb(47,132,234,0.4)'}
-    ];
-    this.dashboard = 'paymentGrid';
-    this.dataObject.gridData = this.gridData;
-    console.log(this.gridData);
-    this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
-    // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
   }
 
   handleCheckboxSelection(rowObj: any, rowData: any) {
@@ -796,8 +753,19 @@ export class OrderComponent implements OnInit  {
     console.log(reqObj);
 
     const lineItems = [];
+
+    let extendedLineItemIndex = -1;
     if (this.dataObject.gridData.result.length && this.originalResponseObj.orderTemplateData.lineItems && this.originalResponseObj.orderTemplateData.lineItems.length) {
+
+     console.log('this.dataObject.gridData.result >>>')
+      console.log(this.dataObject.gridData.result);
+
       this.dataObject.gridData.result.forEach(function (ele, index) {
+
+        if (ele.suppliedId == ele.id && this.lineItemId) {
+          extendedLineItemIndex = index;
+        }
+
         const objArr = [];
         for (const prop in ele) {
           const obj: any = {};
@@ -812,12 +780,6 @@ export class OrderComponent implements OnInit  {
         lineItems.push(objArr);
       }, this);
     }
-
-    console.log('this.existingOrder >>')
-    console.log(this.existingOrder);
-
-    console.log('lineItems >>')
-    console.log(lineItems);
 
     if(this.orderId) {
       lineItems.forEach(function (lItem, index) {
@@ -834,29 +796,65 @@ export class OrderComponent implements OnInit  {
       reqObj.order_id = this.orderId;
     }
 
-    this.submitData(reqObj).subscribe(
-        response => {
-          if (response) {
+    if (this.lineItemId && extendedLineItemIndex > -1) {
+
+      const dataObj: any = {};
+      dataObj.order_id = this.orderId;
+      dataObj.line_item_id = this.lineItemId;
+      reqObj.orderDetail.lineItems[extendedLineItemIndex].lineItemFields.forEach(function (item) {
+        if (item.name) {
+          dataObj[item.name] = item.field_value;
+        }
+      });
+
+      this.submitLineItemExtensionData(dataObj).subscribe(
+          response => {
+            if (response) {
+              this.showSpinner = false;
+              Swal({
+                title: 'Line Item Extended',
+                text: 'The Line Item ' + this.lineItemId + ' was successfully extended',
+                type: 'success'
+              }).then(() => {
+                // this.router.navigate(['/app/targetAud/']);
+                this.router.navigate(['app/orders']);
+              });
+            }
+          },
+          err => {
             this.showSpinner = false;
             Swal({
-              title: 'Order Successfully ' + (this.orderId ? 'Updated' : 'Submitted'),
-              text: 'Your order was successfully ' + (this.orderId ? 'updated' : 'submitted') + '.You will now be directed to payment page where you will be able to choose from any existing payment methods on file or can add a new payment method',
-              type: 'success'
-            }).then(() => {
-             // this.router.navigate(['/app/targetAud/']);
-              this.router.navigate(['/app/orderPayment/' + response.order_id]);
+              title: 'Order ' + (this.orderId ? 'Update' : 'Submission') + ' Failed',
+              html: 'An error occurred while ' + (this.orderId ? 'updating' : 'submitting') + ' the order. Please try again',
+              type: 'error'
             });
           }
-        },
-        err => {
-          this.showSpinner = false;
-          Swal({
-            title: 'Order ' + (this.orderId ? 'Update' : 'Submission') + ' Failed',
-            html: 'An error occurred while ' + (this.orderId ? 'updating' : 'submitting') + ' the order. Please try again',
-            type: 'error'
-          });
-        }
-    );
+      );
+    } else {
+      this.submitData(reqObj).subscribe(
+          response => {
+            if (response) {
+              this.showSpinner = false;
+              Swal({
+                title: 'Order Successfully ' + (this.orderId ? 'Updated' : 'Submitted'),
+                text: 'Your order was successfully ' + (this.orderId ? 'updated' : 'submitted') + '.You will now be directed to payment page where you will be able to choose from any existing payment methods on file or can add a new payment method',
+                type: 'success'
+              }).then(() => {
+                // this.router.navigate(['/app/targetAud/']);
+                this.router.navigate(['/app/orderPayment/' + response.order_id]);
+              });
+            }
+          },
+          err => {
+            this.showSpinner = false;
+            Swal({
+              title: 'Order ' + (this.orderId ? 'Update' : 'Submission') + ' Failed',
+              html: 'An error occurred while ' + (this.orderId ? 'updating' : 'submitting') + ' the order. Please try again',
+              type: 'error'
+            });
+          }
+      );
+    }
   }
 
   submitData(reqObj) {
@@ -883,6 +881,24 @@ export class OrderComponent implements OnInit  {
             return res.json();
           }).share();
     }
+  }
+
+  submitLineItemExtensionData(reqObj) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    const data = JSON.stringify(reqObj);
+    const url = this.api_fs.api + '/api/orders/extend';
+    return this.http
+        .post(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
    formatDate(date) {

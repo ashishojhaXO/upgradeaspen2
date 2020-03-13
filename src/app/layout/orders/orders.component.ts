@@ -111,6 +111,7 @@ export class OrdersComponent implements OnInit  {
   selectedOrderID: any;
   selectedLineItemID: any;
   hideTable: any;
+  hasTemplates: any;
 
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
@@ -143,6 +144,9 @@ export class OrdersComponent implements OnInit  {
         this.isRoot = true;
       }
     }, this);
+
+    const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
+    this.hasTemplates = customerInfo.org.hasTemplates;
 
     this.searchDataRequest();
     this.searchOrgRequest();
@@ -306,9 +310,7 @@ export class OrdersComponent implements OnInit  {
     this.gridData['result'] = tableData;
     this.gridData['headers'] = headers;
 
-    const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
-    const displayInfo = customerInfo.org.org_name === 'Home Depot';
-    this.options[0].isPlayOption.value = displayInfo;
+    this.options[0].isPlayOption.value = this.hasTemplates;
 
     this.gridData['options'] = this.options[0];
     this.gridData.columnsToColor = [

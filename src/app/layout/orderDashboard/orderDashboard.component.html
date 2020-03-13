@@ -87,7 +87,7 @@
                         </div>
                     </div>
                     <div style="padding: 10px">
-                        <button class="btn action-btn" style="background: #fefefe;color: #3b3b3b;border-color: #c3c3c3;font-weight: 600;width: 100px;"
+                        <button class="btn action-btn" style="background: #fefefe;color: #3b3b3b;border-color: #c3c3c3;font-weight: 600;width: 100px;" (click)="extendOrder(lineItem)"
                                 [disabled]="lineItemExtensionAllowed(lineItem.line_item_end_date) && orderDetails.payment_received_date ? null : 'disabled'">
                                 <span style="margin-right: 24px;position: relative;">
                                     <i aria-hidden="true" class="fa fa-external-link" style="font-size: 24px;top: -5px;left: -10px;color: #3b3b3b;"></i></span>
