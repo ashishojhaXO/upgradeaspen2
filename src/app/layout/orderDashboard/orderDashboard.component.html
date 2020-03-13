@@ -72,18 +72,31 @@
                 </div>
                 <div class="submenu" [style.height.px]="lineItem.active ? 120 : 0">
                     <div style="background: #fff; padding: 10px">
-                        <div class="order-step" style="width: 30%"
+                        <div class="order-step" style="width: 18%"
                              [ngStyle]="{'background': lineItem.started ? 'rgba(47, 132, 234, 1)' : 'rgba(47, 132, 234, 0.5)'}">
-                            <div style="font-size: 12px">Line Item Start</div>
+                            <div style="font-size: 12px">Line Item Start Date</div>
                             <div style="font-size: 10px">{{lineItem.line_item_start_date ? (lineItem.line_item_start_date | date: 'MM/dd/yyyy') : '--'}}</div>
                             <div class="arrow-right"
                                  [ngStyle]="{'border-left': '19px solid ' + ( lineItem.started ? 'rgba(47, 132, 234, 1)' : 'rgba(47, 132, 234, 0.5)' ) }"></div>
                         </div>
-                        <div class="order-step" style="width: 30%; border-radius: 4px"
+                        <div *ngIf="lineItem.started" class="order-step" style="width: 18%"
+                             [ngStyle]="{'background': lineItem.started ? 'rgba(47, 132, 234, 1)' : 'rgba(47, 132, 234, 0.5)'}">
+                            <div style="font-size: 12px">Line Item Actual Start Date</div>
+                            <div style="font-size: 10px">{{lineItem.actual_line_item_start_date ? (lineItem.actual_line_item_start_date | date: 'MM/dd/yyyy') : '--'}}</div>
+                            <div class="arrow-right"
+                                 [ngStyle]="{'border-left': '19px solid ' + ( lineItem.started ? 'rgba(47, 132, 234, 1)' : 'rgba(47, 132, 234, 0.5)' ) }"></div>
+                        </div>
+                        <div class="order-step" style="width: 18%; border-radius: 4px"
                              [ngStyle]="{'background': lineItem.ended ? 'rgba(47, 132, 234, 1)' : 'rgba(47, 132, 234, 0.5)'}">
-                            <div style="font-size: 12px">Line Item End</div>
+                            <div style="font-size: 12px">Line Item End Date</div>
                             <div style="font-size: 10px">{{lineItem.line_item_end_date ? (lineItem.line_item_end_date | date: 'MM/dd/yyyy') : '--'}}</div>
-                            <!--<div class="arrow-right" style="border-left: 19px solid #2D84C7;"></div>-->
+                            <div class="arrow-right" *ngIf="lineItem.ended"
+                                 [ngStyle]="{'border-left': '19px solid ' + ( lineItem.ended ? 'rgba(47, 132, 234, 1)' : 'rgba(47, 132, 234, 0.5)' ) }"></div>
+                        </div>
+                        <div *ngIf="lineItem.ended" class="order-step" style="width: 18%"
+                             [ngStyle]="{'background': lineItem.started ? 'rgba(47, 132, 234, 1)' : 'rgba(47, 132, 234, 0.5)'}">
+                            <div style="font-size: 12px">Line Item Actual End Date</div>
+                            <div style="font-size: 10px">{{lineItem.actual_line_item_end_date ? (lineItem.actual_line_item_end_date | date: 'MM/dd/yyyy') : '--'}}</div>
                         </div>
                     </div>
                     <div style="padding: 10px">

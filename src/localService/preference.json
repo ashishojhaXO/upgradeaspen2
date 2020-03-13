@@ -84,16 +84,7 @@
       "title": "Orders",
       "selected": false,
       "id": "orders",
-      "url":"app/order",
-      "submenu" : [
-        {
-          "index": 7,
-          "name": "orders",
-          "title": "Orders",
-          "id": "orders_sub",
-          "url": "app/order/orders"
-        }
-      ]
+      "url":"app/order"
     },
     {
       "index": 7,
