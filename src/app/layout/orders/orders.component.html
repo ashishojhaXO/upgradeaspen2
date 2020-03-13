@@ -89,6 +89,10 @@
   <div class="pull-right" style="position: absolute; right: 0; z-index: 1">
     <a (click)="showOrders()" class="button btn btn-success" style="background-color: #0777bc"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Back to Orders</a>
   </div>
-  <app-order-dashboard [orderID]="selectedOrderID" [lineItemID]="selectedLineItemID"></app-order-dashboard>
+  
+  <app-order-dashboard *ngIf="selectedOrderID && selectedLineItemID" [orderID]="selectedOrderID" [lineItemID]="selectedLineItemID"></app-order-dashboard>
+
+  <app-order-payment *ngIf="selectedOrderID && !selectedLineItemID" [orderId]="selectedOrderID"></app-order-payment>
+
 </div>
 <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>

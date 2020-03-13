@@ -24,7 +24,7 @@ export class OrderPaymentComponent {
 
   selectionType = '';
   paymentOptions: any;
-  orderId: string;
+  @Input() orderId: string;
   vendorId: string;
   showSpinner: boolean;
   // domain: string;
@@ -77,7 +77,10 @@ export class OrderPaymentComponent {
   }
 
   initVars() {
-    this.orderId = this.route.snapshot.paramMap.get('id') || '';
+    if(!this.orderId) {
+      this.orderId = this.route.snapshot.paramMap.get('id') || '';
+    }
+
     if (!this.orderId) {
       Swal({
         title: 'No Order ID found',
