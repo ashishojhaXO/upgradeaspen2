@@ -61,10 +61,13 @@ export class OrderDashboardComponent implements OnInit  {
           this.lineItemDetails = response.data.lineItems;
           if (this.lineItemDetails.length) {
 
+            const __this = this;
             this.lineItemDetails = this.lineItemDetails.map(function (item) {
               item.active = false;
               item.started = item.line_item_start_date && !(new Date(item.line_item_start_date) >= new Date());
               item.ended = item.line_item_end_date && (new Date(item.line_item_end_date) <= new Date());
+              item.actual_line_item_start_date = __this.addDays(item.line_item_start_date, 1);
+              item.actual_line_item_end_date = __this.addDays(item.line_item_end_date, 1);
               return item;
             });
             const endDates = this.lineItemDetails.map(function (item) {
@@ -181,6 +184,12 @@ export class OrderDashboardComponent implements OnInit  {
     return Math.round((second - first) / (1000 * 60 * 60 * 24)) + 1;
   }
 
+  addDays(date, days) {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
+
   toggle(index: number) {
     // 멀티 오픈을 허용하지 않으면 타깃 이외의 모든 submenu를 클로즈한다.
     if (!this.config.multi) {
@@ -191,5 +200,98 @@ export class OrderDashboardComponent implements OnInit  {
 
     // Menu의 active를 반전
     this.lineItemDetails[index].active = !this.lineItemDetails[index].active;
+  }
+
+  payOrder() {
+    if (!this.orderDetails.payment_received_date) {
+      this.router.navigate(['/app/orderPayment/', this.orderID]);
+    }
+  }
+
+  editOrder() {
+    if (!this.orderDetails.payment_received_date) {
+      this.router.navigate(['/app/order/create', this.orderID]);
+    }
+  }
+
+  cancelOrder() {
+    if (!this.orderDetails.payment_received_date) {
+      Swal({
+        title: 'Are you sure you want to delete this order?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+      }).then((result) => {
+        if (result.value) {
+          this.cancelOrderRequest(this.orderID);
+        }
+      });
+    }
+  }
+
+  cancelOrderRequest(orderID) {
+    let self = this;
+    this.cancelRequest(orderID).subscribe(
+        response => {
+          console.log('response >>')
+          console.log(response);
+          this.showSpinner = false;
+          Swal({
+            title: 'Order Successfully Delete',
+            text: 'Order : ' + orderID + ' has been successfully deleted',
+            type: 'success'
+          }).then( () => {
+           this.router.navigate(['/app/order/orders']);
+          });
+        },
+        err => {
+          if(err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+                this,
+                err,
+                self.cancelRequest.bind(self, orderID),
+            );
+          } else {
+            Swal({
+              title: 'Order Deletion Failed',
+              text: 'An error occurred while deleting order : ' + orderID + '. Please try again',
+              type: 'error'
+            }).then( () => {
+             // this.router.navigate(['/app/admin/invoices']);
+            });
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+
+  cancelRequest(orderID) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    const data: any = {
+      order_id : orderID
+    };
+    var url = this.api_fs.api + '/api/orders/delete' ;
+    return this.http
+        .post(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
+  extendOrder(lineItem) {
+    if (this.lineItemExtensionAllowed(lineItem.line_item_end_date) && this.orderDetails.payment_received_date) {
+      this.router.navigate(['/app/order/create', this.orderID, lineItem.line_item_id]);
+    }
   }
 }

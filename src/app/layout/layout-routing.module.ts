@@ -150,6 +150,14 @@ const routes: Routes = [
                         },
                     },
                     {
+                        path: 'create/:id/:lineItemId',
+                        component: OrderComponent,
+                        data: {
+                            breadcrumbs: true,
+                            text: 'Modify Order Management'
+                        },
+                    },
+                    {
                         path: 'orderslist',
                         component: OrdersListComponent,
                         data: {
