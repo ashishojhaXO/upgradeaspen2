@@ -134,6 +134,8 @@ export class OrdersComponent implements OnInit  {
 
   ngOnInit() {
 
+    console.log("initThis: ", this);
+
     this.showSpinner = true;
     this.widget = this.okta.getWidget();
 
@@ -526,9 +528,15 @@ export class OrdersComponent implements OnInit  {
   }
 
   retryCharge(option) {
-    this.showSpinner = true;
+
+    // this.showSpinner = true;
+
     // Compile option/data
-    let data = {};
+    let order_id = $(option.elem).data("orderId");
+    let data = {
+      "order_id": order_id
+    };
+    console.log("try data: ", data)
 
     this.orderPayment = 1;
 
