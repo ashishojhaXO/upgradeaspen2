@@ -92,7 +92,5 @@
   
   <app-order-dashboard *ngIf="selectedOrderID && selectedLineItemID" [orderID]="selectedOrderID" [lineItemID]="selectedLineItemID"></app-order-dashboard>
 
-  <app-order-payment *ngIf="selectedOrderID && !selectedLineItemID" [orderId]="selectedOrderID"></app-order-payment>
-
 </div>
 <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>

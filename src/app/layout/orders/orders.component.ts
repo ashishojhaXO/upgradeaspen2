@@ -533,28 +533,15 @@ export class OrdersComponent implements OnInit  {
 
     // Compile option/data
     let order_id = $(option.elem).data("orderId");
-    let line_item_id = $(option.elem).data("lineItemId");
-    let data = {
-      "order_id": order_id
-    };
+    // let line_item_id = $(option.elem).data("lineItemId");
+    // let data = {
+    //   "order_id": order_id
+    // };
 
-    this.selectedOrderID = order_id;
-    // this.orderPayment = order_id;
-    // this.selectedLineItemID = line_item_id;
-    this.hideTable = true;
+    // this.selectedOrderID = order_id;
+    // this.hideTable = true;
 
-    // return this.genericService
-    //   .retryCharge(data)
-    //   .subscribe(
-    //     (res) => {
-    //       this.showSpinner = false;
-    //       this.successCB(res)
-    //     },
-    //     (rej) => {
-    //       this.showSpinner = false;
-    //       this.errorCB(rej)
-    //     }
-    //   )
+    this.router.navigate(['/app/orderPayment/', order_id]);
   }
 
   regenerateReceipt(option) {
