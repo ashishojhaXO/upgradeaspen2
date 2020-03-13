@@ -274,4 +274,10 @@ export class OrderDashboardComponent implements OnInit  {
           return res.json();
         }).share();
   }
+
+  extendOrder(lineItem) {
+    if (this.lineItemExtensionAllowed(lineItem.line_item_end_date) && this.orderDetails.payment_received_date) {
+      this.router.navigate(['/app/order/create', this.orderID, lineItem.line_item_id]);
+    }
+  }
 }
