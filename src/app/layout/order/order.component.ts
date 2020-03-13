@@ -775,7 +775,10 @@ export class OrderComponent implements OnInit  {
             obj.field_value = ele[prop];
             obj.name = corr.name;
           }
-          objArr.push(obj);
+
+          if (obj.field_id) {
+            objArr.push(obj);
+          }
         }
         lineItems.push(objArr);
       }, this);
