@@ -115,6 +115,7 @@ export class OrdersComponent implements OnInit  {
   selectedLineItemID: any;
   hideTable: any;
   hasTemplates: any;
+  orderPayment: number;
 
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
@@ -529,18 +530,20 @@ export class OrdersComponent implements OnInit  {
     // Compile option/data
     let data = {};
 
-    return this.genericService
-      .retryCharge(data)
-      .subscribe(
-        (res) => {
-          this.showSpinner = false;
-          this.successCB(res)
-        },
-        (rej) => {
-          this.showSpinner = false;
-          this.errorCB(rej)
-        }
-      )
+    this.orderPayment = 1;
+
+    // return this.genericService
+    //   .retryCharge(data)
+    //   .subscribe(
+    //     (res) => {
+    //       this.showSpinner = false;
+    //       this.successCB(res)
+    //     },
+    //     (rej) => {
+    //       this.showSpinner = false;
+    //       this.errorCB(rej)
+    //     }
+    //   )
   }
 
   regenerateReceipt(option) {
