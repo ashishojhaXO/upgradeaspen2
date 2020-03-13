@@ -61,10 +61,13 @@ export class OrderDashboardComponent implements OnInit  {
           this.lineItemDetails = response.data.lineItems;
           if (this.lineItemDetails.length) {
 
+            const __this = this;
             this.lineItemDetails = this.lineItemDetails.map(function (item) {
               item.active = false;
               item.started = item.line_item_start_date && !(new Date(item.line_item_start_date) >= new Date());
               item.ended = item.line_item_end_date && (new Date(item.line_item_end_date) <= new Date());
+              item.actual_line_item_start_date = __this.addDays(item.line_item_start_date, 1);
+              item.actual_line_item_end_date = __this.addDays(item.line_item_end_date, 1);
               return item;
             });
             const endDates = this.lineItemDetails.map(function (item) {
@@ -181,6 +184,12 @@ export class OrderDashboardComponent implements OnInit  {
     return Math.round((second - first) / (1000 * 60 * 60 * 24)) + 1;
   }
 
+  addDays(date, days) {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
+
   toggle(index: number) {
     // 멀티 오픈을 허용하지 않으면 타깃 이외의 모든 submenu를 클로즈한다.
     if (!this.config.multi) {
@@ -230,9 +239,15 @@ export class OrderDashboardComponent implements OnInit  {
           console.log('response >>')
           console.log(response);
           this.showSpinner = false;
+          Swal({
+            title: 'Order Successfully Delete',
+            text: 'Order : ' + orderID + ' has been successfully deleted',
+            type: 'success'
+          }).then( () => {
+           this.router.navigate(['/app/order/orders']);
+          });
         },
         err => {
-
           if(err.status === 401) {
             let self = this;
             this.widget.refreshElseSignout(
@@ -240,16 +255,15 @@ export class OrderDashboardComponent implements OnInit  {
                 err,
                 self.cancelRequest.bind(self, orderID),
             );
-
           } else {
-            // Swal({
-            //   title: 'No Invoices found',
-            //   text: 'We did not find any invoices associated with ID : ' + invoiceId,
-            //   type: 'error'
-            // }).then( () => {
-            //  // this.router.navigate(['/app/admin/invoices']);
-            // });
-            // this.showSpinner = false;
+            Swal({
+              title: 'Order Deletion Failed',
+              text: 'An error occurred while deleting order : ' + orderID + '. Please try again',
+              type: 'error'
+            }).then( () => {
+             // this.router.navigate(['/app/admin/invoices']);
+            });
+            this.showSpinner = false;
           }
         }
     );
