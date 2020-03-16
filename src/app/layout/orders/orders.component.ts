@@ -88,23 +88,19 @@ export class OrdersComponent implements OnInit  {
       buttons: {},
       buttonCondition: {},
       htmlFunction: (row) => {
-        let retHtml = '<div>' +
-          '<button class="btn action-btn api-action" data-action="retryCharge" data-order-id=DATA_ORDER_ID data-line-item-id=DATA_LINE_ITEM_ID style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+
+        let ngHtmlContent = '<div>' +
+          '<button class="btn action-btn api-action" data-action="retryCharge" '+ ( row.Status.trim() == "ERROR_PROCESSING_PAYMENT" ? "" : "disabled" ) + ' data-order-id="'+row.Order_Id + '" data-line-item-id="'+row.Line_Item_Id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
           '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-credit-card" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span> Retry Charge</button>' +
-          '<button class="btn action-btn api-action" data-action="regenerateReceipt" data-order-id=DATA_ORDER_ID data-line-item-id=DATA_LINE_ITEM_ID style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+          '<button class="btn action-btn api-action" data-action="regenerateReceipt" data-order-id="'+row.Order_Id+ '" data-line-item-id= "'+ row.Line_Item_Id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
           '><span style="margin-right: 5px; position: relative;"> <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-newspaper-o" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Regenerate Receipt</button>' +
-          // '<button class="btn action-btn api-action" data-action="reprocess" data-order-id="DATA_ORDER_ID" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+          // '<button class="btn action-btn api-action" data-action="reprocess" data-order-id="row.Order_Id " style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
           // '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-cogs" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Reprocess</button>' +
-          '<button class="btn action-btn api-action" data-action="recalculate" data-order-id="DATA_ORDER_ID" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+          '<button class="btn action-btn api-action" data-action="recalculate" data-order-id="'+ row.Order_Id + '" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
           '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-calculator" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Recalculate</button>' +
         '</div>';
 
-        retHtml = retHtml
-        .replace(/DATA_ORDER_ID/g, row.Order_Id)
-        .replace(/DATA_LINE_ITEM_ID/g, row.Line_Item_Id)
-        ;
-
-        return retHtml;
+        return ngHtmlContent;
       }
     }
 
@@ -119,6 +115,7 @@ export class OrdersComponent implements OnInit  {
   hideTable: any;
   hasTemplates: any;
   orderPayment: number;
+  // retryChargeState: boolean = true;
 
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
