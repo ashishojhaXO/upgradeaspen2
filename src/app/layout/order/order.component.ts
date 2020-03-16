@@ -799,16 +799,19 @@ export class OrderComponent implements OnInit  {
       reqObj.order_id = this.orderId;
     }
 
-    if (this.lineItemId && extendedLineItemIndex > -1) {
+    if (extendedLineItemIndex > -1) {
 
       const dataObj: any = {};
       dataObj.order_id = this.orderId;
       dataObj.line_item_id = this.lineItemId;
       reqObj.orderDetail.lineItems[extendedLineItemIndex].lineItemFields.forEach(function (item) {
-        if (item.name) {
+        if (item.name && item.name !== 'line_item_id') {
           dataObj[item.name] = item.field_value;
         }
       });
+
+      console.log('dataObj >>>')
+      console.log(dataObj);
 
       this.submitLineItemExtensionData(dataObj).subscribe(
           response => {
@@ -820,7 +823,7 @@ export class OrderComponent implements OnInit  {
                 type: 'success'
               }).then(() => {
                 // this.router.navigate(['/app/targetAud/']);
-                this.router.navigate(['app/orders']);
+                this.router.navigate(['/app/order/orders']);
               });
             }
           },
