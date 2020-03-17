@@ -146,12 +146,12 @@
       </div>
     </div>
     <div style="margin-top: 20px" *ngIf="template">
-      <button class="btn btn-primary">CANCEL</button>
-      <!--[disabled]="form && !form.valid"-->
       <button class="btn btn-primary"
               style="text-transform: none" (click)="OnSubmit()">
         SAVE
       </button>
+      <button class="btn btn-primary" (click)="OnCancel()">CANCEL</button>
+      <!--[disabled]="form && !form.valid"-->
     </div>
     <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
   </div>
