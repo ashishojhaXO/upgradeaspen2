@@ -226,14 +226,17 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
       token = AccessToken;
     }
 
+    const obj: any = {};
+    if (this.isRoot) {
+      obj['org_uuid'] = org;
+    }
+    const dataObj = JSON.stringify(obj);
+
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/vendors/list';
-    const data = {
-      "org_uuid": org ? org : ''
-    };
     return this.http
-        .post(url, data, options)
+        .post(url, dataObj, options)
         .map(res => {
           return res.json();
         }).share();
