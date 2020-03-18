@@ -822,7 +822,11 @@ export class OrderComponent implements OnInit  {
       dataObj.line_item_id = this.lineItemId;
       reqObj.orderDetail.lineItems[extendedLineItemIndex].lineItemFields.forEach(function (item) {
         if (item.name && item.name !== 'line_item_id') {
-          dataObj[item.name] = item.field_value;
+          if (item.name === 'end_date') {
+            dataObj['extended_end_date'] = item.field_value;
+          } else {
+            dataObj[item.name] = item.field_value;
+          }
         }
       });
 
