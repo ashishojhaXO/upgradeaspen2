@@ -28,6 +28,7 @@ import { UserSettingsComponent } from './user-settings/user-settings.component';
 import {OrgManagementComponent} from './../layout/orgManagement/orgManagement.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
 import {EmailManagementComponent} from './../layout/emailManagement/emailManagement.component';
+import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
 
 const routes: Routes = [
     {
@@ -426,7 +427,15 @@ const routes: Routes = [
                             breadcrumbs: true,
                             text: 'Analytics'
                         }
-                    }
+                    },
+                    {
+                        path: 'operationsdashboard',
+                        component: OperationsDashboardComponent,
+                        data: {
+                            breadcrumbs: true,
+                            text: 'Operations Dashboard'
+                        }
+                    },
                 ]
             },
             {
