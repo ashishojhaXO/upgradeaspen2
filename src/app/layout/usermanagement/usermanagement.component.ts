@@ -549,7 +549,9 @@ export class UserManagementComponent implements OnInit  {
     dataObj.last_name = this.userForm.controls['last'].value;
     // dataObj.source = this.selectedSource;
     dataObj.role_id = this.selectedRole;
-    dataObj.org_uuid = this.selectedOrg;
+    if(this.isRoot) {
+      dataObj.org_uuid = this.selectedOrg;
+    }
     dataObj.vendor_id = this.selectedVendor;
     // if (this.selectedSource === 'vendor') {
     //

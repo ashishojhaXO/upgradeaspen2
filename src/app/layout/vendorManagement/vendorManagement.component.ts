@@ -376,7 +376,9 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.showSpinner = true;
     this.error = '';
     const dataObj: any = {};
-    dataObj.org_uuid = this.isRoot ? this.vendorForm.controls['org'].value : this.orgInfo.org_id;
+    if (this.isRoot) {
+      dataObj.org_uuid = this.vendorForm.controls['org'].value;
+    }
     dataObj.external_vendor_id = this.vendorForm.controls['external_vendor_id'].value;
     dataObj.first_name = this.vendorForm.controls['first_name'].value;
     dataObj.last_name = this.vendorForm.controls['last_name'].value;
