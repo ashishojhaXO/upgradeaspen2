@@ -106,8 +106,12 @@ export class LoginNewComponent implements OnInit {
   }
 
   compileBody(userData){
-      const body = {username: userData.userEmail, password: userData.password};
+      const body = {username: this.encodeValue(userData.userEmail), password: this.encodeValue(userData.password)};
       return body;
+  }
+
+  encodeValue(value: string): string {
+    return encodeURIComponent(value);
   }
 
   onSubmitLoginForm(){
