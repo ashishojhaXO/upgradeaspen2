@@ -877,29 +877,29 @@ export class OrderComponent implements OnInit  {
       console.log('dataObj >>>')
       console.log(dataObj);
 
-      // this.submitLineItemExtensionData(dataObj).subscribe(
-      //     response => {
-      //       if (response) {
-      //         this.showSpinner = false;
-      //         Swal({
-      //           title: 'Line Item Extended',
-      //           text: 'The Line Item ' + this.lineItemId + ' was successfully extended',
-      //           type: 'success'
-      //         }).then(() => {
-      //           // this.router.navigate(['/app/targetAud/']);
-      //           this.router.navigate(['/app/order/orders']);
-      //         });
-      //       }
-      //     },
-      //     err => {
-      //       this.showSpinner = false;
-      //       Swal({
-      //         title: 'Order ' + (this.orderId ? 'Update' : 'Submission') + ' Failed',
-      //         html: 'An error occurred while ' + (this.orderId ? 'updating' : 'submitting') + ' the order. Please try again',
-      //         type: 'error'
-      //       });
-      //     }
-      // );
+      this.submitLineItemExtensionData(dataObj).subscribe(
+          response => {
+            if (response) {
+              this.showSpinner = false;
+              Swal({
+                title: 'Line Item Extended',
+                text: 'The Line Item ' + this.lineItemId + ' was successfully extended',
+                type: 'success'
+              }).then(() => {
+                // this.router.navigate(['/app/targetAud/']);
+                this.router.navigate(['/app/order/orders']);
+              });
+            }
+          },
+          err => {
+            this.showSpinner = false;
+            Swal({
+              title: 'Order ' + (this.orderId ? 'Update' : 'Submission') + ' Failed',
+              html: 'An error occurred while ' + (this.orderId ? 'updating' : 'submitting') + ' the order. Please try again',
+              type: 'error'
+            });
+          }
+      );
     } else {
       this.submitData(reqObj).subscribe(
           response => {
