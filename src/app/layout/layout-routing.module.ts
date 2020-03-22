@@ -28,6 +28,7 @@ import { UserSettingsComponent } from './user-settings/user-settings.component';
 import {OrgManagementComponent} from './../layout/orgManagement/orgManagement.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
 import {EmailManagementComponent} from './../layout/emailManagement/emailManagement.component';
+import {UploadsComponent} from './../layout/uploads/uploads.component';
 
 const routes: Routes = [
     {
@@ -361,6 +362,14 @@ const routes: Routes = [
                         data: {
                             breadcrumbs: true,
                             text: 'Email Management'
+                        }
+                    },
+                    {
+                        path: 'uploads',
+                        component: UploadsComponent,
+                        data: {
+                            breadcrumbs: true,
+                            text: 'Uploads'
                         }
                     },
                     {

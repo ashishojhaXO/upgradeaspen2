@@ -145,6 +145,13 @@
           "url": "app/admin/support"
         },
         {
+          "index": 6,
+          "name": "uploads",
+          "title": "Uploads",
+          "id": "uploads",
+          "url": "app/admin/uploads"
+        },
+        {
           "index": 7,
           "name": "baseFields",
           "title": "Configure Base Fields",
