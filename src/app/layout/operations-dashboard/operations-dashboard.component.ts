@@ -30,13 +30,11 @@ export class OperationsDashboardComponent implements OnInit {
     isRowSelection: null,
     isPageLength: true,
     isPagination: true,
-    fixedColumn: 1,
     // Any number starting from 1 to ..., but not 0
     isActionColPosition: 0, // This can not be 0, since zeroth column logic might crash
     // since isActionColPosition is 1, isOrder is also required to be sent,
     // since default ordering assigned in dataTable is [[1, 'asc']]
-    isOrder: [[2, 'asc']],
-    isHideColumns: ['ui_metadata']
+    isOrder: [[2, 'asc']]
   }];
   dashboard: any;
   api_fs: any;
@@ -105,28 +103,6 @@ export class OperationsDashboardComponent implements OnInit {
     const headers = new Headers({ 'Content-Type': 'application/json', 'token': token, 'callingapp': 'aspen' });
     const options = new RequestOptions({ headers: headers });
     var url = this.api_fs.api + '/api/reports/operations';
-  /*return Observable.of({
-      "status": "success", "message": "Data found", "data": [{
-        'id': 1,
-        'file_name': 'test file name',
-        'process_timestamp': 'test filename',
-        'preprocessing_job_id': 'test job id',
-        'number_of_rows_in_file': 'test number of rows in file',
-        'clearing_job_id': 'clearing jobs id',
-        'number_of_rows_cleared': 'number of rows cleared test',
-        'status': 'test'
-      },
-      {
-        'id': 2,
-        'file_name': 'test file name',
-        'process_timestamp': 'test filename',
-        'preprocessing_job_id': 'test job id',
-        'number_of_rows_in_file': 'test number of rows in file',
-        'clearing_job_id': 'clearing jobs id',
-        'number_of_rows_cleared': 'number of rows cleared test',
-        'status': 'test'
-      }]
-    });*/
      return this.http
       .get(url, options)
       .map(res => {
@@ -162,5 +138,9 @@ export class OperationsDashboardComponent implements OnInit {
     this.dataObject.gridData = this.gridData;
     this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
   }
-
+  reLoad(){
+    this.showSpinner = true;
+    this.dataObject.isDataAvailable = false;
+    this.searchDataRequest();
+  }
 }
