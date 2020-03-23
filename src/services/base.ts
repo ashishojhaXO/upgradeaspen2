@@ -10,6 +10,7 @@ export class BaseService {
   API = '/api';
   POST_PAYMENTS_METHODS_ENDPOINT = '/payments/methods';
   POST_PAYMENTS_CHARGE_ENDPOINT = '/payments/charge';
+<<<<<<< HEAD
   PUT_DEFAULT_PAYMENTS_METHOD = '/payments/methods/default';
   GET_ORDERS_ENDPOINT = '/orders'; //'/orders'
   GET_USERS_ENDPOINT = '/users'; //'/orders'
@@ -19,6 +20,9 @@ export class BaseService {
   POST_REPROCESS_ENDPOINT = '/reprocess';
   POST_RECALCULATE_ENDPOINT = '/orders/recalculate';
   POST_ORDERS_RECEIPT_DOWNLOAD_ENDPOINT = '/orders/receipt/download'
+=======
+  postOrdersProcessedReportDownload = "/admin/report/download";
+>>>>>>> 2990
 
   LOGIN_URL = this.BASE_URL + '/v4/login';
 

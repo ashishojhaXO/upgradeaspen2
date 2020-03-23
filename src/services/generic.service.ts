@@ -219,13 +219,70 @@ export class GenericService {
   postOrderReceiptList(dataObj) {
 
     const data = JSON.stringify(dataObj);
+<<<<<<< HEAD
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+=======
+>>>>>>> 2990
 
     return this.service.Call(
       'post', 
       apiPath.api + this.base.API + this.base.POST_ORDERS_RECEIPT_DOWNLOAD_ENDPOINT,
       data
     );
+  }
+
+  /**
+   * POST OrdersProcessedReportDownload
+   * @param dataObj
+   */
+  postOrdersProcessedReportDownload(dataObj) {
+    const data = JSON.stringify(dataObj);
+    console.log("dataObj: ", dataObj, " data; ", data);
+
+    return this.service.Call(
+      'post', 
+      this.base.REPORT_SERVICE_API_GATEWAY_URL +
+      this.base.API + 
+      this.base.postOrdersProcessedReportDownload,
+      data
+    );
+
+  }
+
+  /**
+   * POST postOrdersProcessedReportEmail
+   * @param dataObj
+   */
+  postOrdersProcessedReportEmail(dataObj) {
+    const data = JSON.stringify(dataObj);
+    console.log("dataObj: ", dataObj, " data; ", data);
+
+    return this.service.Call(
+      'post', 
+      this.base.REPORT_SERVICE_API_GATEWAY_URL +
+      this.base.API + 
+      this.base.postOrdersProcessedReportEmail,
+      data
+    );
+
+  }
+
+  /**
+   * POST postOrdersProcessedReportRun
+   * @param dataObj
+   */
+  postOrdersProcessedReportRun(dataObj) {
+    const data = JSON.stringify(dataObj);
+    console.log("dataObj: ", dataObj, " data; ", data);
+
+    return this.service.Call(
+      'post', 
+      this.base.REPORT_SERVICE_API_GATEWAY_URL +
+      this.base.API + 
+      this.base.postOrdersProcessedReportRun,
+      data
+    );
+
   }
 
   /**

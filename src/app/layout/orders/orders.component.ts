@@ -122,6 +122,7 @@ export class OrdersComponent implements OnInit  {
   selectedRow: any;
   @ViewChild('AddUser') addUser: PopUpModalComponent;
 
+<<<<<<< HEAD
   constructor(
     private okta: OktaAuthService,
     private route: ActivatedRoute,
@@ -129,6 +130,9 @@ export class OrdersComponent implements OnInit  {
     private genericService: GenericService,
     private popUp: AppPopUpComponent,
     private http: Http) {
+=======
+  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, protected http: Http) {
+>>>>>>> 2990
   }
 
 

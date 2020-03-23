@@ -56,6 +56,7 @@ import {OrderDashboardComponent} from './../layout/orderDashboard/orderDashboard
 import { AuthGuard } from './../shared';
 import { OktaAuthService } from './../../services/okta.service';
 import { OrganizationService } from './../../services/organization.service';
+import { OrdersProcessedComponent } from './orders-processed/orders-processed.component';
 import { CustomFormBuilderModule } from '../shared/components/customformbuilder/customformbuilder.module';
 import { OrdersTemplateListComponent } from './orders-template-list/orders-template-list.component';
 import { OrdersListComponent } from './orders-list/orders-list.component';
@@ -112,6 +113,7 @@ import { NumericDirective } from '../shared/directives/Numeric.directive';
         UserManagementComponent,
         VisDashboardComponent,
         OrderComponent,
+        OrdersProcessedComponent,
         OrderPaymentComponent,
         BaseFieldsComponent,
         OrderTemplateComponent,
