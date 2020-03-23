@@ -400,13 +400,20 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 }
 
                 if (this.dataObject.gridData.options.isDownloadAsCsv) {
-                    gridButtons.push({
+                    let dict = {
                         extend: 'csv',
                         text: '<span><i class="fa fa-download fa-Idown" aria-hidden="true"></i></span>',
                         exportOptions: {
                             columns: ":visible"
                         }
-                    });
+                    }
+                    if(__this.dataObject.gridData.options.isDownloadAsCsvFunc) {
+                        dict['action'] = function ( e, dt, node, config ) {
+                            // __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod.apply(__this, [table, table.page.len(), "csv" ] );
+                            __this.dataObject.gridData.options.isDownloadAsCsvFunc(table, table.page.len(), "csv");
+                        }
+                    }
+                    gridButtons.push(dict);
                 }
 
                 if (this.dataObject.gridData.options.isColVisibility) {
@@ -453,6 +460,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 pageLength = this.dataObject.gridData.options.isPageLengthNo;
             }
 
+            // TODO: HERE
             const dataTableOptions = {
                 scrollY: this.height ? this.height : 320,
                 scrollX: true,
@@ -571,11 +579,16 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     columnIndex++;
                                 }
 
-                                console.log('field >>>')
+                                const rowEle = __this.dataObject.gridData.result[index];
+                                const extendedRow = rowEle.id == rowEle.suppliedId;
+
+                                console.log('extendedRow @@@@')
+                                console.log(extendedRow)
+
+                                console.log('field >>')
                                 console.log(field);
 
-                                console.log('$(\'td\', row).eq(columnIndex).text() >>')
-                                console.log($('td', row).eq(columnIndex).text());
+
 
                                 field.value = __this.dataObject.gridData.result[index][field.name];
 
@@ -584,15 +597,15 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 }
 
                                 if (field.type === 'decimal' || field.type === 'varchar' || field.type === 'string') {
-                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.label + '" class="inlineEditor ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' )  + '" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
+                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.label + '" class="inlineEditor ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow ? 'disabled' : '' )  + '" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
                                 } else if(field.type === 'text') {
-                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><textarea placeholder="Select ' + field.label + '" class="inlineEditor ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' )  + '" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"></textarea></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
+                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><textarea placeholder="Select ' + field.label + '" class="inlineEditor ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow ? 'disabled' : '' )  + '" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"></textarea></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
                                 } else if (field.type === 'int') {
-                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.label + '" class="inlineEditor ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' )  + '" type="number" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
+                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.label + '" class="inlineEditor ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow ? 'disabled' : '' )  + '" type="number" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
                                 } else if (field.type === 'amount') {
-                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '">' + (field.includeCurrency ? '<select style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>' : '<select style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>') + '<input placeholder="Select ' + field.label + '"  class="inlineEditor ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' ) + '" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
+                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '">' + (field.includeCurrency ? '<select style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>' : '<select style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>') + '<input placeholder="Select ' + field.label + '"  class="inlineEditor ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow ? 'disabled' : '' ) + '" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
                                 } else if (field.type === 'date') {
-                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div class="input-group date datepicker"><input placeholder="Select ' + field.label + '" type="text" class="form-control inlineEditor ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' ) + '" style="border-radius: 4px; font-size: 12px" value="' + $('td', row).eq(columnIndex).text()  + '" /> <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span></div></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
+                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div class="input-group date datepicker"><input placeholder="Select ' + field.label + '" type="text" class="form-control inlineEditor ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow ? 'disabled' : '' ) + '" style="border-radius: 4px; font-size: 12px" value="' + $('td', row).eq(columnIndex).text()  + '" /> <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span></div></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
                                     $('td', row).eq(columnIndex).html(html);
                                 } else if (field.type === 'list') {
 
@@ -604,7 +617,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                         }
                                         options += '>' + option.text + '</option>';
                                     });
-                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class="form-control inlineEditor select-control ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
+                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class="form-control inlineEditor select-control ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
                                     $('td', row).eq(columnIndex).html(html);
 
                                     // if (field.name === 'ad_copy') {
@@ -653,7 +666,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                         // }
                                         // options += '>' + option.text + '</option>';
                                     });
-                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class=" ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</div></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
+                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class=" ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</div></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
                                     $('td', row).eq(columnIndex).html(html);
                                 } else if (field.type === 'radio') {
                                     let options = '';
@@ -675,7 +688,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                         // }
                                         // options += '>' + option.text + '</option>';
                                     });
-                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class=" ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</div></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
+                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class=" ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</div></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
                                     $('td', row).eq(columnIndex).html(html);
                                 }
                             }
@@ -776,12 +789,13 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             });
 
             // Download Click
-            $('#' + this.tableId + ' tbody').on('click', '.downloadLink', function () {
+            $('#' + this.tableId + ' tbody').on('click', '.downloadLink', function (ev) {
                 // const data = table.row($(this).parents('tr')).data();
                 __this.triggerActions.emit({
                     action: 'handleDownload',
                     data: __this.dataObject.gridData.result[table.row($(this).parents('tr')).index()],
-                    rowIndex: table.row($(this).parents('tr')).index()
+                    rowIndex: table.row($(this).parents('tr')).index(),
+                    ev: ev
                 });
             });
 
@@ -849,21 +863,46 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             // Handle table draw event ( like pagination, sorting )
             table.on('draw', function () {
                 // Update state of "Select all" control
-                console.log('drawn ....');
+                console.log('drawn....');
                 __this.adjustHeight(__this);
+
+                table.off('draw');
             });
 
             // If we decide to get data of only 1 page to show in the table and not all data
             if (__this.dataObject.gridData.options.isApiCallForNextPage ) {
-                table.off('page.dt');
-                table.on('page.dt', function () {
-                    __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table);
-                } );
 
-                $(document).off('change', 'select.input-sm');
-                $(document).on('change', 'select.input-sm', function (ev) {
+                // Instead of 'page.dt' page change event, call this on the onClick event on pagination numbers
+                $(document).off('click', 'li.paginate_button');
+                $(document).on('click', "li.paginate_button", function (ev) {
+                    if (! $(ev.target).parent().is(".active") ) {
+                        localStorage.setItem('gridPageCount', table.page.len() );
+                        __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod.apply(__this, [table, table.page.len()] );
+                    }
+                });
+
+                table.on("length", function (ev) {
+                    __this.dataObject.gridData.options.isPageLengthNo = table.page.len();
                     localStorage.setItem('gridPageCount', table.page.len() );
-                    __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table, table.page.len() );
+                    
+                    // Since dataTables adjusts startPage automatically on change of Length Dropdown
+                    // If we need to pagss the previous pageNumber, this below maybe required
+                    // if(currentPage && currentPage != table.page.info().page ){
+                    //     __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod.apply(__this, [table, table.page.len() ] );
+                    // }
+                    __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod.apply(__this, [table, table.page.len() ] );
+
+                    table.off("length");
+                });
+
+
+                let currentPage = table.page.info().page;
+                $(document).off( 'keyup', 'input.input-sm');
+                $(document).on( 'keyup', 'input.input-sm', function (ev) {
+                    // If currentPage exists, currentPage is not the same as table's page & also input value goes empty
+                    if(currentPage && currentPage != table.page.info().page && ev.currentTarget.value.trim() == "" ){
+                        table.page(currentPage).draw(false);
+                    }
                 });
 
             }

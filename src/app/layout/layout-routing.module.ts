@@ -29,6 +29,7 @@ import {OrgManagementComponent} from './../layout/orgManagement/orgManagement.co
 import { AnalyticsComponent } from './analytics/analytics.component';
 import {EmailManagementComponent} from './../layout/emailManagement/emailManagement.component';
 import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
+import {UploadsComponent} from './../layout/uploads/uploads.component';
 
 const routes: Routes = [
     {
@@ -144,6 +145,14 @@ const routes: Routes = [
                     },
                     {
                         path: 'create/:id',
+                        component: OrderComponent,
+                        data: {
+                            breadcrumbs: true,
+                            text: 'Modify Order Management'
+                        },
+                    },
+                    {
+                        path: 'create/:id/:lineItemId',
                         component: OrderComponent,
                         data: {
                             breadcrumbs: true,
@@ -354,6 +363,14 @@ const routes: Routes = [
                         data: {
                             breadcrumbs: true,
                             text: 'Email Management'
+                        }
+                    },
+                    {
+                        path: 'uploads',
+                        component: UploadsComponent,
+                        data: {
+                            breadcrumbs: true,
+                            text: 'Uploads'
                         }
                     },
                     {

@@ -26,6 +26,7 @@ import { AppScriptEmbedderModule} from './../shared/components/app-script-embedd
 import {A2Edatetimepicker} from 'ng2-eonasdan-datetimepicker';
 import { TooltipModule } from './../shared/directives/tooltip.module';
 import { AppTag2Module } from './../shared/components/app-tag2/app-tag2.module';
+import { AppFileUploaderModule } from './../shared/components/app-file-uploader/app-file-uploader.module';
 
 //declarations
 import { DashboardsComponent } from './dashboards/dashboards.component';
@@ -50,6 +51,8 @@ import {OrgManagementComponent} from './../layout/orgManagement/orgManagement.co
 import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
 import {EmailManagementComponent} from './../layout/emailManagement/emailManagement.component';
+import {OrderDashboardComponent} from './../layout/orderDashboard/orderDashboard.component';
+import {UploadsComponent} from './../layout/uploads/uploads.component';
 
 // providers
 import { AuthGuard } from './../shared';
@@ -92,7 +95,8 @@ import { OperationsDashboardComponent } from './operations-dashboard/operations-
         CustomFormBuilderModule,
         A2Edatetimepicker,
         TooltipModule,
-        AppTag2Module
+        AppTag2Module,
+        AppFileUploaderModule
     ],
     declarations: [
         LayoutComponent,
@@ -125,7 +129,9 @@ import { OperationsDashboardComponent } from './operations-dashboard/operations-
         OrgManagementComponent,
         AnalyticsComponent,
         EmailManagementComponent,
-        OperationsDashboardComponent
+        OperationsDashboardComponent,
+        OrderDashboardComponent,
+        UploadsComponent
     ],
     providers: [
         AuthGuard,

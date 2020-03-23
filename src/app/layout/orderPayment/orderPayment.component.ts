@@ -24,7 +24,7 @@ export class OrderPaymentComponent {
 
   selectionType = '';
   paymentOptions: any;
-  orderId: string;
+  @Input() orderId: string;
   vendorId: string;
   showSpinner: boolean;
   // domain: string;
@@ -77,14 +77,17 @@ export class OrderPaymentComponent {
   }
 
   initVars() {
-    this.orderId = this.route.snapshot.paramMap.get('id') || '';
+    if(!this.orderId) {
+      this.orderId = this.route.snapshot.paramMap.get('id') || '';
+    }
+
     if (!this.orderId) {
       Swal({
         title: 'No Order ID found',
         text: 'We did not find an order to be paid for',
         type: 'error'
       }).then( () => {
-        this.router.navigate(['/app/order/orderslist']);
+        this.router.navigate(['/app/order/orders']);
       });
     }
   }
@@ -205,7 +208,7 @@ export class OrderPaymentComponent {
                 text: 'Your payment for the order ' + this.orderId + ' was successfully charged',
                 type: 'success'
               }).then( () => {
-                this.router.navigate(['/app/order/orderslist']);
+                this.router.navigate(['/app/order/orders']);
               });
             },
             (rej) => {

@@ -17,6 +17,8 @@ import { AppDataTable2Component } from '../../shared/components/app-data-table2/
 import Swal from 'sweetalert2';
 import { GenericService } from '../../../services/generic.service';
 import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up.component';
+import { PopUpModalComponent } from '../../shared/components/pop-up-modal/pop-up-modal.component';
+import { modalConfigDefaults } from 'ngx-bootstrap/modal/modal-options.class';
 
 @Component({
   selector: 'app-orders',
@@ -40,13 +42,19 @@ export class OrdersComponent implements OnInit  {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
-    isRowHighlight: false,
+    isRowHighlight: true,
     isDownloadAsCsv: true,
+    isDownloadAsCsvFunction: () => {},
     isDownloadOption: {
       value: true,
       icon: '',
       dependency: ['Vendor_Receipt_Id'],
       tooltip: 'Download Vendor Receipt'
+    },
+    isPlayOption: {
+      value : true,
+      icon : 'fa-info-circle',
+      tooltip: 'View Details'
     },
 
     // Commenting out fixedColumn, as we need subRow isTree children child row, to show action buttons
@@ -60,7 +68,7 @@ export class OrdersComponent implements OnInit  {
     // since default ordering assigned in dataTable is [[1, 'asc']]
     // isOrder: [[2, 'asc']],
     isOrder: [[3, 'asc']],
-    isHideColumns: [ "Vendor_Receipt_Id"],
+    isHideColumns: [ "Vendor_Receipt_Id","internal_line_item_id","internal_order_id"],
 
     // TODO: Check for PageLen change event also...
     // isApiCallForNextPage: {
@@ -80,20 +88,19 @@ export class OrdersComponent implements OnInit  {
       buttons: {},
       buttonCondition: {},
       htmlFunction: (row) => {
-        let retHtml = '<div>' +
-          // '<button class="btn action-btn api-action" data-action="retryCharge" data-order-id=DATA_ORDER_ID style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
-          // '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-credit-card" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span> Retry Charge</button>' +
-          // '<button class="btn action-btn api-action" data-action="regenerateReceipt" data-order-id=DATA_ORDER_ID style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
-          // '><span style="margin-right: 5px; position: relative;"> <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-newspaper-o" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Regenerate Receipt</button>' +
-          // '<button class="btn action-btn api-action" data-action="reprocess" data-order-id="DATA_ORDER_ID" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+
+        let ngHtmlContent = '<div>' +
+          '<button class="btn action-btn api-action" data-action="retryCharge" '+ ( row.Status.trim() == "ERROR_PROCESSING_PAYMENT" ? "" : "disabled" ) + ' data-order-id="'+row.Order_Id + '" data-line-item-id="'+row.Line_Item_Id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+          '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-credit-card" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span> Retry Charge</button>' +
+          '<button class="btn action-btn api-action" data-action="regenerateReceipt" data-order-id="'+row.Order_Id+ '" data-line-item-id= "'+ row.Line_Item_Id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+          '><span style="margin-right: 5px; position: relative;"> <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-newspaper-o" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Regenerate Receipt</button>' +
+          // '<button class="btn action-btn api-action" data-action="reprocess" data-order-id="row.Order_Id " style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
           // '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-cogs" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Reprocess</button>' +
-          '<button class="btn action-btn api-action" data-action="recalculate" data-order-id="DATA_ORDER_ID" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+          '<button class="btn action-btn api-action" data-action="recalculate" data-order-id="'+ row.Order_Id + '" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
           '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-calculator" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Recalculate</button>' +
         '</div>';
 
-        retHtml = retHtml.replace(/DATA_ORDER_ID/g, row.Order_Id);
-
-        return retHtml;
+        return ngHtmlContent;
       }
     }
 
@@ -103,10 +110,17 @@ export class OrdersComponent implements OnInit  {
   externalAuth: any;
   showSpinner: boolean;
   widget: any;
+  selectedOrderID: any;
+  selectedLineItemID: any;
+  hideTable: any;
+  hasTemplates: any;
+  orderPayment: number;
+  // retryChargeState: boolean = true;
 
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
   selectedRow: any;
+  @ViewChild('AddUser') addUser: PopUpModalComponent;
 
   constructor(
     private okta: OktaAuthService,
@@ -135,6 +149,9 @@ export class OrdersComponent implements OnInit  {
         this.isRoot = true;
       }
     }, this);
+
+    const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
+    this.hasTemplates = customerInfo.org.hasTemplates;
 
     this.searchDataRequest();
     this.searchOrgRequest();
@@ -297,6 +314,9 @@ export class OrdersComponent implements OnInit  {
 
     this.gridData['result'] = tableData;
     this.gridData['headers'] = headers;
+
+    this.options[0].isPlayOption.value = this.hasTemplates;
+
     this.gridData['options'] = this.options[0];
     this.gridData.columnsToColor = [
       { index: 11, name: 'MERCHANT PROCESSING FEE', color: 'rgb(47,132,234,0.2)'},
@@ -323,10 +343,41 @@ export class OrdersComponent implements OnInit  {
     if(this[rowObj.action])
       this[rowObj.action](rowObj);
   }
-
+  
+  receiptList: Array<Object>;
   handleDownload(dataObj: any) {
-    const downloadId = dataObj.data.Vendor_Receipt_Id;
-    const orderId = dataObj.data.Order_Id;
+    // Show modal with Downloadable Receipts and their Download links
+    // Call all receipts & then call this.handleDownloadLink or this.searchDownloadLink
+
+    let data = {
+      "line_item_id": dataObj.data.Line_Item_Id
+    }
+    this.showSpinner = true;
+
+    this.genericService.postOrderReceiptList(data)
+    .subscribe(
+      (res) => {
+        console.log("res isss: ", res);
+        this.showSpinner = false;
+        this.receiptList = res.data;
+        
+        // Show modal popUp, from there run this.handleDownloadLink(receiptId)
+        this.addUser.show();
+      },
+      (rej) => {
+        this.showSpinner = false;
+        this.errorCB(rej);
+      }
+
+    )
+  }
+
+  handleDownloadLink(dataObj: any) {
+    // const downloadId = dataObj.data.Vendor_Receipt_Id;
+    // const orderId = dataObj.data.Order_Id;
+
+    const downloadId = dataObj.vendor_receipt_id;
+    const orderId = "";
 
     console.log('dataObj >>')
     console.log(dataObj);
@@ -340,6 +391,14 @@ export class OrdersComponent implements OnInit  {
         type: 'error'
       });
     }
+  }
+
+  handleRun(dataObj: any) {
+    console.log('dataObj.data >>')
+    console.log(dataObj.data);
+    this.selectedOrderID = dataObj.data.internal_order_id;
+    this.selectedLineItemID = dataObj.data.internal_line_item_id;
+    this.hideTable = true;
   }
 
   searchDownloadLink(downloadId, orderId) {
@@ -467,28 +526,30 @@ export class OrdersComponent implements OnInit  {
   }
 
   retryCharge(option) {
-    this.showSpinner = true;
-    // Compile option/data
-    let data = {};
+    // this.showSpinner = true;
 
-    return this.genericService
-      .retryCharge(data)
-      .subscribe(
-        (res) => {
-          this.showSpinner = false;
-          this.successCB(res)
-        },
-        (rej) => {
-          this.showSpinner = false;
-          this.errorCB(rej)
-        }
-      )
+    // Compile option/data
+    let order_id = $(option.elem).data("orderId");
+    // let line_item_id = $(option.elem).data("lineItemId");
+    // let data = {
+    //   "order_id": order_id
+    // };
+
+    // this.selectedOrderID = order_id;
+    // this.hideTable = true;
+
+    this.router.navigate(['/app/orderPayment/', order_id]);
   }
 
   regenerateReceipt(option) {
     this.showSpinner = true;
     // Compile option/data
-    let data = {};
+    let order_id = $(option.elem).data("orderId");
+    let line_item_id = $(option.elem).data("lineItemId");
+    let data = {
+      order_id: order_id,
+      line_item_id: line_item_id
+    };
 
     return this.genericService
       .regenerateReceipt(data)
@@ -557,4 +618,9 @@ export class OrdersComponent implements OnInit  {
     }
   }
 
+  showOrders() {
+    this.hideTable = false;
+    this.selectedOrderID = null;
+    this.selectedLineItemID = null;
+  }
 }

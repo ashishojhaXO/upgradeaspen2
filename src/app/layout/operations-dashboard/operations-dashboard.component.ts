@@ -104,8 +104,8 @@ export class OperationsDashboardComponent implements OnInit {
 
     const headers = new Headers({ 'Content-Type': 'application/json', 'token': token, 'callingapp': 'aspen' });
     const options = new RequestOptions({ headers: headers });
-    var url = this.api_fs.api + '/api/orgs';
-  return Observable.of({
+    var url = this.api_fs.api + '/api/reports/operations';
+  /*return Observable.of({
       "status": "success", "message": "Data found", "data": [{
         'id': 1,
         'file_name': 'test file name',
@@ -126,13 +126,13 @@ export class OperationsDashboardComponent implements OnInit {
         'number_of_rows_cleared': 'number of rows cleared test',
         'status': 'test'
       }]
-    });
-    /*  return this.http
+    });*/
+     return this.http
       .get(url, options)
       .map(res => {
         return res.json();
       }).share();
-      */
+      
   }
   populateDataTable(response, initialLoad) {
     const tableData = response;

@@ -1,0 +1,121 @@
+<div class="form">
+    <div class="col-lg-12 col-md-12" style="padding-left: 0px">
+        <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">ORDER DETAILS : {{orderID}}</p>
+    </div>
+    <p style="clear: both"></p>
+    <div style="background: #fff; padding: 10px" *ngIf="orderDetails">
+        <div class="order-step">
+            <div style="font-size: 12px">Order Started</div>
+            <div style="font-size: 10px">{{orderDetails.order_date ? (orderDetails.order_date | date: 'MM/dd/yyyy') : '--'}}</div>
+            <div class="arrow-right" style="border-left: 19px solid rgba(47, 132, 234, 1);"></div>
+        </div>
+        <div class="order-step"
+             [ngStyle]="{'border-radius': orderDetails.payment_received_date ? '4px 0px 0px 4px' : '4px'}">
+            <div style="font-size: 12px">{{orderDetails.payment_received_date ? 'Payment Received' : 'Payment Pending'}}</div>
+            <div style="font-size: 10px">{{orderDetails.payment_received_date ? (orderDetails.payment_received_date | date: 'MM/dd/yyyy') : '--'}}</div>
+            <div *ngIf="orderDetails.payment_received_date" class="arrow-right"
+                 style="border-left: 19px solid rgba(47, 132, 234, 1);"></div>
+        </div>
+        <div *ngIf="orderDetails.payment_received_date" class="order-step">
+            <div style="font-size: 12px">{{orderDetails.started ? 'Order Live' : 'Order In Progress'}}</div>
+            <div style="font-size: 10px">{{orderDetails.started && orderDetails.start ? (orderDetails.start | date: 'MM/dd/yyyy') : '--'}}</div>
+            <div class="arrow-right" style="border-left: 19px solid rgba(47, 132, 234, 1);"></div>
+        </div>
+        <div *ngIf="orderDetails.payment_received_date" class="order-step"
+             [ngStyle]="{'background': orderDetails.started ? 'rgba(47, 132, 234, 1)' : 'rgba(47, 132, 234, 0.5)'}">
+            <div style="font-size: 12px">Actual Start Date</div>
+            <div style="font-size: 10px">{{orderDetails.start ? (orderDetails.start | date: 'MM/dd/yyyy') : '--'}}</div>
+            <div class="arrow-right"
+                 [ngStyle]="{'border-left': '19px solid ' + ( orderDetails.started ? 'rgba(47, 132, 234, 1)' : 'rgba(47, 132, 234, 0.5)' ) }"></div>
+        </div>
+        <div *ngIf="orderDetails.payment_received_date" class="order-step" style="border-radius: 4px"
+             [ngStyle]="{'background': orderDetails.ended ? 'rgba(47, 132, 234, 1)' : 'rgba(47, 132, 234, 0.5)'}">
+            <div style="font-size: 12px">Actual End Date</div>
+            <div style="font-size: 10px">{{orderDetails.end ? (orderDetails.end | date: 'MM/dd/yyyy') : '--'}}</div>
+            <!--<div class="arrow-right" [ngStyle]="{'border-left': '19px solid ' + ( orderDetails.ended ? 'rgba(47, 132, 234, 1)' : 'rgba(47, 132, 234, 0.5)' ) }"></div>-->
+        </div>
+    </div>
+    <div *ngIf="orderDetails" style="background: #fff; padding: 10px 10px 30px 10px">
+        <button class="btn action-btn api-action" [disabled]="orderDetails.payment_received_date ? 'disabled' : null" (click)="editOrder()"
+                style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;">
+            <span style="margin-right: 5px; position: relative;">
+                <i class="fa fa-pencil"
+                   style="font-size: 20px;"
+                   aria-hidden="true"></i></span>
+            Edit Order
+        </button>
+        <button class="btn action-btn api-action" [disabled]="orderDetails.payment_received_date ? 'disabled' : null" (click)="cancelOrder()"
+                style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;">
+            <span style="margin-right: 5px; position: relative;">
+                <i class="fa fa-close"
+                   style="font-size: 20px;"
+                   aria-hidden="true"></i></span>
+            Cancel Order
+        </button>
+        <button class="btn action-btn api-action" [disabled]="orderDetails.payment_received_date ? 'disabled' : null" (click)="payOrder()"
+                style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;">
+            <span style="margin-right: 5px; position: relative;">
+                <i class="fa fa-money"
+                   style="font-size: 20px; position: relative; top: 2px"
+                   aria-hidden="true"></i></span>
+            Pay
+        </button>
+    </div>
+    <div style="background: #fff">
+        <ul id="accordion" class="accordion" style="list-style: none; max-width: 100%; padding: 0px 10px">
+            <li *ngFor="let lineItem of lineItemDetails; let i = index"
+                [class.active]="lineItem.active">
+                <div class="menu" (click)="toggle(i)" style="text-transform: uppercase">
+                    <!--<i [class]="menu.iconClass"></i>-->
+                    {{ lineItem.channel }}
+                    <i class="fa fa-chevron-down"></i>
+                </div>
+                <div class="submenu" [style.height.px]="lineItem.active ? 120 : 0">
+                    <div style="background: #fff; padding: 10px">
+                        <div class="order-step" style="width: 18%"
+                             [ngStyle]="{'background': lineItem.started ? 'rgba(47, 132, 234, 1)' : 'rgba(47, 132, 234, 0.5)'}">
+                            <div style="font-size: 12px">Line Item Start Date</div>
+                            <div style="font-size: 10px">{{lineItem.line_item_start_date ? (lineItem.line_item_start_date | date: 'MM/dd/yyyy') : '--'}}</div>
+                            <div class="arrow-right"
+                                 [ngStyle]="{'border-left': '19px solid ' + ( lineItem.started ? 'rgba(47, 132, 234, 1)' : 'rgba(47, 132, 234, 0.5)' ) }"></div>
+                        </div>
+                        <div *ngIf="lineItem.started" class="order-step" style="width: 18%"
+                             [ngStyle]="{'background': lineItem.started ? 'rgba(47, 132, 234, 1)' : 'rgba(47, 132, 234, 0.5)'}">
+                            <div style="font-size: 12px">Line Item Actual Start Date</div>
+                            <div style="font-size: 10px">{{lineItem.actual_line_item_start_date ? (lineItem.actual_line_item_start_date | date: 'MM/dd/yyyy') : '--'}}</div>
+                            <div class="arrow-right"
+                                 [ngStyle]="{'border-left': '19px solid ' + ( lineItem.started ? 'rgba(47, 132, 234, 1)' : 'rgba(47, 132, 234, 0.5)' ) }"></div>
+                        </div>
+                        <div class="order-step" style="width: 18%; border-radius: 4px"
+                             [ngStyle]="{'background': lineItem.ended ? 'rgba(47, 132, 234, 1)' : 'rgba(47, 132, 234, 0.5)'}">
+                            <div style="font-size: 12px">Line Item End Date</div>
+                            <div style="font-size: 10px">{{lineItem.line_item_end_date ? (lineItem.line_item_end_date | date: 'MM/dd/yyyy') : '--'}}</div>
+                            <div class="arrow-right" *ngIf="lineItem.ended"
+                                 [ngStyle]="{'border-left': '19px solid ' + ( lineItem.ended ? 'rgba(47, 132, 234, 1)' : 'rgba(47, 132, 234, 0.5)' ) }"></div>
+                        </div>
+                        <div *ngIf="lineItem.ended" class="order-step" style="width: 18%"
+                             [ngStyle]="{'background': lineItem.started ? 'rgba(47, 132, 234, 1)' : 'rgba(47, 132, 234, 0.5)'}">
+                            <div style="font-size: 12px">Line Item Actual End Date</div>
+                            <div style="font-size: 10px">{{lineItem.actual_line_item_end_date ? (lineItem.actual_line_item_end_date | date: 'MM/dd/yyyy') : '--'}}</div>
+                        </div>
+                    </div>
+                    <div style="padding: 10px">
+                        <button class="btn action-btn" style="background: #fefefe;color: #3b3b3b;border-color: #c3c3c3;font-weight: 600;width: 100px;" (click)="extendOrder(lineItem)"
+                                [disabled]="lineItemExtensionAllowed(lineItem.line_item_end_date) && orderDetails.payment_received_date ? null : 'disabled'">
+                                <span style="margin-right: 24px;position: relative;">
+                                    <i aria-hidden="true" class="fa fa-external-link" style="font-size: 24px;top: -5px;left: -10px;color: #3b3b3b;"></i></span>
+                            Extend
+                        </button>
+                        <!--<button class="btn action-btn" style="background: #fefefe;color: #3b3b3b;border-color: #c3c3c3;font-weight: 600;width: 100px;"-->
+                                <!--[disabled]="!lineItem.ended ? 'disabled' : null">-->
+                                <!--<span style="margin-right: 24px;position: relative;">-->
+                                    <!--<i aria-hidden="true" class="fa fa-money" style="font-size: 24px;top: -5px;left: -10px;color: #3b3b3b;"></i></span>-->
+                            <!--Refund-->
+                        <!--</button>-->
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+

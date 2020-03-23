@@ -31,7 +31,11 @@ export class OrdersListComponent implements OnInit  {
       icon : 'fa-dollar',
       tooltip: 'Pay Order'
     },
-    isDeleteOption: false,
+    isDeleteOption: {
+      value : true,
+      icon : '',
+      tooltip: 'Delete Order'
+    },
     isAddRow: false,
     isColVisibility: true,
     isRowHighlight: false,
@@ -112,7 +116,7 @@ export class OrdersListComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.searchDataRequest.bind(self, templateValue)
             );
           } else {
@@ -233,7 +237,7 @@ export class OrdersListComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.getOrganizations.bind(self)
             );
         } else {
