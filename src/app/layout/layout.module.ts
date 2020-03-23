@@ -62,6 +62,7 @@ import { CustomFormBuilderModule } from '../shared/components/customformbuilder/
 import { OrdersTemplateListComponent } from './orders-template-list/orders-template-list.component';
 import { OrdersListComponent } from './orders-list/orders-list.component';
 import { NumericDirective } from '../shared/directives/Numeric.directive';
+import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
 
 
 @NgModule({
@@ -128,6 +129,7 @@ import { NumericDirective } from '../shared/directives/Numeric.directive';
         OrgManagementComponent,
         AnalyticsComponent,
         EmailManagementComponent,
+        OperationsDashboardComponent,
         OrderDashboardComponent,
         UploadsComponent
     ],
