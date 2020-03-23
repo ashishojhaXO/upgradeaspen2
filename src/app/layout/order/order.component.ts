@@ -845,7 +845,7 @@ export class OrderComponent implements OnInit  {
       lineItems.forEach(function (lItem, index) {
         const obj: any = {};
         obj.lineItemFields = lItem;
-        obj.line_item_id = this.existingOrder.lineItems[index].id;
+        obj.line_item_id = this.existingOrder.lineItems[index] ? this.existingOrder.lineItems[index].id : null;
         reqObj.orderDetail.lineItems.push(obj);
       }, this);
     } else {
