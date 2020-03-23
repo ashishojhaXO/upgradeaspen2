@@ -5,7 +5,7 @@
  * Date: 2019-03-26 12:54:37
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
@@ -13,11 +13,15 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {DataTableOptions} from '../../../models/dataTableOptions';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
+import Swal from 'sweetalert2';
+import { GenericService } from '../../../services/generic.service';
+import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-modal.component';
 
 @Component({
   selector: 'app-reconciliation',
   templateUrl: './reconciliation.component.html',
-  styleUrls: ['./reconciliation.component.scss']
+  styleUrls: ['./reconciliation.component.scss'],
+  providers: [GenericService]
 })
 export class ReconciliationComponent implements OnInit  {
 
@@ -29,16 +33,31 @@ export class ReconciliationComponent implements OnInit  {
   options: any = [{
       isSearchColumn: true,
       isTableInfo: true,
-      isEditOption: false,
+      isCustomOption: {
+        value : true,
+        icon : 'fa-arrow-circle-o-down',
+        tooltip: 'Download'
+      },
       isDeleteOption: false,
       isAddRow: false,
       isColVisibility: true,
       isDownloadAsCsv: true,
-      isDownloadOption: false,
+      isDownloadAsCsvFunc: ( table, pageLength, csv?) => {
+        this.apiMethod(table, pageLength, csv);
+      },
+      isDownloadOption: {
+        value: true,
+        icon: '',
+        tooltip: 'View/Download Invoice'
+      },
+      isPlayOption: {
+        value : true,
+        icon : 'fa-plus-square',
+        tooltip: 'View'
+      },
       isRowSelection: null,
       isPageLength: true,
-      isPagination: true,
-      fixedColumn: 1
+      isPagination: true
   }];
   dashboard: any;
   api_fs: any;
@@ -62,8 +81,14 @@ export class ReconciliationComponent implements OnInit  {
         showTooltip: true,
         tooltipElementsSize: 10
     };
-
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
+    hideTable: boolean;
+    selectedInvoice: any;
+    selectedInvoiceNumber: any;
+    hasData: boolean;
+    selectedInvoiceDetails: any;
+    memo: string;
+    @ViewChild('AddPayment') addPayment: PopUpModalComponent;
+  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http,private genericService: GenericService) {
   }
 
   ngOnInit() {
@@ -103,8 +128,8 @@ export class ReconciliationComponent implements OnInit  {
    searchDataRequest() {
       return this.searchData().subscribe(
         response => {
-            if (response) {
-                this.populateDataTable(response, true);
+            if (response && response.data) {
+                this.populateDataTable(response.data, true);
                 this.showSpinner = false;
             }
         },
@@ -147,9 +172,10 @@ export class ReconciliationComponent implements OnInit  {
 
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
-    const url = this.api_fs.api + '/api/reports/reconciliation';
+    //const url = this.api_fs.api + '/api/reports/reconciliation';
+    const url= this.api_fs.api + '/api/payments/invoices/all';
     return this.http
-      .post(url, obj, options)
+      .get(url, options)
       .map(res => {
         return res.json();
       }).share();
@@ -233,5 +259,305 @@ export class ReconciliationComponent implements OnInit  {
       this.showSpinner = true;
       this.dataObject.isDataAvailable = false;
       this.searchDataRequest();
+    }
+    handleRow(rowObj: any, rowData: any) {
+      if(this[rowObj.action])
+        this[rowObj.action](rowObj);
+    }
+    handleRun(dataObj: any) {
+      console.log('dataObj.data >>')
+      console.log(dataObj.data);
+      const invoiceId = dataObj.data.id;
+      if (invoiceId) {
+        this.selectedInvoiceNumber = dataObj.data.invoice_number;
+        this.selectedInvoice = invoiceId;
+        this.hideTable = true;
+       // this.router.navigate(['/app/admin/invoices/invoice/' + invoiceId]);
+      } else {
+        Swal({
+          title: 'No invoice ID found',
+          text: 'We did not find an invoice id',
+          type: 'error'
+        });
+      }
+    }
+  
+    handleDownload(dataObj: any) {
+      console.log('dataObj >>')
+      console.log(dataObj);
+      const downloadId = dataObj.data.downloadable_file_id;
+      const invoiceId = dataObj.data.id;
+      if (downloadId) {
+        this.searchDownloadLink(downloadId, invoiceId);
+      } else {
+        Swal({
+          title: 'No downloadable link available',
+          text: 'We did not find a download link for that invoice',
+          type: 'error'
+        });
+      }
+    } 
+    searchDownloadLink(downloadId, invoiceId) {
+      this.getDownloadLink(downloadId).subscribe(
+          response => {
+            if (response && response.data && response.data.pre_signed_url) {
+              const link = document.createElement('a');
+              link.setAttribute('href', response.data.pre_signed_url);
+              link.setAttribute('target', '_blank');
+              document.body.appendChild(link);
+              link.click();
+            } else {
+              Swal({
+                title: 'No downloadable link available',
+                text: 'We did not find a download link for that invoice',
+                type: 'error'
+              });
+            }
+          },
+          err => {
+            if(err.status === 401) {
+              let self = this;
+              this.widget.refreshElseSignout(
+                this,
+                err,
+                self.searchDownloadLink.bind(self, downloadId, invoiceId)
+              );
+            } else {
+              Swal({
+                title: 'Unable to download the invoice',
+                text: 'We were enable to download details of invoice: ' + invoiceId  + '. Please try again',
+                type: 'error'
+              });
+              this.showSpinner = false;
+            }
+          });
+    }
+  
+    getDownloadLink(downloadId) {
+      const AccessToken: any = localStorage.getItem('accessToken');
+      let token = '';
+      if (AccessToken) {
+        // token = AccessToken.accessToken;
+        token = AccessToken;
+      }
+  
+      const data = JSON.stringify({
+           'reference_id': downloadId
+      });
+  
+      const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+      const options = new RequestOptions({headers: headers});
+      var url = this.api_fs.api + '/api/reports/download';
+      return this.http
+          .post(url, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    }
+
+    apiMethod = (table, pageLength, csv?) => {
+      this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
+      
+      if(csv){
+        this.searchDataRequestCsv(null, table);
+      }
+      else
+        this.searchDataRequest();
+    }
+
+    searchDataRequestCsv(org = null, table?) {
+
+      // if no table, then send all default, page=1 & limit=25
+      // else, send table data
+      let data = { 
+        page: 0, 
+        limit: 10000000,
+        org: org ? org : ''
+      };
+  
+      // this.hasData = false;
+      // this.showSpinner = true;
+  
+      return this.getRecCSV(data)
+      .subscribe(
+        (res) => {
+          this.hasData = true;
+          // this.showSpinner = false;
+          // this.successCB.apply(this, [res])
+          this.successCBCsv(res, table)
+        },
+        (err) => {
+          this.showSpinner = false;
+          this.errorCB(err)
+  
+          if(err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.searchDataRequestCsv.bind(self, org, table)
+            );
+          } else {
+            this.showSpinner = false;
+          }
+        }
+      );
+  
+    }
+    successCBCsv(res, table) {
+      // Set this.response, before calc
+      let rows = res.data;
+      // let li = this.calc(res, table);
+      console.log("Download Csv Here...");
+  
+      let arr: Array<String> = [];
+  
+      if (rows && rows.length) {
+        const filRow = rows.map(res => {
+          return { id: res.id, downloadable_file_id: res.downloadable_file_id,supplier:res.supplier,invoice_number:res.invoice_number,
+            invoice_date:res.invoice_date,billing_period:res.billing_period,reference_number:res.reference_number,due_date:res.due_date,
+            invoice_amount:res.invoice_amount,paid_amount:res.paid_amount,payment_terms:res.payment_terms,created_at:res.created_at
+          };
+        });
+        arr.push( Object.keys(filRow[0]).join(",") ); 
+        let dataRows = filRow.map( (k, v) => { return Object.values(k).join(", "); } ) 
+        arr = arr.concat(dataRows);
+      }
+      let csvStr: String = "";
+      csvStr = arr.join("\n");
+  
+      // var data = encode(csvStr);
+      let b64 = btoa(csvStr as string);
+      let a = "data:text/csv;base64," + b64;
+      $('<a href='+a+' download="data.csv">')[0].click();
+  
+      return arr;
+    }
+  
+    errorCB(rej) {
+      console.log("errorCB: ", rej)
+    }
+    getRecCSV(data) {
+      const AccessToken: any = localStorage.getItem('accessToken');
+      let token = '';
+      if (AccessToken) {
+        // // token = AccessToken.accessToken;
+        token = AccessToken;
+      }
+  
+      const dataObj = {
+          clientCode: 'homd',
+          year: this.selectedPeriod[0].id.split('-')[0],
+          month: this.selectedPeriod[0].id.split('-')[1],
+          // siteName: this.selectedChannel[0].id
+      }
+  
+      const obj = JSON.stringify(dataObj);
+  
+      console.log('obj >>')
+      console.log(obj)
+  
+      const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+      const options = new RequestOptions({headers: headers});
+      //const url = this.api_fs.api + '/api/reports/reconciliation';
+      const url= this.api_fs.api + '/api/payments/invoices/all';
+      return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
+    }
+    showInvoices() {
+      this.hideTable = false;
+      this.selectedInvoice = null;
+      this.selectedInvoiceNumber = null;
+    }
+  
+    handleInvoicePay(dataObj: any) {
+      console.log('dataObj >>>')
+      console.log(dataObj);
+      this.selectedInvoiceDetails = dataObj.data;
+      this.addPayment.show();
+    }
+  
+    OnPay(modalComponent: PopUpModalComponent) {
+  
+      modalComponent.hide();
+  
+      console.log('this.selectedInvoiceDetails >>>')
+      console.log(this.selectedInvoiceDetails);
+  
+      this.selectedInvoiceDetails.invoice.memo = this.memo;
+      this.createTransactionRequest(this.selectedInvoiceDetails);
+    }
+  
+    createTransactionRequest(dataObj) {
+      return this.createTransaction(dataObj).subscribe(
+          response => {
+            console.log('response from create transaction >>>')
+            console.log(response);
+            if (response) {
+              this.showSpinner = false;
+              this.memo = '';
+              Swal({
+                title: 'Payment Successful',
+                text: 'Payment for the selected invoice : ' + this.selectedInvoiceDetails.invoice.number  +  ' was successfully submitted',
+                type: 'success'
+              }).then( () => {
+                this.reLoad();
+              });
+            } else {
+              Swal({
+                title: 'Payment Failed',
+                text: 'We were unable to process payment for the selected invoice : ' +  this.selectedInvoiceDetails.invoice.number  +  '. Please try again',
+                type: 'error'
+              });
+            }
+          },
+          err => {
+  
+            if(err.status === 401) {
+              let self = this;
+              this.widget.refreshElseSignout(
+                this,
+                err,
+                self.createTransactionRequest.bind(self, dataObj)
+              );
+            } else {
+              this.showSpinner = false;
+              Swal({
+                title: 'Payment Failed',
+                text: 'We were unable to process payment for the selected invoice : ' + this.selectedInvoiceDetails.invoice.number   +  '. Please try again',
+                type: 'error'
+              });
+            }
+          }
+      );
+    }
+  
+    createTransaction(dataObj) {
+      const AccessToken: any = localStorage.getItem('accessToken');
+      let token = '';
+      if (AccessToken) {
+        // token = AccessToken;
+        token = AccessToken;
+      }
+      const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+      const options = new RequestOptions({headers: headers});
+      const data = JSON.stringify(dataObj);
+      const url = this.api_fs.api + '/api/payments/transactions';
+      return this.http
+          .post(url, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    }
+  
+    handleCloseModal(modalComponent: PopUpModalComponent) {
+      modalComponent.hide();
+      this.memo = '';
+    }
+    handleCustom(dataObj: any){
+      console.log(dataObj);
     }
 }
