@@ -88,11 +88,6 @@ export class OrderDashboardComponent implements OnInit  {
             if(this.orderDetails.end) {
               this.orderDetails.ended = (new Date(this.orderDetails.end) <= new Date());
             }
-
-            console.log('this.orderDetails >>')
-            console.log(this.orderDetails);
-            console.log('this.lineItemDetails >>')
-            console.log(this.lineItemDetails);
           }
           this.showSpinner = false;
         },
@@ -269,6 +264,56 @@ export class OrderDashboardComponent implements OnInit  {
     );
   }
 
+  refundLineItem(lineItem, orderID) {
+    if (lineItem.ended ) {
+      Swal({
+        title: 'Issue Refund?',
+        text: 'You have $' + lineItem.balance_amount + ' available. Would you like to refund ?',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+      }).then((result) => {
+        if (result.value) {
+          let self = this;
+          this.refundRequest(lineItem, orderID).subscribe(
+              response => {
+                console.log('response >>')
+                console.log(response);
+                this.showSpinner = false;
+                Swal({
+                  title: 'Refund Successfully Issued',
+                  text: 'A refund of $' + lineItem.balance_amount + ' has been successfully issued',
+                  type: 'success'
+                }).then( () => {
+                  this.router.navigate(['/app/order/orders']);
+                });
+              },
+              err => {
+                if(err.status === 401) {
+                  let self = this;
+                  this.widget.refreshElseSignout(
+                      this,
+                      err,
+                      self.refundRequest.bind(self, lineItem, orderID),
+                  );
+                } else {
+                  Swal({
+                    title: 'Refund Issue Failed',
+                    text: 'An error occurred while issuing refund. Please try again',
+                    type: 'error'
+                  }).then( () => {
+                  });
+                  this.showSpinner = false;
+                }
+              }
+          );
+        }
+      });
+    }
+  }
+
   cancelRequest(orderID) {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
@@ -282,6 +327,28 @@ export class OrderDashboardComponent implements OnInit  {
       order_id : orderID
     };
     var url = this.api_fs.api + '/api/orders/delete' ;
+    return this.http
+        .post(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
+  refundRequest(lineItem, orderID) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    const data: any = JSON.stringify({
+      order_id : orderID,
+      line_item_id : lineItem.line_item_id,
+      refund_amount : lineItem.balance_amount
+    });
+    var url = this.api_fs.api + '/api/orders/refund' ;
     return this.http
         .post(url, data, options)
         .map(res => {
