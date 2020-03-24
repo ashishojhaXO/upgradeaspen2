@@ -226,14 +226,17 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
       token = AccessToken;
     }
 
+    const obj: any = {};
+    if (this.isRoot) {
+      obj['org_uuid'] = org;
+    }
+    const dataObj = JSON.stringify(obj);
+
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/vendors/list';
-    const data = {
-      "org_uuid": org ? org : ''
-    };
     return this.http
-        .post(url, data, options)
+        .post(url, dataObj, options)
         .map(res => {
           return res.json();
         }).share();
@@ -373,7 +376,9 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.showSpinner = true;
     this.error = '';
     const dataObj: any = {};
-    dataObj.org_uuid = this.isRoot ? this.vendorForm.controls['org'].value : this.orgInfo.org_id;
+    if (this.isRoot) {
+      dataObj.org_uuid = this.vendorForm.controls['org'].value;
+    }
     dataObj.external_vendor_id = this.vendorForm.controls['external_vendor_id'].value;
     dataObj.first_name = this.vendorForm.controls['first_name'].value;
     dataObj.last_name = this.vendorForm.controls['last_name'].value;

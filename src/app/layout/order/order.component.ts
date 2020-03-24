@@ -71,6 +71,7 @@ export class OrderComponent implements OnInit  {
   selectedRow: any;
   originalResponseObj: any;
   paymentReceived: any;
+  isOrderExtend: boolean;
 
   // gridDataResult: Object[] = new Array(Object);
   gridDataResult: Object[] = [];
@@ -109,11 +110,20 @@ export class OrderComponent implements OnInit  {
   extractOrderDetails(id, lineItemId = null) {
     this.getOrderDetails(id).subscribe(
         response => {
+
+          if(lineItemId) {
+            this.isOrderExtend = true;
+          }
           this.showSpinner = false;
           this.orderId = id;
           if (response.orders && response.orders.length && response.orders[0].order && response.orders[0].order.temp_id) {
             this.existingOrder = response.orders[0];
             this.template = response.orders[0].order.temp_id;
+
+            if (this.isOrderExtend) {
+              this.existingOrder.lineItems[0]['additional_budget'] = 0;
+            }
+
             this.searchTemplateDetails(this.template, this.existingOrder, lineItemId);
           }
         },
@@ -250,7 +260,36 @@ export class OrderComponent implements OnInit  {
 
             // Build Line Item Info
             if (response && response.orderTemplateData && response.orderTemplateData.lineItems && response.orderTemplateData.lineItems.length) {
+
+              if (this.isOrderExtend) {
+
+                const lineItemBudgetIndex = response.orderTemplateData.lineItems.find(x=> x.name === 'campaign_line_item_budget');
+                if (lineItemBudgetIndex) {
+                  response.orderTemplateData.lineItems.splice(response.orderTemplateData.lineItems.indexOf(lineItemBudgetIndex) + 1, 0 , {
+                    id: 1,
+                    name: 'additional_budget',
+                    label: 'Additional Budget',
+                    type: 'amount',
+                    default_value: null,
+                    attr_list: null,
+                    validation: [],
+                    placeholder: 0,
+                    temp_group: 'lineitem',
+                    request_type: null,
+                    request_url: null,
+                    request_payload: null,
+                    request_mapped_property: null
+                  });
+                }
+              }
+
+              console.log('response.orderTemplateData.lineItems >>>')
+              console.log(response.orderTemplateData.lineItems);
+
               response.orderTemplateData.lineItems.forEach(function (ele) {
+
+                console.log('ele >>>>')
+                console.log(ele);
 
                 const obj: any = {
                   id: ele.id,
@@ -285,6 +324,9 @@ export class OrderComponent implements OnInit  {
 
               }, this);
             }
+
+            console.log('this.dataFieldConfiguration >>>')
+            console.log(this.dataFieldConfiguration);
 
             if (this.dataFieldConfiguration.length) {
               this.buildLineItem(this.dataFieldConfiguration, existingOrderInfo, lineItemId);
@@ -641,6 +683,10 @@ export class OrderComponent implements OnInit  {
 
     if (existingOrderInfo && existingOrderInfo.lineItems && existingOrderInfo.lineItems.length) {
 
+      console.log('existingOrderInfo.lineItems >>')
+      console.log(existingOrderInfo.lineItems);
+
+
       existingOrderInfo.lineItems.forEach(function (ele, index) {
         const obj: any = {};
         lineItemDef.forEach(function (line) {
@@ -765,17 +811,10 @@ export class OrderComponent implements OnInit  {
       });
     }, this);
 
-    console.log('reqObj >>')
-    console.log(reqObj);
-
     const lineItems = [];
 
     let extendedLineItemIndex = -1;
     if (this.dataObject.gridData.result.length && this.originalResponseObj.orderTemplateData.lineItems && this.originalResponseObj.orderTemplateData.lineItems.length) {
-
-     console.log('this.dataObject.gridData.result >>>')
-      console.log(this.dataObject.gridData.result);
-
       this.dataObject.gridData.result.forEach(function (ele, index) {
 
         if (ele.suppliedId == ele.id && this.lineItemId) {
@@ -784,6 +823,7 @@ export class OrderComponent implements OnInit  {
 
         const objArr = [];
         for (const prop in ele) {
+
           const obj: any = {};
           const corr = this.originalResponseObj.orderTemplateData.lineItems.find(x=> x.name === prop);
           if (corr) {
@@ -796,15 +836,16 @@ export class OrderComponent implements OnInit  {
             objArr.push(obj);
           }
         }
+
         lineItems.push(objArr);
       }, this);
     }
 
-    if(this.orderId) {
+    if (this.orderId) {
       lineItems.forEach(function (lItem, index) {
         const obj: any = {};
         obj.lineItemFields = lItem;
-        obj.line_item_id = this.existingOrder.lineItems[index].id;
+        obj.line_item_id = this.existingOrder.lineItems[index] ? this.existingOrder.lineItems[index].id : null;
         reqObj.orderDetail.lineItems.push(obj);
       }, this);
     } else {
@@ -815,14 +856,21 @@ export class OrderComponent implements OnInit  {
       reqObj.order_id = this.orderId;
     }
 
-    if (extendedLineItemIndex > -1) {
+    if (this.isOrderExtend && extendedLineItemIndex > -1) {
 
       const dataObj: any = {};
       dataObj.order_id = this.orderId;
       dataObj.line_item_id = this.lineItemId;
+
       reqObj.orderDetail.lineItems[extendedLineItemIndex].lineItemFields.forEach(function (item) {
         if (item.name && item.name !== 'line_item_id') {
-          dataObj[item.name] = item.field_value;
+          if (item.name === 'end_date') {
+            dataObj['extended_end_date'] = item.field_value;
+          } else if (item.name === 'additional_budget') {
+            dataObj['extended_item_budget'] = item.field_value;
+          } else {
+            dataObj[item.name] = item.field_value;
+          }
         }
       });
 
