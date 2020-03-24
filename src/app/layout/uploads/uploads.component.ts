@@ -28,6 +28,9 @@ export class UploadsComponent implements OnInit  {
   uploadType: any;
   api_fs: any;
   widget: any;
+  isRoot: boolean;
+  orgArr: any;
+  orgValue = '';
 
   constructor(
     private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder, private okta: OktaAuthService) {
@@ -40,9 +43,80 @@ export class UploadsComponent implements OnInit  {
     this.uploadTypes.push({
       id: 1,
       text: 'Flex Fields',
-      api: '/someapi'
+      api: '/api/orders/upload'
     });
     this.uploadType = 1;
+
+    const groups = localStorage.getItem('loggedInUserGroup') || '';
+    const grp = JSON.parse(groups);
+    grp.forEach(function (item) {
+      if(item === 'ROOT' || item === 'SUPER_USER') {
+        this.isRoot = true;
+      }
+    }, this);
+    this.searchOrgRequest();
+  }
+
+  searchOrgRequest() {
+    return this.searchOrgData().subscribe(
+        response => {
+          if (response && response.data) {
+
+            const orgArr = [];
+            response.data.forEach(function (item) {
+              orgArr.push({
+                id: item.org_uuid,
+                text: item.org_name
+              });
+            });
+            this.orgArr = orgArr;
+          }
+        },
+        err => {
+
+          if(err.status === 401) {
+            if(localStorage.getItem('accessToken')) {
+              this.widget.tokenManager.refresh('accessToken')
+                  .then(function (newToken) {
+                    localStorage.setItem('accessToken', newToken);
+                    this.showSpinner = false;
+                    this.searchOrgRequest();
+                  })
+                  .catch(function (err1) {
+                  });
+            } else {
+              this.widget.signOut(() => {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/login';
+              });
+            }
+          } else {
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+
+  searchOrgData() {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/orgs';
+    return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
+  orgChange(value) {
+
   }
 
   OnUploadTypeChange(e) {
@@ -62,13 +136,13 @@ export class UploadsComponent implements OnInit  {
     myReader.onloadend = (e) => {
       const fileAsBase64 = myReader.result;
       const apiEndPoint = __this.uploadTypes.find(x=> x.id === __this.uploadType).api;
-      __this.uploadFile(fileAsBase64, apiEndPoint).subscribe(
+      __this.uploadFile(fileAsBase64, apiEndPoint, file.name).subscribe(
           response => {
             if (response) {
               __this.showSpinner = false;
               Swal({
                 title: 'File Successfully Uploaded',
-                text: 'File : ' + this.uploadedFile.name + ' has been successfully uploaded',
+                text: 'File has been successfully uploaded',
                 type: 'success'
               }).then( () => {
                 __this.uploadedFile = null;
@@ -81,7 +155,7 @@ export class UploadsComponent implements OnInit  {
               __this.widget.refreshElseSignout(
                   __this,
                   err,
-                  __this.uploadFile.bind(self, fileAsBase64, apiEndPoint)
+                  __this.uploadFile.bind(self, fileAsBase64, apiEndPoint, file.name)
               );
             } else {
               __this.showSpinner = false;
@@ -91,18 +165,27 @@ export class UploadsComponent implements OnInit  {
     myReader.readAsDataURL(file);
   }
 
-  uploadFile(dataObj, api) {
+  uploadFile(base64, api, fileName) {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
       // token = AccessToken.accessToken;
       token = AccessToken;
     }
+    const data = JSON.stringify({
+      file : base64,
+      fileName: fileName,
+      org_uuid: this.orgValue
+    });
+
+    console.log('data >>>')
+    console.log(data);
+
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     const url = this.api_fs.api + api;
     return this.http
-        .post(url, dataObj, options)
+        .post(url, data, options)
         .map(res => {
           return res.json();
         }).share();
