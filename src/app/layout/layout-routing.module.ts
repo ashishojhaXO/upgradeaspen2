@@ -429,13 +429,21 @@ const routes: Routes = [
                       },
                     },
                     {
-                        path: 'orders-processed',
+                        path: 'jobs',
                         component: OrdersProcessedComponent,
                         data: {
                         breadcrumbs: true,
-                        text: 'Orders Processed'
+                        text: 'Jobs'
                         }
                     },
+                    // {
+                    //     path: 'orders-processed',
+                    //     component: OrdersProcessedComponent,
+                    //     data: {
+                    //     breadcrumbs: true,
+                    //     text: 'Orders Processed'
+                    //     }
+                    // },
                     {
                         path: 'analytics',
                         component: AnalyticsComponent,
