@@ -72,6 +72,9 @@ export class OrderComponent implements OnInit  {
   originalResponseObj: any;
   paymentReceived: any;
   isOrderExtend: boolean;
+  select2Options = {
+        placeholder: { id: '', text: 'Select an option' }
+  };
 
   // gridDataResult: Object[] = new Array(Object);
   gridDataResult: Object[] = [];
@@ -278,18 +281,13 @@ export class OrderComponent implements OnInit  {
                     request_type: null,
                     request_url: null,
                     request_payload: null,
-                    request_mapped_property: null
+                    request_mapped_property: null,
+                    request_dependent_property: null
                   });
                 }
               }
 
-              console.log('response.orderTemplateData.lineItems >>>')
-              console.log(response.orderTemplateData.lineItems);
-
               response.orderTemplateData.lineItems.forEach(function (ele) {
-
-                console.log('ele >>>>')
-                console.log(ele);
 
                 const obj: any = {
                   id: ele.id,
@@ -325,9 +323,6 @@ export class OrderComponent implements OnInit  {
               }, this);
             }
 
-            console.log('this.dataFieldConfiguration >>>')
-            console.log(this.dataFieldConfiguration);
-
             if (this.dataFieldConfiguration.length) {
               this.buildLineItem(this.dataFieldConfiguration, existingOrderInfo, lineItemId);
             }
@@ -336,13 +331,16 @@ export class OrderComponent implements OnInit  {
             if(!this.existingOrder) {
               response.orderTemplateData.orderFields.forEach(function (ele) {
                 if (ele.validation && ele.validation.indexOf('apiLookup') !== -1) {
-                  this.performApiLookUpForValue(ele.request_type, ele.request_url, ele.request_payload).subscribe(
+                  this.performRealApiLookUpForValue(ele, this.data.controls, null).subscribe(
                       responseLookup => {
                         if(ele.request_mapped_property) {
                            if (ele.type === 'list') {
                              if( Object.prototype.toString.call( responseLookup[ele.request_mapped_property] ) === '[object Array]' ) {
                                (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property].length ? responseLookup[ele.request_mapped_property][0] : '');
                                const options = [];
+
+                               options.push({ id: '', text: 'Empty'});
+
                                responseLookup[ele.request_mapped_property].forEach(function (prop) {
                                  options.push({
                                    id: prop, text: prop
@@ -354,7 +352,7 @@ export class OrderComponent implements OnInit  {
                                      ctrl.options = options;
                                    }
                                  }, this);
-                               });
+                               }, this);
                              } else {
                                (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property]);
                                this.data.controls.forEach(function (ctrl) {
@@ -369,6 +367,22 @@ export class OrderComponent implements OnInit  {
                              (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property]);
                            }
                          }
+                      },err => {
+                          if(err.status === 401) {
+                              // let self = this;
+                              // this.widget.refreshElseSignout(
+                              //     this,
+                              //     err,
+                              //     self.searchDateRequest.bind(self, orderID),
+                              // );
+
+                          } else {
+                              this.data.controls.forEach(function (ctrl) {
+                                  if (ctrl.name === ele.name) {
+                                      ctrl.options = [];
+                                  }
+                              }, this);
+                          }
                       });
                   }
               }, this);
@@ -378,7 +392,7 @@ export class OrderComponent implements OnInit  {
             if(!this.existingOrder) {
               this.dataFieldConfiguration.forEach(function (lineItem) {
                 if (lineItem.validation && lineItem.validation.indexOf('apiLookup') !== -1) {
-                  this.performApiLookUpForValue(lineItem.request_type, lineItem.request_url, lineItem.request_payload).subscribe(
+                  this.performRealApiLookUpForValue(lineItem, null).subscribe(
                       responseLookup => {
                         if(lineItem.request_mapped_property) {
                           if (lineItem.type === 'list') {
@@ -399,6 +413,18 @@ export class OrderComponent implements OnInit  {
                             lineItem.value =  responseLookup[lineItem.request_mapped_property];
                           }
                         }
+                      },err => {
+                          if(err.status === 401) {
+                              // let self = this;
+                              // this.widget.refreshElseSignout(
+                              //     this,
+                              //     err,
+                              //     self.searchDateRequest.bind(self, orderID),
+                              // );
+
+                          } else {
+                              lineItem.options = [];
+                          }
                       });
                 }
               }, this);
@@ -409,10 +435,10 @@ export class OrderComponent implements OnInit  {
             this.buildLineItem(this.dataFieldConfiguration, existingOrderInfo, lineItemId);
 
             // Perform API Lookup for line item configuration
-            if(!this.existingOrder) {
+            if (!this.existingOrder) {
               this.dataFieldConfiguration.forEach(function (lineItem) {
                 if (lineItem.validation && lineItem.validation.indexOf('apiLookup') !== -1) {
-                  this.performApiLookUpForValue(lineItem.request_type, lineItem.request_url, lineItem.request_payload).subscribe(
+                  this.performRealApiLookUpForValue(lineItem, null).subscribe(
                       responseLookup => {
                         if(lineItem.request_mapped_property) {
                           if (lineItem.type === 'list') {
@@ -433,7 +459,18 @@ export class OrderComponent implements OnInit  {
                             lineItem.value =  responseLookup[lineItem.request_mapped_property];
                           }
                         }
-                      });
+                      },err => {
+                        if (err.status === 401) {
+                            // let self = this;
+                            // this.widget.refreshElseSignout(
+                            //     this,
+                            //     err,
+                            //     self.searchDateRequest.bind(self, orderID),
+                            // );
+                        } else {
+                            lineItem.options = [];
+                        }
+                    });
                 }
               }, this);
             }
@@ -542,12 +579,47 @@ export class OrderComponent implements OnInit  {
         }).share();
   }
 
-  performApiLookUpForValue(requestType, requestUrl, requestPayload) {
+  performRealApiLookUpForValue(lineItem, formControls, dependentOn = null) {
+    const requestType =  lineItem.request_type;
+    let  requestUrl = lineItem.request_url;
+    const requestPayload = lineItem.request_payload;
+
+    if (typeof lineItem.request_dependent_property === 'string' ) {
+        if (lineItem.request_dependent_property.indexOf(',') != -1) {
+            lineItem.request_dependent_property = lineItem.request_dependent_property.split(',');
+        } else {
+            lineItem.request_dependent_property = [lineItem.request_dependent_property];
+        }
+    }
+
+    const  requestDependentProperty = lineItem.request_dependent_property;
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
       // token = AccessToken.accessToken;
       token = AccessToken;
+    };
+
+    if (requestDependentProperty && requestDependentProperty.length && ((formControls[dependentOn] && formControls[dependentOn].value && formControls[dependentOn].value !== -1) || (dependentOn === null))) {
+
+            if (requestType.toLowerCase() === 'get') {
+
+                let queryParams = '?';
+                requestDependentProperty.forEach(function (prop, index) {
+                    if (prop === lineItem.name) {
+                        (<FormControl>this.form.controls[prop]).setValue(null);
+                    }
+                    queryParams += formControls[prop] && formControls[prop].value && formControls[prop].value !== -1 ? (prop + '=' + formControls[prop].value) : prop;
+                    if (index !== (requestDependentProperty.length -1 )) {
+                        queryParams += '&';
+                    }
+                }, this);
+
+                requestUrl += queryParams;
+
+            } else if (requestType.toLowerCase() === 'post') {
+                requestPayload[lineItem.name] = null;
+            }
     }
 
     const data = requestPayload ? requestPayload : {};
@@ -556,13 +628,13 @@ export class OrderComponent implements OnInit  {
     const options = new RequestOptions({headers: headers});
     if(requestType === 'post') {
       return this.http
-          .post(requestUrl, data, options)
+          .post(this.api_fs.api + requestUrl, data, options)
           .map(res => {
             return res.json();
           }).share();
-    } else if(requestType === 'get') {
+    } else if (requestType === 'get') {
       return this.http
-          .get(requestUrl, options)
+          .get(this.api_fs.api + requestUrl, options)
           .map(res => {
             return res.json();
           }).share();
@@ -626,9 +698,81 @@ export class OrderComponent implements OnInit  {
     }
   }
 
-  OnSelectValueChange(e, name) {
-    if (e.value && e.value !== this.FormModel.attributes[name].value) {
+  OnSelectValueChange(e, name, def) {
+      console.log('e.value >>')
+      console.log(e.value);
+
+      console.log('this.FormModel.attributes[name].value >>')
+      console.log(this.FormModel.attributes[name].value)
+
+    if (e.value !== this.FormModel.attributes[name].value) {
       (<FormControl>this.form.controls[name]).setValue(e.value);
+        const dependOnFields = this.originalResponseObj.orderTemplateData.orderFields.filter(function (field) {
+            return field.request_dependent_property && field.name !== def.name && field.request_dependent_property.indexOf(def.name) !== -1;
+        });
+
+        console.log('def >>')
+        console.log(def);
+
+        console.log('dependOnFields >>>')
+        console.log(dependOnFields);
+
+        if (dependOnFields.length) {
+            dependOnFields.forEach(function (ele) {
+                this.performRealApiLookUpForValue(ele, this.form.controls, name).subscribe(
+                    responseLookup => {
+                        if(ele.request_mapped_property) {
+                            if (ele.type === 'list') {
+                                if( Object.prototype.toString.call( responseLookup[ele.request_mapped_property] ) === '[object Array]' ) {
+                                    (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property].length ? responseLookup[ele.request_mapped_property][0] : '');
+                                    const options = [];
+
+                                    options.push({ id: '', text: 'Empty'});
+                                    responseLookup[ele.request_mapped_property].forEach(function (prop) {
+                                        options.push({
+                                            id: prop, text: prop
+                                        });
+                                    });
+                                    responseLookup[ele.request_mapped_property].forEach(function (prop) {
+                                        this.data.controls.forEach(function (ctrl) {
+                                            if (ctrl.name === ele.name) {
+                                                ctrl.options = options;
+                                            }
+                                        }, this);
+                                    }, this);
+                                } else {
+                                    (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property]);
+                                    this.data.controls.forEach(function (ctrl) {
+                                        if (ctrl.name === ele.name) {
+                                            ctrl.options = [{
+                                                id: responseLookup[ele.request_mapped_property], text: responseLookup[ele.request_mapped_property]
+                                            }];
+                                        }
+                                    }, this);
+                                }
+                            } else {
+                                (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property]);
+                            }
+                        }
+                    },err => {
+                        if(err.status === 401) {
+                            // let self = this;
+                            // this.widget.refreshElseSignout(
+                            //     this,
+                            //     err,
+                            //     self.searchDateRequest.bind(self, orderID),
+                            // );
+
+                        } else {
+                            this.data.controls.forEach(function (ctrl) {
+                                if (ctrl.name === ele.name) {
+                                    ctrl.options = [];
+                                }
+                            }, this);
+                        }
+                    });
+            }, this);
+        }
     }
   }
 
@@ -647,9 +791,6 @@ export class OrderComponent implements OnInit  {
     this.FormModel = {
       attributes: attributes
     };
-
-    console.log('this.data.controls >>')
-    console.log(this.data.controls);
 
     this.form = this.formAttribute.group(group);
     this.data.controls.forEach(function(item) {
@@ -702,9 +843,6 @@ export class OrderComponent implements OnInit  {
       }, this);
     }
 
-    console.log('lineItemRows >>>')
-    console.log(lineItemRows);
-
     this.gridData['headers'] = headers;
     this.gridData['options'] = this.options[0];
     if (lineItemRows.length) {
@@ -713,19 +851,9 @@ export class OrderComponent implements OnInit  {
     this.dashboard = 'orderLineItem';
     this.dataObject.gridData = this.gridData;
     this.dataObject.paymentReceived = this.paymentReceived;
-
-    console.log('this.dataObject >>>')
-    console.log(this.dataObject);
   }
 
   onCheckItem(event, item, itemValue) {
-
-    console.log('event.target.checked >>')
-    console.log(event.target.checked)
-    console.log('item >>')
-    console.log(item)
-    console.log('itemValue >>')
-    console.log(itemValue)
 
     const value = typeof item.value === 'string' ? [item.value] : item.value;
 
@@ -736,9 +864,6 @@ export class OrderComponent implements OnInit  {
     } else {
       value.splice(value.indexOf(itemValue), 1);
     }
-
-    console.log('value >>')
-    console.log(value);
 
     //item.value = value;
 

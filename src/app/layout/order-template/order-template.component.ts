@@ -83,8 +83,8 @@ export class OrderTemplateComponent implements OnInit {
           let self = this;
           this.widget.refreshElseSignout(
             this,
-            err, 
-            self.getOrganizations.bind(self) 
+            err,
+            self.getOrganizations.bind(self)
           );
         } else {
           this.showSpinner = false;
@@ -124,10 +124,22 @@ export class OrderTemplateComponent implements OnInit {
         let orderFields = [];
         let lineItems = [];
         this.orderForm.model.attributes.forEach(element => {
-          orderFields.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation', 'request_type', 'request_url', 'request_payload', 'request_mapped_property' ]))
+          orderFields.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation', 'request_type', 'request_url', 'request_payload', 'request_mapped_property', 'request_dependent_property' ]))
         });
         this.lineItemForm.model.attributes.forEach(element => {
-          lineItems.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation', 'request_type', 'request_url', 'request_payload', 'request_mapped_property']))
+          lineItems.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation', 'request_type', 'request_url', 'request_payload', 'request_mapped_property', 'request_dependent_property']))
+        });
+
+        orderFields.forEach(function (order) {
+          if(order.request_dependent_property && order.request_dependent_property.length) {
+            order.request_dependent_property = order.request_dependent_property.join(',');
+          }
+        });
+
+        lineItems.forEach(function (line) {
+          if(line.request_dependent_property && line.request_dependent_property.length) {
+            line.request_dependent_property = line.request_dependent_property.join(',');
+          }
         });
 
         this.templateResponse.orderTemplateData = {
@@ -196,7 +208,7 @@ export class OrderTemplateComponent implements OnInit {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.createTemplateService.bind(self, template)
             );
         } else {
@@ -247,6 +259,19 @@ export class OrderTemplateComponent implements OnInit {
           console.log('template edit fields', response);
           this.templateField = response.orderTemplateData;
           this.orderFieldsArr = this.templateField.orderFields;
+
+          if (this.orderFieldsArr.length) {
+            this.orderFieldsArr.forEach(function (field) {
+              if (field.request_dependent_property) {
+                if (field.request_dependent_property.indexOf(',') != -1) {
+                  field.request_dependent_property = field.request_dependent_property.split(',');
+                } else {
+                  field.request_dependent_property = [field.request_dependent_property];
+                }
+              }
+            });
+          }
+
           this.lineFieldsArr = this.templateField.lineItems;
           if(this.templateField.template.hasOwnProperty('isPublish')){
             this.isPublished = this.templateField.template.isPublish;
@@ -277,7 +302,7 @@ export class OrderTemplateComponent implements OnInit {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.getTemplate.bind(self, templateId)
             );
         } else {

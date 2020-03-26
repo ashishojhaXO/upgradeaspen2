@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { DndDropEvent, DropEffect } from 'ngx-drag-drop';
 import { Headers, RequestOptions, Http } from '@angular/http';
 import { OktaAuthService } from '../../../../services/okta.service';
+import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'app-customformbuilder',
@@ -20,6 +21,10 @@ export class CustomFormbuilderComponent implements OnInit {
   externalAuth: any;
   showSpinner: boolean;
   widget: any;
+  dependentOnOptions = [];
+  select2Options = {
+    multiple: true
+  };
 
   value = {
     option: ""
@@ -126,10 +131,6 @@ export class CustomFormbuilderComponent implements OnInit {
       if(changes['fieldData']){
         //console.log('from custom field input >>', this.fieldData);
         if(this.fieldData){
-
-          console.log('this.fieldData >>>>')
-          console.log(this.fieldData)
-
           this.fieldData.forEach(element => {
             if(element.type == 'varchar' || element.type == 'text' || element.type == 'string'){
               element.dropType = 'text';
@@ -186,11 +187,20 @@ export class CustomFormbuilderComponent implements OnInit {
                 element.validation = [];
               }
             }
+
             this.model.attributes.push(element);
           });
+
+          this.updateDependentOnList();
           console.log('list>>>>>>>>>', this.model);
         }
       }
+    }
+  }
+
+  OnDependentOnChanged(e: any, item): void {
+    if (!item.request_dependent_property || item.request_dependent_property !== e.value ) {
+      item.request_dependent_property = e.value;
     }
   }
 
@@ -264,7 +274,7 @@ export class CustomFormbuilderComponent implements OnInit {
           let self = this;
           this.widget.refreshElseSignout(
             this,
-            err, 
+            err,
             self.getAttributes.bind(self)
           );
         } else {
@@ -345,6 +355,19 @@ export class CustomFormbuilderComponent implements OnInit {
       }
       list.splice( index, 0, event.data );
     }
+
+    this.updateDependentOnList(event.data);
+  }
+
+  updateDependentOnList(item = null) {
+    this.dependentOnOptions = [];
+    this.model.attributes.forEach(function (ele) {
+     // const skip = item && item.name && item.name === ele.name;
+      this.dependentOnOptions.push({
+        id: ele.name,
+        text: ele.name
+      });
+    }, this);
   }
 
   addValue(values){
@@ -364,6 +387,7 @@ export class CustomFormbuilderComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         this.model.attributes.splice(i,1);
+        this.updateDependentOnList();
       }
     });
   }
@@ -378,9 +402,8 @@ export class CustomFormbuilderComponent implements OnInit {
         item.request_url = '';
         item.request_payload = '';
         item.request_mapped_property = '';
+        item.request_dependent_property = '';
       }
-      console.log('item.validation >>>>')
-      console.log(item.validation)
     }
   }
 
@@ -447,7 +470,7 @@ export class CustomFormbuilderComponent implements OnInit {
     const options = new RequestOptions({headers: headers});
     if(requestType === 'post') {
       return this.http
-          .post(requestUrl, data, options)
+          .post(this.api_fs.api + requestUrl, data, options)
           .map(res => {
             return res.json();
           }).share();

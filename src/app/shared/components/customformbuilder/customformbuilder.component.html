@@ -194,8 +194,17 @@
                 <textarea type="text" class="form-control" [(ngModel)]="item.request_payload"></textarea>
                 <label>Property Name</label>
                 <input type="text" class="form-control" [(ngModel)]="item.request_mapped_property">
+                <div class="form-group-fields">
+                  <label>Dependent On : </label>
+                  <select2 width="100%" placeholder="Select" style="padding: 0px; line-height: 1.42857143"
+                           [value]="item.request_dependent_property"
+                           [options]="select2Options"
+                           (valueChanged)="OnDependentOnChanged($event, item);"
+                           [data]="dependentOnOptions"
+                  ></select2>
+                </div>
                 <div style="padding: 10px 0px">
-                  <button type="button" class="btn btn-info" style="float: right" (click)="ValidateAPILookUp(item)">Validate</button>
+                  <button [disabled]="item.request_dependent_property && item.request_dependent_property.length ? 'disabled' : null" type="button" class="btn btn-info" style="float: right" (click)="ValidateAPILookUp(item)">Validate</button>
                 </div>
               </div>
               <div class="form-group-fields">

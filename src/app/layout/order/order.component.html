@@ -107,15 +107,17 @@
                      [formControl]="FormModel.attributes[def.name]"/>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'list'">
-              <select2 *ngIf="def.options" width="100%" placeholder="Select"
+              <select2 *ngIf="def.options" width="100%" placeholder="{id: '-1',text:  'select...'}"
                        class="col-lg-4 col-md-4"
                        [style.cursor]="((def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && (!def.validation || ( def.validation && def.validation.indexOf('PostOrderChange') === -1)))) && paymentReceived ? 'not-allowed' : null"
                        [attr.disabled]="((def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && (!def.validation || ( def.validation && def.validation.indexOf('PostOrderChange') === -1)))) && paymentReceived ? 'disabled' : null"
                        [style.background]="((def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && (!def.validation || ( def.validation && def.validation.indexOf('PostOrderChange') === -1)))) && paymentReceived  ? '#EEEEEE' : null"
                        style="padding: 0px; line-height: 1.42857143; width: 160px"
                        [value]="def.value"
-                       (valueChanged)="OnSelectValueChange($event, def.name);"
-                       [data]="def.options"></select2>
+                       [options]="select2Options"
+                       (valueChanged)="OnSelectValueChange($event, def.name, def);"
+                       [data]="def.options">
+              </select2>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="FormModel.attributes[def.name] && FormModel.attributes[def.name].invalid && (FormModel.attributes[def.name].dirty || FormModel.attributes[def.name].touched)" class="alert alert-danger" style="display: inline-block; z-index: 10; margin-left: 15px">
               <div *ngIf="FormModel.attributes[def.name].errors.required">
