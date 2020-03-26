@@ -113,14 +113,6 @@ const routes: Routes = [
                     text: 'Reports'
                 },
             },
-          {
-            path: 'orders-processed',
-            component: OrdersProcessedComponent,
-            data: {
-              breadcrumbs: true,
-              text: 'Orders Processed'
-            }
-          },
             {
                 path: 'order',
                 data: {
@@ -435,6 +427,14 @@ const routes: Routes = [
                         breadcrumbs: true,
                         text: 'Order Template List'
                       },
+                    },
+                    {
+                        path: 'orders-processed',
+                        component: OrdersProcessedComponent,
+                        data: {
+                        breadcrumbs: true,
+                        text: 'Orders Processed'
+                        }
                     },
                     {
                         path: 'analytics',
