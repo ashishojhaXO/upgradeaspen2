@@ -219,10 +219,7 @@ export class GenericService {
   postOrderReceiptList(dataObj) {
 
     const data = JSON.stringify(dataObj);
-<<<<<<< HEAD
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
-=======
->>>>>>> 2990
 
     return this.service.Call(
       'post', 

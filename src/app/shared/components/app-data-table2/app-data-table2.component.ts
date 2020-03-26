@@ -311,17 +311,14 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     columnButtonDefs += '<a class="fa fa-download fa-action-view downloadLink" title="' + (this.dataObject.gridData.options.isDownloadOption.tooltip ? this.dataObject.gridData.options.isDownloadOption.tooltip : 'Download' ) + '" style="margin-right: 15px; cursor: pointer">';
                     //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isDownloadOption.tooltip ? this.dataObject.gridData.options.isDownloadOption.tooltip : 'Download' )  + '</span>';
                 }
-<<<<<<< HEAD
+
                 if (this.dataObject.gridData.options.isDeleteOption && this.dataObject.gridData.options.isDeleteOption.value) {
                     columnButtonDefs += '<a class="fa fa-trash fa-action-view deleteLink" title="' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete' ) + '" style="cursor: pointer"></a>';
                     //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete' )  + '</span>';
-=======
-                if (this.dataObject.gridData.options.isDeleteOption) {
-                    columnButtonDefs += '<a class="fa fa-trash fa-action-view deleteLink" style="margin-right: 15px; cursor: pointer"></a>';
                 }
+
                 if (this.dataObject.gridData.options.isEmailOption) {
                     columnButtonDefs += '<a class="fa fa-envelope fa-action-view emailLink" style="cursor: pointer"></a>';
->>>>>>> 2990
                 }
 
                 // if (columnButtonDefs) {

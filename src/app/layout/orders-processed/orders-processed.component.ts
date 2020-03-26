@@ -9,12 +9,13 @@ import { OktaAuthService } from '../../../services/okta.service';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import { OrdersComponent } from '../orders/orders.component';
 import { GenericService } from '../../../services/generic.service';
+import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up.component';
 
 @Component({
   selector: 'app-orders-processed',
   templateUrl: './orders-processed.component.html',
   styleUrls: ['./orders-processed.component.css'],
-  providers: [GenericService]
+  providers: [GenericService, AppPopUpComponent]
 })
 export class OrdersProcessedComponent extends OrdersComponent {
 
@@ -31,10 +32,14 @@ export class OrdersProcessedComponent extends OrdersComponent {
   ];
 
   constructor(
-    okta: OktaAuthService, route: ActivatedRoute, router: Router, http: Http,
-    private genericService: GenericService
+    okta: OktaAuthService, 
+    route: ActivatedRoute, 
+    router: Router, 
+    genericService: GenericService,
+    popUp: AppPopUpComponent,
+    http: Http
   ) { 
-    super(okta, route, router, http)
+    super(okta, route, router, genericService, popUp, http)
 
     // Initializing some data
     this.init();
