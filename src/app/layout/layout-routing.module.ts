@@ -29,6 +29,7 @@ import {OrgManagementComponent} from './../layout/orgManagement/orgManagement.co
 import { AnalyticsComponent } from './analytics/analytics.component';
 import {EmailManagementComponent} from './../layout/emailManagement/emailManagement.component';
 import { OrdersProcessedComponent } from './orders-processed/orders-processed.component';
+import { JobsComponent } from './jobs/jobs.component';
 
 const routes: Routes = [
     {
@@ -430,7 +431,7 @@ const routes: Routes = [
                     },
                     {
                         path: 'jobs',
-                        component: OrdersProcessedComponent,
+                        component: JobsComponent,
                         data: {
                         breadcrumbs: true,
                         text: 'Jobs'
