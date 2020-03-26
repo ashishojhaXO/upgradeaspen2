@@ -328,65 +328,69 @@ export class OrderComponent implements OnInit  {
             }
 
             // Perform API Lookup order field configuration
-            if(!this.existingOrder) {
               response.orderTemplateData.orderFields.forEach(function (ele) {
-                if (ele.validation && ele.validation.indexOf('apiLookup') !== -1) {
-                  this.performRealApiLookUpForValue(ele, this.data.controls, null).subscribe(
-                      responseLookup => {
-                        if(ele.request_mapped_property) {
-                           if (ele.type === 'list') {
-                             if( Object.prototype.toString.call( responseLookup[ele.request_mapped_property] ) === '[object Array]' ) {
-                               (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property].length ? responseLookup[ele.request_mapped_property][0] : '');
-                               const options = [];
+                  if (ele.validation && ele.validation.indexOf('apiLookup') !== -1) {
+                      this.performRealApiLookUpForValue(ele, this.data.controls, null).subscribe(
+                          responseLookup => {
+                              if(ele.request_mapped_property) {
+                                  if (ele.type === 'list') {
 
-                               options.push({ id: '', text: 'Empty'});
+                                      if( Object.prototype.toString.call( responseLookup[ele.request_mapped_property] ) === '[object Array]' ) {
+                                          (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property].length ? responseLookup[ele.request_mapped_property][0] : '');
+                                          const options = [];
 
-                               responseLookup[ele.request_mapped_property].forEach(function (prop) {
-                                 options.push({
-                                   id: prop, text: prop
-                                 });
-                               });
-                               responseLookup[ele.request_mapped_property].forEach(function (prop) {
-                                 this.data.controls.forEach(function (ctrl) {
-                                   if (ctrl.name === ele.name) {
-                                     ctrl.options = options;
-                                   }
-                                 }, this);
-                               }, this);
-                             } else {
-                               (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property]);
-                               this.data.controls.forEach(function (ctrl) {
-                                 if (ctrl.name === ele.name) {
-                                   ctrl.options = [{
-                                     id: responseLookup[ele.request_mapped_property], text: responseLookup[ele.request_mapped_property]
-                                   }];
-                                 }
-                               }, this);
-                             }
-                           } else {
-                             (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property]);
-                           }
-                         }
-                      },err => {
-                          if(err.status === 401) {
-                              // let self = this;
-                              // this.widget.refreshElseSignout(
-                              //     this,
-                              //     err,
-                              //     self.searchDateRequest.bind(self, orderID),
-                              // );
+                                          options.push({ id: '', text: 'Empty'});
 
-                          } else {
-                              this.data.controls.forEach(function (ctrl) {
-                                  if (ctrl.name === ele.name) {
-                                      ctrl.options = [];
+                                          responseLookup[ele.request_mapped_property].forEach(function (prop) {
+                                              options.push({
+                                                  id: prop, text: prop
+                                              });
+                                          });
+                                          responseLookup[ele.request_mapped_property].forEach(function (prop) {
+                                              this.data.controls.forEach(function (ctrl) {
+                                                  if (ctrl.name === ele.name) {
+                                                      ctrl.options = options;
+                                                  }
+                                              }, this);
+                                          }, this);
+
+                                          if (this.existingOrder) {
+                                             (<FormControl>this.form.controls[ele.name]).setValue(this.existingOrder.order[ele.name]);
+                                          }
+
+                                      } else {
+                                          (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property]);
+                                          this.data.controls.forEach(function (ctrl) {
+                                              if (ctrl.name === ele.name) {
+                                                  ctrl.options = [{
+                                                      id: responseLookup[ele.request_mapped_property], text: responseLookup[ele.request_mapped_property]
+                                                  }];
+                                              }
+                                          }, this);
+                                      }
+                                  } else {
+                                      (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property]);
                                   }
-                              }, this);
-                          }
-                      });
+                              }
+                          },err => {
+                              if(err.status === 401) {
+                                  // let self = this;
+                                  // this.widget.refreshElseSignout(
+                                  //     this,
+                                  //     err,
+                                  //     self.searchDateRequest.bind(self, orderID),
+                                  // );
+
+                              } else {
+                                  this.data.controls.forEach(function (ctrl) {
+                                      if (ctrl.name === ele.name) {
+                                          ctrl.options = [];
+                                      }
+                                  }, this);
+                              }
+                          });
                   }
               }, this);
-            }
 
             // Perform API Lookup for line item configuration
             if(!this.existingOrder) {
@@ -706,7 +710,9 @@ export class OrderComponent implements OnInit  {
       console.log(this.FormModel.attributes[name].value)
 
     if (e.value !== this.FormModel.attributes[name].value) {
-      (<FormControl>this.form.controls[name]).setValue(e.value);
+        if (e.value) {
+            (<FormControl>this.form.controls[name]).setValue(e.value);
+        }
         const dependOnFields = this.originalResponseObj.orderTemplateData.orderFields.filter(function (field) {
             return field.request_dependent_property && field.name !== def.name && field.request_dependent_property.indexOf(def.name) !== -1;
         });
@@ -737,9 +743,21 @@ export class OrderComponent implements OnInit  {
                                         this.data.controls.forEach(function (ctrl) {
                                             if (ctrl.name === ele.name) {
                                                 ctrl.options = options;
+                                                console.log('this.form.controls[ele.name] >>>')
+                                                console.log(this.form.controls[ele.name].value)
+
+                                                console.log('this.originalResponseObj.orderTemplateData.orderFields[ele.name] >>')
+                                                console.log(this.originalResponseObj.orderTemplateData.orderFields);
                                             }
                                         }, this);
                                     }, this);
+
+                                    if (this.existingOrder && !this.originalResponseObj.orderTemplateData.orderFields.find(x=> x.name === ele.name).valueExtracted) {
+                                        (<FormControl>this.form.controls[ele.name]).setValue(this.existingOrder.order[ele.name]);
+                                       // this.FormModel.attributes[name].value = this.existingOrder.order[ele.name];
+                                        this.originalResponseObj.orderTemplateData.orderFields.find(x=> x.name === ele.name).valueExtracted = true;
+                                    }
+
                                 } else {
                                     (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property]);
                                     this.data.controls.forEach(function (ctrl) {
@@ -1108,5 +1126,9 @@ export class OrderComponent implements OnInit  {
       day = '0' + day;
 
     return [year, month, day].join('-');
+  }
+
+  getSelect2Value(def) {
+      return (this.existingOrder && !this.originalResponseObj.orderTemplateData.orderFields.find(x=> x.name === def.name).valueExtracted ? this.FormModel.attributes[def.name].value : def.value);
   }
 }
