@@ -252,7 +252,7 @@ export class PaymentsComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err,
-              self.searchDataRequest.bind(self)
+              self.searchDataRequest.bind(self, org)
             );
           } else {
             this.showSpinner = false;
@@ -873,7 +873,7 @@ export class PaymentsComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err,
-              self.updateApService.bind(self, formData),
+              self.updateApService.bind(self, formData, modalComponent),
             );
 
         } else {
