@@ -1,0 +1,16 @@
+.adjustable-tbl{
+    overflow-x: auto;
+}
+.adjustable-tbl thead th{
+    color: #1c252b;
+    font-size: 12px;
+    font-weight: 700;
+    border-bottom: 1px solid #1c252b;
+}
+.adjustable-tbl tbody td{
+    color: #1c252b;
+    font-size: 13px;
+}
+.adjustable-tbl tbody tr{
+   height:auto;
+}

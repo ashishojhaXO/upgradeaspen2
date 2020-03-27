@@ -1,0 +1,43 @@
+<table class="table table-responsive" id="line_item_tbl">
+  <thead>
+    <tr>
+      <th>Month Start</th>
+      <th>Month End</th>
+      <th>Invoice Header Id</th>
+      <th>Supplier</th>
+      <th>Invoice Number</th>
+      <th>Profile Name</th>
+      <th>Invoice Date</th>
+      <th>Invoice Amount</th>
+      <th>Reference Number</th>
+      <th>Billing Period</th>
+      <th>Order Billed Amount</th>
+      <th>Order Ccalculated Amount</th>
+      <th>Order Discrepancy Amount</th>
+      <th>Order Id</th>
+      <th>Total Invoice Paid Amount</th>
+      <th>MK Nnumber</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="height: 50px;" *ngFor="let item of lineItems; let i= index">     
+      <td>{{item.month_start}}</td>
+      <td>{{item.month_end}}</td>
+      <td>{{item.invoice_header_id}}</td>
+      <td>{{item.supplier}}</td>
+      <td>{{item.invoice_number}}</td>
+      <td>{{item.profile_name}}</td>
+      <td>{{item.invoice_date}}</td>
+      <td>{{item.invoice_amount}}</td>
+      <td>{{item.reference_number}}</td>
+      <td>{{item.billing_period}}</td>
+      <td>{{item.billing_due_date}}</td>
+      <td>{{item.order_billed_amount}}</td>
+      <td>{{item.order_calculated_amount}}</td>
+      <td>{{item.order_discrepancy_amount}}</td>
+      <td>{{item.order_id}}</td>
+      <td>{{item.total_invoice_paid_amount}}</td>
+      <td>{{item.mk_number}}</td>
+    </tr>
+  </tbody>
+</table>

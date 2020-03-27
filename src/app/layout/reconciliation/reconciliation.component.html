@@ -59,29 +59,8 @@
 </div>
 <div style="position: relative" *ngIf="hideTable">
   <div class="pull-right" style="position: absolute; right: 0; z-index: 1">
-    <a (click)="showInvoices()" class="button btn btn-success" style="background-color: #0777bc"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Back Reconciliation Dashboard</a>
+    <a (click)="showReDashboard()" class="button btn btn-success" style="background-color: #0777bc"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Back To Reconciliation Dashboard</a>
   </div>
-  <app-invoice [invoiceId]="selectedInvoice" [invoiceNumber]="selectedInvoiceNumber"></app-invoice>
+  <app-reconciliation-profiles [period]="selectedPeriod" [supplier]="selectedSupplier" [invoiceId]="selectedInvoice" [invoiceNumber]="selectedInvoiceNumber"></app-reconciliation-profiles>
 </div>
 <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
-<app-pop-up-modal #AddPayment>
-  <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
-    Pay Invoice
-  </div>
-  <div class="app-modal-body">
-    <div class="content" style="height: 50vh">
-      <label>Memo</label>
-      <div>
-        <textarea style="height: 150px; width: 100%" [(ngModel)]="memo"></textarea>
-      </div>
-    </div>
-  </div>
-  <div class="app-modal-footer">
-    <button type="button" class="action-btn" (click)= "OnPay(AddPayment)">
-      Submit
-    </button>
-    <button type="button" class="inaction-btn" (click)="handleCloseModal(AddPayment)">
-      Cancel
-    </button>
-  </div>
-</app-pop-up-modal>

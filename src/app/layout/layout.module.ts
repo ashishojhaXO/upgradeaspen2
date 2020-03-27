@@ -63,8 +63,10 @@ import { OrdersTemplateListComponent } from './orders-template-list/orders-templ
 import { OrdersListComponent } from './orders-list/orders-list.component';
 import { NumericDirective } from '../shared/directives/Numeric.directive';
 import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
+import { ReconciliationLineItemsComponent } from './reconciliation/reconciliation-line-items/reconciliation-line-items.component';
+import { ReconciliationProfilesComponent } from './reconciliation/reconciliation-profiles/reconciliation-profiles.component';
 
-
+ 
 @NgModule({
     imports: [
         CommonModule,
@@ -131,7 +133,9 @@ import { OperationsDashboardComponent } from './operations-dashboard/operations-
         EmailManagementComponent,
         OperationsDashboardComponent,
         OrderDashboardComponent,
-        UploadsComponent
+        UploadsComponent,
+        ReconciliationLineItemsComponent,
+        ReconciliationProfilesComponent
     ],
     providers: [
         AuthGuard,

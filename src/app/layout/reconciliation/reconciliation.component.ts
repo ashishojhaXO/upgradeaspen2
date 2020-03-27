@@ -14,14 +14,11 @@ import {DataTableOptions} from '../../../models/dataTableOptions';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
 import Swal from 'sweetalert2';
-import { GenericService } from '../../../services/generic.service';
-import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-modal.component';
 
 @Component({
   selector: 'app-reconciliation',
   templateUrl: './reconciliation.component.html',
-  styleUrls: ['./reconciliation.component.scss'],
-  providers: [GenericService]
+  styleUrls: ['./reconciliation.component.scss']
 })
 export class ReconciliationComponent implements OnInit  {
 
@@ -68,6 +65,7 @@ export class ReconciliationComponent implements OnInit  {
   selectedPeriod: any;
   channelData: any;
   selectedChannel: any;
+  selectedSupplier:any;
 
   settings: any = {
         singleSelection: true,
@@ -87,8 +85,7 @@ export class ReconciliationComponent implements OnInit  {
     hasData: boolean;
     selectedInvoiceDetails: any;
     memo: string;
-    @ViewChild('AddPayment') addPayment: PopUpModalComponent;
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http,private genericService: GenericService) {
+  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
   }
 
   ngOnInit() {
@@ -128,8 +125,11 @@ export class ReconciliationComponent implements OnInit  {
    searchDataRequest() {
       return this.searchData().subscribe(
         response => {
-            if (response && response.data) {
-                this.populateDataTable(response.data, true);
+            if (response) {
+              console.log(response);
+                this.populateDataTable(response, true);
+                this.showSpinner = false;
+            }else{
                 this.showSpinner = false;
             }
         },
@@ -154,28 +154,20 @@ export class ReconciliationComponent implements OnInit  {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      // // token = AccessToken.accessToken;
       token = AccessToken;
     }
-
     const dataObj = {
-        clientCode: 'homd',
         year: this.selectedPeriod[0].id.split('-')[0],
-        month: this.selectedPeriod[0].id.split('-')[1],
-        // siteName: this.selectedChannel[0].id
+        month: this.selectedPeriod[0].id.split('-')[1]
     }
-
     const obj = JSON.stringify(dataObj);
-
     console.log('obj >>')
     console.log(obj)
-
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
-    //const url = this.api_fs.api + '/api/reports/reconciliation';
-    const url= this.api_fs.api + '/api/payments/invoices/all';
+    const url = this.api_fs.api + '/api/reports/reconciliation';
     return this.http
-      .get(url, options)
+      .post(url, obj, options)
       .map(res => {
         return res.json();
       }).share();
@@ -267,10 +259,11 @@ export class ReconciliationComponent implements OnInit  {
     handleRun(dataObj: any) {
       console.log('dataObj.data >>')
       console.log(dataObj.data);
-      const invoiceId = dataObj.data.id;
+      const invoiceId = dataObj.data.invoice_header_id;
       if (invoiceId) {
         this.selectedInvoiceNumber = dataObj.data.invoice_number;
         this.selectedInvoice = invoiceId;
+        this.selectedSupplier= dataObj.data.supplier;
         this.hideTable = true;
        // this.router.navigate(['/app/admin/invoices/invoice/' + invoiceId]);
       } else {
@@ -285,8 +278,8 @@ export class ReconciliationComponent implements OnInit  {
     handleDownload(dataObj: any) {
       console.log('dataObj >>')
       console.log(dataObj);
-      const downloadId = dataObj.data.downloadable_file_id;
-      const invoiceId = dataObj.data.id;
+      const downloadId = dataObj.data.reference_number;
+      const invoiceId = dataObj.data.invoice_header_id;
       if (downloadId) {
         this.searchDownloadLink(downloadId, invoiceId);
       } else {
@@ -367,23 +360,10 @@ export class ReconciliationComponent implements OnInit  {
 
     searchDataRequestCsv(org = null, table?) {
 
-      // if no table, then send all default, page=1 & limit=25
-      // else, send table data
-      let data = { 
-        page: 0, 
-        limit: 10000000,
-        org: org ? org : ''
-      };
-  
-      // this.hasData = false;
-      // this.showSpinner = true;
-  
-      return this.getRecCSV(data)
+      return this.getRecCSV()
       .subscribe(
         (res) => {
           this.hasData = true;
-          // this.showSpinner = false;
-          // this.successCB.apply(this, [res])
           this.successCBCsv(res, table)
         },
         (err) => {
@@ -401,26 +381,23 @@ export class ReconciliationComponent implements OnInit  {
             this.showSpinner = false;
           }
         }
-      );
-  
+      );  
     }
+
     successCBCsv(res, table) {
       // Set this.response, before calc
-      let rows = res.data;
+      let rows = res.data.invoices;
       // let li = this.calc(res, table);
       console.log("Download Csv Here...");
   
       let arr: Array<String> = [];
   
       if (rows && rows.length) {
-        const filRow = rows.map(res => {
-          return { id: res.id, downloadable_file_id: res.downloadable_file_id,supplier:res.supplier,invoice_number:res.invoice_number,
-            invoice_date:res.invoice_date,billing_period:res.billing_period,reference_number:res.reference_number,due_date:res.due_date,
-            invoice_amount:res.invoice_amount,paid_amount:res.paid_amount,payment_terms:res.payment_terms,created_at:res.created_at
-          };
-        });
-        arr.push( Object.keys(filRow[0]).join(",") ); 
-        let dataRows = filRow.map( (k, v) => { return Object.values(k).join(", "); } ) 
+        const filRows = rows.filter(res => delete res['orders']);
+        console.log(filRows);
+
+        arr.push(Object.keys(filRows[0]).join(",").replace(/_/g,' ').toUpperCase());
+        let dataRows = filRows.map( (k, v) => { return Object.values(k).join(", "); } ) 
         arr = arr.concat(dataRows);
       }
       let csvStr: String = "";
@@ -437,127 +414,85 @@ export class ReconciliationComponent implements OnInit  {
     errorCB(rej) {
       console.log("errorCB: ", rej)
     }
-    getRecCSV(data) {
+    getRecCSV(invoice_header_id?) {
       const AccessToken: any = localStorage.getItem('accessToken');
       let token = '';
       if (AccessToken) {
-        // // token = AccessToken.accessToken;
         token = AccessToken;
       }
-  
-      const dataObj = {
-          clientCode: 'homd',
-          year: this.selectedPeriod[0].id.split('-')[0],
-          month: this.selectedPeriod[0].id.split('-')[1],
-          // siteName: this.selectedChannel[0].id
+      const year = this.selectedPeriod[0].id.split('-')[0];
+      const month = this.selectedPeriod[0].id.split('-')[1]
+      let invoice_param = "";
+      if (invoice_header_id) {
+        invoice_param = "&invoice_header_id=" + invoice_header_id;
       }
-  
-      const obj = JSON.stringify(dataObj);
-  
-      console.log('obj >>')
-      console.log(obj)
-  
-      const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
-      const options = new RequestOptions({headers: headers});
-      //const url = this.api_fs.api + '/api/reports/reconciliation';
-      const url= this.api_fs.api + '/api/payments/invoices/all';
+      const headers = new Headers({ 'Content-Type': 'application/json', 'token': token, 'callingapp': 'aspen' });
+      const options = new RequestOptions({ headers: headers });
+      const url = this.api_fs.api + '/api/reports/reconciliation/export?year=' + year + '&month=' + month + invoice_param;
       return this.http
         .get(url, options)
         .map(res => {
           return res.json();
         }).share();
     }
-    showInvoices() {
+    showReDashboard() {
       this.hideTable = false;
       this.selectedInvoice = null;
       this.selectedInvoiceNumber = null;
     }
-  
-    handleInvoicePay(dataObj: any) {
-      console.log('dataObj >>>')
-      console.log(dataObj);
-      this.selectedInvoiceDetails = dataObj.data;
-      this.addPayment.show();
-    }
-  
-    OnPay(modalComponent: PopUpModalComponent) {
-  
-      modalComponent.hide();
-  
-      console.log('this.selectedInvoiceDetails >>>')
-      console.log(this.selectedInvoiceDetails);
-  
-      this.selectedInvoiceDetails.invoice.memo = this.memo;
-      this.createTransactionRequest(this.selectedInvoiceDetails);
-    }
-  
-    createTransactionRequest(dataObj) {
-      return this.createTransaction(dataObj).subscribe(
-          response => {
-            console.log('response from create transaction >>>')
-            console.log(response);
-            if (response) {
-              this.showSpinner = false;
-              this.memo = '';
+    handleCustom(dataObj: any) {
+      let invoice_header_id="";
+      if(dataObj.data.invoice_header_id){
+        invoice_header_id=dataObj.data.invoice_header_id;
+      }
+      return this.getRecCSV(invoice_header_id)
+        .subscribe(
+          (res) => {
+            if(res.data.orders && res.data.orders.length){
+            this.hasData = true;
+            this.invoiceOrderCsv(res.data.orders);
+            }else{
               Swal({
-                title: 'Payment Successful',
-                text: 'Payment for the selected invoice : ' + this.selectedInvoiceDetails.invoice.number  +  ' was successfully submitted',
-                type: 'success'
-              }).then( () => {
-                this.reLoad();
-              });
-            } else {
-              Swal({
-                title: 'Payment Failed',
-                text: 'We were unable to process payment for the selected invoice : ' +  this.selectedInvoiceDetails.invoice.number  +  '. Please try again',
+                title: 'No downloadable link available',
+                text: 'We did not find a download link for that invoice',
                 type: 'error'
               });
             }
           },
-          err => {
-  
-            if(err.status === 401) {
+          (err) => {
+            this.showSpinner = false;
+            this.errorCB(err)
+            if (err.status === 401) {
               let self = this;
               this.widget.refreshElseSignout(
                 this,
                 err,
-                self.createTransactionRequest.bind(self, dataObj)
+                self.handleCustom.bind(self,dataObj)
               );
             } else {
               this.showSpinner = false;
-              Swal({
-                title: 'Payment Failed',
-                text: 'We were unable to process payment for the selected invoice : ' + this.selectedInvoiceDetails.invoice.number   +  '. Please try again',
-                type: 'error'
-              });
             }
           }
-      );
+        );
     }
-  
-    createTransaction(dataObj) {
-      const AccessToken: any = localStorage.getItem('accessToken');
-      let token = '';
-      if (AccessToken) {
-        // token = AccessToken;
-        token = AccessToken;
+    invoiceOrderCsv(res) {
+      let rows = res;
+      let arr: Array<String> = [];
+      if (rows && rows.length) {
+        rows.filter(res => delete res['lineItems']);
+        rows.filter(res => delete res['profiles']);
+        const filRows = rows.filter(res => delete res['orders']);
+        console.log(filRows);
+        arr.push(Object.keys(filRows[0]).join(",").replace(/_/g, ' ').toUpperCase());
+        let dataRows = filRows.map((k, v) => { return Object.values(k).join(", "); })
+        arr = arr.concat(dataRows);
       }
-      const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
-      const options = new RequestOptions({headers: headers});
-      const data = JSON.stringify(dataObj);
-      const url = this.api_fs.api + '/api/payments/transactions';
-      return this.http
-          .post(url, data, options)
-          .map(res => {
-            return res.json();
-          }).share();
-    }
-  
-    handleCloseModal(modalComponent: PopUpModalComponent) {
-      modalComponent.hide();
-      this.memo = '';
-    }
-    handleCustom(dataObj: any){
-      console.log(dataObj);
+      let csvStr: String = "";
+      csvStr = arr.join("\n");
+      // var data = encode(csvStr);
+      let b64 = btoa(csvStr as string);
+      let a = "data:text/csv;base64," + b64;
+      $('<a href=' + a + ' download="data.csv">')[0].click();
+      return arr;
     }
 }

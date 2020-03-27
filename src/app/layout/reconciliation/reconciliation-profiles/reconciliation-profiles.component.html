@@ -1,0 +1,128 @@
+<div class="form" style="background: #fff">
+  <div class="col-lg-12 col-md-12" style="padding-left: 0px">
+    <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">INVOICE DETAILS : {{invoiceNumber}}</p>
+  </div>
+
+  <div class="col-lg-12 col-mg-12 col-sm-12 form-group-fields" style="background: #fff" *ngIf="invoices.length">
+    <div *ngFor="let invoice of invoices; let j=index" style="margin-bottom: 10px"
+      [style.marginTop]="j ===0 ? '10px' : '0px'">
+
+      <div *ngIf="invoice.isKenshoo" style="background: beige; padding-left: 5px; cursor: pointer;"
+        (click)="onInvoiceClick(invoice)">
+        <i class="fa fa-minus" [hidden]="!invoice.show"></i>
+        <i class="fa fa-plus" [hidden]="invoice.show"></i>
+        <h5 style="display: inline-block; margin-left: 10px">{{invoice.profileName ? invoice.profileName : '-' }}</h5>
+      </div>
+      <div [hidden]="!invoice.show">
+        <p style="clear: both"></p>
+        <div style="padding-bottom: 10px; margin-left: 5px">
+          <div>
+            <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+              <div class="col-sm-4"><label>Invoice Number :
+                  {{invoice.invoiceNumber ? invoice.invoiceNumber : '-'}}</label></div>
+            </div>
+          </div>
+          <div>
+            <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+              <div class="col-sm-4"><label>Billing Period :
+                  {{ invoice.isKenshoo ? (invoice.billingPeriod ? invoice.billingPeriod : '-') : (invoice.invoiceItems.length ? invoice.invoiceItems[0].billing_period : '-')}}</label>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+              <div class="col-sm-4"><label>Supplier Name :
+                  {{ invoice.isKenshoo ? (invoice.supplier ? invoice.supplier : '-') : (invoice.invoiceItems.length ? invoice.invoiceItems[0].supplier : '-')}}</label>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="invoice.isKenshoo">
+            <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+              <div class="col-sm-4"><label>Billed Amount : {{invoice.billedAmount ? invoice.billedAmount : 0}}</label>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="invoice.isKenshoo">
+            <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+              <div class="col-sm-4"><label>Total Calculated Amount :
+                  {{invoice.calculatedAmount ? invoice.calculatedAmount : 0}}</label></div>
+            </div>
+          </div>
+          <div *ngIf="invoice.isKenshoo">
+            <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+              <div class="col-sm-4"><label>Discrepancy Amount :
+                  {{invoice.discrepancyAmount ? invoice.discrepancyAmount : 0 }}</label></div>
+            </div>
+          </div>
+
+        </div>
+
+        <div>
+          <p style="clear: both"></p>
+          <div style="margin-left: 15px;" *ngIf="invoice.invoiceItems && invoice.invoiceItems.length">
+            <div class="adjustable-tbl">
+              <table class="table table-responsive">
+                <thead>
+                  <tr>
+                    <th>Actions</th>
+                    <th>Month Start</th>
+                    <th>Month End</th>
+                    <th>Invoice Header Id</th>
+                    <th>Supplier</th>
+                    <th>Invoice Number</th>
+                    <th>Profile Name</th>
+                    <th>Invoice Date</th>
+                    <th>Invoice Amount</th>
+                    <th>Reference Number</th>
+                    <th>Billing Period</th>
+                    <th>Order Billed Amount</th>
+                    <th>Order Ccalculated Amount</th>
+                    <th>Order Discrepancy Amount</th>
+                    <th>Order Id</th>
+                    <th>Total Invoice Paid Amount</th>
+                    <th>MK Nnumber</th>
+                  </tr>
+                </thead>
+                <tbody style="max-height: 500px; overflow-y: scroll; overflow-x: hidden">
+                  <ng-container *ngFor="let item of invoice.invoiceItems; let i= index">
+                    <tr style="height: 50px;">
+                      <td (click)="onTabClick(item)">
+                        <i class="fa fa-minus" [hidden]="!item.show"></i>
+                        <i class="fa fa-plus" [hidden]="item.show"></i>
+                      </td>
+                      <td>{{item.month_start}}</td>
+                      <td>{{item.month_end}}</td>
+                      <td>{{item.invoice_header_id}}</td>
+                      <td>{{item.supplier}}</td>
+                      <td>{{item.invoice_number}}</td>
+                      <td>{{item.profile_name}}</td>
+                      <td>{{item.invoice_date}}</td>
+                      <td>{{item.invoice_amount}}</td>
+                      <td>{{item.reference_number}}</td>
+                      <td>{{item.billing_period}}</td>
+                      <td>{{item.billing_due_date}}</td>
+                      <td>{{item.order_billed_amount}}</td>
+                      <td>{{item.order_calculated_amount}}</td>
+                      <td>{{item.order_discrepancy_amount}}</td>
+                      <td>{{item.order_id}}</td>
+                      <td>{{item.total_invoice_paid_amount}}</td>
+                      <td>{{item.mk_number}}</td>
+                    </tr>
+                    <tr>
+                      <td colspan="18" *ngIf="itemDetails==item" [hidden]="!item.show">
+                        <app-reconciliation-line-items [period]="period" [itemDetails]="item">
+                        </app-reconciliation-line-items>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <p style="clear: both"></p>
+    </div>
+  </div>
+</div>
