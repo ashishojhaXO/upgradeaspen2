@@ -256,7 +256,7 @@ export class OrdersComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err,
-              self.searchDataRequest.bind(self),
+              self.searchDataRequest.bind(self, org),
               self.errorCallback.bind(self)
             );
           } else {
@@ -343,7 +343,7 @@ export class OrdersComponent implements OnInit  {
     if(this[rowObj.action])
       this[rowObj.action](rowObj);
   }
-  
+
   receiptList: Array<Object>;
   handleDownload(dataObj: any) {
     // Show modal with Downloadable Receipts and their Download links
@@ -360,7 +360,7 @@ export class OrdersComponent implements OnInit  {
         console.log("res isss: ", res);
         this.showSpinner = false;
         this.receiptList = res.data;
-        
+
         // Show modal popUp, from there run this.handleDownloadLink(receiptId)
         this.addUser.show();
       },

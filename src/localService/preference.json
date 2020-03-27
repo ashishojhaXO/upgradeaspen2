@@ -145,6 +145,13 @@
           "url": "app/admin/support"
         },
         {
+          "index": 6,
+          "name": "uploads",
+          "title": "Uploads",
+          "id": "uploads",
+          "url": "app/admin/uploads"
+        },
+        {
           "index": 7,
           "name": "baseFields",
           "title": "Configure Base Fields",
@@ -171,6 +178,13 @@
           "title": "Analytics",
           "id": "analyticsReport",
           "url": "app/admin/analytics"
+        },
+        {
+          "index": 11,
+          "name": "operationsdashboard",
+          "title": "Operations Dashboard",
+          "id": "operationsdashboard",
+          "url": "app/admin/operationsdashboard"
         }
       ]
     }

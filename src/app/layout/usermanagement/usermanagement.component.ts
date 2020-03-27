@@ -158,7 +158,7 @@ export class UserManagementComponent implements OnInit  {
 
   apiMethod = (table, pageLength, csv?) => {
     this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
-    
+
     if(csv){
       this.searchDataRequestCsv(null, table);
     }
@@ -284,8 +284,8 @@ export class UserManagementComponent implements OnInit  {
 
     // if no table, then send all default, page=1 & limit=25
     // else, send table data
-    let data = { 
-      page: 1, 
+    let data = {
+      page: 1,
       limit: +localStorage.getItem("gridPageCount"),
       org: org ? org : ''
     };
@@ -333,8 +333,8 @@ export class UserManagementComponent implements OnInit  {
 
     // if no table, then send all default, page=1 & limit=25
     // else, send table data
-    let data = { 
-      page: 0, 
+    let data = {
+      page: 0,
       limit: 10000000,
       org: org ? org : ''
     };
@@ -373,8 +373,8 @@ export class UserManagementComponent implements OnInit  {
   getUsers(table?) {
     // if no table, then send all default, page=1 & limit=25
     // else, send table data
-    let data = { 
-      page: 1, 
+    let data = {
+      page: 1,
       limit: +localStorage.getItem("gridPageCount")
     };
 
@@ -439,7 +439,7 @@ export class UserManagementComponent implements OnInit  {
   }
 
   OnVendorChanged(e: any): void {
-    console.log('e.value >>>') 
+    console.log('e.value >>>')
     console.log(e.value);
     console.log('this.selectedVendor')
     console.log(this.selectedVendor);
@@ -477,14 +477,17 @@ export class UserManagementComponent implements OnInit  {
       token = AccessToken;
     }
 
-    const obj = JSON.stringify({
-      'org_uuid': org
-    });
+    const obj: any = {};
+    if (this.isRoot) {
+      obj['org_uuid'] = org;
+    }
+    const dataObj = JSON.stringify(obj);
+
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token , 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/vendors/list';
     return this.http
-      .post(url, obj, options)
+      .post(url, dataObj, options)
       .map(res => {
         return res.json();
       }).share();
@@ -494,7 +497,7 @@ export class UserManagementComponent implements OnInit  {
   orgChange(value) {
       this.dataObject.isDataAvailable = false;
       this.searchDataRequest(value);
-  }  
+  }
 
   setDataTableHeaders( ) {
     // Ideally pass data into this function & then set the DataTableHeaders
@@ -546,7 +549,9 @@ export class UserManagementComponent implements OnInit  {
     dataObj.last_name = this.userForm.controls['last'].value;
     // dataObj.source = this.selectedSource;
     dataObj.role_id = this.selectedRole;
-    dataObj.org_uuid = this.selectedOrg;
+    if(this.isRoot) {
+      dataObj.org_uuid = this.selectedOrg;
+    }
     dataObj.vendor_id = this.selectedVendor;
     // if (this.selectedSource === 'vendor') {
     //
@@ -679,7 +684,7 @@ export class UserManagementComponent implements OnInit  {
     this.selectedVendor = '';
     modalComponent.hide();
 
-    // TODO: Temporarily deactivating these 2 lines, 
+    // TODO: Temporarily deactivating these 2 lines,
     // since they may not be needed on modal close
     // this.dataObject.isDataAvailable = false;
     // this.searchDataRequest();
@@ -910,9 +915,9 @@ export class UserManagementComponent implements OnInit  {
       }
 
 
-      // Fill Data at the end of the Array 
-      if( tab.start != 0 && tab.start + +tab.length == res.data.count 
-        // table.page.info().end == res.data.count 
+      // Fill Data at the end of the Array
+      if( tab.start != 0 && tab.start + +tab.length == res.data.count
+        // table.page.info().end == res.data.count
         ) {
         let tab = table.page.info();
 
@@ -931,15 +936,15 @@ export class UserManagementComponent implements OnInit  {
   successCB(res, table) {
 
     // Set this.response, before calc
-    // Since now, populateDataTable is getting made up, 
+    // Since now, populateDataTable is getting made up,
     // EmptyData_ActualData_EmptyData response, & not the actualy API_Response
-    // 
+    //
     this.response = res.data.rows;
     let li = this.calc(res, table);
 
     // In order to refresh DataTable, we have to reassign the data variable, dataObject here.
-    // TODO: Data to send to html 
-    // NumberOfPages: Send number of rowCount/limit 
+    // TODO: Data to send to html
+    // NumberOfPages: Send number of rowCount/limit
     // CurrentPageNo:
     // TotalCountofRows:
     this.dataObject = {};
@@ -956,7 +961,7 @@ export class UserManagementComponent implements OnInit  {
 
     if (rows && rows.length) {
       arr.push( Object.keys(rows[0]).join(",") );
-      let dataRows = rows.map( (k, v) => { return Object.values(k).join(", "); } ) 
+      let dataRows = rows.map( (k, v) => { return Object.values(k).join(", "); } )
       arr = arr.concat(dataRows);
     }
 
