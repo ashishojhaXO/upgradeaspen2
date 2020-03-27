@@ -51,6 +51,9 @@ export class ReconciliationProfilesComponent implements OnInit {
       } else {
         item.show = true;
         this.itemDetails = item;
+        if (!item.lineItems) {
+          this.searchLineItemDataRequest(item, this.period);
+        }
       }
     } else {
       Swal({
@@ -75,6 +78,67 @@ export class ReconciliationProfilesComponent implements OnInit {
         type: 'error'
       })
     }
+  }
+
+  searchLineItemDataRequest(invoiceDetails, period) {
+    let self = this;
+    this.searchLineItemData(invoiceDetails, period).subscribe(
+        response => {
+          if (response) {
+            invoiceDetails.lineItems = response;
+            this.showSpinner = false;
+          }
+        },
+        err => {
+          if (err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+                this,
+                err,
+                self.searchLineItemDataRequest.bind(self, invoiceDetails, period),
+            );
+          } else {
+            Swal({
+              title: 'No Invoices found',
+              text: 'We did not find any invoices associated with ID : ',
+              type: 'error'
+            }).then(() => {
+              // this.router.navigate(['/app/admin/invoices']);
+            });
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+  searchLineItemData(data, period) {
+    console.log("data",data);
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken;
+    }
+    let dataObj = {
+      year: period[0].id.split('-')[0],
+      month: period[0].id.split('-')[1],
+      invoice_header_id: data.invoice_header_id
+    }
+    console.log("data.order_id",data.order_id);
+    if (data.order_id) {
+      dataObj['order_id'] = data.order_id;
+    } else {
+      dataObj['profile_name'] = data.profile_name;
+    }
+    const obj = JSON.stringify(dataObj);
+    console.log('obj >>')
+    console.log(obj)
+    const headers = new Headers({ 'Content-Type': 'application/json', 'token': token, 'callingapp': 'aspen' });
+    const options = new RequestOptions({ headers: headers });
+    var url = this.api_fs.api + '/api/reports/reconciliation';
+    return this.http
+        .post(url, obj, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   getInvoiceDetails(invoice) {

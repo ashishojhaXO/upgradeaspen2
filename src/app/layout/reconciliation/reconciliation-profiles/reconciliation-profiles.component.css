@@ -14,3 +14,7 @@
 .adjustable-tbl tbody tr{
    height:auto;
 }
+
+.coloredTd {
+    background: beige;
+}

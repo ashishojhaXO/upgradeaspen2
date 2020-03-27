@@ -54,7 +54,8 @@ export class ReconciliationComponent implements OnInit  {
       },
       isRowSelection: null,
       isPageLength: true,
-      isPagination: true
+      isPagination: true,
+      isHideColumns: [ "invoice_header_id"]
   }];
   dashboard: any;
   api_fs: any;
@@ -138,7 +139,7 @@ export class ReconciliationComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.searchDataRequest.bind(self)
             );
           } else {
@@ -202,8 +203,8 @@ export class ReconciliationComponent implements OnInit  {
             if (data.discrepancy_amount && data.discrepancy_amount > 0) {
                 rowsToColor.push({
                     index: index,
-                    'background-color': 'rgba(255,0,0,0.9)',
-                    color: 'rgba(255,255,255,0.9)'
+                    'color': 'rgba(255,0,0,0.9)'
+                    // color: 'rgba(255,255,255,0.9)'
                 });
             }
         });
@@ -274,7 +275,7 @@ export class ReconciliationComponent implements OnInit  {
         });
       }
     }
-  
+
     handleDownload(dataObj: any) {
       console.log('dataObj >>')
       console.log(dataObj);
@@ -289,7 +290,7 @@ export class ReconciliationComponent implements OnInit  {
           type: 'error'
         });
       }
-    } 
+    }
     searchDownloadLink(downloadId, invoiceId) {
       this.getDownloadLink(downloadId).subscribe(
           response => {
@@ -325,7 +326,7 @@ export class ReconciliationComponent implements OnInit  {
             }
           });
     }
-  
+
     getDownloadLink(downloadId) {
       const AccessToken: any = localStorage.getItem('accessToken');
       let token = '';
@@ -333,11 +334,11 @@ export class ReconciliationComponent implements OnInit  {
         // token = AccessToken.accessToken;
         token = AccessToken;
       }
-  
+
       const data = JSON.stringify({
            'reference_id': downloadId
       });
-  
+
       const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
       const options = new RequestOptions({headers: headers});
       var url = this.api_fs.api + '/api/reports/download';
@@ -350,7 +351,7 @@ export class ReconciliationComponent implements OnInit  {
 
     apiMethod = (table, pageLength, csv?) => {
       this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
-      
+
       if(csv){
         this.searchDataRequestCsv(null, table);
       }
@@ -369,7 +370,7 @@ export class ReconciliationComponent implements OnInit  {
         (err) => {
           this.showSpinner = false;
           this.errorCB(err)
-  
+
           if(err.status === 401) {
             let self = this;
             this.widget.refreshElseSignout(
@@ -381,7 +382,7 @@ export class ReconciliationComponent implements OnInit  {
             this.showSpinner = false;
           }
         }
-      );  
+      );
     }
 
     successCBCsv(res, table) {
@@ -389,28 +390,28 @@ export class ReconciliationComponent implements OnInit  {
       let rows = res.data.invoices;
       // let li = this.calc(res, table);
       console.log("Download Csv Here...");
-  
+
       let arr: Array<String> = [];
-  
+
       if (rows && rows.length) {
         const filRows = rows.filter(res => delete res['orders']);
         console.log(filRows);
 
         arr.push(Object.keys(filRows[0]).join(",").replace(/_/g,' ').toUpperCase());
-        let dataRows = filRows.map( (k, v) => { return Object.values(k).join(", "); } ) 
+        let dataRows = filRows.map( (k, v) => { return Object.values(k).join(", "); } )
         arr = arr.concat(dataRows);
       }
       let csvStr: String = "";
       csvStr = arr.join("\n");
-  
+
       // var data = encode(csvStr);
       let b64 = btoa(csvStr as string);
       let a = "data:text/csv;base64," + b64;
       $('<a href='+a+' download="data.csv">')[0].click();
-  
+
       return arr;
     }
-  
+
     errorCB(rej) {
       console.log("errorCB: ", rej)
     }

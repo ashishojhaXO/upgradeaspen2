@@ -38,22 +38,69 @@
           </div>
           <div *ngIf="invoice.isKenshoo">
             <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
-              <div class="col-sm-4"><label>Billed Amount : {{invoice.billedAmount ? invoice.billedAmount : 0}}</label>
+              <div class="col-sm-4"><label>Profile Name : {{invoice.invoiceItems.length ? invoice.invoiceItems[0].profile_name : '-'}}</label>
               </div>
             </div>
           </div>
-          <div *ngIf="invoice.isKenshoo">
+          <!--<div *ngIf="invoice.isKenshoo">-->
+            <!--<div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">-->
+              <!--<div class="col-sm-4"><label>Billed Amount : {{invoice.billedAmount ? (invoice.billedAmount | currency:"USD":true:'1.2-2') : 0}}</label>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+          <div>
             <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
-              <div class="col-sm-4"><label>Total Calculated Amount :
-                  {{invoice.calculatedAmount ? invoice.calculatedAmount : 0}}</label></div>
+              <div class="col-sm-4"><label>Billed Due Date : {{invoice.billing_due_date || '-'}}</label>
+              </div>
             </div>
           </div>
-          <div *ngIf="invoice.isKenshoo">
+          <!--<div *ngIf="invoice.isKenshoo">-->
+            <!--<div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">-->
+              <!--<div class="col-sm-4"><label>Total Calculated Amount :-->
+                  <!--{{invoice.calculatedAmount ? (invoice.calculatedAmount | currency:"USD":true:'1.2-2') : 0}}</label></div>-->
+            <!--</div>-->
+          <!--</div>-->
+          <!--<div *ngIf="invoice.isKenshoo">-->
+            <!--<div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">-->
+              <!--<div class="col-sm-4"><label>Discrepancy Amount :-->
+                  <!--{{invoice.discrepancyAmount ? (invoice.discrepancyAmount | currency:"USD":true:'1.2-2') : 0 }}</label></div>-->
+            <!--</div>-->
+          <!--</div>-->
+          <div>
             <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
-              <div class="col-sm-4"><label>Discrepancy Amount :
-                  {{invoice.discrepancyAmount ? invoice.discrepancyAmount : 0 }}</label></div>
+              <div class="col-sm-4"><label>Month Start :
+                {{ (invoice.invoiceItems.length ? invoice.invoiceItems[0].month_start : '-')}}</label>
+              </div>
             </div>
           </div>
+          <div>
+          <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+            <div class="col-sm-4"><label>Month End :
+              {{ (invoice.invoiceItems.length ? invoice.invoiceItems[0].month_end : '-')}}</label>
+            </div>
+          </div>
+        </div>
+          <div>
+            <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+              <div class="col-sm-4"><label>Invoice Date :
+                {{ (invoice.invoiceItems.length ? invoice.invoiceItems[0].invoice_date : '-')}}</label>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+              <div class="col-sm-4"><label>Total Invoice Amount :
+                {{ invoice.invoiceItems.length ? (invoice.invoiceItems[0].invoice_amount | currency:"USD":true:'1.2-2') : 0 }}</label>
+              </div>
+            </div>
+          </div>
+          <!--<div>-->
+            <!--<div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">-->
+              <!--<div class="col-sm-4"><label>Total Invoice Paid Amount :-->
+                <!--{{ invoice.invoiceItems.length ? (invoice.invoiceItems[0].total_invoice_paid_amount | currency:"USD":true:'1.2-2') : '-' }}</label>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
 
         </div>
 
@@ -64,56 +111,89 @@
               <table class="table table-responsive">
                 <thead>
                   <tr>
-                    <th>Actions</th>
-                    <th>Month Start</th>
-                    <th>Month End</th>
-                    <th>Invoice Header Id</th>
-                    <th>Supplier</th>
-                    <th>Invoice Number</th>
-                    <th>Profile Name</th>
-                    <th>Invoice Date</th>
-                    <th>Invoice Amount</th>
-                    <th>Reference Number</th>
-                    <th>Billing Period</th>
-                    <th>Order Billed Amount</th>
-                    <th>Order Ccalculated Amount</th>
-                    <th>Order Discrepancy Amount</th>
-                    <th>Order Id</th>
-                    <th>Total Invoice Paid Amount</th>
-                    <th>MK Nnumber</th>
+                    <th></th>
+                    <!--<th>Month Start</th>-->
+                    <!--<th>Month End</th>-->
+                    <!--<th>Invoice Header Id</th>-->
+                    <!--<th>Supplier</th>-->
+                    <!--<th>Invoice Number</th>-->
+                    <!--<th [hidden]="!invoice.isKenshoo">Profile Name</th>-->
+                    <!--<th>Invoice Date</th>-->
+                    <!--<th>Invoice Amount</th>-->
+                    <!--<th>Reference Number</th>-->
+                    <!--<th>Billing Period</th>-->
+                    <!--<th>Billing Due Date</th>-->
+                    <th>Billed Amount</th>
+                    <th>Calculated Amount</th>
+                    <th>Discrepancy Amount</th>
+                    <th>Order/Line Item Id</th>
+                    <th>Paid Amount</th>
+                    <th>MK #</th>
+                    <th>Channel PO #</th>
+                    <th>Media Service PO #</th>
                   </tr>
                 </thead>
                 <tbody style="max-height: 500px; overflow-y: scroll; overflow-x: hidden">
                   <ng-container *ngFor="let item of invoice.invoiceItems; let i= index">
-                    <tr style="height: 50px;">
-                      <td (click)="onTabClick(item)">
+                    <tr style="height: 50px; font-weight: 600">
+                      <td (click)="onTabClick(item)" style="cursor: pointer">
                         <i class="fa fa-minus" [hidden]="!item.show"></i>
                         <i class="fa fa-plus" [hidden]="item.show"></i>
                       </td>
-                      <td>{{item.month_start}}</td>
-                      <td>{{item.month_end}}</td>
-                      <td>{{item.invoice_header_id}}</td>
-                      <td>{{item.supplier}}</td>
-                      <td>{{item.invoice_number}}</td>
-                      <td>{{item.profile_name}}</td>
-                      <td>{{item.invoice_date}}</td>
-                      <td>{{item.invoice_amount}}</td>
-                      <td>{{item.reference_number}}</td>
-                      <td>{{item.billing_period}}</td>
-                      <td>{{item.billing_due_date}}</td>
-                      <td>{{item.order_billed_amount}}</td>
-                      <td>{{item.order_calculated_amount}}</td>
-                      <td>{{item.order_discrepancy_amount}}</td>
-                      <td>{{item.order_id}}</td>
-                      <td>{{item.total_invoice_paid_amount}}</td>
-                      <td>{{item.mk_number}}</td>
+                      <!--<td>{{item.month_start}}</td>-->
+                      <!--<td>{{item.month_end}}</td>-->
+                      <!--<td>{{item.invoice_header_id}}</td>-->
+                      <!--<td>{{item.supplier}}</td>-->
+                      <!--<td>{{item.invoice_number}}</td>-->
+                      <!--<td [hidden]="!invoice.isKenshoo">{{item.profile_name || '-'}}</td>-->
+                      <!--<td>{{item.invoice_date}}</td>-->
+                      <!--<td>{{item.invoice_amount}}</td>-->
+                      <!--<td>{{item.reference_number}}</td>-->
+                      <!--<td>{{item.billing_period}}</td>-->
+                      <!--<td>{{item.billing_due_date}}</td>-->
+
+                      <td>{{invoice.isKenshoo ? (invoice.billedAmount | currency:"USD":true:'1.2-2') : (item.order_billed_amount ? (item.order_billed_amount | currency:"USD":true:'1.2-2') : 0)}}</td>
+                      <td>{{item.order_calculated_amount ? (item.order_calculated_amount  | currency:"USD":true:'1.2-2') : 0}}</td>
+                      <td>{{invoice.isKenshoo ? (invoice.discrepancyAmount | currency:"USD":true:'1.2-2') : (item.order_discrepancy_amount ? (item.order_discrepancy_amount | currency:"USD":true:'1.2-2') : 0)}}</td>
+                      <td>{{item.order_id || '-'}}</td>
+                      <td>{{item.total_invoice_paid_amount ? (item.total_invoice_paid_amount | currency:"USD":true:'1.2-2') : 0}}</td>
+                      <td>{{item.mk_number || '-'}}</td>
+                      <td>{{item.channel_po_number || '-'}}</td>
+                      <td>{{item.media_service_po_number || '-'}}</td>
+
                     </tr>
-                    <tr>
-                      <td colspan="18" *ngIf="itemDetails==item" [hidden]="!item.show">
-                        <app-reconciliation-line-items [period]="period" [itemDetails]="item">
-                        </app-reconciliation-line-items>
-                      </td>
-                    </tr>
+                    <ng-container *ngIf="item.show && item.lineItems">
+                      <tr *ngFor="let sItem of item.lineItems; let i= index" style="height: 50px;">
+                        <td></td>
+                        <!--<td class="coloredTd">{{sItem.month_start}}</td>-->
+                        <!--<td class="coloredTd">{{sItem.month_end}}</td>-->
+                        <!--<td class="coloredTd">{{sItem.invoice_header_id}}</td>-->
+                        <!--<td class="coloredTd">{{sItem.supplier}}</td>-->
+                        <!--<td class="coloredTd">{{sItem.invoice_number}}</td>-->
+                        <!--<td class="coloredTd" [hidden]="!invoice.isKenshoo">{{sItem.profile_name || '-'}}</td>-->
+                        <!--<td class="coloredTd">{{sItem.invoice_date}}</td>-->
+                        <!--<td class="coloredTd">{{sItem.invoice_amount}}</td>-->
+                        <!--<td class="coloredTd">{{sItem.reference_number}}</td>-->
+                        <!--<td class="coloredTd">{{sItem.billing_period}}</td>-->
+                        <!--<td class="coloredTd">{{sItem.billing_due_date}}</td>-->
+
+                        <td class="coloredTd">{{sItem.line_item_billed_amount ? (sItem.line_item_billed_amount | currency:"USD":true:'1.2-2') : 0}}</td>
+                        <td class="coloredTd">{{sItem.line_item_calculated_amount ? (sItem.line_item_calculated_amount | currency:"USD":true:'1.2-2') : 0}}</td>
+                        <td class="coloredTd">{{sItem.line_item_discrepancy_amount ? (sItem.line_item_discrepancy_amount | currency:"USD":true:'1.2-2') : 0}}</td>
+                        <td class="coloredTd">{{sItem.line_item_id || '-'}}</td>
+                        <td class="coloredTd">{{sItem.line_item_paid_amount ? (sItem.line_item_paid_amount | currency:"USD":true:'1.2-2') : 0}}</td>
+                        <td class="coloredTd">{{sItem.mk_number || '-'}}</td>
+                        <td class="coloredTd">{{sItem.channel_po_number || '-'}}</td>
+                        <td class="coloredTd">{{sItem.media_service_po_number || '-'}}</td>
+
+                      </tr>
+                    </ng-container>
+                    <!--<tr>-->
+                      <!--<td colspan="18" *ngIf="itemDetails==item" [hidden]="!item.show">-->
+                        <!--<app-reconciliation-line-items [period]="period" [itemDetails]="item">-->
+                        <!--</app-reconciliation-line-items>-->
+                      <!--</td>-->
+                    <!--</tr>-->
                   </ng-container>
                 </tbody>
               </table>
