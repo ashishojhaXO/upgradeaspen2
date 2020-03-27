@@ -278,7 +278,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         this.dataObject.gridData.options.isEditOption ||
                         this.dataObject.gridData.options.isPlayOption ||
                         this.dataObject.gridData.options.isDownloadOption ||
-                        this.dataObject.gridData.options.isDeleteOption
+                        this.dataObject.gridData.options.isDeleteOption ||
+                        this.dataObject.gridData.options.isCustomOption
                     ) {
                         rowData.splice(
                             this.dataObject.gridData.options.isActionColPosition || 0,
@@ -314,6 +315,10 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 if (this.dataObject.gridData.options.isDeleteOption && this.dataObject.gridData.options.isDeleteOption.value) {
                     columnButtonDefs += '<a class="fa fa-trash fa-action-view deleteLink" title="' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete' ) + '" style="cursor: pointer"></a>';
                     //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete' )  + '</span>';
+                }
+                if (this.dataObject.gridData.options.isCustomOption && this.dataObject.gridData.options.isCustomOption.value) {
+                    const iconClass = this.dataObject.gridData.options.isCustomOption.icon ? this.dataObject.gridData.options.isCustomOption.icon : 'fa-play';
+                    columnButtonDefs += '<a class="fa ' + iconClass  + ' fa-action-view customLink" title="' + (this.dataObject.gridData.options.isCustomOption.tooltip ? this.dataObject.gridData.options.isCustomOption.tooltip : 'Click' ) + '" style="margin-right: 15px; cursor: pointer">';
                 }
 
                 // if (columnButtonDefs) {
@@ -804,6 +809,15 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // const data = table.row($(this).parents('tr')).data();
                 __this.triggerActions.emit({
                     action: 'handleDelete',
+                    data: __this.dataObject.gridData.result[table.row($(this).parents('tr')).index()],
+                    rowIndex: table.row($(this).parents('tr')).index()
+                });
+            });
+
+            // Custom Icon Click
+            $('#' + this.tableId + ' tbody').on('click', '.customLink', function () {
+                __this.triggerActions.emit({
+                    action: 'handleCustom',
                     data: __this.dataObject.gridData.result[table.row($(this).parents('tr')).index()],
                     rowIndex: table.row($(this).parents('tr')).index()
                 });
