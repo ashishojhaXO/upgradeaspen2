@@ -3,37 +3,45 @@
   <div class="container">
     <div class="row">
       <div class="col-md-2 col-sm-6 col-xs-12 logo-width">
-        <div class="logo"> <a routerLink="/"><img src="./assets/images/f7_logo.png"></a> </div>
+        <div class="logo"> <a routerLink="/app/dashboards"><img src="./assets/images/f7_logo.png"></a> </div>
       </div>
-      <div class="col-md-9 col-sm-6 col-xs-12 mainmenu" *ngIf="isDataAvailable">
+      <div class="col-md-9 col-sm-6 col-xs-12 mainmenu">
         <nav class="navbar navbar-default">
           <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
           </div>
+          <!-- This is the main menu -->
           <div class="collapse navbar-collapse" id="navbar-collapse-1">
-            <ul class="nav navbar-nav main-menu">
+            <app-nav
+              #navItems
+              [mainmenu]="mainmenu"
+              [urlPath]="router.url"
+            ></app-nav>
+            <!-- <ul class="nav navbar-nav main-menu">
               <ng-template ngFor let-mm [ngForOf]="mainmenu" let-i="index">
                 <li [attr.data-index]="i+1" *ngIf="mm.name!='profile'" [ngClass]="mm.selected ? 'active' : '' ">
                   <a (click)="loadOptions(i,mm)" title={{mm.name}} id="{{mm.id}}" [ngClass]="isActive(i) ? 'active' : '' " >{{ mm.title | translate }}</a>
                 </li>
               </ng-template>
-            </ul>
+            </ul> -->
           </div>
         </nav>
       </div>
       <div style="float: right; margin-top: 8px">
         <div style="float: right">
           <button style="background-color: #242424; border: none" (click)="toggleMenu($event)">
-            <span class="prof-img" style="position: relative;top: -4px;">
+            <span class="prof-img" style="position: relative;top: -15px;">
                 <i class="fa fa-user-circle" style="font-size: 2.7em"></i>
               </span>
-            <span class="welcome-user-text-wrap" style="color: #ffffff !important;" [title]=loggedInUser>
+            <span class="welcome-user-text-wrap" style="color: #ffffff !important;" title="{{loggedInUser}} ( {{loggedInVendor}} )">
               <span class="welcome-txt">Welcome </span>
               <span class="welcome-user-text">{{loggedInUser}}</span>
+              <span class="welcome-user-text">( {{loggedInVendor}} )</span>
               <!---->
               <i aria-hidden="true" class="fa fa-caret-down"></i></span>
           </button>
           <div class="dropdown-content" [hidden]="!isMenuOpened">
+            <a routerLink="/app/user-setting">User Settings</a>
             <a href="javascript:void(0)" (click)="resetPassword()">Change Password</a>
             <a href="javascript:void(0)" (click)="logout()">Log Out</a>
           </div>
@@ -50,25 +58,20 @@
     <div class="row">
         <div class="container">
       <nav class="navbar navbar-default">
-
           <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-3"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
           </div>
-          <div class="collapse navbar-collapse" id="navbar-collapse-3" *ngIf="isDataAvailable">
-            <ul class="nav navbar-nav bottom-menu">
+        <!-- This is the sub menu -->
+          <div class="collapse navbar-collapse" id="navbar-collapse-3">
+            <!-- <ul class="nav navbar-nav bottom-menu">
                 <ng-template ngFor let-bmm [ngForOf]="subMenu" let-j="index" >
-                  <li><a [routerLink]="bmm.url==''?['/organizationList']:['/'+bmm.url]" routerLinkActive="active-bar" [routerLinkActiveOptions]="{exact: false}" [ngClass]="bmm.sideBar?.length > 0 && routeActive ? 'active-bar submenuActive': bmm.selected && bmm.sideBar?.length <= 0? 'active-bar':''" title={{bmm.name}} id="{{bmm.id}}">{{bmm.title}}
+                  <li>
+                    <a [routerLink]="bmm.url==''?['/organizationList']:['/'+bmm.url]" routerLinkActive="active-bar" [routerLinkActiveOptions]="{exact: false}" [ngClass]="bmm.sideBar?.length > 0 && routeActive ? 'active-bar submenuActive': bmm.selected && bmm.sideBar?.length <= 0? 'active-bar':''" title={{bmm.name}} id="{{bmm.id}}">{{bmm.title}}
                           &nbsp;&nbsp;<i *ngIf="bmm.url==''" class="fa fa-caret-down" aria-hidden="true"></i>
                       </a>
-                      <ul class="subChildMenu">
-                      <ng-template ngFor let-summ [ngForOf]="bmm.sideBar" let-j="index" >
-                      <li><a routerLink="/{{summ.url}}" routerLinkActive="active-bar" [routerLinkActiveOptions]="{exact: true}" class="active-bar" title={{summ.name}} id="{{summ.id}}">
-                         {{summ.title}}</a></li>
-                      </ng-template>
-                    </ul>
                   </li>
                 </ng-template>
-            </ul>
+            </ul> -->
           </div>
       </nav>
     </div>

@@ -298,7 +298,8 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: false,
-    isDownload: false,
+    isDownloadAsCsv: true,
+    isDownloadOption: false,
     isRowSelection: {
       isMultiple : true
     },
@@ -314,7 +315,8 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
       isDeleteOption: false,
       isAddRow: false,
       isColVisibility: false,
-      isDownload: false,
+    isDownloadAsCsv: true,
+      isDownloadOption: false,
       isRowSelection: {
         isMultiple : true
       },
@@ -358,7 +360,8 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
       isDeleteOption: false,
       isAddRow: false,
       isColVisibility: false,
-      isDownload: false,
+      isDownloadAsCsv: true,
+      isDownloadOption: false,
       isRowSelection: {
         isMultiple : true
       },
@@ -403,7 +406,8 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
       isDeleteOption: false,
       isAddRow: false,
       isColVisibility: false,
-      isDownload: false,
+      isDownloadAsCsv: true,
+      isDownloadOption: false,
       isRowSelection: {
         isMultiple : true
       },
@@ -684,25 +688,14 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
         this.getReportDetails();
       }
 
-    }, error => {
-      if(error.status === 401) {
-        if(localStorage.getItem('accessToken')) {
-          this.widget.tokenManager.refresh('accessToken')
-              .then(function (newToken) {
-                localStorage.setItem('accessToken', newToken);
-                this.showSpinner = false;
-                this.getEmailRequest();
-              })
-              .catch(function (err) {
-                console.log('error >>')
-                console.log(err);
-              });
-        } else {
-          this.widget.signOut(() => {
-            localStorage.removeItem('accessToken');
-            window.location.href = '/login';
-          });
-        }
+    }, err => {
+      if(err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.getEmailRequest.bind(self)
+            );
       } else {
         this.showSpinner = false;
       }
@@ -1027,7 +1020,8 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
         isDeleteOption: false,
         isAddRow: false,
         isColVisibility: false,
-        isDownload: false,
+        isDownloadAsCsv: true,
+        isDownloadOption: false,
         isRowSelection: {
           isMultiple : true
         },
@@ -1356,23 +1350,12 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.handleSubmit(null,null);
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.handleSubmit.bind(self, null,null)
+            );
           } else {
             this.showSpinner = false;
           }
@@ -1591,23 +1574,12 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
             err => {
 
               if(err.status === 401) {
-                if(localStorage.getItem('accessToken')) {
-                  this.widget.tokenManager.refresh('accessToken')
-                      .then(function (newToken) {
-                        localStorage.setItem('accessToken', newToken);
-                        this.showSpinner = false;
-                        this.fetchReportData();
-                      })
-                      .catch(function (err) {
-                        console.log('error >>')
-                        console.log(err);
-                      });
-                } else {
-                  this.widget.signOut(() => {
-                    localStorage.removeItem('accessToken');
-                    window.location.href = '/login';
-                  });
-                }
+                let self = this;
+                this.widget.refreshElseSignout(
+                  this,
+                  err, 
+                  self.fetchReportData.bind(self)
+                );
               } else {
                 this.showSpinner = false;
               }

@@ -21,16 +21,26 @@ export class OrdersListComponent implements OnInit  {
   options: Array<any> = [{
     isSearchColumn: true,
     isTableInfo: true,
-    isEditOption: true,
+    isEditOption: {
+      value : true,
+      icon : '',
+      tooltip: 'Edit Order'
+    },
     isPlayOption: {
       value : true,
       icon : 'fa-dollar',
+      tooltip: 'Pay Order'
     },
-    isDeleteOption: false,
+    isDeleteOption: {
+      value : true,
+      icon : '',
+      tooltip: 'Delete Order'
+    },
     isAddRow: false,
     isColVisibility: true,
     isRowHighlight: false,
-    isDownload: true,
+    isDownloadAsCsv: true,
+    isDownloadOption: false,
     isPageLength: true,
     isPagination: true,
     sendResponseOnCheckboxClick: true
@@ -103,23 +113,12 @@ export class OrdersListComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchDataRequest(templateValue);
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.searchDataRequest.bind(self, templateValue)
+            );
           } else {
             this.showSpinner = false;
           }
@@ -203,7 +202,7 @@ export class OrdersListComponent implements OnInit  {
     console.log('rowData >>>')
     console.log(dataObj.data);
     this.editID = dataObj.data.id;
-    this.router.navigate(['/app/order/', this.editID]);
+    this.router.navigate(['/app/order/create', this.editID]);
   }
 
   handleRun(dataObj: any){
@@ -211,6 +210,10 @@ export class OrdersListComponent implements OnInit  {
     console.log(dataObj.data);
     this.payID = dataObj.data.id;
     this.router.navigate(['/app/orderPayment/', this.payID]);
+  }
+
+  getOrganizations() {
+    console.log("Placeholder function: GetOrganizations");
   }
 
   getTemplates(){
@@ -231,26 +234,12 @@ export class OrdersListComponent implements OnInit  {
       },
       err => {
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-            console.log("ord-temp no okt if")
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  localStorage.setItem('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.getOrganizations();
-                })
-                .catch(function (err) {
-                  console.log('error >>')
-                  console.log(err);
-                });
-          } else {
-            console.log("ord-temp no okt else")
-            this.widget.tokenManager.refresh('accessToken')
-            this.widget.signOut(() => {
-              localStorage.removeItem('accessToken');
-              window.location.href = '/login';
-            });
-          }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.getOrganizations.bind(self)
+            );
         } else {
           this.showSpinner = false;
         }
@@ -278,4 +267,9 @@ export class OrdersListComponent implements OnInit  {
     this.searchDataRequest(value)
   }
 
+  reLoad(){
+    this.showSpinner = true;
+    this.dataObject.isDataAvailable = false;
+    this.searchDataRequest(this.templateValue);
+  }
 }

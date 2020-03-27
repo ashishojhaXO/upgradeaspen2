@@ -1,11 +1,14 @@
 <div>
   <div class="col-lg-12 col-md-12">
     <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">ORDER TEMPLATES</p>
+    <div class="pull-right">
+      <a (click)="reLoad()" class="button btn btn-success" style="background-color: #0777bc"><i class="fa fa-fw fa-refresh" aria-hidden="true"></i>Reload</a>
+    </div>
   </div>
   <div class="">
     <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject.isDataAvailable">
       <app-data-table2 identity="orders"
-       height="600"
+      height="48vh"
       [dataObject]="dataObject"
       [sendResponseOnCheckboxClick]=true
       (triggerActions)="handleRow($event)">
@@ -18,4 +21,4 @@
     </div>
   </div>
 </div>
-
+<app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>

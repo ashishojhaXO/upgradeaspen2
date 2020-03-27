@@ -1,0 +1,140 @@
+<div class="form" style="background: #fff">
+    <div class="col-lg-12 col-md-12" style="padding-left: 0px">
+        <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">INVOICE DETAILS : {{invoiceNumber}}</p>
+    </div>
+    <div class="col-lg-12 col-mg-12 col-sm-12 form-group-fields" style="background: #fff" *ngIf="invoices.length">
+        <div *ngFor="let invoice of invoices; let j=index" style="margin-bottom: 10px" [style.marginTop]="j ===0 ? '10px' : '0px'">
+            <div *ngIf="invoice.isKenshoo" style="background: beige; padding-left: 5px; cursor: pointer;" (click)="onTabClick(invoice)">
+                 <i class="fa fa-minus" [hidden]="!invoice.show"></i>
+                    <i class="fa fa-plus" [hidden]="invoice.show"></i>
+                    <h5 style="display: inline-block; margin-left: 10px">{{invoice.profileName ? invoice.profileName : '-' }}</h5>
+            </div>
+            <div [hidden]="!invoice.show">
+                <p style="clear: both"></p>
+                <div style="padding-bottom: 10px; margin-left: 5px">
+                    <div>
+                        <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+                            <div class="col-sm-4"><label>Invoice Number : {{invoice.invoiceNumber ? invoice.invoiceNumber : '-'}}</label></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+                            <div class="col-sm-4"><label>Billing Period : {{ invoice.isKenshoo ? (invoice.billingPeriod ? invoice.billingPeriod : '-') : (invoice.invoiceItems.length ? invoice.invoiceItems[0].billing_period : '-')}}</label></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+                            <div class="col-sm-4"><label>Supplier Name : {{ invoice.isKenshoo ? (invoice.supplier ? invoice.supplier : '-') : (invoice.invoiceItems.length ? invoice.invoiceItems[0].supplier : '-')}}</label></div>
+                        </div>
+                    </div>
+                    <div *ngIf="invoice.isKenshoo">
+                        <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+                            <div class="col-sm-4"><label>Billed Amount : {{invoice.billedAmount ? invoice.billedAmount : 0}}</label></div>
+                        </div>
+                    </div>
+                    <div *ngIf="invoice.isKenshoo">
+                        <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+                            <div class="col-sm-4"><label>Total Calculated Amount : {{invoice.calculatedAmount ? invoice.calculatedAmount : 0}}</label></div>
+                        </div>
+                    </div>
+                    <div *ngIf="invoice.isKenshoo">
+                        <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+                            <div class="col-sm-4"><label>Discrepancy Amount : {{invoice.discrepancyAmount ? invoice.discrepancyAmount : 0 }}</label></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div style="margin-left: 15px;">
+                    <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px; border-bottom: 1px solid;">
+                        <div class="col-sm-1"><label>Line Item ID</label></div>
+                        <div class="col-sm-1"><label>Order ID</label></div>
+                        <div class="col-sm-1"><label>Site Name</label></div>
+                        <div class="col-sm-1"><label>Vendor ID</label></div>
+                        <div class="col-sm-1"><label>Vendor Name</label></div>
+                        <div [style.display]="invoice.isKenshoo ? 'none' : 'inline-block'" class="col-sm-1"><label style="text-align: right">Billed Amount</label></div>
+                        <div class="col-sm-1"><label style="text-align: right">Calculated Amount</label></div>
+                        <div [style.display]="invoice.isKenshoo ? 'none' : 'inline-block'" class="col-sm-1"><label style="text-align: right">Discrepancy Amount</label></div>
+                        <div class="col-sm-1"><label style="text-align: right">Paid Amount</label></div>
+                        <div class="col-sm-1"><label>Pay Remaining <input type="checkbox" style="text-align: right" (change)="OnHeaderChecked($event, invoice)"/></label></div>
+                        <div class="col-sm-2" style="text-align: center"><label>Pay Amount</label></div>
+                    </div>
+                    <div *ngIf="invoice.invoiceItems && invoice.invoiceItems.length">
+                        <div style="max-height: 500px; overflow-y: scroll; overflow-x: hidden">
+                            <div class="row" style="margin-bottom: 10px" *ngFor="let item of invoice.invoiceItems; let i= index" [style.background]="i % 2 === 0 ? '#f9f9f9' : '#fff'">
+                                <div class="col-sm-1"><span class="paymentText">{{item.line_item_id}}</span></div>
+                                <div class="col-sm-1"><span class="paymentText">{{item.order_id}}</span></div>
+                                <div class="col-sm-1"><span class="paymentText">{{item.site_name}}</span></div>
+                                <div class="col-sm-1"><span class="paymentText">{{item.client_id}}</span></div>
+                                <div class="col-sm-1"><span class="paymentText">{{item.company_name}}</span></div>
+                                <div [style.display]="invoice.isKenshoo ? 'none' : 'inline-block'"  class="col-sm-1" style="text-align: right" ><span
+                                        class="paymentText">{{item.billed_amount | currency:"USD":true:'1.2-2'}}</span></div>
+                                <div class="col-sm-1" style="text-align: right"><span
+                                        class="paymentText">{{ invoice.isKenshoo ? (item.total_spend | currency:"USD":true:'1.2-2') : (item.calculated_amount | currency:"USD":true:'1.2-2')}}</span></div>
+                                <div [style.display]="invoice.isKenshoo ? 'none' : 'inline-block'" class="col-sm-1" style="text-align: right"><span
+                                        class="paymentText">{{item.discrepancy_amount | currency:"USD":true:'1.2-2'}}</span></div>
+                                <div  class="col-sm-1" style="text-align: right" ><span
+                                        class="paymentText">{{item.paid_amount ? (item.paid_amount  | currency:"USD":true:'1.2-2') : 0}}</span></div>
+                                <div class="col-sm-1" style="left: 6px">
+                                    <span class="paymentText">
+                                      <input [disabled]="(invoice.isKenshoo ? ( invoice.discrepancyAmount !== 0 ? 'disabled' : null) : (item.discrepancy_amount !== 0 ? 'disabled' : null))" type="checkbox" (change)="OnCheckChecked($event, invoice, item)" [(ngModel)]="item.checked"/>
+                                    </span>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="input-group col-sm-12">
+                                        <span class="input-group-addon">$</span>
+                                        <input type="text" numeric numericType="decimal" class="form-control"
+                                               style="border-radius: 0 4px 4px 0; text-align: right" [(ngModel)]="item.pay" (keyup)="updateTotal(invoice)">
+                                    </div>
+                                    <!--<div class="alert alert-danger" *ngIf="control.invalid">-->
+                                    <!--<i class="fa fa-exclamation-circle" aria-hidden="true"></i>-->
+                                    <!--<span *ngIf="control.errors['partialExceeds']">-->
+                                    <!--Line Item partial amount exceeds amount due.-->
+                                    <!--</span>-->
+                                    <!--<span *ngIf="control.errors['negativeNumber']">-->
+                                    <!--Amount cannot be Negative.-->
+                                    <!--</span>-->
+                                    <!--</div>-->
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px">
+                            <div class="col-sm-12">
+                                <div [class]="invoice.isKenshoo ? 'col-sm-8' : 'col-sm-10'"><span></span></div>
+                                <div class="col-sm-1" [style.paddingLeft]="invoice.isKenshoo ? '22px' : '36px'"><span><b>Total($)</b></span></div>
+                                <div class="col-sm-1"><span style="float: right; position: relative;" [style.left]="invoice.isKenshoo ? '12px' : '23px'">{{invoice.totalAmount | number:'':'fr-FR'}}</span></div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div [class]="invoice.isKenshoo ? 'col-sm-9' : 'col-sm-11'"><span></span></div>
+                                <div class="col-sm-1" style="padding-left: 42px; padding-right: -1px"><button class="btn pull-right" style="position: relative; left: 19px; margin-top: 30px; margin-bottom: 10px" (click)="handleShowModal(AddPayment, invoice)">Pay</button></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <p style="clear: both"></p>
+        </div>
+    </div>
+    <app-pop-up-modal #AddPayment>
+        <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
+            Pay Invoice
+        </div>
+        <div class="app-modal-body">
+            <div class="content" style="height: 50vh">
+               <label>Memo</label>
+                <div>
+                    <textarea style="height: 150px; width: 100%" [(ngModel)]="memo"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="app-modal-footer">
+            <button type="button" class="action-btn" (click)= "OnPay(AddPayment)">
+                Submit
+            </button>
+            <button type="button" class="inaction-btn" (click)="handleCloseModal(AddPayment)">
+                Cancel
+            </button>
+        </div>
+    </app-pop-up-modal>
+</div>
+

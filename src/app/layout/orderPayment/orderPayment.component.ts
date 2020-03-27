@@ -24,38 +24,70 @@ export class OrderPaymentComponent {
 
   selectionType = '';
   paymentOptions: any;
-  orderId: string;
+  @Input() orderId: string;
   vendorId: string;
+  showSpinner: boolean;
+  // domain: string;
+  api_fs: any;
 
   constructor(
-    private route: ActivatedRoute,
-    private genericService: GenericService,
-    private router: Router
+      private route: ActivatedRoute,
+      private genericService: GenericService,
+      private router: Router
   ) {
+
+    this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
+
+    // if(window.location.hostname.indexOf('-dev') !== -1 || window.location.hostname.indexOf('localhost') !== -1) {
+    //   this.domain = 'dev';
+    // } else if (window.location.hostname.indexOf('-qa') !== -1) {
+    //   this.domain = 'qa';
+    // } else {
+    //   this.domain = 'prod';
+    // }
+
     if (window['fs_widget_config']) {
+      console.log('window.location.hostname')
+      console.log(window.location.hostname);
+
       console.log('window[\'fs_widget_config\'] >>')
       console.log(window['fs_widget_config']);
-        const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
-        window['fs_widget_config'].vendor_id = this.vendorId = customerInfo.vendor.vendor_id;
-       // this.vendorId = '592f94f3-e2b1-4621-b1c0-c795ee2a1814';
-        window['fs_widget_config'].api_key = customerInfo.org.x_api_key;
-        window['fs_widget_config'].org_id = customerInfo.org.org_id;
+      const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
+      window['fs_widget_config'].vendor_id = this.vendorId = customerInfo.vendor.vendor_id;
+      window['fs_widget_config'].api_key = customerInfo.org.x_api_key;
+      window['fs_widget_config'].org_id = customerInfo.org.org_id;
+
+      // Temp assignment FOR TESTING:
+      // window['fs_widget_config'].vendor_id = '592f94f3-e2b1-4621-b1c0-c795ee2a1814'
+      // this.vendorId = '592f94f3-e2b1-4621-b1c0-c795ee2a1814';
     }
   }
 
   ngOnInit() {
     this.initVars();
+    // set Pay by CC/ACH by default
+    this.selectionType = 'default';
+    if ( this.selectionType == 'default') {
+      // Introduce a timeout to sync between newly created account to be displayed in the existing payments list
+      const __this = this;
+      setTimeout(function () {
+        __this.postPaymentMethods(1);
+      }, 1000);
+    }
   }
 
   initVars() {
-    this.orderId = this.route.snapshot.paramMap.get('id') || '';
+    if(!this.orderId) {
+      this.orderId = this.route.snapshot.paramMap.get('id') || '';
+    }
+
     if (!this.orderId) {
       Swal({
         title: 'No Order ID found',
         text: 'We did not find an order to be paid for',
         type: 'error'
       }).then( () => {
-        this.router.navigate(['/app/admin/orderslist']);
+        this.router.navigate(['/app/order/orders']);
       });
     }
   }
@@ -85,7 +117,7 @@ export class OrderPaymentComponent {
       })[0]
 
       console.log("SCB IFFF: self.paymentOptions ", self.paymentOptions ,
-      " this payMC", this.paymentsChargeData );
+          " this payMC", this.paymentsChargeData );
     }
 
   }
@@ -98,24 +130,57 @@ export class OrderPaymentComponent {
   paymentsMethodsData: any;
   paymentsChargeData: any;
 
-  setPaymentsMethodsData(option) {
+  setPaymentsMethodsData() {
     this.paymentsMethodsData = { vendor_id : this.vendorId } ;
   }
 
   postPaymentMethods(option) {
-    this.setPaymentsMethodsData(1)
+    this.showSpinner = true;
+    this.setPaymentsMethodsData()
 
     return this.genericService
-      .postPaymentsMethods(this.paymentsMethodsData)
-      .subscribe(
-        (res) => {
-          // this.successCB.apply(this, [res])
-          this.successCB(res)
-        },
-        (rej) => {
-          this.errorCB(rej)
-        }
-      )
+        .postPaymentsMethods(this.paymentsMethodsData)
+        .subscribe(
+            (res) => {
+              this.showSpinner = false;
+              // this.successCB.apply(this, [res])
+              this.successCB(res)
+            },
+            (rej) => {
+              this.showSpinner = false;
+              this.errorCB(rej)
+            }
+        )
+  }
+
+  setDefaultPaymentMethod(option) {
+    console.log('option >>')
+    console.log(option);
+    const obj = {
+      vendor_id : this.vendorId,
+      paymentmethodid : option.paymentmethodid
+    }
+    this.genericService
+        .setDefaultPaymentMethod(obj)
+        .subscribe( (res) => {
+              this.showSpinner = false;
+              Swal({
+                title: 'Default Payment Method Successfully Changed',
+                text: 'Your default payment method for future payments has been changed successfully',
+                type: 'success'
+              }).then( () => {
+
+              });
+            },
+            (rej) => {
+              this.showSpinner = false;
+              Swal({
+                title: 'Default Payment Method Change Failed',
+                text: 'We are having trouble changing the default payment method. Please try again',
+                type: 'error'
+              }).then( () => {})
+
+            });
   }
 
   setPaymentsChargeData(option) {
@@ -130,29 +195,33 @@ export class OrderPaymentComponent {
   }
 
   postPaymentsCharge(option) {
-
-    const dataObj = { vendor_id : this.vendorId };
-
     this.setPaymentsChargeData(option);
 
-   this.genericService
-      .postPaymentsCharge(this.paymentsChargeData)
-      .subscribe( (res) => {
-            Swal({
-              title: 'Payment Successfully Charged',
-              text: 'Your payment for the order ' + this.orderId + ' was successfully charged',
-              type: 'success'
-            }).then( () => {
-                  this.router.navigate(['/app/admin/orderslist']);
-                });
-      },
-      (rej) => {
-          Swal({
-            title: 'Payment Charge Failed',
-            text: 'We are having trouble charging for the order ' + this.orderId + ' using the selected payment type. Please try again',
-            type: 'error'
-          }).then( () => {})
-          this.errorCB.apply(this, [rej])
-        });
+    this.showSpinner = true;
+
+    this.genericService
+        .postPaymentsCharge(this.paymentsChargeData)
+        .subscribe( (res) => {
+              this.showSpinner = false;
+              Swal({
+                title: 'Payment Successfully Charged',
+                text: 'Your payment for the order ' + this.orderId + ' was successfully charged',
+                type: 'success'
+              }).then( () => {
+                this.router.navigate(['/app/order/orders']);
+              });
+            },
+            (rej) => {
+              this.showSpinner = false;
+              Swal({
+                title: 'Payment Charge Failed',
+                text: 'We are having trouble charging for the order ' + this.orderId + ' using the selected payment type. Please try again',
+                type: 'error'
+              }).then( () => {})
+              this.errorCB.apply(this, [rej])
+            });
   }
+
+
+
 }

@@ -12,6 +12,17 @@ export class BaseService {
   POST_PAYMENTS_CHARGE_ENDPOINT = '/payments/charge';
   ADMIN_REPORT = '/admin/report';
   ADMIN_REPORT_DOWNLOAD = "/admin/report/download";
+  PUT_DEFAULT_PAYMENTS_METHOD = '/payments/methods/default';
+  GET_ORDERS_ENDPOINT = '/orders'; //'/orders'
+  GET_USERS_ENDPOINT = '/users'; //'/orders'
+
+  POST_RETRY_CHARGE_ENDPOINT = '/retry-charge';
+  POST_REGENERATE_RECEIPT_ENDPOINT = '/orders/regenerate-receipt';
+  POST_REPROCESS_ENDPOINT = '/reprocess';
+  POST_RECALCULATE_ENDPOINT = '/orders/recalculate';
+  POST_ORDERS_RECEIPT_DOWNLOAD_ENDPOINT = '/orders/receipt/download'
+  postOrdersProcessedReportDownload = "/admin/report/download";
+  POST_JOB_REPORT_EXECUTE = "/reports/admin/report";
 
   LOGIN_URL = this.BASE_URL + '/v4/login';
 

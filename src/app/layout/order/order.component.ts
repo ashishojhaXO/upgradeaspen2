@@ -5,7 +5,7 @@
  * Date: 2019-02-27 14:54:37
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
@@ -15,6 +15,7 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 // import { OktaAuthService } from '../../../services/okta.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import Swal from 'sweetalert2';
+import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 
 @Component({
   selector: 'app-order',
@@ -34,7 +35,8 @@ export class OrderComponent implements OnInit  {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
-    isDownload: true,
+    isDownloadAsCsv: true,
+    isDownloadOption: false,
     isRowHighlight: false,
     isRowSelection: {
       isMultiple : false
@@ -48,7 +50,7 @@ export class OrderComponent implements OnInit  {
   externalAuth: any;
   showSpinner: boolean;
   widget: any;
-  isExistingOrder = false;
+  existingOrder: any;
   dataFieldConfiguration = [];
   templates = [];
   template = '';
@@ -58,14 +60,27 @@ export class OrderComponent implements OnInit  {
   public form: FormGroup;
   formAttribute: any;
   dataRowUpdated = false;
+  dataRowUpdatedLen = 0;
   minDate = new Date();
-
+  orderId: any;
+  lineItemId: any;
   dateOptions = {
     format: "YYYY-MM-DD",
     showClear: true
   };
   selectedRow: any;
-  originalResponseObj : any;
+  originalResponseObj: any;
+  paymentReceived: any;
+  isOrderExtend: boolean;
+  select2Options = {
+        placeholder: { id: '', text: 'Select an option' }
+  };
+
+  // gridDataResult: Object[] = new Array(Object);
+  gridDataResult: Object[] = [];
+
+  @ViewChild ( AppDataTable2Component )
+  private appDataTable2Component : AppDataTable2Component;
 
   constructor(
     // private okta: OktaAuthService,
@@ -86,17 +101,84 @@ export class OrderComponent implements OnInit  {
 
     this.route.params.subscribe(params => {
       if (params['id']) {
-        this.isExistingOrder = true;
+        this.searchDateRequest(params['id'], params['lineItemId']);
+        // if(this.templates.length) {
+        //   this.template = '41';
+        //   this.searchTemplateDetails(this.template);
+        // }
       }
     });
+  }
+
+  extractOrderDetails(id, lineItemId = null) {
+    this.getOrderDetails(id).subscribe(
+        response => {
+
+          if(lineItemId) {
+            this.isOrderExtend = true;
+          }
+          this.showSpinner = false;
+          this.orderId = id;
+          if (response.orders && response.orders.length && response.orders[0].order && response.orders[0].order.temp_id) {
+            this.existingOrder = response.orders[0];
+            this.template = response.orders[0].order.temp_id;
+
+            if (this.isOrderExtend) {
+              this.existingOrder.lineItems[0]['additional_budget'] = 0;
+            }
+
+            this.searchTemplateDetails(this.template, this.existingOrder, lineItemId);
+          }
+        },
+        err => {
+          if(err.status === 401) {
+            if(localStorage.getItem('accessToken')) {
+              console.log("ord no okt if")
+              // this.widget.tokenManager.refresh('accessToken')
+              //     .then(function (newToken) {
+              //       localStorage.setItem('accessToken', newToken);
+              //       this.showSpinner = false;
+              //       this.searchTemplates();
+              //     })
+              //     .catch(function (err) {
+              //       console.log('error >>')
+              //       console.log(err);
+              //     });
+            } else {
+              console.log("ord no okt else")
+              // this.widget.signOut(() => {
+              //   localStorage.removeItem('accessToken');
+              //   window.location.href = '/login';
+              // });
+            }
+          } else {
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+
+  getOrderDetails(id) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken;
+    }
+    const data = JSON.stringify({order_id: id});
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/orders/list';
+    return this.http
+        .post(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   searchTemplates() {
     this.getTemplates().subscribe(
         response => {
-          console.log('response >>')
-          console.log(response);
-
+          this.showSpinner = false;
           if (response && response.orgTemplates && response.orgTemplates.templates && response.orgTemplates.templates.length) {
             response.orgTemplates.templates.forEach(function (ele) {
               this.templates.push({
@@ -104,11 +186,6 @@ export class OrderComponent implements OnInit  {
                 text: ele.name
               });
             }, this);
-
-            // if(this.templates.length) {
-            //   this.template = '41';
-            //   this.searchTemplateDetails(this.template);
-            // }
           }
         },
         err => {
@@ -140,14 +217,18 @@ export class OrderComponent implements OnInit  {
     );
   }
 
-  searchTemplateDetails(templateID) {
+  searchTemplateDetails(templateID, existingOrderInfo = null, lineItemId = null) {
     this.templateDefinition = [];
-    this.dataFieldConfiguration = [];
     this.getTemplateDetails(templateID).subscribe(
         response => {
           this.originalResponseObj = response;
+          // Build Order Info
           if (response && response.orderTemplateData && response.orderTemplateData.orderFields && response.orderTemplateData.orderFields.length) {
             response.orderTemplateData.orderFields.forEach(function (ele) {
+              let value =  ele.default_value || '';
+              if (existingOrderInfo && existingOrderInfo.order[ele.name] !== null) {
+                value = existingOrderInfo.order[ele.name];
+              }
 
               const obj: any = {
                 id: ele.id,
@@ -155,12 +236,12 @@ export class OrderComponent implements OnInit  {
                 name: ele.name,
                 type: ele.type,
                 validation : ele.validation,
-                value: ele.default_value || '',
+                value: value,
                 disabled : ele.disable !== 0,
                 size: 40
               };
 
-              if (ele.type === 'list') {
+              if (ele.type === 'list' || ele.type === 'checkbox' || ele.type === 'radio') {
                 obj.options = [];
                 if (ele.attr_list && ele.attr_list.options && ele.attr_list.options.length) {
                   ele.attr_list.options.forEach(function (option) {
@@ -180,7 +261,32 @@ export class OrderComponent implements OnInit  {
 
             this.buildTemplateForm();
 
+            // Build Line Item Info
             if (response && response.orderTemplateData && response.orderTemplateData.lineItems && response.orderTemplateData.lineItems.length) {
+
+              if (this.isOrderExtend) {
+
+                const lineItemBudgetIndex = response.orderTemplateData.lineItems.find(x=> x.name === 'campaign_line_item_budget');
+                if (lineItemBudgetIndex) {
+                  response.orderTemplateData.lineItems.splice(response.orderTemplateData.lineItems.indexOf(lineItemBudgetIndex) + 1, 0 , {
+                    id: 1,
+                    name: 'additional_budget',
+                    label: 'Additional Budget',
+                    type: 'amount',
+                    default_value: null,
+                    attr_list: null,
+                    validation: [],
+                    placeholder: 0,
+                    temp_group: 'lineitem',
+                    request_type: null,
+                    request_url: null,
+                    request_payload: null,
+                    request_mapped_property: null,
+                    request_dependent_property: null
+                  });
+                }
+              }
+
               response.orderTemplateData.lineItems.forEach(function (ele) {
 
                 const obj: any = {
@@ -191,10 +297,14 @@ export class OrderComponent implements OnInit  {
                   type: ele.type,
                   validation : ele.validation,
                   value: ele.default_value || '',
-                  disabled : ele.disable !== 0
+                  disabled : ele.disable !== 0,
+                  request_type: ele.request_type,
+                  request_url: ele.request_url,
+                  request_payload: ele.request_payload,
+                  request_mapped_property: ele.request_mapped_property
                 };
 
-                if (ele.type === 'list') {
+                if (ele.type === 'list' || ele.type === 'checkbox' || ele.type === 'radio') {
                   obj.options = [];
                   if (ele.attr_list && ele.attr_list.options && ele.attr_list.options.length) {
                     ele.attr_list.options.forEach(function (option) {
@@ -214,44 +324,224 @@ export class OrderComponent implements OnInit  {
             }
 
             if (this.dataFieldConfiguration.length) {
-              this.buildLineItem(this.dataFieldConfiguration);
+              this.buildLineItem(this.dataFieldConfiguration, existingOrderInfo, lineItemId);
+            }
+
+            // Perform API Lookup order field configuration
+              response.orderTemplateData.orderFields.forEach(function (ele) {
+                  if (ele.validation && ele.validation.indexOf('apiLookup') !== -1) {
+                      this.performRealApiLookUpForValue(ele, this.data.controls, null).subscribe(
+                          responseLookup => {
+                              if(ele.request_mapped_property) {
+                                  if (ele.type === 'list') {
+
+                                      if( Object.prototype.toString.call( responseLookup[ele.request_mapped_property] ) === '[object Array]' ) {
+                                          (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property].length ? responseLookup[ele.request_mapped_property][0] : '');
+                                          const options = [];
+
+                                          options.push({ id: '', text: 'Empty'});
+
+                                          responseLookup[ele.request_mapped_property].forEach(function (prop) {
+                                              options.push({
+                                                  id: prop, text: prop
+                                              });
+                                          });
+                                          responseLookup[ele.request_mapped_property].forEach(function (prop) {
+                                              this.data.controls.forEach(function (ctrl) {
+                                                  if (ctrl.name === ele.name) {
+                                                      ctrl.options = options;
+                                                  }
+                                              }, this);
+                                          }, this);
+
+                                          if (this.existingOrder) {
+                                             (<FormControl>this.form.controls[ele.name]).setValue(this.existingOrder.order[ele.name]);
+                                          }
+
+                                      } else {
+                                          (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property]);
+                                          this.data.controls.forEach(function (ctrl) {
+                                              if (ctrl.name === ele.name) {
+                                                  ctrl.options = [{
+                                                      id: responseLookup[ele.request_mapped_property], text: responseLookup[ele.request_mapped_property]
+                                                  }];
+                                              }
+                                          }, this);
+                                      }
+                                  } else {
+                                      (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property]);
+                                  }
+                              }
+                          },err => {
+                              if(err.status === 401) {
+                                  // let self = this;
+                                  // this.widget.refreshElseSignout(
+                                  //     this,
+                                  //     err,
+                                  //     self.searchDateRequest.bind(self, orderID),
+                                  // );
+
+                              } else {
+                                  this.data.controls.forEach(function (ctrl) {
+                                      if (ctrl.name === ele.name) {
+                                          ctrl.options = [];
+                                      }
+                                  }, this);
+                              }
+                          });
+                  }
+              }, this);
+
+            // Perform API Lookup for line item configuration
+            if(!this.existingOrder) {
+              this.dataFieldConfiguration.forEach(function (lineItem) {
+                if (lineItem.validation && lineItem.validation.indexOf('apiLookup') !== -1) {
+                  this.performRealApiLookUpForValue(lineItem, null).subscribe(
+                      responseLookup => {
+                        if(lineItem.request_mapped_property) {
+                          if (lineItem.type === 'list') {
+                            if( Object.prototype.toString.call( responseLookup[lineItem.request_mapped_property] ) === '[object Array]' ) {
+                              lineItem.value =  responseLookup[lineItem.request_mapped_property].length ? responseLookup[lineItem.request_mapped_property][0] : ''
+                              const options = [];
+                              responseLookup[lineItem.request_mapped_property].forEach(function (prop) {
+                                options.push({
+                                  key: prop, text: prop
+                                });
+                              });
+                              lineItem.options = options;
+                            } else {
+                              lineItem.value = lineItem.default_value = responseLookup[lineItem.request_mapped_property];
+                              lineItem.options = [{ key: responseLookup[lineItem.request_mapped_property], text: responseLookup[lineItem.request_mapped_property]}];
+                            }
+                          } else {
+                            lineItem.value =  responseLookup[lineItem.request_mapped_property];
+                          }
+                        }
+                      },err => {
+                          if(err.status === 401) {
+                              // let self = this;
+                              // this.widget.refreshElseSignout(
+                              //     this,
+                              //     err,
+                              //     self.searchDateRequest.bind(self, orderID),
+                              // );
+
+                          } else {
+                              lineItem.options = [];
+                          }
+                      });
+                }
+              }, this);
             }
 
           } else {
             this.buildTemplateForm();
-            this.buildLineItem(this.dataFieldConfiguration);
+            this.buildLineItem(this.dataFieldConfiguration, existingOrderInfo, lineItemId);
+
+            // Perform API Lookup for line item configuration
+            if (!this.existingOrder) {
+              this.dataFieldConfiguration.forEach(function (lineItem) {
+                if (lineItem.validation && lineItem.validation.indexOf('apiLookup') !== -1) {
+                  this.performRealApiLookUpForValue(lineItem, null).subscribe(
+                      responseLookup => {
+                        if(lineItem.request_mapped_property) {
+                          if (lineItem.type === 'list') {
+                            if( Object.prototype.toString.call( responseLookup[lineItem.request_mapped_property] ) === '[object Array]' ) {
+                              lineItem.value =  responseLookup[lineItem.request_mapped_property].length ? responseLookup[lineItem.request_mapped_property][0] : ''
+                              const options = [];
+                              responseLookup[lineItem.request_mapped_property].forEach(function (prop) {
+                                options.push({
+                                  key: prop, text: prop
+                                });
+                              });
+                              lineItem.options = options;
+                            } else {
+                              lineItem.value = lineItem.default_value = responseLookup[lineItem.request_mapped_property];
+                              lineItem.options = [{ key: responseLookup[lineItem.request_mapped_property], text: responseLookup[lineItem.request_mapped_property]}];
+                            }
+                          } else {
+                            lineItem.value =  responseLookup[lineItem.request_mapped_property];
+                          }
+                        }
+                      },err => {
+                        if (err.status === 401) {
+                            // let self = this;
+                            // this.widget.refreshElseSignout(
+                            //     this,
+                            //     err,
+                            //     self.searchDateRequest.bind(self, orderID),
+                            // );
+                        } else {
+                            lineItem.options = [];
+                        }
+                    });
+                }
+              }, this);
+            }
           }
-
-
-          console.log('this.dataFieldConfiguration');
-          console.log(this.dataFieldConfiguration);
-
         },
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.getTemplateDetails(templateID);
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.getTemplateDetails.bind(self, templateID)
+            );
           } else {
             this.showSpinner = false;
           }
         }
     );
+  }
+
+  searchDateRequest(orderID, lineItemId) {
+
+    console.log('lineItemId >>>>@@@')
+    console.log(lineItemId);
+
+    this.lineItemId = lineItemId;
+    let self = this;
+    this.searchDate(orderID).subscribe(
+        response => {
+          console.log('payment response >>')
+          this.paymentReceived = !!response.data.order.payment_received_date;
+          this.extractOrderDetails(orderID, lineItemId);
+        },
+        err => {
+          if(err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+                this,
+                err,
+                self.searchDateRequest.bind(self, orderID),
+            );
+
+          } else {
+          }
+        }
+    );
+  }
+
+  searchDate(orderID) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    const data: any = {
+      order_id : orderID
+    };
+    var url = this.api_fs.api + '/api/orders/dates' ;
+    return this.http
+        .post(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   getTemplates() {
@@ -293,17 +583,76 @@ export class OrderComponent implements OnInit  {
         }).share();
   }
 
+  performRealApiLookUpForValue(lineItem, formControls, dependentOn = null) {
+    const requestType =  lineItem.request_type;
+    let  requestUrl = lineItem.request_url;
+    const requestPayload = lineItem.request_payload;
+
+    if (typeof lineItem.request_dependent_property === 'string' ) {
+        if (lineItem.request_dependent_property.indexOf(',') != -1) {
+            lineItem.request_dependent_property = lineItem.request_dependent_property.split(',');
+        } else {
+            lineItem.request_dependent_property = [lineItem.request_dependent_property];
+        }
+    }
+
+    const  requestDependentProperty = lineItem.request_dependent_property;
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    };
+
+    if (requestDependentProperty && requestDependentProperty.length && ((formControls[dependentOn] && formControls[dependentOn].value && formControls[dependentOn].value !== -1) || (dependentOn === null))) {
+
+            if (requestType.toLowerCase() === 'get') {
+
+                let queryParams = '?';
+                requestDependentProperty.forEach(function (prop, index) {
+                    if (prop === lineItem.name) {
+                        (<FormControl>this.form.controls[prop]).setValue(null);
+                    }
+                    queryParams += formControls[prop] && formControls[prop].value && formControls[prop].value !== -1 ? (prop + '=' + formControls[prop].value) : prop;
+                    if (index !== (requestDependentProperty.length -1 )) {
+                        queryParams += '&';
+                    }
+                }, this);
+
+                requestUrl += queryParams;
+
+            } else if (requestType.toLowerCase() === 'post') {
+                requestPayload[lineItem.name] = null;
+            }
+    }
+
+    const data = requestPayload ? requestPayload : {};
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    if(requestType === 'post') {
+      return this.http
+          .post(this.api_fs.api + requestUrl, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    } else if (requestType === 'get') {
+      return this.http
+          .get(this.api_fs.api + requestUrl, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    }
+  }
+
   addLineItem() {
 
-    console.log('__this.dataObject.gridData.result >>')
-    console.log(this.dataObject.gridData.result);
+    // this.dataRowUpdated = false;
 
-    console.log('__this.dataFieldConfiguration >')
-    console.log(this.dataFieldConfiguration);
-
-    this.dataRowUpdated = false;
     const __this = this;
-    setTimeout(function () {
+
+    // setTimeout(function () {
+
       const dataObj = {};
       __this.dataFieldConfiguration.forEach(function (conf) {
 
@@ -317,19 +666,32 @@ export class OrderComponent implements OnInit  {
       console.log('dataObj >>')
       console.log(dataObj);
 
-      __this.dataObject.gridData.result.push(dataObj);
-      __this.dataRowUpdated = true;
-    }, 100);
+    // this.gridDataResult.push(dataObj);
+    // this.dataRowUpdated = false;
+    // __this.dataObject.gridData.result = this.gridDataResult;
+    // __this.dataRowUpdated = true;
+
+    this.dataObject.gridData.result.push(dataObj);
+    this.dataRowUpdatedLen = this.dataObject.gridData.result.length;
+
+      // this.appDataTable2Component.table.row.add(dataObj);
+
+      // __this.dataRowUpdated = true;
+
+    // }, 100);
+
+    // this.appDataTable2Component.table.row.add(dataObj).draw(false);
+
   }
 
   removeLineItem() {
     if(this.selectedRow) {
-      this.dataRowUpdated = false;
+      // this.dataRowUpdated = false;
       const __this = this;
-      setTimeout(function () {
+      // setTimeout(function () {
         __this.dataObject.gridData.result.splice(__this.selectedRow.rowIndex, 1);
-        __this.dataRowUpdated = true;
-      }, 100);
+        this.dataRowUpdatedLen = this.dataObject.gridData.result.length;
+      // }, 100);
     }
   }
 
@@ -340,9 +702,95 @@ export class OrderComponent implements OnInit  {
     }
   }
 
-  OnSelectValueChange(e, name) {
-    if (e.value && e.value !== this.FormModel.attributes[name].value) {
-      (<FormControl>this.form.controls[name]).setValue(e.value);
+  OnSelectValueChange(e, name, def) {
+      console.log('e.value >>')
+      console.log(e.value);
+
+      console.log('this.FormModel.attributes[name].value >>')
+      console.log(this.FormModel.attributes[name].value)
+
+    if (e.value !== this.FormModel.attributes[name].value) {
+        if (e.value) {
+            (<FormControl>this.form.controls[name]).setValue(e.value);
+        }
+        const dependOnFields = this.originalResponseObj.orderTemplateData.orderFields.filter(function (field) {
+            return field.request_dependent_property && field.name !== def.name && field.request_dependent_property.indexOf(def.name) !== -1;
+        });
+
+        console.log('def >>')
+        console.log(def);
+
+        console.log('dependOnFields >>>')
+        console.log(dependOnFields);
+
+        if (dependOnFields.length) {
+            dependOnFields.forEach(function (ele) {
+                this.performRealApiLookUpForValue(ele, this.form.controls, name).subscribe(
+                    responseLookup => {
+                        if(ele.request_mapped_property) {
+                            if (ele.type === 'list') {
+                                if( Object.prototype.toString.call( responseLookup[ele.request_mapped_property] ) === '[object Array]' ) {
+                                    (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property].length ? responseLookup[ele.request_mapped_property][0] : '');
+                                    const options = [];
+
+                                    options.push({ id: '', text: 'Empty'});
+                                    responseLookup[ele.request_mapped_property].forEach(function (prop) {
+                                        options.push({
+                                            id: prop, text: prop
+                                        });
+                                    });
+                                    responseLookup[ele.request_mapped_property].forEach(function (prop) {
+                                        this.data.controls.forEach(function (ctrl) {
+                                            if (ctrl.name === ele.name) {
+                                                ctrl.options = options;
+                                                console.log('this.form.controls[ele.name] >>>')
+                                                console.log(this.form.controls[ele.name].value)
+
+                                                console.log('this.originalResponseObj.orderTemplateData.orderFields[ele.name] >>')
+                                                console.log(this.originalResponseObj.orderTemplateData.orderFields);
+                                            }
+                                        }, this);
+                                    }, this);
+
+                                    if (this.existingOrder && !this.originalResponseObj.orderTemplateData.orderFields.find(x=> x.name === ele.name).valueExtracted) {
+                                        (<FormControl>this.form.controls[ele.name]).setValue(this.existingOrder.order[ele.name]);
+                                       // this.FormModel.attributes[name].value = this.existingOrder.order[ele.name];
+                                        this.originalResponseObj.orderTemplateData.orderFields.find(x=> x.name === ele.name).valueExtracted = true;
+                                    }
+
+                                } else {
+                                    (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property]);
+                                    this.data.controls.forEach(function (ctrl) {
+                                        if (ctrl.name === ele.name) {
+                                            ctrl.options = [{
+                                                id: responseLookup[ele.request_mapped_property], text: responseLookup[ele.request_mapped_property]
+                                            }];
+                                        }
+                                    }, this);
+                                }
+                            } else {
+                                (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property]);
+                            }
+                        }
+                    },err => {
+                        if(err.status === 401) {
+                            // let self = this;
+                            // this.widget.refreshElseSignout(
+                            //     this,
+                            //     err,
+                            //     self.searchDateRequest.bind(self, orderID),
+                            // );
+
+                        } else {
+                            this.data.controls.forEach(function (ctrl) {
+                                if (ctrl.name === ele.name) {
+                                    ctrl.options = [];
+                                }
+                            }, this);
+                        }
+                    });
+            }, this);
+        }
     }
   }
 
@@ -362,9 +810,6 @@ export class OrderComponent implements OnInit  {
       attributes: attributes
     };
 
-    console.log('this.data.controls >>')
-    console.log(this.data.controls);
-
     this.form = this.formAttribute.group(group);
     this.data.controls.forEach(function(item) {
       this.FormModel.attributes[item.name] = this.form.controls[item.name];
@@ -373,16 +818,15 @@ export class OrderComponent implements OnInit  {
     }, this);
   }
 
-  buildLineItem(lineItemDef) {
+  buildLineItem(lineItemDef, existingOrderInfo = null, lineItemId = null) {
+
     this.dataObject = {};
     this.gridData = {};
     this.gridData['result'] = [];
     const headers = [];
+    const lineItemRows = [];
 
     lineItemDef.forEach(function (key) {
-
-      console.log('key >>')
-      console.log(key);
 
       headers.push({
         key: key.name,
@@ -396,114 +840,52 @@ export class OrderComponent implements OnInit  {
       });
     });
 
-    // const dataObj = {};
-    // lineItemDef.forEach(function (conf) {
-    //   dataObj[conf.name] = '10/01/2019';
-    // });
+    if (existingOrderInfo && existingOrderInfo.lineItems && existingOrderInfo.lineItems.length) {
+
+      console.log('existingOrderInfo.lineItems >>')
+      console.log(existingOrderInfo.lineItems);
+
+
+      existingOrderInfo.lineItems.forEach(function (ele, index) {
+        const obj: any = {};
+        lineItemDef.forEach(function (line) {
+          if (ele[line.name] !== null) {
+            if (lineItemId) {
+              obj.suppliedId = lineItemId;
+            }
+            obj.id = ele.id;
+            obj[line.name] = ele[line.name] && ele[line.name].toString().indexOf('T00:00:00.000Z') !== -1 ? ele[line.name].split('T')[0] : ele[line.name];
+          }
+        });
+        lineItemRows.push(obj);
+      }, this);
+    }
 
     this.gridData['headers'] = headers;
     this.gridData['options'] = this.options[0];
-    // this.gridData['result'] = [dataObj];
+    if (lineItemRows.length) {
+      this.gridData['result'] = lineItemRows;
+    }
     this.dashboard = 'orderLineItem';
     this.dataObject.gridData = this.gridData;
+    this.dataObject.paymentReceived = this.paymentReceived;
   }
 
-  searchDataRequest() {
-    return this.searchData().subscribe(
-        response => {
-          if (response) {
-            if (response) {
-              this.populateDataTable(response, true);
-              this.showSpinner = false;
-            }
-          }
-        },
-        err => {
+  onCheckItem(event, item, itemValue) {
 
-          if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchDataRequest();
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
-          } else {
-            this.showSpinner = false;
-          }
-        }
-    );
-  }
+    const value = typeof item.value === 'string' ? [item.value] : item.value;
 
-  searchData() {
-    const AccessToken: any = localStorage.getItem('accessToken');
-    let token = '';
-    if (AccessToken) {
-      // token = AccessToken.accessToken;
-      token = AccessToken;
-    }
-    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
-    const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/orders/line-items';
-    return this.http
-        .get(url, options)
-        .map(res => {
-          return res.json();
-        }).share();
-  }
-
-  populateDataTable(response, initialLoad) {
-
-    this.dataObject = {};
-    const tableData = response;
-    this.gridData = {};
-    this.gridData['result'] = [];
-    const headers = [];
-
-    console.log('tableData >>>')
-    console.log(tableData);
-
-    if (tableData.length) {
-      const keys = Object.keys(tableData[0]);
-      for (let i = 0; i < keys.length; i++) {
-        headers.push({
-          key: keys[i],
-          title: keys[i].replace(/_/g,' ').toUpperCase(),
-          data: keys[i],
-          isFilterRequired: true,
-          isCheckbox: false,
-          class: 'nocolvis',
-          editButton: false,
-          width: '150'
-        });
+    if (event.target.checked) {
+      if (value.indexOf(itemValue) === -1) {
+        value.push(itemValue);
       }
+    } else {
+      value.splice(value.indexOf(itemValue), 1);
     }
 
-    this.gridData['result'] = tableData;
-    this.gridData['headers'] = headers;
-    this.gridData['options'] = this.options[0];
-    this.gridData.columnsToColor = [
-      { index: 11, name: 'MERCHANT PROCESSING FEE', color: 'rgb(47,132,234,0.2)'},
-      { index: 15, name: 'LINE ITEM MEDIA BUDGET', color: 'rgb(47,132,234,0.2)'},
-      { index: 16, name: 'KENSHOO FEE', color: 'rgb(47,132,234,0.2)'},
-      { index: 17, name: 'THD FEE', color: 'rgb(47,132,234,0.2)'},
-      { index: 10, name: 'LINE ITEM TOTAL BUDGET', color: 'rgb(47,132,234,0.4)'}
-    ];
-    this.dashboard = 'paymentGrid';
-    this.dataObject.gridData = this.gridData;
-    console.log(this.gridData);
-    this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
-    // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
+    //item.value = value;
+
+    (<FormControl>this.form.controls[item.name]).setValue(value || '');
   }
 
   handleCheckboxSelection(rowObj: any, rowData: any) {
@@ -520,26 +902,46 @@ export class OrderComponent implements OnInit  {
 
   }
 
+  OnCancel() {
+    Swal({
+      title: 'Are you sure you want to cancel the changes?',
+      text: "All unsaved changes would be lost",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+      if (result.value) {
+        this.router.navigate(['/app/order/orders']);
+      }
+    });
+  }
+
   OnSubmit() {
 
     console.log('this.originalResponseObj >>')
     console.log(this.originalResponseObj);
 
+    this.showSpinner = true;
+
     const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
-    const reqObj =  {
-      vendor_id: customerInfo.vendor.vendor_id,
-      template_id: this.originalResponseObj.orderTemplateData.template.template_id,
-      orderDetail: {
+    const reqObj: any = {};
+    if (!this.orderId) {
+      reqObj.vendor_id =  customerInfo.vendor.vendor_id;
+      reqObj.org_id = customerInfo.org.org_id;
+      reqObj.template_id = this.originalResponseObj.orderTemplateData.template.template_id;
+    };
+    reqObj.orderDetail = {
         orderFields : [],
         lineItems: []
-      }
-    }
+    };
 
     this.data.controls.forEach(function (ele, index) {
       const corr = this.form.controls[ele.name];
       if (corr) {
         if (ele.type === 'date' && this.form.controls[ele.name].value) {
-          ele.value = this.formatDate(new Date(this.form.controls[ele.name].value._d));
+          ele.value = this.form.controls[ele.name].value._d ? this.formatDate(new Date(this.form.controls[ele.name].value._d)) : this.formatDate(new Date(this.form.controls[ele.name].value));
         } else {
           ele.value = corr.value;
         }
@@ -552,13 +954,19 @@ export class OrderComponent implements OnInit  {
       });
     }, this);
 
-    console.log('reqObj >>')
-    console.log(reqObj);
+    const lineItems = [];
 
+    let extendedLineItemIndex = -1;
     if (this.dataObject.gridData.result.length && this.originalResponseObj.orderTemplateData.lineItems && this.originalResponseObj.orderTemplateData.lineItems.length) {
       this.dataObject.gridData.result.forEach(function (ele, index) {
+
+        if (ele.suppliedId == ele.id && this.lineItemId) {
+          extendedLineItemIndex = index;
+        }
+
         const objArr = [];
         for (const prop in ele) {
+
           const obj: any = {};
           const corr = this.originalResponseObj.orderTemplateData.lineItems.find(x=> x.name === prop);
           if (corr) {
@@ -566,33 +974,100 @@ export class OrderComponent implements OnInit  {
             obj.field_value = ele[prop];
             obj.name = corr.name;
           }
-          objArr.push(obj);
+
+          if (obj.field_id) {
+            objArr.push(obj);
+          }
         }
-        reqObj.orderDetail.lineItems.push(objArr);
+
+        lineItems.push(objArr);
       }, this);
     }
 
-    this.submitData(reqObj).subscribe(
-        response => {
-          if (response) {
+    if (this.orderId) {
+      lineItems.forEach(function (lItem, index) {
+        const obj: any = {};
+        obj.lineItemFields = lItem;
+        obj.line_item_id = this.existingOrder.lineItems[index] ? this.existingOrder.lineItems[index].id : null;
+        reqObj.orderDetail.lineItems.push(obj);
+      }, this);
+    } else {
+      reqObj.orderDetail.lineItems = lineItems;
+    }
+
+    if (this.orderId) {
+      reqObj.order_id = this.orderId;
+    }
+
+    if (this.isOrderExtend && extendedLineItemIndex > -1) {
+
+      const dataObj: any = {};
+      dataObj.order_id = this.orderId;
+      dataObj.line_item_id = this.lineItemId;
+
+      reqObj.orderDetail.lineItems[extendedLineItemIndex].lineItemFields.forEach(function (item) {
+        if (item.name && item.name !== 'line_item_id') {
+          if (item.name === 'end_date') {
+            dataObj['extended_end_date'] = item.field_value;
+          } else if (item.name === 'additional_budget') {
+            dataObj['extended_item_budget'] = item.field_value;
+          } else {
+            dataObj[item.name] = item.field_value;
+          }
+        }
+      });
+
+      console.log('dataObj >>>')
+      console.log(dataObj);
+
+      this.submitLineItemExtensionData(dataObj).subscribe(
+          response => {
+            if (response) {
+              this.showSpinner = false;
+              Swal({
+                title: 'Line Item Extended',
+                text: 'The Line Item ' + this.lineItemId + ' was successfully extended',
+                type: 'success'
+              }).then(() => {
+                // this.router.navigate(['/app/targetAud/']);
+                this.router.navigate(['/app/order/orders']);
+              });
+            }
+          },
+          err => {
+            this.showSpinner = false;
             Swal({
-              title: 'Order Successfully Submitted',
-              text: 'Your order was successfully submitted. You will now be directed to payment page where you will be able to choose from any existing payment methods on file or can add a new payment method',
-              type: 'success'
-            }).then(() => {
-             // this.router.navigate(['/app/targetAud/']);
-              this.router.navigate(['/app/orderPayment/' + response.id]);
+              title: 'Order ' + (this.orderId ? 'Update' : 'Submission') + ' Failed',
+              html: 'An error occurred while ' + (this.orderId ? 'updating' : 'submitting') + ' the order. Please try again',
+              type: 'error'
             });
           }
-        },
-        err => {
-          Swal({
-            title: 'Order Submission Failed',
-            html: 'An error occurred while submitting the order. Please try again',
-            type: 'error'
-          });
-        }
-    );
+      );
+    } else {
+      this.submitData(reqObj).subscribe(
+          response => {
+            if (response) {
+              this.showSpinner = false;
+              Swal({
+                title: 'Order Successfully ' + (this.orderId ? 'Updated' : 'Submitted'),
+                text: 'Your order was successfully ' + (this.orderId ? 'updated' : 'submitted') + '.You will now be directed to payment page where you will be able to choose from any existing payment methods on file or can add a new payment method',
+                type: 'success'
+              }).then(() => {
+                // this.router.navigate(['/app/targetAud/']);
+                this.router.navigate(['/app/orderPayment/' + response.order_id]);
+              });
+            }
+          },
+          err => {
+            this.showSpinner = false;
+            Swal({
+              title: 'Order ' + (this.orderId ? 'Update' : 'Submission') + ' Failed',
+              html: 'An error occurred while ' + (this.orderId ? 'updating' : 'submitting') + ' the order. Please try again',
+              type: 'error'
+            });
+          }
+      );
+    }
   }
 
   submitData(reqObj) {
@@ -606,6 +1081,32 @@ export class OrderComponent implements OnInit  {
     const options = new RequestOptions({headers: headers});
     const data = JSON.stringify(reqObj);
     const url = this.api_fs.api + '/api/orders/create';
+    if (reqObj.order_id) {
+      return this.http
+          .put(url, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    } else {
+      return this.http
+          .post(url, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    }
+  }
+
+  submitLineItemExtensionData(reqObj) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    const data = JSON.stringify(reqObj);
+    const url = this.api_fs.api + '/api/orders/extend';
     return this.http
         .post(url, data, options)
         .map(res => {
@@ -625,5 +1126,9 @@ export class OrderComponent implements OnInit  {
       day = '0' + day;
 
     return [year, month, day].join('-');
+  }
+
+  getSelect2Value(def) {
+      return (this.existingOrder && !this.originalResponseObj.orderTemplateData.orderFields.find(x=> x.name === def.name).valueExtracted ? this.FormModel.attributes[def.name].value : def.value);
   }
 }

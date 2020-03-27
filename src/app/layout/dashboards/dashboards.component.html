@@ -73,22 +73,24 @@
     </div>
   </div>
   <div *ngIf="chartConfig.data.length">
-      <app-charts [config]="chartConfig"></app-charts>
+    <a class="btn btn-success pull-right mb-1" (click)="exportAll()" title="Export All"><i class="fa fa-fw fa-download" aria-hidden="true"></i>Export All</a>
+    <div class="clear-fix"></div>
+    <app-charts #chart [config]="chartConfig"></app-charts>
   </div>
   <div class="page-header" style="padding-top: 1px" *ngIf="!chartConfig.data.length">
-    <div style="height: 200px;background-color: #ffff; width: 100%;margin-top: 60px;padding: 17% 42%;">There is no data to plot.</div>
+    <div style="background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to plot.</div>
   </div>
   <div>
     <div class="gridOverflow" *ngIf="dataObject.isDataAvailable">
       <div style="padding: 20px">
-        <app-data-table2 [dataObject]="dataObject" (triggerActions)="this[$event.action]($event)"></app-data-table2>
+        <app-data-table2 #table [dataObject]="dataObject" (triggerActions)="this[$event.action]($event)"></app-data-table2>
       </div>
       <!--<app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height"></app-data-table1>-->
     </div>
     <div class="page-header" *ngIf="!dataObject.isDataAvailable">
-      <div style="height: 200px;background-color: #ffff; width: 100%;margin-top: 60px;padding: 17% 42%;">There is no data to display.</div>
+      <div style="background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to display.</div>
     </div>
   </div>
 </div>
-<app-custom-spinner class="page-spinner" *ngIf="showSpinner"></app-custom-spinner>
+<app-custom-spinner class="page-spinner" *ngIf="showSpinner" [showSpinnerFlag]="showSpinner"></app-custom-spinner>
 

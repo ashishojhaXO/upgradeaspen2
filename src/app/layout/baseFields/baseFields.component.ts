@@ -24,7 +24,6 @@ export class BaseFieldsComponent implements OnInit {
   constructor(private okta: OktaAuthService, private http: Http) { }
 
   ngOnInit() {
-    this.showSpinner = true;
     this.widget = this.okta.getWidget();
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
@@ -32,6 +31,7 @@ export class BaseFieldsComponent implements OnInit {
   }
 
   onSubmitTemplate() {
+    this.showSpinner = true;
     if(this.baseForm.model.attributes.length){
       let baseItems = [];
       this.baseForm.model.attributes.forEach(element => {
@@ -53,10 +53,12 @@ export class BaseFieldsComponent implements OnInit {
   }
 
   createBase(template){
+    let self = this;
     this.createBaseService(template).subscribe(
       response => {
         console.log('response >>')
         console.log(response);
+        this.showSpinner = false;
         if (response && response.status == 200) {
           console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>', response.message);
           Swal({
@@ -68,24 +70,18 @@ export class BaseFieldsComponent implements OnInit {
       },
       err => {
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  localStorage.setItem('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.createBaseService(template);
-                })
-                .catch(function (err) {
-                  console.log('error >>')
-                  console.log(err);
-                });
-          } else {
-            this.widget.signOut(() => {
-              localStorage.removeItem('accessToken');
-              window.location.href = '/login';
-            });
-          }
+          let self = this;
+          this.widget.refreshElseSignout(
+            this,
+            err, 
+            self.createBaseService.bind(self, template) 
+          );
         } else {
+          Swal({
+            title: 'Error',
+            text: err._body ? (err._body.indexOf(':') !== -1 ? err._body.split(':')[1] : err._body) : 'An Error occurred',
+            type: 'error'
+          })
           this.showSpinner = false;
         }
       }

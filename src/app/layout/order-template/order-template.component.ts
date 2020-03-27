@@ -36,7 +36,7 @@ export class OrderTemplateComponent implements OnInit {
 
   ngOnInit() {
     this.showSpinner = true;
-    // this.widget = this.okta.getWidget();
+    this.widget = this.okta.getWidget();
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
 
@@ -65,7 +65,7 @@ export class OrderTemplateComponent implements OnInit {
   getOrganizations(){
     this.getOrganizationService().subscribe(
       response => {
-        console.log('response >>')
+        console.log('getOrgani response >>')
         console.log(response);
         if (response && response.org_list) {
           response.org_list.forEach(function (ele) {
@@ -80,26 +80,12 @@ export class OrderTemplateComponent implements OnInit {
       },
       err => {
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-            console.log("ord-temp no okt if")
-            // this.widget.tokenManager.refresh('accessToken')
-            //     .then(function (newToken) {
-            //       localStorage.setItem('accessToken', newToken);
-            //       this.showSpinner = false;
-            //       this.getOrganizations();
-            //     })
-            //     .catch(function (err) {
-            //       console.log('error >>')
-            //       console.log(err);
-            //     });
-          } else {
-            console.log("ord-temp no okt else")
-            // this.widget.tokenManager.refresh('accessToken')
-            // this.widget.signOut(() => {
-            //   localStorage.removeItem('accessToken');
-            //   window.location.href = '/login';
-            // });
-          }
+          let self = this;
+          this.widget.refreshElseSignout(
+            this,
+            err,
+            self.getOrganizations.bind(self)
+          );
         } else {
           this.showSpinner = false;
         }
@@ -138,10 +124,22 @@ export class OrderTemplateComponent implements OnInit {
         let orderFields = [];
         let lineItems = [];
         this.orderForm.model.attributes.forEach(element => {
-          orderFields.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation']))
+          orderFields.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation', 'request_type', 'request_url', 'request_payload', 'request_mapped_property', 'request_dependent_property' ]))
         });
         this.lineItemForm.model.attributes.forEach(element => {
-          lineItems.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation']))
+          lineItems.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation', 'request_type', 'request_url', 'request_payload', 'request_mapped_property', 'request_dependent_property']))
+        });
+
+        orderFields.forEach(function (order) {
+          if(order.request_dependent_property && order.request_dependent_property.length) {
+            order.request_dependent_property = order.request_dependent_property.join(',');
+          }
+        });
+
+        lineItems.forEach(function (line) {
+          if(line.request_dependent_property && line.request_dependent_property.length) {
+            line.request_dependent_property = line.request_dependent_property.join(',');
+          }
         });
 
         this.templateResponse.orderTemplateData = {
@@ -182,7 +180,6 @@ export class OrderTemplateComponent implements OnInit {
         console.log('response >>')
         console.log(response);
         if (response && response.status == 200) {
-          response.message
           console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>', response.message);
           let status;
           if(this.isPublished){
@@ -205,25 +202,21 @@ export class OrderTemplateComponent implements OnInit {
         }
       },
       err => {
+        console.log('err >>>')
+        console.log(err)
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  localStorage.setItem('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.createTemplateService(template);
-                })
-                .catch(function (err) {
-                  console.log('error >>')
-                  console.log(err);
-                });
-          } else {
-            this.widget.signOut(() => {
-              localStorage.removeItem('accessToken');
-              window.location.href = '/login';
-            });
-          }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.createTemplateService.bind(self, template)
+            );
         } else {
+          Swal({
+            title: 'Error',
+            text: err._body ? (err._body.indexOf(':') !== -1 ? err._body.split(':')[1] : err._body) : 'An Error occurred',
+            type: 'error'
+          })
           this.showSpinner = false;
         }
       }
@@ -266,6 +259,19 @@ export class OrderTemplateComponent implements OnInit {
           console.log('template edit fields', response);
           this.templateField = response.orderTemplateData;
           this.orderFieldsArr = this.templateField.orderFields;
+
+          if (this.orderFieldsArr.length) {
+            this.orderFieldsArr.forEach(function (field) {
+              if (field.request_dependent_property) {
+                if (field.request_dependent_property.indexOf(',') != -1) {
+                  field.request_dependent_property = field.request_dependent_property.split(',');
+                } else {
+                  field.request_dependent_property = [field.request_dependent_property];
+                }
+              }
+            });
+          }
+
           this.lineFieldsArr = this.templateField.lineItems;
           if(this.templateField.template.hasOwnProperty('isPublish')){
             this.isPublished = this.templateField.template.isPublish;
@@ -280,7 +286,7 @@ export class OrderTemplateComponent implements OnInit {
         else{
           this.showSpinner = false;
           Swal({
-            title: 'Error Occured',
+            title: 'Error',
             text: response.message,
             type: 'warning'
           }).then( () => {
@@ -290,25 +296,21 @@ export class OrderTemplateComponent implements OnInit {
         }
       },
       err => {
+        console.log('err >>')
+        console.log(err);
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  localStorage.setItem('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.getTemplateService(templateId);
-                })
-                .catch(function (err) {
-                  console.log('error >>')
-                  console.log(err);
-                });
-          } else {
-            this.widget.signOut(() => {
-              localStorage.removeItem('accessToken');
-              window.location.href = '/login';
-            });
-          }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.getTemplate.bind(self, templateId)
+            );
         } else {
+          Swal({
+            title: 'Error',
+            text: err._body ? (err._body.indexOf(':') !== -1 ? err._body.split(':')[1] : err._body) : 'An Error occurred',
+            type: 'error'
+          })
           this.showSpinner = false;
         }
       }

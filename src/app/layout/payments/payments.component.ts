@@ -38,10 +38,12 @@ export class PaymentsComponent implements OnInit  {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
-    isDownload: true,
+    isDownloadAsCsv: true,
+    isDownloadOption: false,
     isRowSelection: null,
     isPageLength: true,
-    isPagination: true
+    isPagination: true,
+    fixedColumn: 1
   }];
   dashboard: any;
   api_fs: any;
@@ -51,7 +53,7 @@ export class PaymentsComponent implements OnInit  {
   summary = [];
   widget: any;
   paymentForm:FormGroup;
-  newForm: boolean = false;
+  newForm: boolean = true;
   paymentFormNew:FormGroup;
   organizations = [];
   payeeArr = [];
@@ -70,6 +72,7 @@ export class PaymentsComponent implements OnInit  {
   totalPayment: number;
   verifyLineAmount: number;
   verifyLineAmountError: boolean = false;
+  verifyLineItemPartialInputArr: boolean = false;
   statusOptions = [
     {
       id: 'FAILED',
@@ -111,10 +114,9 @@ export class PaymentsComponent implements OnInit  {
   inSearchMode: boolean = false;
   dropList: boolean = false;
   payeeObject: any;
-
-
-
-
+  isRoot: boolean;
+  orgArr: any;
+  orgValue = '';
 
   constructor(private okta: OktaAuthService, private organizationService: OrganizationService, private route: ActivatedRoute, private router: Router, private http: Http) {
     this.paymentForm = new FormGroup({
@@ -128,7 +130,7 @@ export class PaymentsComponent implements OnInit  {
       payeeName: new FormControl('', Validators.required),
       paymentInvoice: new FormControl('', Validators.required),
       payPartialCheck: new FormControl(''),
-      payPartialInput: new FormControl('', [this.checkNegative, this.checkPartialPay(this.totalPayment,false).bind(this)]),
+      payPartialInput: new FormControl('', [this.checkZero, this.checkPartialPay(this.totalPayment,false).bind(this)]),
       lineItemPartialInputArr: new FormArray([]),
       searchcontentInput: new FormControl('')
     })
@@ -147,10 +149,38 @@ export class PaymentsComponent implements OnInit  {
     this.height = '50vh';
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
+
+    const groups = localStorage.getItem('loggedInUserGroup') || '';
+    const grp = JSON.parse(groups);
+    grp.forEach(function (item) {
+      if(item === 'ROOT' || item === 'SUPER_USER') {
+        this.isRoot = true;
+      }
+    }, this);
+
     this.searchDataRequest();
     this.getOrganizations();
+    this.searchOrgRequest();
     console.log(this.selectedStatus);
+    this.paymentFormNew.controls['payPartialCheck'].valueChanges.subscribe(change => {
+      console.log('tick change', change);
+      if(change === false){
+        this.paymentFormNew.controls['payPartialInput'].setValue('');
+        this.verifyLineAmountError = false;
+        this.verifyLineItemPartialInputArr = false;
+        const control = <FormArray>this.paymentFormNew.controls['lineItemPartialInputArr'];
+        for(let i = control.length-1; i >= 0; i--) {
+            control.removeAt(i);
+        }
+      }else if(change){
+        this.getInvoiceItems(this.selectedInvoice);
+      }
+    });
+  }
 
+  orgChange(value) {
+    this.dataObject.isDataAvailable = false;
+    this.searchDataRequest(value);
   }
 
   onSearchChange(e){
@@ -191,6 +221,7 @@ export class PaymentsComponent implements OnInit  {
       tamount: e.total_amount,
       lineItem: e.ap_invoice_line_items
     };
+    this.selectedInvoice = invoices;
     this.getInvoiceItems(invoices);
     const __this = this;
     setTimeout(function () {
@@ -198,8 +229,8 @@ export class PaymentsComponent implements OnInit  {
     }, 100);
 }
 
-  searchDataRequest() {
-    return this.searchData().subscribe(
+  searchDataRequest(org = null) {
+    return this.searchData(org).subscribe(
         response => {
           if (response) {
             console.log('response >>>')
@@ -216,25 +247,13 @@ export class PaymentsComponent implements OnInit  {
           }
         },
         err => {
-
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchDataRequest();
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.searchDataRequest.bind(self, org)
+            );
           } else {
             this.showSpinner = false;
           }
@@ -242,16 +261,16 @@ export class PaymentsComponent implements OnInit  {
     );
   }
 
-  searchData() {
+  searchData(org = null) {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      // token = AccessToken.accessToken;
+      // token = AccessToken;
       token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/payments/transactions';
+    var url = this.api_fs.api + '/api/payments/transactions' + ( this.isRoot ? ('?org_uuid=' + org) : '');
     return this.http
       .get(url, options)
       .map(res => {
@@ -328,16 +347,78 @@ export class PaymentsComponent implements OnInit  {
     this.searchDataRequest();
 
   }
+
+  searchOrgRequest() {
+    return this.searchOrgData().subscribe(
+        response => {
+          if (response && response.data) {
+
+            const orgArr = [];
+            response.data.forEach(function (item) {
+              orgArr.push({
+                id: item.org_uuid,
+                text: item.org_name
+              });
+            });
+
+            this.orgArr = orgArr;
+          }
+        },
+        err => {
+
+          if(err.status === 401) {
+            if(localStorage.getItem('accessToken')) {
+              this.widget.tokenManager.refresh('accessToken')
+                  .then(function (newToken) {
+                    localStorage.setItem('accessToken', newToken);
+                    this.showSpinner = false;
+                    this.searchOrgRequest();
+                  })
+                  .catch(function (err1) {
+                    console.log('error >>')
+                    console.log(err1);
+                  });
+            } else {
+              this.widget.signOut(() => {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/login';
+              });
+            }
+          } else {
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+
+  searchOrgData() {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/orgs';
+    return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
   getOrganizations(){
     this.getAllOrganizations().subscribe(
       response => {
         if(response)
         {
-          if(response.body.data.length > 0)
+          if(response.data.length > 0)
           {
             const organizations = [];
 
-            _.forEach(response.body.data, organization => {
+            _.forEach(response.data, organization => {
 
               organizations.push({
                 id : organization.id,
@@ -354,23 +435,13 @@ export class PaymentsComponent implements OnInit  {
       err => {
 
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  localStorage.setItem('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.getOrganizations();
-                })
-                .catch(function (err1) {
-                  console.log('error >>')
-                  console.log(err1);
-                });
-          } else {
-            this.widget.signOut(() => {
-              localStorage.removeItem('accessToken');
-              window.location.href = '/login';
-            });
-          }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.getOrganizations.bind(self)
+            );
+
         } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
           this.showSpinner = false;
@@ -409,23 +480,13 @@ export class PaymentsComponent implements OnInit  {
       err => {
 
         if(err.status === 401) {
-          if(this.widget.tokenManager.get('accessToken')) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  this.widget.tokenManager.add('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.getPayees();
-                })
-                .catch(function (err1) {
-                  console.log('error >>')
-                  console.log(err1);
-                });
-          } else {
-            this.widget.signOut(() => {
-              this.widget.tokenManager.remove('accessToken');
-              window.location.href = '/login';
-            });
-          }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.getPayees.bind(self)
+            );
+
         } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
           this.showSpinner = false;
@@ -434,10 +495,10 @@ export class PaymentsComponent implements OnInit  {
     );
   }
   getAllPayees(){
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -474,23 +535,12 @@ export class PaymentsComponent implements OnInit  {
       },
       err => {
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  localStorage.setItem('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.getVendors(orgid);
-                })
-                .catch(function (err1) {
-                  console.log('error >>')
-                  console.log(err1);
-                });
-          } else {
-            this.widget.signOut(() => {
-              localStorage.removeItem('accessToken');
-              window.location.href = '/login';
-            });
-          }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.getVendors.bind(self, orgid)
+            );
         } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
           this.showSpinner = false;
@@ -500,10 +550,10 @@ export class PaymentsComponent implements OnInit  {
   }
 
   getFilteredInvoices(match) {
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-        token = AccessToken.accessToken;
+        token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -525,7 +575,7 @@ export class PaymentsComponent implements OnInit  {
     for(let line of this.lineItemPartial){
       //console.log('getInvoiceItems: line',line);
       (<FormArray>this.paymentFormNew.get('lineItemPartialInputArr')).push(
-        new FormControl(null,[this.checkNegative, this.checkPartialPay(line.amount,true)])
+        new FormControl(null,[this.checkZero, this.checkPartialPay(line.amount,true)])
       )
     }
   }
@@ -534,12 +584,12 @@ export class PaymentsComponent implements OnInit  {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      // token = AccessToken.accessToken;
+      // token = AccessToken;
       token = AccessToken;
     }
 
     console.log('AccessToken >>>')
-    console.log(AccessToken.accessToken);
+    console.log(AccessToken);
 
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -555,12 +605,12 @@ export class PaymentsComponent implements OnInit  {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      // token = AccessToken.accessToken;
+      // token = AccessToken;
       token = AccessToken;
     }
 
     console.log('AccessToken >>>')
-    console.log(AccessToken.accessToken);
+    console.log(AccessToken);
 
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -657,23 +707,12 @@ export class PaymentsComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.createTransactionRequest(dataObj);
-                  })
-                  .catch(function (err1) {
-                    console.log('error >>')
-                    console.log(err1);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.createTransactionRequest.bind(self, dataObj)
+            );
           } else {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
             this.showSpinner = false;
@@ -686,7 +725,7 @@ export class PaymentsComponent implements OnInit  {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      // token = AccessToken.accessToken;
+      // token = AccessToken;
       token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
@@ -719,8 +758,8 @@ export class PaymentsComponent implements OnInit  {
     }
   }
 
-  checkNegative(control: FormControl): {[s:string]:boolean} {
-    if(control.value < 0){
+  checkZero(control: FormControl): {[s:string]:boolean} {
+    if(!(+control.value)){
       return {'negativeNumber': true}
     }
   }
@@ -728,7 +767,12 @@ export class PaymentsComponent implements OnInit  {
   newFormSubmit(modalComponent: PopUpModalComponent){
     if(this.paymentFormNew.get('payPartialCheck').value){
       this.verifyLineAmountError = false;
+      this.verifyLineItemPartialInputArr = false;
       const formValue = this.paymentFormNew.value;
+      if(!(+formValue.payPartialInput)){
+        this.verifyLineItemPartialInputArr = true;
+        return false;
+      }
       const lineItemPartial = []
       this.verifyLineAmount = 0;
       for(let i=0; i < this.lineItemPartial.length; i++){
@@ -738,12 +782,18 @@ export class PaymentsComponent implements OnInit  {
           units: this.lineItemPartial[i].units,
           quantity: this.lineItemPartial[i].quantity
         })
+        if(!(+formValue.lineItemPartialInputArr[i])){
+          this.verifyLineItemPartialInputArr = true;
+          return false;
+        }
         this.verifyLineAmount += +formValue.lineItemPartialInputArr[i];
       }
-      if(this.verifyLineAmount != +formValue.payPartialInput){
+      if(this.verifyLineAmount > +formValue.payPartialInput){
         this.verifyLineAmountError = true;
       }else{
+        // setting legacy: true so the payment --> create transaction functionality do not break with invoice functionality
         const formData = {
+          legacy: true,
           payee: this.payeeObject,
           invoice: {
             number: this.lineItemInvoice.text,
@@ -760,12 +810,13 @@ export class PaymentsComponent implements OnInit  {
       for(let i=0; i < this.lineItemPartial.length; i++){
         lineItemPartial.push({
           id : this.lineItemPartial[i].line_item_id,
-          amount : this.lineItemPartial[i].amount,
+          amount : +this.lineItemPartial[i].amount,
           units: this.lineItemPartial[i].units,
           quantity: this.lineItemPartial[i].quantity
         })
       }
       const formData = {
+        legacy: true,
         payee: this.payeeObject,
         invoice: {
           number: this.lineItemInvoice.text,
@@ -818,29 +869,19 @@ export class PaymentsComponent implements OnInit  {
       },
       err => {
         if(err.status === 401) {
-          if(this.widget.tokenManager.get('accessToken')) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  this.widget.tokenManager.add('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.updateApService(formData);
-                })
-                .catch(function (err1) {
-                  console.log('error >>')
-                  console.log(err1);
-                });
-          } else {
-            this.widget.signOut(() => {
-              this.widget.tokenManager.remove('accessToken');
-              window.location.href = '/login';
-            });
-          }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.updateApService.bind(self, formData, modalComponent),
+            );
+
         } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
           swal({
             title: 'Error',
-            text: this.error.message,
-            type: 'warning'
+            text: err._body ? (err._body.indexOf(':') !== -1 ? err._body.split(':')[1] : err._body) : 'An Error occurred',
+            type: 'error'
           });
           console.log(this.error);
           this.showSpinner = false;
@@ -849,10 +890,10 @@ export class PaymentsComponent implements OnInit  {
     );
   }
   updateApService(formData){
-    const AccessToken: any = this.widget.tokenManager.get('accessToken');
+    const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
-      token = AccessToken.accessToken;
+      token = AccessToken;
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
@@ -868,5 +909,10 @@ export class PaymentsComponent implements OnInit  {
     this.clearSearch();
     this.payeeArr = [];
     modalComponent.hide();
+  }
+  reLoad(){
+    this.showSpinner = true;
+    this.dataObject.isDataAvailable = false;
+    this.searchDataRequest();
   }
 }

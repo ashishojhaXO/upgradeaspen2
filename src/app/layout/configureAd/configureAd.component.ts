@@ -33,7 +33,8 @@ export class ConfigureAdComponent implements OnInit  {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
-    isDownload: true,
+    isDownloadAsCsv: true,
+    isDownloadOption: false,
     isRowHighlight: false,
     isRowSelection: {
       isMultiple : false

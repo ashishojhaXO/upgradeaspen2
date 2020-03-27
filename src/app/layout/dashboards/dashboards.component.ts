@@ -5,7 +5,7 @@
  * Date: 2019-02-27 14:54:37
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
@@ -69,13 +69,18 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
-    isDownload: true,
+    isDownloadAsCsv: true,
+    isDownloadOption: false,
     isRowSelection: null,
     isPageLength: true,
-    isPagination: true
+    isPagination: true,
+    fixedColumn: 1
   }];
   dashboard: any;
   widget: any;
+
+  @ViewChild('chart') chartRef;
+  @ViewChild('table') tableRef;
 
   constructor(
     private okta: OktaAuthService,
@@ -292,7 +297,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }
 
   ngOnInit() {
-
     this.widget = this.okta.getWidget();
 
     this.showSpinner = true;
@@ -305,6 +309,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     this.dashboardConfig.filterProps = JSON.parse(JSON.stringify(this.defaultFilters));
 
     if (this.dashboardType === 'pacing' || this.dashboardType === 'spend') {
+      let self = this;
       this
         .getFilter(this.dashboardType)
         .then(
@@ -320,19 +325,40 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               this.getSeedDashboard()
                   .then(
                       response2 => {
-                        console.log("gSD resp2")
+                        response2 = response2.json();
                         this.showSpinner = false;
                         this.populateChart(response2);
                         this.populateDataTable(response2);
-                      }, rej => {
-                        console.log("gSD rej", rej)
+                      }, error => {
+                        if(error.status === 401) {
+                          let self = this;
+                          this.widget.refreshElseSignout(
+                            this,
+                            error,
+                            // self.searchDataRequest.bind(self),
+                            self.getSeedDashboard.bind(self)
+                          );
+
+                        } else {
+                          this.showSpinner = false;
+                        }
 
                       });
             }
           },
           error => {
-            console.log("error: ", error)
-            this.showSpinner = false;
+
+            if(error.status === 401) {
+              let self = this;
+              this.widget.refreshElseSignout(
+                this,
+                error,
+                // self.searchDataRequest.bind(self),
+                self.getFilter.bind(self)
+              );
+            } else {
+              this.showSpinner = false;
+            }
           });
 
       const defaultObj: any = {};
@@ -377,22 +403,24 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       clientCode: 'homd'
     };
 
+    this.showSpinner = false;
 
     const dataObj = JSON.stringify(obj);
     return this.http.post(
-      this.api_fs.api + '/api/reports/org/homd/seed-dashboard/v1', 
-      dataObj, 
+      this.api_fs.api + '/api/reports/org/homd/seed-dashboard/v1',
+      dataObj,
       options
     ).toPromise()
-        .then(
-          data => data.json(), 
-          rej => {
-            console.log("inside gSD: ", rej)
-          }
-        )
-        .catch( rej => {
-          console.log("CATCH REj", rej)
-        });
+        // .then(
+        //   data => data.json(),
+        //   rej => {
+        //     console.log("inside gSD: ", rej)
+        //     this.showSpinner = false;
+        //   }
+        // )
+        // .catch( rej => {
+        //   console.log("CATCH REj", rej)
+        // });
   }
 
   populateFilters(filterResponse, seedResponse) {
@@ -870,6 +898,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }
 
   getSearchDataRequest(dataObj) {
+    let self = this;
     this.showSpinner = true;
     this.getSearchData(dataObj).subscribe(
         response => {
@@ -891,27 +920,14 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         },
         err => {
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.refresh('accessToken')
-                  // this.refreshToken()
-                  .then(function (res: any) {
-                    const newToken = res.newToken;
 
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.getSearchDataRequest(dataObj);
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
-            } else {
-              console.log("Token Sign OUt")
-              // this.widget.signOut(() => {
-              //   localStorage.removeItem('accessToken');
-              //   window.location.href = '/login';
-              // });
-            }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.getSearchDataRequest.bind(self, dataObj)
+            );
+
           } else {
             this.showSpinner = false;
           }
@@ -954,5 +970,12 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       return value.label;
     });
     return ret.join('<br/>');
+  }
+
+  exportAll(){
+    // console.log(this.chartRef);
+    this.chartRef.exportPNG();
+    // console.log(this.tableRef);
+    this.tableRef.exportTable();
   }
 }

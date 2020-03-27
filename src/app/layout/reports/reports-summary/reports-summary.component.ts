@@ -33,11 +33,19 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
   options: Array<any> = [{
     isSearchColumn: true,
     isTableInfo: true,
-    isEditOption: true,
+    isEditOption: {
+      value : true,
+      icon : '',
+      tooltip: 'Edit Report'
+    },
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
-    isDownload: true,
+    isDownloadAsCsv: true,
+    isDownloadOption: {
+      value: true,
+      icon: ''
+    },
     isRowSelection: null,
     isPageLength: true,
     isPagination: true,
@@ -46,7 +54,11 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
     isPlayOption: {
       value : true
     },
-    isDownloadOption: true,
+    // Any number starting from 1 to ..., but not 0
+    isActionColPosition: 1, // This can not be 0, since zeroth column logic might crash
+    // since isActionColPosition is 1, isOrder is also required to be sent,
+    // since default ordering assigned in dataTable is [[1, 'asc']]
+    isOrder: [[2, 'asc']],
   }];
   dashboard: any;
   serverSide: any;
@@ -214,23 +226,12 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    this.showSpinner = false;
-                    localStorage.setItem('accessToken', newToken);
-                    this.populateReportDataTable();
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.populateReportDataTable.bind(self)
+            );
           } else {
             this.showSpinner = false;
           }
@@ -317,4 +318,10 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
       this.toastr.error('ERROR!', message);
     });
   }
+  reLoad(){
+    this.showSpinner = true;
+    this.dataObject.isDataAvailable = false;
+    this.populateReportDataTable();
+  }
+
 }

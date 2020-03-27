@@ -422,10 +422,10 @@
                 </div>
               </div>
               <div class="rendered-sub-filter-fields-div">
-                <app-tag2 [data]="filterItem.selectedItems" [settings]="filterTagSettings"
+                <app-tag [data]="filterItem.selectedItems" [settings]="filterTagSettings"
                           (onAdd)="onTagAdd($event, filterItem)"
                           (onRemove)="onTagRemove($event, filterItem)"
-                          (onEdit)="onTagEdit($event, filterItem)"></app-tag2>
+                          (onEdit)="onTagEdit($event, filterItem)"></app-tag>
 
               </div>
             </li>
@@ -458,11 +458,11 @@
           <ul class="renderedFilter-ul">
             <li class="renderedFilter-li">
               <div class="rendered-sub-dimension-fields-div">
-                <app-tag2 [data]="dimensionTagsList"
+                <app-tag [data]="dimensionTagsList"
                           [settings]="dimensionTagSettings"
                           (onAdd)="onTagAdd($event, dimensionTagsList)"
                           (onRemove)="onTagRemoveFromList($event, 'dimensionTagsList', 'dimensionPopupConfig')"
-                          (onEdit)="onTagEdit($event, dimensionTagsList)"></app-tag2>
+                          (onEdit)="onTagEdit($event, dimensionTagsList)"></app-tag>
 
               </div>
             </li>

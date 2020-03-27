@@ -1,1 +1,1 @@
-<chart #chart [options] = "chartOptions" style="display: block" [style.height]="this.config.height ? this.config.height : '100%'" type = "chart"> </chart>
+<chart #chart [options] = "chartOptions" style="display: block" [style.height]="this.config.height ? this.config.height : '100%'" type = "chart" (load)="saveInstance($event.context)"> </chart>

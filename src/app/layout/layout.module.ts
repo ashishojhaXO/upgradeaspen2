@@ -17,12 +17,16 @@ import { Select2Module } from 'ng2-select2';
 import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
 import { PopUpModalModule } from '../shared/components/pop-up-modal/pop-up-modal.module';
 import { HeaderComponentDirective } from '../shared/components/header/header.component';
+import { AppNavComponent } from '../shared/components/app-nav/app-nav.component';
 import { FooterComponent } from '../shared';
 import {CheckboxSwitchModule} from './../shared/components/app-checkbox-switch/app-checkbox-switch.module';
 import {MultiSelectDropdownModule} from './../shared/components/multiselect-dropdown/multiselect-dropdown.module';
 import { DatepickerModule, BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { AppScriptEmbedderModule} from './../shared/components/app-script-embedder/app-script-embedder.module';
 import {A2Edatetimepicker} from 'ng2-eonasdan-datetimepicker';
+import { TooltipModule } from './../shared/directives/tooltip.module';
+import { AppTag2Module } from './../shared/components/app-tag2/app-tag2.module';
+import { AppFileUploaderModule } from './../shared/components/app-file-uploader/app-file-uploader.module';
 
 //declarations
 import { DashboardsComponent } from './dashboards/dashboards.component';
@@ -41,7 +45,14 @@ import { TargetAudComponent } from './targetAud/targetAud.component';
 import { BaseFieldsComponent } from './baseFields/baseFields.component';
 import { OrderTemplateComponent } from './order-template/order-template.component';
 import { OrderSummaryComponent } from './orderSummary/orderSummary.component';
-
+import { InvoicesComponent } from './invoices/invoices.component';
+import { InvoiceComponent } from './invoice/invoice.component';
+import {OrgManagementComponent} from './../layout/orgManagement/orgManagement.component';
+import { UserSettingsComponent } from './user-settings/user-settings.component';
+import { AnalyticsComponent } from './analytics/analytics.component';
+import {EmailManagementComponent} from './../layout/emailManagement/emailManagement.component';
+import {OrderDashboardComponent} from './../layout/orderDashboard/orderDashboard.component';
+import {UploadsComponent} from './../layout/uploads/uploads.component';
 
 // providers
 import { AuthGuard } from './../shared';
@@ -51,6 +62,10 @@ import { OrdersProcessedComponent } from './orders-processed/orders-processed.co
 import { CustomFormBuilderModule } from '../shared/components/customformbuilder/customformbuilder.module';
 import { OrdersTemplateListComponent } from './orders-template-list/orders-template-list.component';
 import { OrdersListComponent } from './orders-list/orders-list.component';
+import { NumericDirective } from '../shared/directives/Numeric.directive';
+import { JobsComponent } from './jobs/jobs.component';
+import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
+
 
 @NgModule({
     imports: [
@@ -80,12 +95,16 @@ import { OrdersListComponent } from './orders-list/orders-list.component';
         DatepickerModule.forRoot(),
         AppScriptEmbedderModule,
         CustomFormBuilderModule,
-        A2Edatetimepicker
+        A2Edatetimepicker,
+        TooltipModule,
+        AppTag2Module,
+        AppFileUploaderModule
     ],
     declarations: [
         LayoutComponent,
         SidebarComponentDirective,
         HeaderComponentDirective,
+        AppNavComponent,
         FooterComponent,
         DashboardsComponent,
         OrdersComponent,
@@ -105,11 +124,23 @@ import { OrdersListComponent } from './orders-list/orders-list.component';
         OrderTemplateComponent,
         ConfigureAdComponent,
         TargetAudComponent,
-        OrderSummaryComponent
+        OrderSummaryComponent,
+        NumericDirective,
+        InvoicesComponent,
+        InvoiceComponent,
+        UserSettingsComponent,
+        OrgManagementComponent,
+        AnalyticsComponent,
+        EmailManagementComponent,
+        OrderDashboardComponent,
+        JobsComponent,
+        OperationsDashboardComponent,
+        OrderDashboardComponent,
+        UploadsComponent
     ],
     providers: [
-        AuthGuard, 
-        OktaAuthService, 
+        AuthGuard,
+        OktaAuthService,
         OrganizationService],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA

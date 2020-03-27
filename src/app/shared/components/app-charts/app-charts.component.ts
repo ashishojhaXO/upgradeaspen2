@@ -22,6 +22,7 @@ export class AppChartsComponent implements OnInit, OnChanges {
   @Input()
   config: any;
   @ViewChild('chart') chartRef: any;
+  chart: any;
 
   constructor() {}
 
@@ -32,6 +33,8 @@ export class AppChartsComponent implements OnInit, OnChanges {
         this.renderColumnChart();
       } else if (this.config.type === 'pie') {
         this.renderPieChart();
+      } else if (this.config.type == 'line') {
+        this.renderLineChart();
       }
     }
   }
@@ -162,7 +165,37 @@ export class AppChartsComponent implements OnInit, OnChanges {
           }
         }
       },
-      series: series
+      series: series,
+      // exporting: {
+      //   menuItemDefinitions: {
+      //     // Custom definition
+      //     label: {
+      //         onclick: function () {
+      //             this.renderer.label(
+      //                 'You just clicked a custom menu item',
+      //                 100,
+      //                 100
+      //             )
+      //                 .attr({
+      //                     fill: '#a4edba',
+      //                     r: 5,
+      //                     padding: 10,
+      //                     zIndex: 10
+      //                 })
+      //                 .css({
+      //                     fontSize: '1.5em'
+      //                 })
+      //                 .add();
+      //         },
+      //         text: 'Show label'
+      //     }
+      //   },
+      //   buttons: {
+      //     contextButton: {
+      //         menuItems: ['downloadPNG', 'downloadSVG', 'separator', 'label']
+      //     }
+      //   }
+      // }
       // series: [{
       //   type: 'column',
       //   name: 'Monthly Cumulative Spend',
@@ -281,6 +314,62 @@ export class AppChartsComponent implements OnInit, OnChanges {
     console.log(this.chartOptions);
   }
 
+  renderLineChart() {
+    let config = {
+      chart: {
+        type: this.config.type
+      },    
+      title: {
+          text: this.config.title
+      },
+      subtitle: {
+          text: this.config.subTitle
+      },
+      xAxis: {
+          // tickInterval: 7 * 24 * 3600 * 1000, // one month
+          categories: [],
+          tickWidth: 0,
+          gridLineWidth: 1
+      },
+      yAxis: [
+          { // left y axis
+                title: {
+                    text: null
+                },
+                labels: {
+                    align: 'left',
+                    x: 3,
+                    y: 16,
+                    format: '{value:.,0f}'
+                },
+                showFirstLabel: false
+            }],
+      legend: {
+          align: 'left',
+          verticalAlign: 'top',
+          borderWidth: 0
+      },
+      tooltip: {
+          shared: true,
+          crosshairs: true
+      },
+      series: [{
+          name: this.config.seriesName[0],
+          data: [],
+          lineWidth: 2,
+          marker: {
+              radius: 4
+          }
+      }]
+    };
+    this.config.data.forEach(element => {
+      config.xAxis.categories.push(element[0].replace(/(\d{4})(\d{2})(\d{2})/g, '$3-$2-$1'));
+      config.series[0].data.push(+element[1]); //passing users data
+    });
+    // console.log('from chart', config)
+    this.chartOptions = config;
+  }
+
   ngOnInit() {
     // this.setId = this.id ? this.id : 'gridtable1';
     // this.displayDataTable();
@@ -292,5 +381,15 @@ export class AppChartsComponent implements OnInit, OnChanges {
       colors.push('#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6));
     }
     return colors;
+  }
+
+  saveInstance(chartInstance): void {
+    if (!chartInstance.options.chart.forExport) this.chart = chartInstance;
+    // console.log('onload chart', this.chart)
+  }
+
+  exportPNG():void{
+    // console.log('from chart')
+    this.chart.exportChart();
   }
 }

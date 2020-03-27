@@ -1,0 +1,41 @@
+$base-color: #3FA8F4;
+$tag-background: #fff;
+
+// apply theme to the container
+::ng-deep .ng2-tag-input.custom-tag-theme {
+  border-bottom: none !important; // Hides the default bottom line
+}
+
+// apply theme to the tags
+::ng-deep .ng2-tag-input.custom-tag-theme tag {
+  background-color: $tag-background;
+  border: 1px solid $base-color;
+  color: $base-color;
+  height: 28px; // Change this to adjust tag's size
+}
+
+::ng-deep .ng2-tag-input.custom-tag-theme tag .tag__text {
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 24px; // Change this to match tag's size
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+::ng-deep .ng2-tag-input.custom-tag-theme tag delete-icon:hover  {
+  transform: none; // Disables animation
+}
+
+::ng-deep .ng2-tag-input.custom-tag-theme tag delete-icon svg {
+  height: 24px; // Change this to match tag's size
+  vertical-align: baseline;
+}
+
+// apply theme to the delete icon
+::ng-deep .ng2-tag-input.custom-tag-theme tag delete-icon svg path {
+  fill: $base-color;
+}

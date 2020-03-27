@@ -21,15 +21,25 @@ export class OrdersTemplateListComponent implements OnInit  {
   options: Array<any> = [{
     isSearchColumn: true,
     isTableInfo: true,
-    isEditOption: true,
+    isEditOption: {
+      value : true,
+      icon : '',
+      tooltip: 'Edit Order Template'
+    },
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
     isRowHighlight: false,
-    isDownload: true,
+    isDownloadAsCsv: true,
+    isDownloadOption: false,
     isPageLength: true,
     isPagination: true,
-    sendResponseOnCheckboxClick: true
+    sendResponseOnCheckboxClick: true,
+    // Any number starting from 1 to ..., but not 0
+    isActionColPosition: 0, // This can not be 0, since zeroth column logic might crash
+    // since isActionColPosition is 1, isOrder is also required to be sent,
+    // since default ordering assigned in dataTable is [[1, 'asc']]
+    isOrder: [[2, 'asc']],
   }];
   api_fs: any;
   externalAuth: any;
@@ -84,23 +94,12 @@ export class OrdersTemplateListComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    this.widget.tokenManager.add('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchDataRequest();
-                  })
-                  .catch(function (err) {
-                    console.log('error >>')
-                    console.log(err);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                this.widget.tokenManager.remove('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.searchDataRequest.bind(self)
+            );
           } else {
             this.showSpinner = false;
           }
@@ -169,6 +168,12 @@ export class OrdersTemplateListComponent implements OnInit  {
   handleRow(rowObj: any, rowData: any) {
     if(this[rowObj.action])
       this[rowObj.action](rowObj);
+  }
+
+  reLoad(){
+    this.showSpinner = true;
+    this.dataObject.isDataAvailable = false;
+    this.searchDataRequest();
   }
 
 }

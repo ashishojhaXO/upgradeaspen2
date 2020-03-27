@@ -38,12 +38,19 @@ export class OktaAuthService {
 
 
 
-  signOut() {
+  signOut(func?: Function) {
     // TODO: SignOut to be implemented
+    if (func){
+      console.log("signO IF FUNC")
+      func()
+    }
+    else {
+      console.log("signO nofunc else")
+      localStorage.removeItem('accessToken');
+      window.location.href = '/login';
+    }
 
   }
-
-
 
   refresh(accessToken){
     console.log("acccc: refresh", accessToken)
@@ -52,11 +59,92 @@ export class OktaAuthService {
     })
   }
 
-  tokenManager = {
-    refresh: (accessToken) => {
-      console.log("refresh: ", accessToken);
-      return this.logOut.apply(this, [accessToken]);
+  refreshCounter = 0;
+
+  refreshElseSignout(obj, err, successFuncName, errorFuncName ) {
+    this.refreshCounter++;
+
+    if(localStorage.getItem('accessToken') || this.refreshCounter < 3) {
+      this.tokenManager.refresh(
+        'accessToken', 
+        successFuncName,
+        errorFuncName
+      );
+    } else {
+      console.log("ELSE SIGNOUT & RefreshCounter > 3")
+      this.signOut();
     }
+
+  }
+
+  tokenManager = {
+
+    getLocalStorageKey: (keyName) => {
+      return localStorage.getItem(keyName);
+    },
+
+    setLocalStorageKey: (keyName, value) => {
+      return localStorage.setItem(keyName, value);
+    },
+
+    noCallback: (str) => {
+      console.log("No callback: ", str)
+    },
+
+    successCallback: (response, successCB) => {
+      console.log("tokMAN resp succCB: ", response, successCB)
+      successCB ? successCB() : this.tokenManager.noCallback("No successCallback");
+    },
+
+    errorCallback: (response, errorCB) => {
+      console.log("tokMAN resp errCB: ", response, errorCB)
+      console.log('error response >>', response);
+      errorCB ? errorCB() : this.tokenManager.noCallback("No errorCallback");
+    },
+
+    refresh: (accessToken, successCB, errorCB) => {
+      // Refresh accessToken only
+      // TODO: Later add, refresh of other tokens like: id_token, refresh_token etc
+      // @params `accessToken`: some string value
+      // @params `func`: A function passed from the Controller file, Signature: func(response)
+
+      console.log("refresh: ", accessToken);
+
+      // return this.logOut.apply(this, [accessToken]);
+
+      const headers = new Headers({
+        'Content-Type': 'application/json', 
+        'callingapp' : 'aspen', 
+        // "scope": "openid offline_access"
+      });
+      const options = new RequestOptions({headers: headers});
+
+      let refresh_token = this.tokenManager.getLocalStorageKey("refreshToken");
+      const api_url_part = "/api";
+      let endPoint = "/users/token/refresh";
+      const url = this.api_fs.api + api_url_part + endPoint;
+      let body = {
+        "refresh_token": refresh_token,
+      };
+
+      return this.http.post(url, body, options)
+      .map(response => {
+        let res = response.json();
+        this.tokenManager.setLocalStorageKey('accessToken', res.data.access_token);
+        return res;
+      })
+      .subscribe( 
+        // on subscribe run the passed function `func`
+        (response) => {
+          this.tokenManager.successCallback.apply(this, [response, successCB])
+        },
+        (error) => {
+          this.tokenManager.errorCallback.apply(this, [error, errorCB])
+        }
+      );
+
+    }
+
   }
 
   widget() {

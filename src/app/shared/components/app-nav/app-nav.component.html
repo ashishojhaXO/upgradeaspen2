@@ -1,0 +1,40 @@
+<div
+    [ngClass]="mainUlClass"
+    *ngIf="mainmenu && mainmenu.length"
+>
+    <ng-template ngFor let-mm [ngForOf]="mainmenu" let-i="index">
+        <div
+            [attr.data-index]="i+1"
+            [ngClass]="mm.selected ? 'active' : ''"
+            *ngIf="urlPath && urlPath.indexOf(mm.url.split('/')[mm.url.split('/').length - 2]) !== -1"
+        >
+            <a
+                (click)="loadOptions(i,mm)"
+                title="{{mm.title}}"
+                id="{{mm.id}}"
+                [ngClass]="mm.selected ? 'active active-bar' : ''"
+            >{{ mm.title }}
+            </a>
+
+                <app-nav
+                    *ngIf="mm.id == 'orders' && mm.submenu && showSubmenu"
+                    [mainmenu]="mm.submenu"
+                    mainUlClass="bottom-menu"
+                    random="{{mm.id}}"
+                    urlPath="{{urlPath}}"
+                >
+                </app-nav>
+
+                <app-nav
+                    *ngIf="mm.id != 'orders' && mm.submenu"
+                    [mainmenu]="mm.submenu"
+                    mainUlClass="bottom-menu"
+                    random="{{mm.id}}"
+                    urlPath="{{urlPath}}"
+                >
+                </app-nav>
+        </div>
+
+    </ng-template>
+</div>
+

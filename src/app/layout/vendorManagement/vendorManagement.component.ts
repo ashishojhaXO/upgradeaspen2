@@ -32,15 +32,31 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   options: Array<any> = [{
     isSearchColumn: true,
     isTableInfo: true,
-    isEditOption: true,
-    isDeleteOption: true,
+    isEditOption: {
+      value : true,
+      icon : '',
+      tooltip: 'Edit Vendor'
+    },
+    isDeleteOption: {
+      value : true,
+      icon : '',
+      tooltip: 'Delete Vendor'
+    },
     isAddRow: false,
     isColVisibility: true,
-    isDownload: true,
+    isDownloadAsCsv: true,
+    isDownloadOption: false,
     isRowSelection: null,
     isPageLength: true,
     isPagination: true,
-    isTree: true
+    isTree: true,
+    // Any number starting from 1 to ..., but not 0
+    isActionColPosition: 1, // This can not be 0, since zeroth column logic might crash
+    // since isActionColPosition is 1, isOrder is also required to be sent,
+    // since default ordering assigned in dataTable is [[1, 'asc']]
+    // fixedColumn: 2,
+    isOrder: [[2, 'asc']],
+    isHideColumns: [ "id"]
   }];
   dashboard: any;
   api_fs: any;
@@ -53,12 +69,31 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   widget: any;
   editID: any;
   resultStatus: any;
+  orgValue = '';
+  orgArr = [];
+  isRoot: boolean;
+  orgInfo: any;
 
   constructor(
-    private okta: OktaAuthService, 
-    private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager) {
+      private okta: OktaAuthService,
+      private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager) {
+
+    const groups = localStorage.getItem('loggedInUserGroup') || '';
+    const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
+    this.orgInfo = custInfo.org;
+
+    console.log('custInfo >>>')
+    console.log(custInfo);
+
+    const grp = JSON.parse(groups);
+    grp.forEach(function (item) {
+      if(item === 'ROOT' || item === 'SUPER_USER') {
+        this.isRoot = true;
+      }
+    }, this);
 
     this.vendorForm = new FormGroup({
+      org: new FormControl('', Validators.required),
       external_vendor_id: new FormControl('', Validators.required),
       first_name: new FormControl('', Validators.required),
       last_name: new FormControl('', Validators.required),
@@ -68,10 +103,12 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
       address_2: new FormControl(''),
       city: new FormControl('', Validators.required),
       state: new FormControl('', Validators.required),
+      zip: new FormControl('', Validators.required),
       country: new FormControl('', Validators.required)
     });
 
     this.vendorModel = {
+      org: '',
       external_vendor_id: '',
       first_name: '',
       last_name: '',
@@ -81,6 +118,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
       address_2: '',
       city: '',
       state: '',
+      zip: '',
       country: ''
     };
 
@@ -94,44 +132,36 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
     this.resultStatus = 'Fetching results';
-    this.searchDataRequest();
+    this.searchDataRequest(this.isRoot ? '' : this.orgInfo.org_id);
+    this.searchOrgRequest();
   }
 
-  searchDataRequest() {
-    return this.searchData().subscribe(
+  searchOrgRequest() {
+    return this.searchOrgData().subscribe(
         response => {
-          if (response) {
-            console.log('response >>')
-            console.log(response);
-            if (response.body && response.body.length) {
-              this.showSpinner = false;
-              this.populateDataTable(response.body, true);
-            } else {
-              this.resultStatus = 'No data found'
-              this.showSpinner = false;
-            }
+          if (response && response.data) {
+            response.data.forEach(function (ele) {
+              this.orgArr.push({
+                id: ele.org_uuid,
+                text: ele.org_name
+              });
+            }, this);
+
+            this.vendorModel.org = this.orgArr[0].id;
+            this.vendorForm.patchValue({
+              org : this.orgArr[0].id
+            });
           }
         },
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchDataRequest();
-                  })
-                  .catch(function (err1) {
-                    console.log('error >>')
-                    console.log(err1);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.searchOrgRequest.bind(self)
+            );
           } else {
             this.showSpinner = false;
           }
@@ -139,7 +169,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     );
   }
 
-  searchData() {
+  searchOrgData() {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
     if (AccessToken) {
@@ -149,12 +179,72 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
 
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/vendors';
+    var url = this.api_fs.api + '/api/orgs';
     return this.http
-      .get(url, options)
-      .map(res => {
-        return res.json();
-      }).share();
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
+  searchDataRequest(org = null) {
+    return this.searchData(org).subscribe(
+        response => {
+          if (response) {
+            console.log('response >>')
+            console.log(response);
+            if (response && response.length) {
+              this.showSpinner = false;
+              this.populateDataTable(response, true);
+            } else {
+              this.resultStatus = 'No data found'
+              this.showSpinner = false;
+            }
+          }
+        },
+        err => {
+
+          if(err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.searchDataRequest.bind(self, org)
+            );
+          } else {
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+
+  searchData(org) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    const obj: any = {};
+    if (this.isRoot) {
+      obj['org_uuid'] = org;
+    }
+    const dataObj = JSON.stringify(obj);
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/vendors/list';
+    return this.http
+        .post(url, dataObj, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
+  orgChange(value) {
+    this.dataObject.isDataAvailable = false;
+    this.searchDataRequest(value);
   }
 
   populateDataTable(response, initialLoad) {
@@ -194,6 +284,11 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     console.log(dataObj.data);
     this.editID = dataObj.data.id;
 
+    this.vendorModel.org = dataObj.data.org_uuid;
+    this.vendorForm.patchValue({
+      org : dataObj.data.org_uuid
+    });
+
     this.vendorModel.external_vendor_id = dataObj.data.external_vendor_id;
     this.vendorForm.patchValue({
       external_vendor_id : dataObj.data.external_vendor_id
@@ -230,6 +325,10 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.vendorForm.patchValue({
       state : dataObj.data.state
     });
+    this.vendorModel.zip = dataObj.data.zip;
+    this.vendorForm.patchValue({
+      zip : dataObj.data.zip
+    });
     this.vendorModel.country = dataObj.data.country;
     this.vendorForm.patchValue({
       country : dataObj.data.country
@@ -237,7 +336,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
 
     this.addVendor.show();
 
-  //  this.router.navigate(['/app/reports/adHocReportBuilder', rowData.id]);
+    //  this.router.navigate(['/app/reports/adHocReportBuilder', rowData.id]);
   }
 
   handleRun(rowObj: any, rowData: any) {
@@ -246,6 +345,10 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   handleDelete(dataObj: any) {
     // console.log('rowData >>>!!!!')
     // console.log(rowData);
+
+    console.log('dataObj >>')
+    console.log(dataObj);
+
     if (dataObj.data.id) {
       if (dataObj.data.id.no_of_orders > 0 && dataObj.data.id.no_of_users) {
         if (!this.showError) {
@@ -254,7 +357,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
           this.showError = false;
         }
       } else {
-        this.performVendorDeletionRequest(dataObj.data.id.id);
+        this.performVendorDeletionRequest(dataObj.data.id);
       }
     }
   }
@@ -273,6 +376,9 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.showSpinner = true;
     this.error = '';
     const dataObj: any = {};
+    if (this.isRoot) {
+      dataObj.org_uuid = this.vendorForm.controls['org'].value;
+    }
     dataObj.external_vendor_id = this.vendorForm.controls['external_vendor_id'].value;
     dataObj.first_name = this.vendorForm.controls['first_name'].value;
     dataObj.last_name = this.vendorForm.controls['last_name'].value;
@@ -282,8 +388,8 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     dataObj.address_2 = this.vendorForm.controls['address_2'].value;
     dataObj.city = this.vendorForm.controls['city'].value;
     dataObj.state = this.vendorForm.controls['state'].value;
+    dataObj.zip = this.vendorForm.controls['zip'].value;
     dataObj.country = this.vendorForm.controls['country'].value;
-
     this.performVendorAdditionRequest(dataObj);
   }
 
@@ -294,28 +400,17 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
           console.log(response);
           if (response) {
             this.showSpinner = false;
-            this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Vendor successfully ' + ( this.editID ? 'updated' : 'created' ) : 'Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
+            this.error = { type : response.data ? 'success' : 'fail' , message : response.data ?  'Vendor successfully ' + ( this.editID ? 'updated' : 'created' ) : 'Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
           }
         },
         err => {
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.performVendorAdditionRequest(dataObj);
-                  })
-                  .catch(function (err1) {
-                    console.log('error >>')
-                    console.log(err1);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.performVendorAdditionRequest.bind(self, dataObj)
+            );
           } else {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
             this.showSpinner = false;
@@ -355,30 +450,19 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
         response => {
           if (response) {
             this.showSpinner = false;
-            this.searchDataRequest();
-           // this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Vendor successfully deleted ' : 'Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
-           // this.editID = '';
+            this.searchDataRequest(this.isRoot ? this.orgValue : this.orgInfo.org_id);
+            // this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Vendor successfully deleted ' : 'Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
+            // this.editID = '';
           }
         },
         err => {
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.performVendorDeletionRequest(id);
-                  })
-                  .catch(function (err1) {
-                    console.log('error >>')
-                    console.log(err1);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.performVendorDeletionRequest.bind(self, id)
+            );
           } else {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
             this.showSpinner = false;
@@ -408,6 +492,10 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.error = '';
     this.editID = '';
 
+    this.vendorModel.org = '';
+    this.vendorForm.patchValue({
+      org : ''
+    });
     this.vendorModel.external_vendor_id = '';
     this.vendorForm.patchValue({
       external_vendor_id : ''
@@ -444,6 +532,10 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.vendorForm.patchValue({
       state : ''
     });
+    this.vendorModel.zip = '';
+    this.vendorForm.patchValue({
+      zip : ''
+    });
     this.vendorModel.country = '';
     this.vendorForm.patchValue({
       country : ''
@@ -451,10 +543,17 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
 
     modalComponent.hide();
     this.dataObject.isDataAvailable = false;
-    this.searchDataRequest();
+    this.searchDataRequest(this.isRoot ? this.orgValue : this.orgInfo.org_id);
   }
 
   handleShowModal(modalComponent: PopUpModalComponent) {
     modalComponent.show();
   }
+
+  reLoad(){
+    this.showSpinner = true;
+    this.dataObject.isDataAvailable = false;
+    this.searchDataRequest(this.isRoot ? this.orgValue : this.orgInfo.org_id);
+  }
+
 }

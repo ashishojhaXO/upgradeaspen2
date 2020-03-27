@@ -14,6 +14,8 @@ export class field {
     validation?: any;
     disable?: any;
     editable?: any;
+    checkboxDefault?: any;
+    core?: any;
 }
 
 export class value {

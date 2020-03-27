@@ -5,6 +5,7 @@ import { Common } from '../../shared/util/common';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { USER_CLIENT_NAME } from '../../../constants/organization';
 import {ENV} from '../../../constants/env';
+import { OktaAuthService } from '../../../../src/services/okta.service';
 
 // interface User {
 //   body: Object({
@@ -27,8 +28,11 @@ export class LoginNewComponent implements OnInit {
   formError: string = null;
   api_fs: any;
   showSpinner: boolean;
+  version: any;
+  widget: any;
 
   constructor(
+    private okta: OktaAuthService,
     private common:Common,
     private http: Http,
     private route: ActivatedRoute,
@@ -45,9 +49,11 @@ export class LoginNewComponent implements OnInit {
       localStorage.setItem('apis_fs', JSON.stringify(ENV.apis_fs));
     // or some url from config file
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs')) || ENV.apis_fs;
+    this.version = this.api_fs.version;
   }
 
   private formOnInit(){
+    this.widget = this.okta.getWidget();
     this.loginForm = new FormGroup({
       'userData': new FormGroup({
         'userEmail': new FormControl(null, Validators.required),
@@ -70,10 +76,14 @@ export class LoginNewComponent implements OnInit {
   }
 
   loginService(body: Object) {
-    const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen' });
+    const headers = new Headers({
+      'Content-Type': 'application/json' ,
+      'callingapp' : 'aspen',
+      // "scope": "openid offline_access"
+    });
     const options = new RequestOptions({headers: headers});
     const api_url_part = "/api";
-    const endPoint = "/users/token";
+    const endPoint = "/users/token/signin";
     const url = this.api_fs.api + api_url_part + endPoint;
 
     this.showSpinner = true;
@@ -87,17 +97,21 @@ export class LoginNewComponent implements OnInit {
     console.log('res >>')
     console.log(res);
 
-    localStorage.setItem('accessToken', res.body.access_token);
-    localStorage.setItem('idToken', res.body.id_token);
-    localStorage.setItem('loggedInUserName', res.body.first_name.trim() + " " + res.body.last_name.trim());
-    localStorage.setItem('loggedInUserID', res.body.external_id);
-    localStorage.setItem('loggedInUserGroup', JSON.stringify([res.body.user_role.name.toUpperCase()] ) );
-    localStorage.setItem('loggedInOrg', res.body.org && res.body.org.org_name ? res.body.org.org_name : 'Home Depot');
+    localStorage.setItem('accessToken', res.access_token);
+    localStorage.setItem('idToken', res.id_token);
+    localStorage.setItem('refreshToken', res.refresh_token);
+    localStorage.setItem('loggedInUserName', res.first_name.trim() + " " + res.last_name.trim());
+    localStorage.setItem('loggedInUserID', res.external_id);
+    localStorage.setItem('loggedInUserGroup', JSON.stringify([res.user_role ? res.user_role.name.toUpperCase() : '']));
   }
 
   compileBody(userData){
-      const body = {username: userData.userEmail, password: userData.password};
+      const body = {username: this.encodeValue(userData.userEmail), password: this.encodeValue(userData.password)};
       return body;
+  }
+
+  encodeValue(value: string): string {
+    return encodeURIComponent(value);
   }
 
   onSubmitLoginForm(){
@@ -121,23 +135,30 @@ export class LoginNewComponent implements OnInit {
               console.log('responseDetails >>>')
               console.log(responseDetails);
 
-              if (responseDetails.body && responseDetails.body) {
-                localStorage.setItem('customerInfo', JSON.stringify(responseDetails.body));
+              if (responseDetails && responseDetails) {
+                localStorage.setItem('loggedInOrg', responseDetails.org && responseDetails.org.org_name ? responseDetails.org.org_name : '-');
+                localStorage.setItem('loggedInVendor', responseDetails.vendor && responseDetails.vendor.company_name ? responseDetails.vendor.company_name : '-');
+                localStorage.setItem('customerInfo', JSON.stringify(responseDetails));
                 this.router.navigate(['/app/dashboards/'], { relativeTo: this.route } ).then( res => {
                   this.showSpinner = false;
                 });
               } else {
+                this.showSpinner = false;
                 this.formError = 'No User details found. Please contact administrator';
                 console.log('No Vendor details found');
               }
             },
             err => {
+              this.showSpinner = false;
               if (err.status === 401) {
-                if (localStorage.getItem('accessToken')) {
 
-                } else {
+                let self = this;
+                this.widget .refreshElseSignout(
+                  this,
+                  err,
+                  // self.searchDataRequest.bind(self, org)
+                );
 
-                }
               } else {
 
               }
@@ -146,7 +167,9 @@ export class LoginNewComponent implements OnInit {
       }, rej => {
         //this.loginForm.reset();
         this.showSpinner = false;
-        this.formError = rej.statusText; //for error handling
+        // this.formError = rej.statusText; //for error handling
+        console.log("rej", rej);
+        this.formError = rej.json().message; //for error handling
       });
     }
   }
@@ -178,7 +201,7 @@ export class LoginNewComponent implements OnInit {
     const options = new RequestOptions({headers: headers});
 
     const api_url_part = "/api";
-    const endPoint = "/users/token";
+    const endPoint = "/users/token/signin";
     const url = this.api_fs.api + api_url_part + endPoint;
     // const body = {username: username, password: password};
 
@@ -195,11 +218,15 @@ export class LoginNewComponent implements OnInit {
       const forgotObj = {"email": forgotEmail};
       this.forgotPasswordService(forgotObj).subscribe( res => {
         this.showSpinner = false;
-        this.formError = res.statusText;
+        // this.formError = res.statusText;
+        console.log("res", res);
+        this.formError = res.json().message;
       }, rej => {
         //this.loginForm.reset();
         this.showSpinner = false;
-        this.formError = rej.statusText; //for error handling
+        // this.formError = rej.statusText; //for error handling
+        console.log("rej 2", rej);
+        this.formError = rej.json().message; //for error handling
       });
     }
   }

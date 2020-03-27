@@ -1,0 +1,62 @@
+<div class="dropzone"
+     dropZone
+     [class.hovering]="isHovering"
+     (hovered)="toggleHover($event)"
+     (dropped)="startUpload($event)">
+
+  <h3>AngularFire Drop Zone</h3>
+  <p>Drag and Drop a File</p>
+  <div class="file">
+    <label class="file-label">
+      <input class="file-input" accept=".csv" type="file" fileSelect (selectedFiles)="startUpload($event)">
+      <span class="file-cta">
+            <span class="file-icon">
+              <i class="fa fa-upload"></i>
+            </span>
+            <span class="file-label">
+              or choose a file…
+            </span>
+          </span>
+    </label>
+  </div>
+</div>
+<div *ngIf="uploadedFile">
+    <button class="button btn btn-success" style="float: right" (click)="uploadFiles()">Upload</button>
+    FileName : {{ uploadedFile.name}} | FileSize : {{ uploadedFile.size | fileSize }}
+</div>
+
+<!--<div *ngIf="percent$ | async as pct">-->
+
+  <!--<progress class="progress is-info"-->
+            <!--[value]="pct"-->
+            <!--max="100">-->
+  <!--</progress>-->
+
+  <!--{{ pct | number }}%-->
+
+<!--</div>-->
+
+<!--<div *ngIf="bytes$ | async as bytes">-->
+  <!--{{ bytes[0] | fileSize }} of {{ bytes[1] | fileSize }}-->
+<!--</div>-->
+
+<!--<div *ngIf="(state$ | async) || 'idle' as state">-->
+
+  <!--Upload State:-->
+  <!--<p class="tag"-->
+     <!--[ngClass]="{-->
+        <!--'is-success':  state === 'success',-->
+        <!--'is-info':     state === 'running',-->
+        <!--'is-warning':  state === 'paused',-->
+        <!--'is-danger':   state === 'error'-->
+      <!--}">-->
+    <!--{{ state }}-->
+  <!--</p>-->
+
+  <!--&lt;!&ndash;<a *ngIf="url$ | async as url" [href]="url" target="_blank" rel="noopener">Download Me!</a>&ndash;&gt;-->
+  <!--&lt;!&ndash;<hr>&ndash;&gt;-->
+
+  <!--&lt;!&ndash;<button (click)="pause()" class="button is-warning" [disabled]="state != 'running'">Pause</button>&ndash;&gt;-->
+  <!--&lt;!&ndash;<button (click)="cancel()" class="button is-danger" [disabled]="state != 'running'">Cancel</button>&ndash;&gt;-->
+  <!--&lt;!&ndash;<button (click)="resume()" class="button is-info"   [disabled]="state != 'paused'">Resume</button>&ndash;&gt;-->
+<!--</div>-->

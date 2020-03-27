@@ -90,7 +90,8 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
       isDeleteOption: false,
       isAddRow: false,
       isColVisibility: false,
-      isDownload: false,
+      isDownloadAsCsv: true,
+      isDownloadOption: false,
       isRowSelection: {
         isMultiple : this.filterConfig.isMultiSelect
       },
@@ -222,7 +223,8 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
       isDeleteOption: false,
       isAddRow: false,
       isColVisibility: true,
-      isDownload: true,
+      isDownloadAsCsv: true,
+      isDownloadOption: false,
       isRowSelection: {
         isMultiple : this.filterConfig.isMultiSelect
       },

@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { field } from "./customformbuilder.model";
-import Swal from "sweetalert2";
+import Swal from 'sweetalert2';
 import { DndDropEvent, DropEffect } from 'ngx-drag-drop';
 import { Headers, RequestOptions, Http } from '@angular/http';
 import { OktaAuthService } from '../../../../services/okta.service';
+import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'app-customformbuilder',
@@ -15,10 +16,15 @@ export class CustomFormbuilderComponent implements OnInit {
   @Input() isBaseField: boolean;
   @Input('fieldData') fieldData;
   @Input('editTemplate') editTemplate;
+  @Input('builderFor') builderFor;
   api_fs: any;
   externalAuth: any;
   showSpinner: boolean;
   widget: any;
+  dependentOnOptions = [];
+  select2Options = {
+    multiple: true
+  };
 
   value = {
     option: ""
@@ -32,8 +38,8 @@ export class CustomFormbuilderComponent implements OnInit {
     attributes:this.modelFields
   };
 
-  constructor( 
-    private okta: OktaAuthService, 
+  constructor(
+    private okta: OktaAuthService,
     private http: Http) {
   }
 
@@ -45,63 +51,63 @@ export class CustomFormbuilderComponent implements OnInit {
             "dropType": "text",
             "type": "varchar",
             "icon": "fa-font",
-            "name": "text"
+            "name": "Text"
           },
           {
             "id": "",
             "dropType": "email",
             "type": "text",
             "icon": "fa-envelope",
-            "name": "email"
+            "name": "Email"
           },
           {
             "id": "",
             "dropType": "phone",
             "type": "int",
             "icon": "fa-phone",
-            "name": "phone"
+            "name": "Phone"
           },
           {
             "id": "",
             "dropType": "number",
             "type": "int",
             "icon": "fa-html5",
-            "name": "number"
+            "name": "Number"
           },
           {
             "id": "",
             "dropType": "amount",
             "type": "amount",
             "icon": "fa-usd",
-            "name": "amount"
+            "name": "Amount"
           },
           {
             "id": "",
             "dropType": "date",
             "type": "date",
             "icon":"fa-calendar",
-            "name": "date"
+            "name": "Date"
           },
           {
             "id": "",
             "dropType": "textarea",
             "type": "text",
             "icon":"fa-text-width",
-            "name": "textarea"
+            "name": "Textarea"
           },
           {
             "id": "",
             "dropType": "checkbox",
             "type": "checkbox",
             "icon":"fa-list",
-            "name": "checkbox"
+            "name": "Checkbox"
           },
           {
             "id": "",
             "dropType": "radio",
             "type": "radio",
             "icon":"fa-list-ul",
-            "name": "radio"
+            "name": "Radio"
           },
           {
             "id": "",
@@ -162,6 +168,10 @@ export class CustomFormbuilderComponent implements OnInit {
               }
             }else if(element.type == 'checkbox'){
               element.dropType = 'checkbox';
+              if(element.default_value){
+                element.checkboxDefault = element.default_value.split(', ');
+                console.log(element.checkboxDefault, element.default_value);
+              }
               // element.validation = {
               //   required : element.validation == null ? 0 : element.validation.required
               // }
@@ -177,11 +187,20 @@ export class CustomFormbuilderComponent implements OnInit {
                 element.validation = [];
               }
             }
+
             this.model.attributes.push(element);
           });
+
+          this.updateDependentOnList();
           console.log('list>>>>>>>>>', this.model);
         }
       }
+    }
+  }
+
+  OnDependentOnChanged(e: any, item): void {
+    if (!item.request_dependent_property || item.request_dependent_property !== e.value ) {
+      item.request_dependent_property = e.value;
     }
   }
 
@@ -190,7 +209,14 @@ export class CustomFormbuilderComponent implements OnInit {
       response => {
         if (response && response.attributes) {
           //console.log('response from get attributes', response.attributes);
-          this.fieldModels = response.attributes;
+          const fieldModels = response.attributes;
+          if (this.builderFor === 'order'){
+            this.fieldModels = this.sortAttributes('order', fieldModels);
+          }else if (this.builderFor === 'lineitem') {
+            this.fieldModels = this.sortAttributes('lineitem', fieldModels);
+          } else {
+            this.fieldModels = fieldModels;
+          }
           this.fieldModels.forEach(element => {
             element.validation = [];
             if(element.type == 'varchar' || element.type == 'text' || element.type == 'string'){
@@ -225,6 +251,7 @@ export class CustomFormbuilderComponent implements OnInit {
               }
             }else if(element.type == 'checkbox'){
               element.dropType = 'checkbox';
+              element.checkboxDefault = [];
               element.attr_list =  {
                 "options": [
                   {
@@ -244,23 +271,12 @@ export class CustomFormbuilderComponent implements OnInit {
       },
       err => {
         if(err.status === 401) {
-          if(localStorage.getItem('accessToken')) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  localStorage.setItem('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.getAttributeService();
-                })
-                .catch(function (err) {
-                  console.log('error >>')
-                  console.log(err);
-                });
-          } else {
-            this.widget.signOut(() => {
-              localStorage.removeItem('accessToken');
-              window.location.href = '/login';
-            });
-          }
+          let self = this;
+          this.widget.refreshElseSignout(
+            this,
+            err,
+            self.getAttributes.bind(self)
+          );
         } else {
           this.showSpinner = false;
         }
@@ -283,6 +299,15 @@ export class CustomFormbuilderComponent implements OnInit {
         .map(res => {
           return res.json();
         }).share();
+  }
+
+  sortAttributes(value, arr) {
+    arr.forEach((element, index) => {
+      if(element.core === value){
+        arr.unshift(arr.splice(index, 1)[0]);
+      }
+    })
+    return arr;
   }
 
   onDragStart(event:DragEvent) {
@@ -330,6 +355,19 @@ export class CustomFormbuilderComponent implements OnInit {
       }
       list.splice( index, 0, event.data );
     }
+
+    this.updateDependentOnList(event.data);
+  }
+
+  updateDependentOnList(item = null) {
+    this.dependentOnOptions = [];
+    this.model.attributes.forEach(function (ele) {
+     // const skip = item && item.name && item.name === ele.name;
+      this.dependentOnOptions.push({
+        id: ele.name,
+        text: ele.name
+      });
+    }, this);
   }
 
   addValue(values){
@@ -349,6 +387,7 @@ export class CustomFormbuilderComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         this.model.attributes.splice(i,1);
+        this.updateDependentOnList();
       }
     });
   }
@@ -358,6 +397,89 @@ export class CustomFormbuilderComponent implements OnInit {
       item.validation.push(field)
     }else{
       item.validation.splice(item.validation.indexOf(field), 1)
+      if(field === 'apiLookup') {
+        item.request_type = '';
+        item.request_url = '';
+        item.request_payload = '';
+        item.request_mapped_property = '';
+        item.request_dependent_property = '';
+      }
+    }
+  }
+
+  onCheckboxClick(value, isChecked, item){
+    if(isChecked) {
+      item.checkboxDefault.push(value);
+    } else {
+      let index = item.checkboxDefault.indexOf(value);
+      item.checkboxDefault.splice(index,1);
+    }
+    item.default_value = item.checkboxDefault.join(', ');
+  }
+
+  ValidateAPILookUp(item) {
+    this.performApiLookUpForValue(item.request_type, item.request_url, item.request_payload).subscribe(
+        responseLookup => {
+          if (item.request_mapped_property) {
+            if (item.dropType === 'autocomplete' || item.dropType === 'checkbox' || item.dropType === 'radio') {
+              if( Object.prototype.toString.call( responseLookup[item.request_mapped_property] ) === '[object Array]' ) {
+                item.default_value = responseLookup[item.request_mapped_property].length ? responseLookup[item.request_mapped_property][0] : '';
+                const options = [];
+                responseLookup[item.request_mapped_property].forEach(function (prop) {
+                  options.push({
+                    "option": prop
+                  });
+                });
+                item.attr_list.options = options;
+              } else {
+                item.default_value = responseLookup[item.request_mapped_property];
+                item.attr_list.options = [{
+                  "option" : responseLookup[item.request_mapped_property]
+                }];
+              }
+            } else {
+              item.default_value = responseLookup[item.request_mapped_property];
+            }
+          }
+          Swal({
+            title: 'Test Successful',
+            html: item.request_mapped_property ? responseLookup[item.request_mapped_property] : JSON.stringify(responseLookup),
+            type: 'success'
+          });
+        },
+        err => {
+          Swal({
+            title: 'Test Failed',
+            html: 'Response could not be validated',
+            type: 'error'
+          });
+        });
+  }
+
+  performApiLookUpForValue(requestType, requestUrl, requestPayload) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    const data = requestPayload ? requestPayload : {};
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    if(requestType === 'post') {
+      return this.http
+          .post(this.api_fs.api + requestUrl, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    } else if(requestType === 'get') {
+      return this.http
+          .get(requestUrl, options)
+          .map(res => {
+            return res.json();
+          }).share();
     }
   }
 }

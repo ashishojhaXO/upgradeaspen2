@@ -84,7 +84,7 @@
       "title": "Orders",
       "selected": false,
       "id": "orders",
-      "url":"app/orders"
+      "url":"app/order"
     },
     {
       "index": 7,
@@ -92,7 +92,7 @@
       "title": "Payments",
       "selected": false,
       "id": "payments",
-      "url":"app/payments"
+      "url":"app/payment"
     },
     {
       "index": 9,
@@ -100,63 +100,91 @@
       "title": "Admin",
       "selected": false,
       "id": "admin",
-      "url":"app/admin/usermanagement",
+      "url":"app/admin",
       "submenu": [
         {
           "index": 1,
+          "name": "orgmanagement",
+          "title": "Org Management",
+          "id": "orgmanagement",
+          "url": "app/admin/orgmanagement"
+        },
+        {
+          "index": 2,
           "name": "usermanagement",
           "title": "User Management",
           "id": "usermanagement",
           "url": "app/admin/usermanagement"
         },
         {
-          "index": 2,
+          "index": 3,
           "name": "vendormanagement",
           "title": "Vendor Management",
           "id": "vendormanagement",
-          "url": "app/vendormanagement"
+          "url": "app/admin/vendormanagement"
         },
         {
-          "index": 3,
+          "index": 4,
+          "name": "invoices",
+          "title": "Invoice Management",
+          "id": "invoices",
+          "url": "app/admin/invoices"
+        },
+        {
+          "index": 5,
+          "name": "emailmanagement",
+          "title": "Email Management",
+          "id": "emailmanagement",
+          "url": "app/admin/emailmanagement"
+        },
+        {
+          "index": 6,
           "name": "support",
           "title": "Support",
           "id": "support",
           "url": "app/admin/support"
         },
         {
-          "index": 4,
+          "index": 6,
+          "name": "uploads",
+          "title": "Uploads",
+          "id": "uploads",
+          "url": "app/admin/uploads"
+        },
+        {
+          "index": 7,
           "name": "baseFields",
           "title": "Configure Base Fields",
           "id": "baseFields",
           "url": "app/admin/baseFields"
         },
         {
-          "index": 5,
+          "index": 8,
           "name": "ordertemplate",
           "title": "Configure Template",
           "id": "ordertemplate",
           "url": "app/admin/ordertemplate"
         },
         {
-          "index": 6,
+          "index": 9,
           "name": "ordertemplatelist",
           "title": "Template List",
           "id": "ordertemplatelist",
           "url": "app/admin/ordertemplatelist"
         },
         {
-          "index": 7,
-          "name": "order",
-          "title": "Create Order",
-          "id": "order",
-          "url": "app/order"
+          "index": 10,
+          "name": "analytics",
+          "title": "Analytics",
+          "id": "analyticsReport",
+          "url": "app/admin/analytics"
         },
         {
-          "index": 8,
-          "name": "orderList",
-          "title": "Orders List",
-          "id": "orderList",
-          "url": "app/admin/orderslist"
+          "index": 11,
+          "name": "operationsdashboard",
+          "title": "Operations Dashboard",
+          "id": "operationsdashboard",
+          "url": "app/admin/operationsdashboard"
         }
       ]
     }

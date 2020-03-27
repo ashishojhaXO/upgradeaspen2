@@ -33,10 +33,12 @@ export class ReconciliationComponent implements OnInit  {
       isDeleteOption: false,
       isAddRow: false,
       isColVisibility: true,
-      isDownload: true,
+      isDownloadAsCsv: true,
+      isDownloadOption: false,
       isRowSelection: null,
       isPageLength: true,
-      isPagination: true
+      isPagination: true,
+      fixedColumn: 1
   }];
   dashboard: any;
   api_fs: any;
@@ -101,21 +103,19 @@ export class ReconciliationComponent implements OnInit  {
    searchDataRequest() {
       return this.searchData().subscribe(
         response => {
-          if (response) {
             if (response) {
-              this.populateDataTable(response, true);
-              this.showSpinner = false;
+                this.populateDataTable(response, true);
+                this.showSpinner = false;
             }
-          }
         },
         err => {
           if(err.status === 401) {
-            this.widget.tokenManager.refresh('accessToken')
-                .then(function (newToken) {
-                  localStorage.setItem('accessToken', newToken);
-                  this.showSpinner = false;
-                  this.searchDataRequest();
-                });
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err, 
+              self.searchDataRequest.bind(self)
+            );
           } else {
             this.showSpinner = false;
             console.log('err')
@@ -137,7 +137,7 @@ export class ReconciliationComponent implements OnInit  {
         clientCode: 'homd',
         year: this.selectedPeriod[0].id.split('-')[0],
         month: this.selectedPeriod[0].id.split('-')[1],
-        siteName: this.selectedChannel[0].id
+        // siteName: this.selectedChannel[0].id
     }
 
     const obj = JSON.stringify(dataObj);
@@ -178,12 +178,23 @@ export class ReconciliationComponent implements OnInit  {
       }
     }
 
+   const rowsToColor = [];
+    if (tableData.length) {
+        tableData.forEach(function (data, index) {
+            if (data.discrepancy_amount && data.discrepancy_amount > 0) {
+                rowsToColor.push({
+                    index: index,
+                    'background-color': 'rgba(255,0,0,0.9)',
+                    color: 'rgba(255,255,255,0.9)'
+                });
+            }
+        });
+    }
+
     this.gridData['result'] = tableData;
     this.gridData['headers'] = this.headers;
     this.gridData['options'] = this.options[0];
-    this.gridData.columnsToColor = [
-        { name: 'CALCULATED AMOUNT', color: 'rgb(47,132,234,0.2)'}
-    ];
+    this.gridData.rowsToColor = rowsToColor;
     this.dashboard = 'paymentGrid';
     this.dataObject.gridData = this.gridData;
     console.log(this.gridData);
@@ -216,5 +227,11 @@ export class ReconciliationComponent implements OnInit  {
         channel.push({ id: 'facebook', itemName: 'Facebook'});
         channel.push({ id: 'google', itemName: 'Google'});
         return channel;
+    }
+
+    reLoad(){
+      this.showSpinner = true;
+      this.dataObject.isDataAvailable = false;
+      this.searchDataRequest();
     }
 }

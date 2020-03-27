@@ -30,12 +30,14 @@ export class OrdersProcessedComponent extends OrdersComponent {
   ];
 
   constructor(
-    okta: OktaAuthService,
-    route: ActivatedRoute, router: Router, http: Http,
-    private popUp: AppPopUpComponent,
-    private genericService: GenericService
+    okta: OktaAuthService, 
+    route: ActivatedRoute, 
+    router: Router, 
+    genericService: GenericService,
+    popUp: AppPopUpComponent,
+    http: Http
   ) { 
-    super(okta, route, router, http)
+    super(okta, route, router, genericService, popUp, http)
 
     // Initializing some data
     this.init();
