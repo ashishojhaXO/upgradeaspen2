@@ -283,6 +283,25 @@ export class GenericService {
   }
 
   /**
+   * POST postJobReportExecute 
+   * Execute a Report of a particular Job_id
+   * @param dataObj
+   */
+  postJobReportExecute(dataObj) {
+    const data = JSON.stringify(dataObj);
+    console.log("dataObj: ", dataObj, " data; ", data);
+
+    return this.service.Call(
+      'post', 
+      this.base.REPORT_SERVICE_API_GATEWAY_URL +
+      this.base.API + 
+      this.base.POST_JOB_REPORT_EXECUTE,
+      data
+    );
+
+  }
+
+  /**
    * Create Admin User Service from formData
    * @param dataObj
    */

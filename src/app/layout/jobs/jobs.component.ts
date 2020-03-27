@@ -23,7 +23,8 @@ import { modalConfigDefaults } from 'ngx-bootstrap/modal/modal-options.class';
 @Component({
   selector: 'app-jobs',
   templateUrl: './jobs.component.html',
-  styleUrls: ['./jobs.component.css']
+  styleUrls: ['./jobs.component.css'],
+  providers: [GenericService, AppPopUpComponent]
 })
 export class JobsComponent implements OnInit {
 
@@ -48,6 +49,7 @@ export class JobsComponent implements OnInit {
     // },
     isPlayOption: {
       value: true,
+      tooltip: "Execute Job",
     },
     isDeleteOption: false,
     isAddRow: false,
@@ -77,7 +79,13 @@ export class JobsComponent implements OnInit {
   private appDataTable2Component : AppDataTable2Component;
   selectedRow: any;
 
-  constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
+  constructor(
+    private okta: OktaAuthService, 
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private genericService: GenericService,
+    private popUp: AppPopUpComponent,
+    private http: Http) {
   }
 
   ngOnInit() {
@@ -111,8 +119,8 @@ export class JobsComponent implements OnInit {
     return this.searchData().subscribe(
         response => {
           if (response) {
-            if (response.orgTemplates) {
-              this.populateDataTable(response.orgTemplates.templates, true);
+            if (response.data) {
+              this.populateDataTable(response.data, false);
               this.showSpinner = false;
             }
           }
@@ -141,8 +149,7 @@ export class JobsComponent implements OnInit {
     }
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/orders/templates';
-    // var url = this.api_fs.api + '/api/jobs';
+    var url = this.api_fs.api + '/api/reports/admin/canned-reports';
     return this.http
         .get(url, options)
         .map(res => {
@@ -176,20 +183,70 @@ export class JobsComponent implements OnInit {
     this.gridData['headers'] = headers;
     this.gridData['options'] = this.options[0];
     this.dataObject.gridData = this.gridData;
-    console.log(this.gridData);
     this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
     // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
   }
 
-  handleCheckboxSelection(rowObj: any, rowData: any) {
-    console.log('redirecto to Report page of JobId >>')
-    this.selectedRow = rowObj;
-    console.log(this.selectedRow.data.id);
-    this.redirectToModifyOrderTemplatePage();
-  }
+  // handleCheckboxSelection(rowObj: any, rowData: any) {
+  //   console.log('redirecto to Report page of JobId >>')
+  //   this.selectedRow = rowObj;
+  //   console.log(this.selectedRow.data.id);
+  //   this.redirectToModifyOrderTemplatePage();
+  // }
 
   handleUnCheckboxSelection(rowObj: any, rowData: any) {
+    // console.log("Unselection")
     this.selectedRow = null;
+  }
+
+  handleRun(dataObj: any) {
+    const data = {
+      "job_id": dataObj.data.id, 
+      "action": ["execute"]
+    };
+
+    this.genericService.postJobReportExecute(data).subscribe(
+      (res) => {
+        // Success show if stayHere or to ReprtsPage
+        let popUpOptions = {
+          title: 'Success',
+          text: res.message + ". Would you like to go to Reports page or Stay here?",
+          type: 'success',
+          reverseButtons: true,
+          showCloseButton: true,
+          showCancelButton: true,
+          cancelButtonText: "Stay here",
+          confirmButtonText: "Go to Reports ->"
+        };
+        this.popUp.showPopUp(popUpOptions).then(
+          (ok) => {
+            if(ok.value) {
+              // redirect to Reports_Page_With_JobId
+              console.log("Will navigate when Orders-Processed-Reports api is ready")
+              // this.router.navigate([`/app/admin/order-processed/${dataObj.data.id}`]);
+            }
+          },
+          (rej) => {
+            // console.log("rej Value", rej)
+          }
+        );
+
+      },
+      (rej) => {
+        // Some Error occured
+        let popUpOptions = {
+          title: 'Error',
+          text: rej.message,
+          type: 'error',
+          // reverseButtons: true,
+          showCloseButton: true,
+          // showCancelButton: true,
+          // cancelButtonText: "Cancel"
+        };
+        this.popUp.showPopUp(popUpOptions);
+
+      }
+    )
   }
 
   handleRow(rowObj: any, rowData: any) {
