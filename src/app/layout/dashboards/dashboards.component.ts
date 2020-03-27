@@ -334,7 +334,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
                           let self = this;
                           this.widget.refreshElseSignout(
                             this,
-                            error, 
+                            error,
                             // self.searchDataRequest.bind(self),
                             self.getSeedDashboard.bind(self)
                           );
@@ -352,7 +352,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
               let self = this;
               this.widget.refreshElseSignout(
                 this,
-                error, 
+                error,
                 // self.searchDataRequest.bind(self),
                 self.getFilter.bind(self)
               );
@@ -924,8 +924,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
-              self.getSearchDataRequest.bind(self)
+              err,
+              self.getSearchDataRequest.bind(self, dataObj)
             );
 
           } else {
