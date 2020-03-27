@@ -283,6 +283,22 @@ export class GenericService {
   }
 
   /**
+   * Get Jobs Method
+   * @param dataObj
+   */
+  getJobs(data) {
+
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+    return this.service.Call(
+      'get', 
+      apiPath.api +
+      this.base.API +
+      this.base.GET_JOBS_ENDPOINT 
+    );
+  }
+
+
+  /**
    * POST postJobReportExecute 
    * Execute a Report of a particular Job_id
    * @param dataObj

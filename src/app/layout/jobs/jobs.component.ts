@@ -116,7 +116,8 @@ export class JobsComponent implements OnInit {
   }
 
   searchDataRequest() {
-    return this.searchData().subscribe(
+    let data = {};
+    return this.genericService.getJobs(data).subscribe(
         response => {
           if (response) {
             if (response.data) {
@@ -139,22 +140,6 @@ export class JobsComponent implements OnInit {
           }
         }
     );
-  }
-
-  searchData() {
-    const AccessToken: any = localStorage.getItem('accessToken');
-    let token = '';
-    if (AccessToken) {
-      token = AccessToken;
-    }
-    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
-    const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/reports/admin/canned-reports';
-    return this.http
-        .get(url, options)
-        .map(res => {
-          return res.json();
-        }).share();
   }
 
   populateDataTable(response, initialLoad) {
@@ -205,12 +190,16 @@ export class JobsComponent implements OnInit {
       "action": ["execute"]
     };
 
+    this.showSpinner = true;
     this.genericService.postJobReportExecute(data).subscribe(
       (res) => {
+
+        this.showSpinner = false;
+
         // Success show if stayHere or to ReprtsPage
         let popUpOptions = {
           title: 'Success',
-          text: res.message + ". Would you like to go to Reports page or Stay here?",
+          html: res.message + ".<br />Would you like to go to Reports page or Stay here?",
           type: 'success',
           reverseButtons: true,
           showCloseButton: true,
@@ -233,6 +222,7 @@ export class JobsComponent implements OnInit {
 
       },
       (rej) => {
+        this.showSpinner = false;
         // Some Error occured
         let popUpOptions = {
           title: 'Error',

@@ -53,7 +53,7 @@ export class Service {
         if(options){
           opts = {...opts, ...options}
         }
-          
+
         return this.http
           .get(Url, opts)
           .map(res => {
@@ -102,8 +102,8 @@ export class Service {
     const headers = new Headers(
       { 
         'Content-Type': 'application/json', 
-        token: token, 
-        callingapp : 'aspen' 
+        'token': token, 
+        'callingapp': 'aspen' 
       }
     );
     return new RequestOptions({ headers: headers });

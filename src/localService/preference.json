@@ -185,6 +185,13 @@
           "title": "Operations Dashboard",
           "id": "operationsdashboard",
           "url": "app/admin/operationsdashboard"
+        },
+        {
+          "index": 12,
+          "name": "jobs",
+          "title": "Jobs",
+          "id": "jobs",
+          "url": "app/admin/jobs"
         }
       ]
     }
