@@ -134,7 +134,8 @@ export class UploadsComponent implements OnInit  {
     this.showSpinner = true;
     const myReader = new FileReader();
     myReader.onloadend = (e) => {
-      const fileAsBase64 = myReader.result;
+      let fileAsBase64 = myReader.result;
+      fileAsBase64 = fileAsBase64.indexOf(',') !== -1 ? fileAsBase64.split(',')[1] : fileAsBase64;
       const apiEndPoint = __this.uploadTypes.find(x=> x.id === __this.uploadType).api;
       __this.uploadFile(fileAsBase64, apiEndPoint, file.name).subscribe(
           response => {

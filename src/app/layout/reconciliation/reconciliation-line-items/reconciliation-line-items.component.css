@@ -1,0 +1,14 @@
+#line_item_tbl{
+    background: beige;
+}
+#line_item_tbl thead tr{
+    color: #1c252b;
+    font-size: 12px;
+    font-weight: 700;
+    border-bottom: 1px solid #1c252b;
+}
+#line_item_tbl tbody td{
+    color: #1c252b;
+    font-size: 13px;
+}
+
