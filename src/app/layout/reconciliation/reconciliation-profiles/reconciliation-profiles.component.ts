@@ -45,7 +45,7 @@ export class ReconciliationProfilesComponent implements OnInit {
   }
 
   onTabClick(item) {
-    if (item.order_id | item.profile_name) {
+    if (item.order_id) {
       if (item.show) {
         item.show = false;
       } else {
@@ -122,11 +122,15 @@ export class ReconciliationProfilesComponent implements OnInit {
       month: period[0].id.split('-')[1],
       invoice_header_id: data.invoice_header_id
     }
-    console.log("data.order_id",data.order_id);
-    if (data.order_id) {
-      dataObj['order_id'] = data.order_id;
-    } else {
+    if(data.supplier.toLowerCase() === 'kenshoo'){
       dataObj['profile_name'] = data.profile_name;
+      dataObj['order_id'] = data.order_id;
+    }else{
+      if (data.order_id) {
+        dataObj['order_id'] = data.order_id;
+      } else {
+        dataObj['profile_name'] = data.profile_name;
+      }
     }
     const obj = JSON.stringify(dataObj);
     console.log('obj >>')
