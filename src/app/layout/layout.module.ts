@@ -58,10 +58,12 @@ import {UploadsComponent} from './../layout/uploads/uploads.component';
 import { AuthGuard } from './../shared';
 import { OktaAuthService } from './../../services/okta.service';
 import { OrganizationService } from './../../services/organization.service';
+import { OrdersProcessedComponent } from './orders-processed/orders-processed.component';
 import { CustomFormBuilderModule } from '../shared/components/customformbuilder/customformbuilder.module';
 import { OrdersTemplateListComponent } from './orders-template-list/orders-template-list.component';
 import { OrdersListComponent } from './orders-list/orders-list.component';
 import { NumericDirective } from '../shared/directives/Numeric.directive';
+import { JobsComponent } from './jobs/jobs.component';
 import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
 import { ReconciliationLineItemsComponent } from './reconciliation/reconciliation-line-items/reconciliation-line-items.component';
 import { ReconciliationProfilesComponent } from './reconciliation/reconciliation-profiles/reconciliation-profiles.component';
@@ -118,6 +120,7 @@ import { ReconciliationProfilesComponent } from './reconciliation/reconciliation
         UserManagementComponent,
         VisDashboardComponent,
         OrderComponent,
+        OrdersProcessedComponent,
         OrderPaymentComponent,
         BaseFieldsComponent,
         OrderTemplateComponent,
@@ -131,6 +134,8 @@ import { ReconciliationProfilesComponent } from './reconciliation/reconciliation
         OrgManagementComponent,
         AnalyticsComponent,
         EmailManagementComponent,
+        OrderDashboardComponent,
+        JobsComponent,
         OperationsDashboardComponent,
         OrderDashboardComponent,
         UploadsComponent,

@@ -126,8 +126,8 @@ export class OrdersComponent implements OnInit  {
     private okta: OktaAuthService,
     private route: ActivatedRoute,
     private router: Router,
-    private genericService: GenericService,
-    private popUp: AppPopUpComponent,
+    protected genericService: GenericService,
+    protected popUp: AppPopUpComponent,
     private http: Http) {
   }
 
@@ -466,7 +466,6 @@ export class OrdersComponent implements OnInit  {
   }
 
   getOrders() {
-    console.log("BLAH")
 
     let data = {};
 

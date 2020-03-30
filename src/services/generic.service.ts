@@ -229,6 +229,95 @@ export class GenericService {
   }
 
   /**
+   * POST OrdersProcessedReportDownload
+   * @param dataObj
+   */
+  ordersProcessedReportDownload(dataObj) {
+    const data = JSON.stringify(dataObj);
+    console.log("dataObj: ", dataObj, " data; ", data);
+
+    return this.service.Call(
+      'post', 
+      this.base.REPORT_SERVICE_API_GATEWAY_URL +
+      this.base.API + 
+      this.base.ADMIN_REPORT_DOWNLOAD,
+      data
+    );
+
+  }
+
+  /**
+   * POST postOrdersProcessedReportEmail
+   * @param dataObj
+   */
+  ordersProcessedReportEmail(dataObj) {
+    const data = JSON.stringify(dataObj);
+    console.log("dataObj: ", dataObj, " data; ", data);
+
+    return this.service.Call(
+      'post', 
+      this.base.REPORT_SERVICE_API_GATEWAY_URL +
+      this.base.API + 
+      this.base.ADMIN_REPORT,
+      data
+    );
+
+  }
+
+  /**
+   * POST postOrdersProcessedReportRun
+   * @param dataObj
+   */
+  ordersProcessedReportRun(dataObj) {
+    const data = JSON.stringify(dataObj);
+    console.log("dataObj: ", dataObj, " data; ", data);
+
+    return this.service.Call(
+      'post', 
+      this.base.REPORT_SERVICE_API_GATEWAY_URL +
+      this.base.API + 
+      this.base.ADMIN_REPORT,
+      data
+    );
+
+  }
+
+  /**
+   * Get Jobs Method
+   * @param dataObj
+   */
+  getJobs(data) {
+
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+    return this.service.Call(
+      'get', 
+      apiPath.api +
+      this.base.API +
+      this.base.GET_JOBS_ENDPOINT 
+    );
+  }
+
+
+  /**
+   * POST postJobReportExecute 
+   * Execute a Report of a particular Job_id
+   * @param dataObj
+   */
+  postJobReportExecute(dataObj) {
+    const data = JSON.stringify(dataObj);
+    console.log("dataObj: ", dataObj, " data; ", data);
+
+    return this.service.Call(
+      'post', 
+      this.base.REPORT_SERVICE_API_GATEWAY_URL +
+      this.base.API + 
+      this.base.POST_JOB_REPORT_EXECUTE,
+      data
+    );
+
+  }
+
+  /**
    * Create Admin User Service from formData
    * @param dataObj
    */

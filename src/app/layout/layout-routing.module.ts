@@ -28,6 +28,8 @@ import { UserSettingsComponent } from './user-settings/user-settings.component';
 import {OrgManagementComponent} from './../layout/orgManagement/orgManagement.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
 import {EmailManagementComponent} from './../layout/emailManagement/emailManagement.component';
+import { OrdersProcessedComponent } from './orders-processed/orders-processed.component';
+import { JobsComponent } from './jobs/jobs.component';
 import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
 import {UploadsComponent} from './../layout/uploads/uploads.component';
 
@@ -437,6 +439,22 @@ const routes: Routes = [
                         text: 'Order Template List'
                       },
                     },
+                    {
+                        path: 'jobs',
+                        component: JobsComponent,
+                        data: {
+                            breadcrumbs: true,
+                            text: 'Jobs'
+                        }
+                    },
+                    // {
+                    //     path: 'orders-processed',
+                    //     component: OrdersProcessedComponent,
+                    //     data: {
+                    //     breadcrumbs: true,
+                    //     text: 'Orders Processed'
+                    //     }
+                    // },
                     {
                         path: 'analytics',
                         component: AnalyticsComponent,
