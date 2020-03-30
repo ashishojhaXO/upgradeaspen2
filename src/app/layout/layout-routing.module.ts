@@ -443,8 +443,8 @@ const routes: Routes = [
                         path: 'jobs',
                         component: JobsComponent,
                         data: {
-                        breadcrumbs: true,
-                        text: 'Jobs'
+                            breadcrumbs: true,
+                            text: 'Jobs'
                         }
                     },
                     // {
