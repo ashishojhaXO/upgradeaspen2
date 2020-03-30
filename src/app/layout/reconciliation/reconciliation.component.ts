@@ -452,6 +452,26 @@ export class ReconciliationComponent implements OnInit  {
             if(res.data.orders && res.data.orders.length){
             this.hasData = true;
             this.invoiceOrderCsv(res.data.orders);
+            }else if(res.data.profiles && res.data.profiles.length){
+              let orders=[];
+              let profiles=res.data.profiles;
+              profiles.forEach(function (data, index) {
+                if (data.orders && data.orders.length) {
+                  data.orders.forEach(function (ordData, index) {
+                       orders.push(ordData);
+                  });                 
+                }
+            });
+            if(orders){
+              this.hasData = true;         
+              this.invoiceOrderCsv(orders);
+            }else{
+              Swal({
+                title: 'No downloadable link available',
+                text: 'We did not find a download link for that invoice',
+                type: 'error'
+              });
+            }             
             }else{
               Swal({
                 title: 'No downloadable link available',
