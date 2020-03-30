@@ -233,12 +233,13 @@ export class GenericService {
    * @param dataObj
    */
   ordersProcessedReportDownload(dataObj) {
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
     const data = JSON.stringify(dataObj);
     console.log("dataObj: ", dataObj, " data; ", data);
 
     return this.service.Call(
       'post', 
-      this.base.REPORT_SERVICE_API_GATEWAY_URL +
+      apiPath.api +
       this.base.API + 
       this.base.ADMIN_REPORT_DOWNLOAD,
       data
@@ -251,12 +252,13 @@ export class GenericService {
    * @param dataObj
    */
   ordersProcessedReportEmail(dataObj) {
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
     const data = JSON.stringify(dataObj);
     console.log("dataObj: ", dataObj, " data; ", data);
 
     return this.service.Call(
       'post', 
-      this.base.REPORT_SERVICE_API_GATEWAY_URL +
+      apiPath.api +
       this.base.API + 
       this.base.ADMIN_REPORT,
       data
@@ -269,12 +271,13 @@ export class GenericService {
    * @param dataObj
    */
   ordersProcessedReportRun(dataObj) {
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
     const data = JSON.stringify(dataObj);
     console.log("dataObj: ", dataObj, " data; ", data);
 
     return this.service.Call(
       'post', 
-      this.base.REPORT_SERVICE_API_GATEWAY_URL +
+      apiPath.api +
       this.base.API + 
       this.base.ADMIN_REPORT,
       data
@@ -307,9 +310,11 @@ export class GenericService {
     const data = JSON.stringify(dataObj);
     console.log("dataObj: ", dataObj, " data; ", data);
 
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+
     return this.service.Call(
       'post', 
-      this.base.REPORT_SERVICE_API_GATEWAY_URL +
+      apiPath.api +
       this.base.API + 
       this.base.POST_JOB_REPORT_EXECUTE,
       data
