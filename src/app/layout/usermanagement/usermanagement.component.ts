@@ -53,6 +53,8 @@ export class UserManagementComponent implements OnInit  {
 
     // If dataTable is having `isApiCallForNextPage`
     // Then we will also have to send isOrder
+    // We might have to write a PlugIn/Extension for DataTables
+    // $.fn.dataTable.ext.sort
     isOrder: [[1, 'desc']],
     // For limited pagewise data
     isApiCallForNextPage: {
