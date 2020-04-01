@@ -889,6 +889,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 table.off('draw');
             });
 
+
             // If we decide to get data of only 1 page to show in the table and not all data
             if (__this.dataObject.gridData.options.isApiCallForNextPage ) {
 
@@ -915,8 +916,24 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     table.off("length");
                 });
 
-
+                
                 let currentPage = table.page.info().page;
+
+                // On order of table
+                table.on('order.dt', function(e, settings, ordArr){
+
+                    // let redrawPageNumber = table.page.info().page;
+
+                    console.log('OOORRDER....', "e: ", e, "sett: ", settings, " ordArr: ", ordArr, 
+                        "currenPage: ", currentPage,
+                        " table.page.info: ", table.page.info()
+                    );
+
+                    // table.page(redrawPageNumber).draw(false);
+                    // table.off('order.dt');
+                });
+
+
                 $(document).off( 'keyup', 'input.input-sm');
                 $(document).on( 'keyup', 'input.input-sm', function (ev) {
                     // If currentPage exists, currentPage is not the same as table's page & also input value goes empty
