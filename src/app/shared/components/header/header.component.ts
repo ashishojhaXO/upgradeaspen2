@@ -233,20 +233,6 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
             }
             return m;
           });
-
-          if (isAdmin) {
-            const allowOrderFunctionality = localStorage.getItem('allowOrderFunctionality');
-            if (allowOrderFunctionality === 'false') {
-              this.mainmenu = this.mainmenu.map(function (m) {
-                if (m.name === 'admin') {
-                  m.submenu = m.submenu.filter(function (ele: any) {
-                    return ele.name !== 'baseFields' && ele.name !== 'ordertemplate' && ele.name !== 'ordertemplatelist';
-                  });
-                }
-                return m;
-              });
-            }
-          }
         }
 
         if (window.location.pathname) {

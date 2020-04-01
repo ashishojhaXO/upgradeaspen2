@@ -113,7 +113,7 @@ export class OrdersComponent implements OnInit  {
   selectedOrderID: any;
   selectedLineItemID: any;
   hideTable: any;
-  allowOrderFunctionality: any;
+  hasTemplates: any;
   orderPayment: number;
   // retryChargeState: boolean = true;
 
@@ -150,7 +150,8 @@ export class OrdersComponent implements OnInit  {
       }
     }, this);
 
-    this.allowOrderFunctionality = localStorage.getItem('allowOrderFunctionality') || 'true';
+    const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
+    this.hasTemplates = customerInfo.org.hasTemplates;
 
     this.searchDataRequest();
     this.searchOrgRequest();
@@ -314,7 +315,7 @@ export class OrdersComponent implements OnInit  {
     this.gridData['result'] = tableData;
     this.gridData['headers'] = headers;
 
-    this.options[0].isPlayOption.value = this.allowOrderFunctionality === 'true' ? true : false;
+    this.options[0].isPlayOption.value = this.hasTemplates;
 
     this.gridData['options'] = this.options[0];
     this.gridData.columnsToColor = [
