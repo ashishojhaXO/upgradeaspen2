@@ -1,4 +1,3 @@
-<div [style.display]="hideTable ? 'none' : 'block'">
 <app-sidebar1>
   <div class="sidebar-title">
     <h3>FILTERS</h3>
@@ -47,8 +46,7 @@
   </div>
   <div style="padding-top: 35px">
     <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject.isDataAvailable">
-      <app-data-table2 [dataObject]="dataObject" identity="reconciliation" [sendResponseOnCheckboxClick]=true
-      (triggerActions)="handleRow($event)"></app-data-table2>
+      <app-data-table2 [dataObject]="dataObject" identity="reconciliation" (triggerActions)="this[$event.action]($event)"></app-data-table2>
     </div>
     <div class="page-header" *ngIf="!dataObject.isDataAvailable">
       <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
@@ -56,11 +54,4 @@
     </div>
   </div>
 </div>
-</div>
-<div style="position: relative" *ngIf="hideTable">
-  <div class="pull-right" style="position: absolute; right: 0; z-index: 1">
-    <a (click)="showReDashboard()" class="button btn btn-success" style="background-color: #0777bc"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Back To Reconciliation Dashboard</a>
-  </div>
-  <app-reconciliation-profiles [period]="selectedPeriod" [supplier]="selectedSupplier" [invoiceId]="selectedInvoice" [invoiceNumber]="selectedInvoiceNumber"></app-reconciliation-profiles>
-</div>
-<app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
+
