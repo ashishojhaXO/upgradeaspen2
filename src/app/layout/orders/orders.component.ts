@@ -144,6 +144,7 @@ export class OrdersComponent implements OnInit  {
 
     const groups = localStorage.getItem('loggedInUserGroup') || '';
     const grp = JSON.parse(groups);
+
     grp.forEach(function (item) {
       if(item === 'ROOT' || item === 'SUPER_USER') {
         this.isRoot = true;
@@ -151,6 +152,9 @@ export class OrdersComponent implements OnInit  {
     }, this);
 
     this.allowOrderFunctionality = localStorage.getItem('allowOrderFunctionality') || 'true';
+    if (this.isRoot) {
+      this.allowOrderFunctionality = 'true';
+    }
 
     this.searchDataRequest();
     this.searchOrgRequest();
