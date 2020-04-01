@@ -139,6 +139,15 @@ export class LoginNewComponent implements OnInit {
                 localStorage.setItem('loggedInOrg', responseDetails.org && responseDetails.org.org_name ? responseDetails.org.org_name : '-');
                 localStorage.setItem('loggedInVendor', responseDetails.vendor && responseDetails.vendor.company_name ? responseDetails.vendor.company_name : '-');
                 localStorage.setItem('customerInfo', JSON.stringify(responseDetails));
+                let allowOrderFunctionality = 'true';
+                if (responseDetails.org.meta_data) {
+                  const meta = JSON.parse(JSON.stringify(eval("(" + responseDetails.org.meta_data + ")")));
+                  if (meta.order_create_enabled === 'false') {
+                    allowOrderFunctionality = 'false';
+                  }
+                }
+                localStorage.setItem('allowOrderFunctionality', allowOrderFunctionality);
+
                 this.router.navigate(['/app/dashboards/'], { relativeTo: this.route } ).then( res => {
                   this.showSpinner = false;
                 });
