@@ -124,7 +124,9 @@ export class OrderComponent implements OnInit  {
             this.template = response.orders[0].order.temp_id;
 
             if (this.isOrderExtend) {
-              this.existingOrder.lineItems[0]['additional_budget'] = 0;
+                this.existingOrder.lineItems.forEach(function (lineItem) {
+                    lineItem['additional_budget'] = 0;
+                });
             }
 
             this.searchTemplateDetails(this.template, this.existingOrder, lineItemId);
@@ -265,7 +267,6 @@ export class OrderComponent implements OnInit  {
             if (response && response.orderTemplateData && response.orderTemplateData.lineItems && response.orderTemplateData.lineItems.length) {
 
               if (this.isOrderExtend) {
-
                 const lineItemBudgetIndex = response.orderTemplateData.lineItems.find(x=> x.name === 'campaign_line_item_budget');
                 if (lineItemBudgetIndex) {
                   response.orderTemplateData.lineItems.splice(response.orderTemplateData.lineItems.indexOf(lineItemBudgetIndex) + 1, 0 , {
@@ -827,7 +828,6 @@ export class OrderComponent implements OnInit  {
     const lineItemRows = [];
 
     lineItemDef.forEach(function (key) {
-
       headers.push({
         key: key.name,
         title: key.label.replace(/_/g,' ').toUpperCase() + ( key.validation && key.validation.length && key.validation.indexOf('required') !== -1 ? ' * ' : '' ),
