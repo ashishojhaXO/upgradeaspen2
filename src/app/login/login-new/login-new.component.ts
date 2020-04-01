@@ -32,11 +32,11 @@ export class LoginNewComponent implements OnInit {
   widget: any;
 
   constructor(
-    private okta: OktaAuthService,
-    private common:Common,
-    private http: Http,
-    private route: ActivatedRoute,
-    private router: Router
+      private okta: OktaAuthService,
+      private common:Common,
+      private http: Http,
+      private route: ActivatedRoute,
+      private router: Router
   ) { }
 
   ngOnInit() {
@@ -68,9 +68,9 @@ export class LoginNewComponent implements OnInit {
     let rememberName = this.common.getCookie('ln');
     if(rememberName){
       this.loginForm.patchValue({
-          'userData':{
-            'userEmail': rememberName
-          }
+        'userData':{
+          'userEmail': rememberName
+        }
       });
     };
   }
@@ -106,8 +106,8 @@ export class LoginNewComponent implements OnInit {
   }
 
   compileBody(userData){
-      const body = {username: this.encodeValue(userData.userEmail), password: this.encodeValue(userData.password)};
-      return body;
+    const body = {username: this.encodeValue(userData.userEmail), password: this.encodeValue(userData.password)};
+    return body;
   }
 
   encodeValue(value: string): string {
@@ -139,6 +139,15 @@ export class LoginNewComponent implements OnInit {
                 localStorage.setItem('loggedInOrg', responseDetails.org && responseDetails.org.org_name ? responseDetails.org.org_name : '-');
                 localStorage.setItem('loggedInVendor', responseDetails.vendor && responseDetails.vendor.company_name ? responseDetails.vendor.company_name : '-');
                 localStorage.setItem('customerInfo', JSON.stringify(responseDetails));
+                let allowOrderFunctionality = 'true';
+                if (responseDetails.org.meta_data) {
+                  const meta = JSON.parse(JSON.stringify(eval("(" + responseDetails.org.meta_data + ")")));
+                  if (meta.order_create_enabled === 'false') {
+                    allowOrderFunctionality = 'false';
+                  }
+                }
+                localStorage.setItem('allowOrderFunctionality', allowOrderFunctionality);
+
                 this.router.navigate(['/app/dashboards/'], { relativeTo: this.route } ).then( res => {
                   this.showSpinner = false;
                 });
@@ -154,9 +163,9 @@ export class LoginNewComponent implements OnInit {
 
                 let self = this;
                 this.widget .refreshElseSignout(
-                  this,
-                  err,
-                  // self.searchDataRequest.bind(self, org)
+                    this,
+                    err,
+                    // self.searchDataRequest.bind(self, org)
                 );
 
               } else {

@@ -64,17 +64,17 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   resetModel: any;
 
   constructor(
-    // private okta: OktaAuthService,
-    private translate: TranslateService,
-    public router: Router,
-    private route: ActivatedRoute,
-    private location: Location,
-    private common: Common,
-    private auth: AuthService,
-    private toastr: ToastsManager,
-    private organizationService: OrganizationService,
-    private changeDetectorRef: ChangeDetectorRef,
-    private http: Http) {
+      // private okta: OktaAuthService,
+      private translate: TranslateService,
+      public router: Router,
+      private route: ActivatedRoute,
+      private location: Location,
+      private common: Common,
+      private auth: AuthService,
+      private toastr: ToastsManager,
+      private organizationService: OrganizationService,
+      private changeDetectorRef: ChangeDetectorRef,
+      private http: Http) {
 
     this.resetForm = new FormGroup({
       old: new FormControl('', Validators.required),
@@ -176,96 +176,110 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
 
   getPreferenceMenu() {
     this.auth.getPreferenceMenu().subscribe(
-      response => {
+        response => {
 
-        const groupArr = [];
-        const groups = localStorage.getItem('loggedInUserGroup') || '';
+          const groupArr = [];
+          const groups = localStorage.getItem('loggedInUserGroup') || '';
 
-        // if (groups) {
-        //   const grp = JSON.parse(groups);
-        //   grp.forEach(function (item) {
-        //     if (item.profile && item.profile.name) {
-        //       groupArr.push(item.profile.name);
-        //     }
-        //   });
-        // }
+          // if (groups) {
+          //   const grp = JSON.parse(groups);
+          //   grp.forEach(function (item) {
+          //     if (item.profile && item.profile.name) {
+          //       groupArr.push(item.profile.name);
+          //     }
+          //   });
+          // }
 
-        if (groups) {
-          const grp = JSON.parse(groups);
-          grp.forEach(function (item) {
-            groupArr.push(item);
-          });
-        }
+          if (groups) {
+            const grp = JSON.parse(groups);
+            grp.forEach(function (item) {
+              groupArr.push(item);
+            });
+          }
 
-        let isRoot = false;
-        let isAdmin = false;
-        let removeMenuItems = true;
-        if (groupArr.length) {
-          groupArr.forEach(function (grp) {
-            if (grp === 'ADMIN' || grp === 'ROOT' || grp === 'SUPER_USER' || grp === 'ORG_ADMIN') {
-              if(grp === 'ADMIN' || grp === 'ORG_ADMIN') {
-                isAdmin = true;
+          let isRoot = false;
+          let isAdmin = false;
+          let removeMenuItems = true;
+          if (groupArr.length) {
+            groupArr.forEach(function (grp) {
+              if (grp === 'ADMIN' || grp === 'ROOT' || grp === 'SUPER_USER' || grp === 'ORG_ADMIN') {
+                if(grp === 'ADMIN' || grp === 'ORG_ADMIN') {
+                  isAdmin = true;
+                }
+                if (grp === 'ROOT' || grp === 'SUPER_USER') {
+                  isRoot = true;
+                }
+                removeMenuItems = false;
               }
-              if (grp === 'ROOT' || grp === 'SUPER_USER') {
-                isRoot = true;
+            });
+          }
+
+          this.mainmenu = response['admin'];
+
+          if (removeMenuItems) {
+            var reducedMenu = this.mainmenu.filter(function (res) {
+              return res.id !== 'payments' && res.id !== 'admin' && res.id !== 'reports';
+            });
+            this.mainmenu = reducedMenu;
+          }
+
+          if (isAdmin && !isRoot) {
+            const menu = JSON.parse(JSON.stringify(response['admin']));
+            this.mainmenu = menu.map(function (m){
+              if (m.name === 'admin') {
+                m.submenu = m.submenu.filter(function (ele: any) {
+                  return ele.name !== 'orgmanagement' && ele.name !== 'emailmanagement' && ele.name !== 'analytics' && ele.name !== 'support' && ele.name !== 'uploads';
+                });
               }
-              removeMenuItems = false;
+              return m;
+            });
+
+            if (isAdmin) {
+              const allowOrderFunctionality = localStorage.getItem('allowOrderFunctionality');
+              if (allowOrderFunctionality === 'false') {
+                this.mainmenu = this.mainmenu.map(function (m) {
+                  if (m.name === 'admin') {
+                    m.submenu = m.submenu.filter(function (ele: any) {
+                      return ele.name !== 'baseFields' && ele.name !== 'ordertemplate' && ele.name !== 'ordertemplatelist';
+                    });
+                  }
+                  return m;
+                });
+              }
             }
-          });
-        }
+          }
 
-        this.mainmenu = response['admin'];
-
-        if (removeMenuItems) {
-          var reducedMenu = this.mainmenu.filter(function (res) {
-            return res.id !== 'payments' && res.id !== 'admin' && res.id !== 'reports';
-          });
-          this.mainmenu = reducedMenu;
-        }
-
-        if (isAdmin && !isRoot) {
-          const menu = JSON.parse(JSON.stringify(response['admin']));
-          this.mainmenu = menu.map(function (m){
-            if (m.name === 'admin') {
-              m.submenu = m.submenu.filter(function (ele: any) {
-                return ele.name !== 'orgmanagement' && ele.name !== 'emailmanagement' && ele.name !== 'analytics' && ele.name !== 'support' && ele.name !== 'uploads';
-              });
-            }
-            return m;
-          });
-        }
-
-        if (window.location.pathname) {
-          const urlParts = window.location.pathname.indexOf('/') != -1 ? window.location.pathname.split('/') : window.location.pathname;
-          const corr = this.mainmenu.find( x=> x.url === (urlParts[1] + '/' + urlParts[2]));
-          if (corr) {
-            this.mainmenu[this.mainmenu.indexOf(corr)].selected = true;
-            if (this.mainmenu[this.mainmenu.indexOf(corr)].submenu) {
-              this.subMenu = this.mainmenu[this.mainmenu.indexOf(corr)].submenu;
-              if (urlParts[3]) {
-                const corr1 = this.mainmenu[this.mainmenu.indexOf(corr)].submenu.find(x=> x.id === urlParts[3]);
-                if (corr1) {
-                  this.mainmenu[this.mainmenu.indexOf(corr)].submenu[this.mainmenu[this.mainmenu.indexOf(corr)].submenu.indexOf(corr1)].selected = true;
+          if (window.location.pathname) {
+            const urlParts = window.location.pathname.indexOf('/') != -1 ? window.location.pathname.split('/') : window.location.pathname;
+            const corr = this.mainmenu.find( x=> x.url === (urlParts[1] + '/' + urlParts[2]));
+            if (corr) {
+              this.mainmenu[this.mainmenu.indexOf(corr)].selected = true;
+              if (this.mainmenu[this.mainmenu.indexOf(corr)].submenu) {
+                this.subMenu = this.mainmenu[this.mainmenu.indexOf(corr)].submenu;
+                if (urlParts[3]) {
+                  const corr1 = this.mainmenu[this.mainmenu.indexOf(corr)].submenu.find(x=> x.id === urlParts[3]);
+                  if (corr1) {
+                    this.mainmenu[this.mainmenu.indexOf(corr)].submenu[this.mainmenu[this.mainmenu.indexOf(corr)].submenu.indexOf(corr1)].selected = true;
+                  }
                 }
               }
             }
           }
+
+          // const activeMenu = _.filter(response['admin'], v => v['selected'] === true)[0];
+          // this.subMenu = activeMenu.submenu;
+          //
+          // console.log('this.subMenu >>')
+          // console.log(this.subMenu);
+        },
+        err => {
+
+          if (err.status === 401) {
+          } else {
+            this.toastr.error('ERROR!', err);
+          }
+
         }
-
-        // const activeMenu = _.filter(response['admin'], v => v['selected'] === true)[0];
-        // this.subMenu = activeMenu.submenu;
-        //
-        // console.log('this.subMenu >>')
-        // console.log(this.subMenu);
-      },
-      err => {
-
-        if (err.status === 401) {
-        } else {
-          this.toastr.error('ERROR!', err);
-        }
-
-      }
     );
   }
 
@@ -297,90 +311,90 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
    */
   getOrganization() {
     this.organizationService.getAllOrganization().subscribe(
-      response => {
-        if (response) {
-          const preRes = [];
-          _.forEach(response, (v, i) => {
-            const pre = {};
-            pre['id'] = v._id;
-            pre['Code'] = v.context.client.code;
-            pre['Name'] = v.name;
-            pre['CountryCode'] = v.context.country.code;
-            pre['context'] = v.context;
-            preRes.push(pre);
-          });
-          this.organizationList = preRes;
-          this.organizations = _.unionBy(preRes, 'Code');
-          this.organizations = _.sortBy(this.organizations, ['Name']);
-
-          const orgLocalData = this.localData;
-          const org = _.isUndefined(orgLocalData) ? '' : JSON.parse(orgLocalData);
-          const orgUser = JSON.parse(this.auth.getIdentityInfo('user'));
-          let orgFilter = [];
-          if (!_.isNull(org)) {
-            if (!_.isUndefined(org.client) && !_.isNull(org.client)) {
-              if (org.client['code'] !== '') {
-                orgFilter = _.filter(preRes, (v, i) => v.Code === org.client.code);
-              } else if (!_.isUndefined(orgUser['preference'])) {
-                if (orgUser['preference']['IsDefaultOrgSelector']) {
-                  orgFilter = _.filter(preRes, (v, i) => v.Code === orgUser['preference']['OrganizationCode']);
-                }
-              } else {
-                orgFilter = _.filter(preRes, (v, i) => v.Code === org.client.code);
-              }
-              if (org.country.code.length === 0 && orgFilter.length > 0) {
-                org.country.code = orgFilter[0]['CountryCode'];
-              }
-            }
-          }
-
-          this.selectedOrganization = orgFilter.length > 0 ? [orgFilter[0]] : [];
-          if (this.selectedOrganization.length > 0 && this.selectedOrganization[0]['Code'] !== '-') {
-            org['client']['name'] = this.selectedOrganization[0]['Name'];
-            org['client']['code'] = this.selectedOrganization[0]['Code'];
-            if (!_.isUndefined(org['orgChange'])) {
-              org['country']['code'] = this.selectedOrganization[0]['CountryCode'];
-              this.countries = _.filter(
-                this.getDoCheckCountry, v => _.indexOf(_.map(orgFilter, 'CountryCode'), v.Code.toLowerCase()) !== -1
-              );
-            } else {
-              this.countries = _.filter(this.countries, v => _.indexOf(_.map(orgFilter, 'CountryCode'), v.Code.toLowerCase()) !== -1);
-            }
-            this.auth.setIdentityInfo('org-context', JSON.stringify(org));
-            this.countries = _.sortBy(this.countries, ['Code']);
-            const countryCode = orgFilter.length > 0 ? orgFilter[0]['CountryCode'].toLowerCase() : '';
-            if (org.country.code === '') {
-              org.country.code = this.countries[0]['Code'];
-            }
-            setTimeout(() => {
-              if (org.country.code === countryCode) {
-                this.selectedCountry = _.filter(this.countries, (v, i) => v.Code.toLowerCase() === countryCode);
-              } else {
-                this.selectedCountry = _.filter(this.countries, (v, i) => v.Code.toLowerCase() === org.country.code.toLowerCase());
-              }
-              if (_.size(this.selectedCountry) === 0 || this.selectedCountry.length === 0) {
-                this.selectedCountry = this.countries[0];
-              }
-            }, 300);
-          }
-          if (!_.isNull(org)) {
-            if (!_.isUndefined(org['orgChange'])) {
-              this.getRefreshDoCheck = false;
-              delete org['orgChange'];
-              this.auth.setIdentityInfo('org-context', JSON.stringify(org));
-            }
-          }
-        }
-      }, err => {
-        if (err.status === 401) {
-          this.auth.refreshAccessToken().subscribe(
-            res => {
-              this.getOrganization();
+        response => {
+          if (response) {
+            const preRes = [];
+            _.forEach(response, (v, i) => {
+              const pre = {};
+              pre['id'] = v._id;
+              pre['Code'] = v.context.client.code;
+              pre['Name'] = v.name;
+              pre['CountryCode'] = v.context.country.code;
+              pre['context'] = v.context;
+              preRes.push(pre);
             });
-        } else {
-          this.toastr.error('ERROR!', err);
+            this.organizationList = preRes;
+            this.organizations = _.unionBy(preRes, 'Code');
+            this.organizations = _.sortBy(this.organizations, ['Name']);
+
+            const orgLocalData = this.localData;
+            const org = _.isUndefined(orgLocalData) ? '' : JSON.parse(orgLocalData);
+            const orgUser = JSON.parse(this.auth.getIdentityInfo('user'));
+            let orgFilter = [];
+            if (!_.isNull(org)) {
+              if (!_.isUndefined(org.client) && !_.isNull(org.client)) {
+                if (org.client['code'] !== '') {
+                  orgFilter = _.filter(preRes, (v, i) => v.Code === org.client.code);
+                } else if (!_.isUndefined(orgUser['preference'])) {
+                  if (orgUser['preference']['IsDefaultOrgSelector']) {
+                    orgFilter = _.filter(preRes, (v, i) => v.Code === orgUser['preference']['OrganizationCode']);
+                  }
+                } else {
+                  orgFilter = _.filter(preRes, (v, i) => v.Code === org.client.code);
+                }
+                if (org.country.code.length === 0 && orgFilter.length > 0) {
+                  org.country.code = orgFilter[0]['CountryCode'];
+                }
+              }
+            }
+
+            this.selectedOrganization = orgFilter.length > 0 ? [orgFilter[0]] : [];
+            if (this.selectedOrganization.length > 0 && this.selectedOrganization[0]['Code'] !== '-') {
+              org['client']['name'] = this.selectedOrganization[0]['Name'];
+              org['client']['code'] = this.selectedOrganization[0]['Code'];
+              if (!_.isUndefined(org['orgChange'])) {
+                org['country']['code'] = this.selectedOrganization[0]['CountryCode'];
+                this.countries = _.filter(
+                    this.getDoCheckCountry, v => _.indexOf(_.map(orgFilter, 'CountryCode'), v.Code.toLowerCase()) !== -1
+                );
+              } else {
+                this.countries = _.filter(this.countries, v => _.indexOf(_.map(orgFilter, 'CountryCode'), v.Code.toLowerCase()) !== -1);
+              }
+              this.auth.setIdentityInfo('org-context', JSON.stringify(org));
+              this.countries = _.sortBy(this.countries, ['Code']);
+              const countryCode = orgFilter.length > 0 ? orgFilter[0]['CountryCode'].toLowerCase() : '';
+              if (org.country.code === '') {
+                org.country.code = this.countries[0]['Code'];
+              }
+              setTimeout(() => {
+                if (org.country.code === countryCode) {
+                  this.selectedCountry = _.filter(this.countries, (v, i) => v.Code.toLowerCase() === countryCode);
+                } else {
+                  this.selectedCountry = _.filter(this.countries, (v, i) => v.Code.toLowerCase() === org.country.code.toLowerCase());
+                }
+                if (_.size(this.selectedCountry) === 0 || this.selectedCountry.length === 0) {
+                  this.selectedCountry = this.countries[0];
+                }
+              }, 300);
+            }
+            if (!_.isNull(org)) {
+              if (!_.isUndefined(org['orgChange'])) {
+                this.getRefreshDoCheck = false;
+                delete org['orgChange'];
+                this.auth.setIdentityInfo('org-context', JSON.stringify(org));
+              }
+            }
+          }
+        }, err => {
+          if (err.status === 401) {
+            this.auth.refreshAccessToken().subscribe(
+                res => {
+                  this.getOrganization();
+                });
+          } else {
+            this.toastr.error('ERROR!', err);
+          }
         }
-      }
     );
 
   }
@@ -393,28 +407,28 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
     const country = [];
     country.push({ field: 'country', module: 'organization' });
     this.organizationService.getFieldValues(country).subscribe(
-      response => {
-        if (response && _.size(response) > 0) {
-          const ct = [];
-          response[0].value.forEach((v, i) => {
-            const ob = {};
-            ob['Code'] = !_.isNull(v) ? v.value : '';
-            ob['Code'] = !_.isNull(v) ? v.value : '';
-            ct.push(ob);
-          });
-          this.countries = _.sortBy(ct, ['Code']);
-          this.getDoCheckCountry = this.countries;
-        }
-      }, err => {
-        if (err.status === 401) {
-          this.auth.refreshAccessToken().subscribe(
-            res => {
-              this.getCountries();
+        response => {
+          if (response && _.size(response) > 0) {
+            const ct = [];
+            response[0].value.forEach((v, i) => {
+              const ob = {};
+              ob['Code'] = !_.isNull(v) ? v.value : '';
+              ob['Code'] = !_.isNull(v) ? v.value : '';
+              ct.push(ob);
             });
-        } else {
-          this.toastr.error('ERROR!', err);
+            this.countries = _.sortBy(ct, ['Code']);
+            this.getDoCheckCountry = this.countries;
+          }
+        }, err => {
+          if (err.status === 401) {
+            this.auth.refreshAccessToken().subscribe(
+                res => {
+                  this.getCountries();
+                });
+          } else {
+            this.toastr.error('ERROR!', err);
+          }
         }
-      }
     );
 
   }
@@ -455,7 +469,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
     item = _.isUndefined(item['Code']) ? item : item['Code'];
     const org = JSON.parse(this.localData);
     const filterValue = _.filter(
-      this.organizationList, (v, i) => v.context.country.code === item.toLowerCase() && v.Code === org.client.code
+        this.organizationList, (v, i) => v.context.country.code === item.toLowerCase() && v.Code === org.client.code
     );
     org.country.code = item.toLowerCase();
     org.id = filterValue[0].id;
@@ -496,18 +510,18 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
     const idToken = localStorage.getItem('idToken') || '';
     const url = this.api_fs.api + '/api/users/logout/' + idToken;
     return this.http
-      .get(url, options)
-      .map(res => {
-        return res.json();
-      })
-      .share();
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        })
+        .share();
   }
 
   deleteUser() {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('idToken');
-      localStorage.removeItem('loggedInUserName');
-      localStorage.removeItem('loggedInUserID');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('idToken');
+    localStorage.removeItem('loggedInUserName');
+    localStorage.removeItem('loggedInUserID');
   }
 
   logout() {
@@ -544,12 +558,12 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
       this.error = 'Passwords does not match';
     } else {
       return this.performPasswordReset(dataObj).subscribe(
-        response => {
-          modalComponent.hide();
-        },
-        err => {
-          this.error = err.error.errorCauses[0].errorSummary;
-        }
+          response => {
+            modalComponent.hide();
+          },
+          err => {
+            this.error = err.error.errorCauses[0].errorSummary;
+          }
       );
     }
   }
@@ -567,10 +581,10 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
     const data = JSON.stringify(dataObj);
     const url = this.api_fs.api + '/api/users/' + userID + '/change-password';
     return this.http
-      .post(url, data, options)
-      .map(res => {
-        return res.json();
-      }).share();
+        .post(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   @HostListener('document:click', ['$event']) clickedOutside($event){
