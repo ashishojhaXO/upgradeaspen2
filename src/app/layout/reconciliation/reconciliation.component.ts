@@ -394,6 +394,8 @@ export class ReconciliationComponent implements OnInit  {
       let arr: Array<String> = [];
 
       if (rows && rows.length) {
+        rows.filter(res => delete res['lineItems']);
+        rows.filter(res => delete res['profiles']);
         const filRows = rows.filter(res => delete res['orders']);
         console.log(filRows);
 

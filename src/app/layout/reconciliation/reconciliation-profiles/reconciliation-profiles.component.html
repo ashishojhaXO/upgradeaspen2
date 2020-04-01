@@ -153,7 +153,7 @@
                       <!--<td>{{item.billing_due_date}}</td>-->
 
                       <td>{{invoice.isKenshoo ? (invoice.billedAmount | currency:"USD":true:'1.2-2') : (item.order_billed_amount ? (item.order_billed_amount | currency:"USD":true:'1.2-2') : 0)}}</td>
-                      <td>{{item.order_calculated_amount ? (item.order_calculated_amount  | currency:"USD":true:'1.2-2') : 0}}</td>
+                      <td>{{invoice.isKenshoo ? (item.total_spend ? (item.total_spend  | currency:"USD":true:'1.2-2') : 0) : (item.order_calculated_amount ? (item.order_calculated_amount  | currency:"USD":true:'1.2-2') : 0)}}</td>
                       <td>{{invoice.isKenshoo ? (invoice.discrepancyAmount | currency:"USD":true:'1.2-2') : (item.order_discrepancy_amount ? (item.order_discrepancy_amount | currency:"USD":true:'1.2-2') : 0)}}</td>
                       <td>{{item.order_id || '-'}}</td>
                       <td>{{item.total_invoice_paid_amount ? (item.total_invoice_paid_amount | currency:"USD":true:'1.2-2') : 0}}</td>
@@ -178,7 +178,7 @@
                         <!--<td class="coloredTd">{{sItem.billing_due_date}}</td>-->
 
                         <td class="coloredTd">{{sItem.line_item_billed_amount ? (sItem.line_item_billed_amount | currency:"USD":true:'1.2-2') : 0}}</td>
-                        <td class="coloredTd">{{sItem.line_item_calculated_amount ? (sItem.line_item_calculated_amount | currency:"USD":true:'1.2-2') : 0}}</td>
+                        <td class="coloredTd">{{invoice.isKenshoo ? (sItem.total_spend ? (sItem.total_spend | currency:"USD":true:'1.2-2') : 0) : (sItem.line_item_calculated_amount ? (sItem.line_item_calculated_amount | currency:"USD":true:'1.2-2') : 0)}}</td>
                         <td class="coloredTd">{{sItem.line_item_discrepancy_amount ? (sItem.line_item_discrepancy_amount | currency:"USD":true:'1.2-2') : 0}}</td>
                         <td class="coloredTd">{{sItem.line_item_id || '-'}}</td>
                         <td class="coloredTd">{{sItem.line_item_paid_amount ? (sItem.line_item_paid_amount | currency:"USD":true:'1.2-2') : 0}}</td>
