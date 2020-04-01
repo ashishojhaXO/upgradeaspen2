@@ -51,6 +51,9 @@ export class UserManagementComponent implements OnInit  {
     // To start the DataTables from a particular page number
     isDisplayStart: 0,
 
+    // If dataTable is having `isApiCallForNextPage`
+    // Then we will also have to send isOrder
+    isOrder: [[1, 'desc']],
     // For limited pagewise data
     isApiCallForNextPage: {
       value: true,

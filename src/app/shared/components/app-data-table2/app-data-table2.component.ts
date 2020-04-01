@@ -919,19 +919,23 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 
                 let currentPage = table.page.info().page;
 
+                // order
                 // On order of table
+                table.off('order.dt');
                 table.on('order.dt', function(e, settings, ordArr){
 
                     // let redrawPageNumber = table.page.info().page;
 
-                    console.log('OOORRDER....', "e: ", e, "sett: ", settings, " ordArr: ", ordArr, 
+                    console.log('OORRDER....', "e: ", e, "sett: ", settings, " ordArr: ", ordArr, 
                         "currenPage: ", currentPage,
-                        " table.page.info: ", table.page.info()
+                        " table.page.info: ", table.page.info(),
+                        "PAGES: ", table.page.info().pages
                     );
 
-                    // table.page(redrawPageNumber).draw(false);
+                    // table.page(table.page.info().pages).draw(false);
                     // table.off('order.dt');
                 });
+                // order-
 
 
                 $(document).off( 'keyup', 'input.input-sm');
