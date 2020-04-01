@@ -524,7 +524,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     });
                 },
                 pageLength: pageLength,
-                sort: false,
+                // sort: false,
+                sort: true,
                 displayStart: this.dataObject.gridData.options.isDisplayStart || 0,
 
                 // FTM/
