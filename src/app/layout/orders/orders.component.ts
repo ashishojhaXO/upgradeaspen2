@@ -243,7 +243,7 @@ export class OrdersComponent implements OnInit  {
   }
   // Success & Error CBs/
 
-  searchDataRequest(org = null, table) {
+  searchDataRequest(org = null, table?) {
 
     // if no table, then send all default, page=1 & limit=25
     // else, send table data
@@ -283,7 +283,7 @@ export class OrdersComponent implements OnInit  {
             this.widget.refreshElseSignout(
                 this,
                 err,
-                self.searchDataRequest.bind(self, org),
+                self.searchDataRequest.bind(self, org, table),
                 self.errorCallback.bind(self)
             );
           } else {
