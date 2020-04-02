@@ -71,16 +71,16 @@ export class OrdersComponent implements OnInit  {
     isHideColumns: [ "Vendor_Receipt_Id","internal_line_item_id","internal_order_id"],
 
     // TODO: Check for PageLen change event also...
-    // isApiCallForNextPage: {
-    //   value: true,
-    //   apiMethod: (table) => {
-    //     console.log(
-    //       "apiMethod here, table here: ", table,
-    //       " this: ", this, " run blah: ", this.getOrders()
-    //     );
-    //     // Make ApiCall to backend with PageNo, Limit,
-    //   }
-    // }
+    isApiCallForNextPage: {
+      value: true,
+      apiMethod: (table) => {
+        console.log(
+          "apiMethod here, table here: ", table,
+          " this: ", this, " run blah: ", this.getOrders()
+        );
+        // Make ApiCall to backend with PageNo, Limit,
+      }
+    },
 
     isTree: true,
     // isChildRowActions required when there need to be actions below every row.
