@@ -322,6 +322,28 @@ export class GenericService {
 
   }
 
+
+  searchData(data) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    let org = data.org;
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/orders/line-items' + (this.isRoot ? ('?org_uuid=' + org) : '');
+    return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
+
   /**
    * Create Admin User Service from formData
    * @param dataObj

@@ -243,9 +243,33 @@ export class OrdersComponent implements OnInit  {
   }
   // Success & Error CBs/
 
-  searchDataRequest(org = null) {
+  searchDataRequest(org = null, table) {
+
+    // if no table, then send all default, page=1 & limit=25
+    // else, send table data
+    let data = {
+      page: 1,
+      limit: +localStorage.getItem("gridPageCount"),
+      org: org ? org : ''
+    };
+
+    if(table) {
+      let tab = table.page.info();
+      data = {
+        page: tab.page + 1,
+        limit: tab.length,
+        org: org ? org : ''
+      };
+    }
+
+    // this.hasData = false;
+    this.showSpinner = true;
+
+
     const self = this;
-    return this.searchData(org).subscribe(
+    // return this.searchData(org)
+    return this.genericService.searchData(data)
+    .subscribe(
         response => {
           if (response) {
             if (response) {
@@ -270,23 +294,6 @@ export class OrdersComponent implements OnInit  {
     );
   }
 
-  searchData(org = null) {
-    const AccessToken: any = localStorage.getItem('accessToken');
-    let token = '';
-    if (AccessToken) {
-      // token = AccessToken.accessToken;
-      token = AccessToken;
-    }
-
-    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
-    const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/orders/line-items' + (this.isRoot ? ('?org_uuid=' + org) : '');
-    return this.http
-        .get(url, options)
-        .map(res => {
-          return res.json();
-        }).share();
-  }
 
   orgChange(value) {
     this.dataObject.isDataAvailable = false;
