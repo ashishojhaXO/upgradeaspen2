@@ -591,7 +591,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 }
 
                                 const rowEle = __this.dataObject.gridData.result[index];
-                                const extendedRow = rowEle.id == rowEle.suppliedId;
+                                const extendedRow = rowEle.id && rowEle.id == rowEle.suppliedId;
 
                                 field.value = __this.dataObject.gridData.result[index][field.name];
 
