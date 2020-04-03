@@ -259,8 +259,7 @@ export class OrdersComponent implements OnInit  {
             this.widget.refreshElseSignout(
                 this,
                 err,
-                self.searchDataRequest.bind(self, org),
-                self.errorCallback.bind(self)
+                self.searchDataRequest.bind(self, org)
             );
           } else {
             this.showSpinner = false;

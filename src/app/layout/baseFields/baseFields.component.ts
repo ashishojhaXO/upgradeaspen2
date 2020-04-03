@@ -53,7 +53,6 @@ export class BaseFieldsComponent implements OnInit {
   }
 
   createBase(template){
-    let self = this;
     this.createBaseService(template).subscribe(
       response => {
         console.log('response >>')
@@ -73,8 +72,8 @@ export class BaseFieldsComponent implements OnInit {
           let self = this;
           this.widget.refreshElseSignout(
             this,
-            err, 
-            self.createBaseService.bind(self, template) 
+            err,
+            self.createBase.bind(self, template)
           );
         } else {
           Swal({

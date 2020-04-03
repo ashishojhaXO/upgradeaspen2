@@ -60,15 +60,16 @@ export class OktaAuthService {
   }
 
   refreshCounter = 0;
-
   refreshElseSignout(obj, err, successFuncName, errorFuncName ) {
     this.refreshCounter++;
-
     if(localStorage.getItem('accessToken') || this.refreshCounter < 3) {
       this.tokenManager.refresh(
-        'accessToken', 
+        'accessToken',
         successFuncName,
-        errorFuncName
+        () => {
+          console.log('Log out user !!!')
+          this.signOut();
+        }
       );
     } else {
       console.log("ELSE SIGNOUT & RefreshCounter > 3")
@@ -113,8 +114,8 @@ export class OktaAuthService {
       // return this.logOut.apply(this, [accessToken]);
 
       const headers = new Headers({
-        'Content-Type': 'application/json', 
-        'callingapp' : 'aspen', 
+        'Content-Type': 'application/json',
+        'callingapp' : 'aspen',
         // "scope": "openid offline_access"
       });
       const options = new RequestOptions({headers: headers});
@@ -133,13 +134,14 @@ export class OktaAuthService {
         this.tokenManager.setLocalStorageKey('accessToken', res.data.access_token);
         return res;
       })
-      .subscribe( 
+      .subscribe(
         // on subscribe run the passed function `func`
         (response) => {
           this.tokenManager.successCallback.apply(this, [response, successCB])
         },
         (error) => {
-          this.tokenManager.errorCallback.apply(this, [error, errorCB])
+          this.tokenManager.errorCallback.apply(this, [error, errorCB]);
+
         }
       );
 
@@ -169,7 +171,7 @@ export class OktaAuthService {
 
     // Return widget only if the person is logged in and accesToken exists, else logout
     return this.widget();
-    // return 
+    // return
   }
 
   logOutService() {
@@ -187,7 +189,7 @@ export class OktaAuthService {
       console.log("inside resolver", self, this)
       self.logOutService().then( () => {
         console.log("logOUSERV.then resovl")
-        return resolve(localStorage.getItem('accessToken')) 
+        return resolve(localStorage.getItem('accessToken'))
       }, rej => {
         console.log("louOutServ rej: ", rej);
       }

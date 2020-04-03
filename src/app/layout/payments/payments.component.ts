@@ -409,7 +409,7 @@ export class PaymentsComponent implements OnInit  {
         }).share();
   }
 
-  getOrganizations(){
+  getOrganizations() {
     this.getAllOrganizations().subscribe(
       response => {
         if(response)
@@ -873,7 +873,7 @@ export class PaymentsComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err,
-              self.updateApService.bind(self, formData, modalComponent),
+              self.updateAp.bind(self, formData, modalComponent)
             );
 
         } else {

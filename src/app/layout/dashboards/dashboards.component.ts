@@ -32,30 +32,30 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   showSpinner: any;
 
   defaultFilters = [
+    {
+      f7Name : 'type',
+      label : 'View',
+      values : 'Daily',
+      isMultiSelect : false,
+      dependentOn : [],
+      type : 'toggle',
+      toggleOptions : [{
+        name : 'CTD',
+        value : 'Monthly'
+      },
         {
-          f7Name : 'type',
-          label : 'View',
-          values : 'Daily',
-          isMultiSelect : false,
-          dependentOn : [],
-          type : 'toggle',
-          toggleOptions : [{
-            name : 'CTD',
-            value : 'Monthly'
-          },
-          {
-            name: 'MTD',
-            value: 'Daily'
-          }]
-        },
-        {
-          f7Name : 'period',
-          label : 'Period',
-          values : [],
-          isMultiSelect : false,
-          dependentOn : [],
-          type : 'dropdown'
-        }
+          name: 'MTD',
+          value: 'Daily'
+        }]
+    },
+    {
+      f7Name : 'period',
+      label : 'Period',
+      values : [],
+      isMultiSelect : false,
+      dependentOn : [],
+      type : 'dropdown'
+    }
   ];
 
   gridData: any;
@@ -83,14 +83,14 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   @ViewChild('table') tableRef;
 
   constructor(
-    private okta: OktaAuthService,
-    private route: ActivatedRoute, private router: Router, private http: Http) {
+      private okta: OktaAuthService,
+      private route: ActivatedRoute, private router: Router, private http: Http) {
     this.showSpinner = false;
   }
 
   getDependentConfig(dependsOn: any) {
     return this.dashboardConfig.filterProps.filter(function (x) {
-       return dependsOn.indexOf(x.f7Name) !== -1;
+      return dependsOn.indexOf(x.f7Name) !== -1;
     });
   }
 
@@ -102,7 +102,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         if (config.values.length) {
           const values = [];
           config.values.forEach(function (val) {
-             values.push(val.id);
+            values.push(val.id);
           });
           applyFilter.push({
             f7Name : config.f7Name,
@@ -276,10 +276,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }
 
   updateFilterConfig(data) {
-   console.log('updated value ' + data.f7Name)
+    console.log('updated value ' + data.f7Name)
     console.log(data);
 
-   // Reset the filters dependent on the current field
+    // Reset the filters dependent on the current field
     this.dashboardConfig.filterProps.forEach(function (item) {
       if (item.dependentOn.indexOf(data.f7Name) != -1) {
         item.values = [];
@@ -309,57 +309,56 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     this.dashboardConfig.filterProps = JSON.parse(JSON.stringify(this.defaultFilters));
 
     if (this.dashboardType === 'pacing' || this.dashboardType === 'spend') {
-      let self = this;
       this
-        .getFilter(this.dashboardType)
-        .then(
-          response => {
-            if (response && response.data) {
-              this.getSeedData()
-                  .then(
-                      response1 => {
-                        this.populateFilters(response.data, response1);
-                        //this.search();
-                      });
+          .getFilter(this.dashboardType)
+          .then(
+              response => {
+                if (response && response.data) {
+                  this.getSeedData()
+                      .then(
+                          response1 => {
+                            this.populateFilters(response.data, response1);
+                            //this.search();
+                          });
 
-              this.getSeedDashboard()
-                  .then(
-                      response2 => {
-                        response2 = response2.json();
-                        this.showSpinner = false;
-                        this.populateChart(response2);
-                        this.populateDataTable(response2);
-                      }, error => {
-                        if(error.status === 401) {
-                          let self = this;
-                          this.widget.refreshElseSignout(
-                            this,
-                            error,
-                            // self.searchDataRequest.bind(self),
-                            self.getSeedDashboard.bind(self)
-                          );
+                  this.getSeedDashboard()
+                      .then(
+                          response2 => {
+                            response2 = response2.json();
+                            this.showSpinner = false;
+                            this.populateChart(response2);
+                            this.populateDataTable(response2);
+                          }, error => {
+                            if(error.status === 401) {
+                              let self = this;
+                              this.widget.refreshElseSignout(
+                                  this,
+                                  error,
+                                  // self.searchDataRequest.bind(self),
+                                  self.ngOnInit.bind(self)
+                              );
 
-                        } else {
-                          this.showSpinner = false;
-                        }
+                            } else {
+                              this.showSpinner = false;
+                            }
 
-                      });
-            }
-          },
-          error => {
+                          });
+                }
+              },
+              error => {
 
-            if(error.status === 401) {
-              let self = this;
-              this.widget.refreshElseSignout(
-                this,
-                error,
-                // self.searchDataRequest.bind(self),
-                self.getFilter.bind(self)
-              );
-            } else {
-              this.showSpinner = false;
-            }
-          });
+                if(error.status === 401) {
+                  this.showSpinner = false;
+                  let self = this;
+                  this.widget.refreshElseSignout(
+                      this,
+                      error,
+                      self.ngOnInit.bind(self)
+                  );
+                } else {
+                  this.showSpinner = false;
+                }
+              });
 
       const defaultObj: any = {};
       defaultObj.gridData = [];
@@ -407,20 +406,20 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
     const dataObj = JSON.stringify(obj);
     return this.http.post(
-      this.api_fs.api + '/api/reports/org/homd/seed-dashboard/v1',
-      dataObj,
-      options
+        this.api_fs.api + '/api/reports/org/homd/seed-dashboard/v1',
+        dataObj,
+        options
     ).toPromise()
-        // .then(
-        //   data => data.json(),
-        //   rej => {
-        //     console.log("inside gSD: ", rej)
-        //     this.showSpinner = false;
-        //   }
-        // )
-        // .catch( rej => {
-        //   console.log("CATCH REj", rej)
-        // });
+    // .then(
+    //   data => data.json(),
+    //   rej => {
+    //     console.log("inside gSD: ", rej)
+    //     this.showSpinner = false;
+    //   }
+    // )
+    // .catch( rej => {
+    //   console.log("CATCH REj", rej)
+    // });
   }
 
   populateFilters(filterResponse, seedResponse) {
@@ -428,7 +427,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     localStorage.setItem('dashboardConfig_' + this.dashboardType, JSON.stringify(filterResponse));
     var dashboardConfig = filterResponse;
     var selectedType = this.dashboardConfig.filterProps.filter(function (filter) {
-       return filter.f7Name === 'type';
+      return filter.f7Name === 'type';
     });
 
     if (selectedType.length) {
@@ -439,60 +438,60 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       // console.log('selectedType >>')
       // console.log(selectedType);
 
-       var getSelectedTypeConfig = dashboardConfig.views.find(x => x.name === selectedType[0].values);
+      var getSelectedTypeConfig = dashboardConfig.views.find(x => x.name === selectedType[0].values);
 
-       // console.log('getSelectedTypeConfig >>')
-       // console.log(getSelectedTypeConfig);
+      // console.log('getSelectedTypeConfig >>')
+      // console.log(getSelectedTypeConfig);
 
-       this.selectedView = getSelectedTypeConfig.name;
-       if (getSelectedTypeConfig) {
+      this.selectedView = getSelectedTypeConfig.name;
+      if (getSelectedTypeConfig) {
 
-         // console.log('getSelectedTypeConfig.filters.source >>>')
-         // console.log(getSelectedTypeConfig.filters.source);
+        // console.log('getSelectedTypeConfig.filters.source >>>')
+        // console.log(getSelectedTypeConfig.filters.source);
 
-         getSelectedTypeConfig.filters.source.forEach(function (filter, index) {
-           if (filter.f7_name != 'month') {
-             var newFilter: any = {};
-             newFilter.f7Name = filter.f7_name;
-             newFilter.label = filter.alias;
-             newFilter.values = [];
-             newFilter.displayDefault = null; // filter.displayDefault;
+        getSelectedTypeConfig.filters.source.forEach(function (filter, index) {
+          if (filter.f7_name != 'month') {
+            var newFilter: any = {};
+            newFilter.f7Name = filter.f7_name;
+            newFilter.label = filter.alias;
+            newFilter.values = [];
+            newFilter.displayDefault = null; // filter.displayDefault;
 
-             if (!newFilter.displayDefault) {
-               if (seedResponse[newFilter.f7Name] && seedResponse[newFilter.f7Name].length) {
-                 if (seedResponse[newFilter.f7Name] !== 'period') {
-                   newFilter.values = [{
-                     id: seedResponse[newFilter.f7Name][0],
-                     label: seedResponse[newFilter.f7Name][0]
-                   }];
-                 }
-               }
-             }
-             //  newFilter.values = filter.default_value ? [filter.default_value] : [];
+            if (!newFilter.displayDefault) {
+              if (seedResponse[newFilter.f7Name] && seedResponse[newFilter.f7Name].length) {
+                if (seedResponse[newFilter.f7Name] !== 'period') {
+                  newFilter.values = [{
+                    id: seedResponse[newFilter.f7Name][0],
+                    label: seedResponse[newFilter.f7Name][0]
+                  }];
+                }
+              }
+            }
+            //  newFilter.values = filter.default_value ? [filter.default_value] : [];
 
-             newFilter.isMultiSelect = filter.hasAllOption || false;
-             newFilter.dependentOn = filter.parent || [];
-             newFilter.includeCustom = false;
-             newFilter.isMultipleCustomType = false;
-             newFilter.isTag = false;
-             newFilter.placeHolderText = '';
-             newFilter.placeHolderValue = '';
-             newFilter.apiRequestUrl = '';
-             newFilter.apiRequestType = '';
-             newFilter.type = 'popupButton';
+            newFilter.isMultiSelect = filter.hasAllOption || false;
+            newFilter.dependentOn = filter.parent || [];
+            newFilter.includeCustom = false;
+            newFilter.isMultipleCustomType = false;
+            newFilter.isTag = false;
+            newFilter.placeHolderText = '';
+            newFilter.placeHolderValue = '';
+            newFilter.apiRequestUrl = '';
+            newFilter.apiRequestType = '';
+            newFilter.type = 'popupButton';
 
-             this.dashboardConfig.filterProps.push(newFilter);
-           }
-         }, this);
-       }
+            this.dashboardConfig.filterProps.push(newFilter);
+          }
+        }, this);
+      }
 
-       const periodFilter = this.dashboardConfig.filterProps.find( x=> x.f7Name === 'period');
-       if (periodFilter && seedResponse['period'] && seedResponse['period'].values && seedResponse['period'].values.startDate) {
-         periodFilter.values = [{
-           id: seedResponse['period'].values.startDate,
-           itemName: this.getMonthName(seedResponse['period'].values.startDate.split('-')[1].replace('0','')) + ' ' + seedResponse['period'].values.startDate.split('-')[0]
-         }];
-       }
+      const periodFilter = this.dashboardConfig.filterProps.find( x=> x.f7Name === 'period');
+      if (periodFilter && seedResponse['period'] && seedResponse['period'].values && seedResponse['period'].values.startDate) {
+        periodFilter.values = [{
+          id: seedResponse['period'].values.startDate,
+          itemName: this.getMonthName(seedResponse['period'].values.startDate.split('-')[1].replace('0','')) + ' ' + seedResponse['period'].values.startDate.split('-')[0]
+        }];
+      }
     }
   }
 
@@ -762,17 +761,17 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
       const keys = Object.keys(responseData.gridData[0]);
       for (let i = 0; i < keys.length; i++) {
-          headers.push({
-            key: keys[i],
-            title: keys[i],
-            mData: keys[i],
-            data: keys[i],
-            isFilterRequired: true,
-            isCheckbox: false,
-            class: 'nocolvis',
-            editButton: false,
-            width: '150'
-          });
+        headers.push({
+          key: keys[i],
+          title: keys[i],
+          mData: keys[i],
+          data: keys[i],
+          isFilterRequired: true,
+          isCheckbox: false,
+          class: 'nocolvis',
+          editButton: false,
+          width: '150'
+        });
       }
 
       this.gridData['headers'] = headers;
@@ -792,7 +791,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
       this.dataObject.isDataAvailable = true; // this.gridData.result && this.gridData.result.length ? true : false;
     }
-   // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
+    // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
   }
 
   getFilter(dashboardType): any {
@@ -808,8 +807,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
     return this.http.get(this.api_fs.api + '/api/reports/org/Home%20Depot/template/dashboard?templatename=' + dashboardType, options).toPromise()
-      .then(data => data.json())
-      .catch();
+        .then(data => data.json())
+        .catch();
   }
 
   formatDate(date) {
@@ -834,7 +833,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       dateField = this.formatDate(new Date());
     }
 
-   // dateField = '2019-04-01';
+    // dateField = '2019-04-01';
 
     const startDate = dateField + 'T00:00:00Z';
     let endDate = '';
@@ -911,7 +910,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             this.dataObject.isDataAvailable = false;
             const __this = this;
             setTimeout(function () {
-                __this.populateDataTable(response);
+              __this.populateDataTable(response);
             }, 0);
 
             this.populateChart(response);
@@ -923,9 +922,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
             let self = this;
             this.widget.refreshElseSignout(
-              this,
-              err,
-              self.getSearchDataRequest.bind(self, dataObj)
+                this,
+                err,
+                self.getSearchDataRequest.bind(self, dataObj)
             );
 
           } else {
@@ -955,10 +954,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       url = this.api_fs.api + '/api/reports/spend/v1';
     }
     return this.http
-      .post(url, data, options)
-      .map(res => {
-        return res.json();
-      }).share();
+        .post(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   isArray(obj) {

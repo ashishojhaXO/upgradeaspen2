@@ -37,7 +37,6 @@ export class ReconciliationLineItemsComponent implements OnInit {
     this.searchDataRequest(this.itemDetails, this.period);
   }
   searchDataRequest(invoiceDetails, period) {
-    let self = this;
     this.searchData(invoiceDetails, period).subscribe(
       response => {
         if (response) {
@@ -51,7 +50,7 @@ export class ReconciliationLineItemsComponent implements OnInit {
           this.widget.refreshElseSignout(
             this,
             err,
-            self.searchDataRequest.bind(self, invoiceDetails),
+            self.searchDataRequest.bind(self, invoiceDetails, period)
           );
         } else {
           Swal({
