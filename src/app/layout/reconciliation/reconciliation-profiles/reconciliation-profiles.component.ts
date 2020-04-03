@@ -192,7 +192,7 @@ export class ReconciliationProfilesComponent implements OnInit {
           this.widget.refreshElseSignout(
             this,
             err,
-            self.searchDataRequest.bind(self, invoiceId),
+            self.searchDataRequest.bind(self, invoiceId, period)
           );
         } else {
           Swal({
@@ -232,7 +232,7 @@ export class ReconciliationProfilesComponent implements OnInit {
           this.widget.refreshElseSignout(
             this,
             err,
-            self.getKenshooProfileDetails.bind(self, invoice, profileName, invoice_header_id)
+            self.getKenshooProfileDetails.bind(self, invoice, profileName, invoice_header_id, period)
           );
         } else {
           this.showSpinner = false;

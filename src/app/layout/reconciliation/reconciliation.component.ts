@@ -461,11 +461,11 @@ export class ReconciliationComponent implements OnInit  {
                 if (data.orders && data.orders.length) {
                   data.orders.forEach(function (ordData, index) {
                        orders.push(ordData);
-                  });                 
+                  });
                 }
             });
             if(orders){
-              this.hasData = true;         
+              this.hasData = true;
               this.invoiceOrderCsv(orders);
             }else{
               Swal({
@@ -473,7 +473,7 @@ export class ReconciliationComponent implements OnInit  {
                 text: 'We did not find a download link for that invoice',
                 type: 'error'
               });
-            }             
+            }
             }else{
               Swal({
                 title: 'No downloadable link available',
@@ -490,7 +490,7 @@ export class ReconciliationComponent implements OnInit  {
               this.widget.refreshElseSignout(
                 this,
                 err,
-                self.handleCustom.bind(self,dataObj)
+                self.handleCustom.bind(self, dataObj)
               );
             } else {
               this.showSpinner = false;

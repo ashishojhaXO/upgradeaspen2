@@ -16,6 +16,7 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import Swal from 'sweetalert2';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
+import { OktaAuthService } from '../../../services/okta.service';
 
 @Component({
   selector: 'app-order',
@@ -84,14 +85,14 @@ export class OrderComponent implements OnInit  {
 
   constructor(
     // private okta: OktaAuthService,
-    private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder,) {
+    private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder, private okta: OktaAuthService) {
     this.formAttribute = fb;
   }
 
   ngOnInit() {
 
     this.showSpinner = true;
-    // this.widget = this.okta.getWidget();
+    this.widget = this.okta.getWidget();
 
     this.height = '50vh';
 
@@ -134,25 +135,12 @@ export class OrderComponent implements OnInit  {
         },
         err => {
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              console.log("ord no okt if")
-              // this.widget.tokenManager.refresh('accessToken')
-              //     .then(function (newToken) {
-              //       localStorage.setItem('accessToken', newToken);
-              //       this.showSpinner = false;
-              //       this.searchTemplates();
-              //     })
-              //     .catch(function (err) {
-              //       console.log('error >>')
-              //       console.log(err);
-              //     });
-            } else {
-              console.log("ord no okt else")
-              // this.widget.signOut(() => {
-              //   localStorage.removeItem('accessToken');
-              //   window.location.href = '/login';
-              // });
-            }
+              let self = this;
+              this.widget.refreshElseSignout(
+                  this,
+                  err,
+                  self.extractOrderDetails.bind(self, id, lineItemId)
+              );
           } else {
             this.showSpinner = false;
           }
@@ -191,27 +179,13 @@ export class OrderComponent implements OnInit  {
           }
         },
         err => {
-
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              console.log("ord no okt if")
-              // this.widget.tokenManager.refresh('accessToken')
-              //     .then(function (newToken) {
-              //       localStorage.setItem('accessToken', newToken);
-              //       this.showSpinner = false;
-              //       this.searchTemplates();
-              //     })
-              //     .catch(function (err) {
-              //       console.log('error >>')
-              //       console.log(err);
-              //     });
-            } else {
-              console.log("ord no okt else")
-              // this.widget.signOut(() => {
-              //   localStorage.removeItem('accessToken');
-              //   window.location.href = '/login';
-              // });
-            }
+              let self = this;
+              this.widget.refreshElseSignout(
+                  this,
+                  err,
+                  self.searchTemplates.bind(self)
+              );
           } else {
             this.showSpinner = false;
           }
@@ -375,13 +349,12 @@ export class OrderComponent implements OnInit  {
                               }
                           },err => {
                               if(err.status === 401) {
-                                  // let self = this;
-                                  // this.widget.refreshElseSignout(
-                                  //     this,
-                                  //     err,
-                                  //     self.searchDateRequest.bind(self, orderID),
-                                  // );
-
+                                  let self = this;
+                                  this.widget.refreshElseSignout(
+                                      this,
+                                      err,
+                                      self.searchTemplateDetails.bind(self, templateID, existingOrderInfo, lineItemId)
+                                  );
                               } else {
                                   this.data.controls.forEach(function (ctrl) {
                                       if (ctrl.name === ele.name) {
@@ -420,13 +393,12 @@ export class OrderComponent implements OnInit  {
                         }
                       },err => {
                           if(err.status === 401) {
-                              // let self = this;
-                              // this.widget.refreshElseSignout(
-                              //     this,
-                              //     err,
-                              //     self.searchDateRequest.bind(self, orderID),
-                              // );
-
+                              let self = this;
+                              this.widget.refreshElseSignout(
+                                  this,
+                                  err,
+                                  self.searchTemplateDetails.bind(self, templateID, existingOrderInfo, lineItemId)
+                              );
                           } else {
                               lineItem.options = [];
                           }
@@ -466,12 +438,12 @@ export class OrderComponent implements OnInit  {
                         }
                       },err => {
                         if (err.status === 401) {
-                            // let self = this;
-                            // this.widget.refreshElseSignout(
-                            //     this,
-                            //     err,
-                            //     self.searchDateRequest.bind(self, orderID),
-                            // );
+                            let self = this;
+                            this.widget.refreshElseSignout(
+                                this,
+                                err,
+                                self.searchTemplateDetails.bind(self, templateID, existingOrderInfo, lineItemId)
+                            );
                         } else {
                             lineItem.options = [];
                         }
@@ -484,12 +456,12 @@ export class OrderComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            let self = this;
-            this.widget.refreshElseSignout(
-              this,
-              err,
-              self.getTemplateDetails.bind(self, templateID)
-            );
+              let self = this;
+              this.widget.refreshElseSignout(
+                  this,
+                  err,
+                  self.searchTemplateDetails.bind(self, templateID, existingOrderInfo, lineItemId)
+              );
           } else {
             this.showSpinner = false;
           }
@@ -516,7 +488,7 @@ export class OrderComponent implements OnInit  {
             this.widget.refreshElseSignout(
                 this,
                 err,
-                self.searchDateRequest.bind(self, orderID),
+                self.searchDateRequest.bind(self, orderID, lineItemId)
             );
 
           } else {
@@ -779,9 +751,8 @@ export class OrderComponent implements OnInit  {
                             // this.widget.refreshElseSignout(
                             //     this,
                             //     err,
-                            //     self.searchDateRequest.bind(self, orderID),
+                            //     self.searchTemplates.bind(self)
                             // );
-
                         } else {
                             this.data.controls.forEach(function (ctrl) {
                                 if (ctrl.name === ele.name) {

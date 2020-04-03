@@ -608,7 +608,7 @@ export class UserManagementComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err,
-              // self.searchDataRequest.bind(self)
+              self.getRoles.bind(self)
             );
         } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};

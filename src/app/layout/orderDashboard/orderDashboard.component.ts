@@ -228,7 +228,6 @@ export class OrderDashboardComponent implements OnInit  {
   }
 
   cancelOrderRequest(orderID) {
-    let self = this;
     this.cancelRequest(orderID).subscribe(
         response => {
           console.log('response >>')
@@ -248,7 +247,7 @@ export class OrderDashboardComponent implements OnInit  {
             this.widget.refreshElseSignout(
                 this,
                 err,
-                self.cancelRequest.bind(self, orderID),
+                self.cancelOrderRequest.bind(self, orderID),
             );
           } else {
             Swal({
@@ -296,7 +295,7 @@ export class OrderDashboardComponent implements OnInit  {
                   this.widget.refreshElseSignout(
                       this,
                       err,
-                      self.refundRequest.bind(self, lineItem, orderID),
+                      self.refundLineItem.bind(self, lineItem, orderID)
                   );
                 } else {
                   Swal({

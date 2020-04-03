@@ -156,7 +156,7 @@ export class UploadsComponent implements OnInit  {
               __this.widget.refreshElseSignout(
                   __this,
                   err,
-                  __this.uploadFile.bind(self, fileAsBase64, apiEndPoint, file.name)
+                  __this.convertToBase64.bind(self, file)
               );
             } else {
               __this.showSpinner = false;

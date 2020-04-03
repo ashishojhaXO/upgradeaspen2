@@ -693,7 +693,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.getEmailRequest.bind(self)
             );
       } else {
@@ -1353,8 +1353,8 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
-              self.handleSubmit.bind(self, null,null)
+              err,
+              self.handleSubmit.bind(self, saveType, reportform)
             );
           } else {
             this.showSpinner = false;
@@ -1577,7 +1577,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
                 let self = this;
                 this.widget.refreshElseSignout(
                   this,
-                  err, 
+                  err,
                   self.fetchReportData.bind(self)
                 );
               } else {
