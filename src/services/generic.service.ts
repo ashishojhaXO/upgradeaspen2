@@ -323,24 +323,46 @@ export class GenericService {
   }
 
 
-  searchData(data) {
-    const AccessToken: any = localStorage.getItem('accessToken');
-    let token = '';
-    if (AccessToken) {
-      // token = AccessToken.accessToken;
-      token = AccessToken;
-    }
+  /**
+   * GET getOrders
+   * Get order line-items 
+   * @param dataObj
+   */
+  searchData(dataObj, isRoot=null) {
 
-    let org = data.org;
+    // const AccessToken: any = localStorage.getItem('accessToken');
+    // let token = '';
+    // if (AccessToken) {
+    //   // token = AccessToken.accessToken;
+    //   token = AccessToken;
+    // }
 
-    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
-    const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/orders/line-items' + (this.isRoot ? ('?org_uuid=' + org) : '');
-    return this.http
-        .get(url, options)
-        .map(res => {
-          return res.json();
-        }).share();
+    // let org = data.org;
+
+    // const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    // const options = new RequestOptions({headers: headers});
+    // var url = this.api_fs.api + '/api/orders/line-items' + (this.isRoot ? ('?org_uuid=' + org) : '');
+
+    // return this.http
+    //     .get(url, options)
+    //     .map(res => {
+    //       return res.json();
+    //     }).share();
+
+
+    const data = JSON.stringify(dataObj);
+    console.log("dataObj: ", dataObj, " data; ", data);
+    let org = data.org || null;
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+
+    return this.service.Call(
+      'get', 
+      apiPath.api +
+      this.base.API + 
+      this.base.GET_ORDERS_LINE_ITEMS_ENDPOINT + (isRoot ? ('?org_uuid=' + org) : ''),
+      data
+    );
+
   }
 
 
