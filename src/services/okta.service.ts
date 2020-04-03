@@ -47,9 +47,16 @@ export class OktaAuthService {
     else {
       console.log("signO nofunc else")
       localStorage.removeItem('accessToken');
-      window.location.href = '/login';
+      this.clearUserDetails();
+      this.router.navigate(['/login'] );
     }
+  }
 
+  clearUserDetails() {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('idToken');
+    localStorage.removeItem('loggedInUserName');
+    localStorage.removeItem('loggedInUserID');
   }
 
   refresh(accessToken){
