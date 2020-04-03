@@ -6,6 +6,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastsManager } from 'ng2-toastr';
 import { Service } from './util';
 
+// Testing
+import { TestClass } from './TestClass';
+// Testing-
+
+
 @Injectable()
 export class GenericService {
 
@@ -99,19 +104,10 @@ export class GenericService {
    * Success Mock Call
    * @param dataObj
    */
-  successMockCall() {
+  successMockCall(data) {
 
-
-    let json = {
-      "data":
-      {
-        "count":479,
-        "rows":[
-          {"email_id":"fu.io+F7@gmail.com","first_name":"Ra","last_name":"Ve","external_id":"00ujj","external_status":"EX","last_login (GMT)":"2019-11-05 10:00:52","company_name":"Fu","created_at (GMT)":"2019-02-26 02:17:52","updated_at (GMT)":null}
-        ]
-      }
-    }
-    return json;
+    let test = new TestClass();
+    return test.someHttpEP();
   }
 
   /**
@@ -235,7 +231,6 @@ export class GenericService {
   ordersProcessedReportDownload(dataObj) {
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
     const data = JSON.stringify(dataObj);
-    console.log("dataObj: ", dataObj, " data; ", data);
 
     return this.service.Call(
       'post', 
@@ -329,30 +324,8 @@ export class GenericService {
    * @param dataObj
    */
   searchData(dataObj, isRoot=null) {
-
-    // const AccessToken: any = localStorage.getItem('accessToken');
-    // let token = '';
-    // if (AccessToken) {
-    //   // token = AccessToken.accessToken;
-    //   token = AccessToken;
-    // }
-
-    // let org = data.org;
-
-    // const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
-    // const options = new RequestOptions({headers: headers});
-    // var url = this.api_fs.api + '/api/orders/line-items' + (this.isRoot ? ('?org_uuid=' + org) : '');
-
-    // return this.http
-    //     .get(url, options)
-    //     .map(res => {
-    //       return res.json();
-    //     }).share();
-
-
+    let org = dataObj.org || null;
     const data = JSON.stringify(dataObj);
-    console.log("dataObj: ", dataObj, " data; ", data);
-    let org = data.org || null;
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
 
     return this.service.Call(

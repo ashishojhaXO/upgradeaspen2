@@ -73,13 +73,11 @@ export class OrdersComponent implements OnInit  {
     // TODO: Check for PageLen change event also...
     isApiCallForNextPage: {
       value: true,
-      apiMethod: (table) => {
-        console.log(
-          "apiMethod here, table here: ", table,
-          " this: ", this, " run blah: ", this.getOrders()
-        );
+      apiMethod: ( table, pageLength, csv?) => {
         // Make ApiCall to backend with PageNo, Limit,
-      }
+        this.apiMethod(table, pageLength, csv);
+      },
+
     },
 
     isTree: true,
@@ -122,6 +120,9 @@ export class OrdersComponent implements OnInit  {
   selectedRow: any;
   @ViewChild('AddUser') addUser: PopUpModalComponent;
 
+  response: any;
+  org: string;
+
   constructor(
       private okta: OktaAuthService,
       private route: ActivatedRoute,
@@ -158,6 +159,17 @@ export class OrdersComponent implements OnInit  {
 
     this.searchDataRequest();
     this.searchOrgRequest();
+  }
+
+  apiMethod = (table, pageLength, csv?) => {
+    this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
+
+    if(csv){
+      // Later we need csv function here
+      // this.searchDataRequestCsv(null, table);
+    }
+    else
+      this.searchDataRequest(null, table);
   }
 
   searchOrgRequest() {
@@ -243,14 +255,13 @@ export class OrdersComponent implements OnInit  {
   }
   // Success & Error CBs/
 
-  searchDataRequest(org = null, table?) {
-
+  compileDataForPage(org, table) {
     // if no table, then send all default, page=1 & limit=25
     // else, send table data
     let data = {
       page: 1,
       limit: +localStorage.getItem("gridPageCount"),
-      org: org ? org : ''
+      org: this.org ? this.org : ''
     };
 
     if(table) {
@@ -258,9 +269,90 @@ export class OrdersComponent implements OnInit  {
       data = {
         page: tab.page + 1,
         limit: tab.length,
-        org: org ? org : ''
+        org: this.org ? this.org : ''
       };
     }
+
+    return data;
+  }
+
+  calc(res, table) {
+    let li = [];
+    let keyNames = {};
+    let keyNamesList = Object.keys(res.data.rows[0]);
+    for(let i = 0; i < keyNamesList.length; i++ ) {
+      keyNames[keyNamesList[i]] = null;
+    }
+
+    // Even when table is not there, still we need to run this,
+    // Since, data will be of the first page.
+    // If !table
+    // Data is in the start, It is the 1st page data, fill the array in the starting
+    if (!table || table.page.info().start == 0) {
+      li.push(...res.data.rows);
+      for(let i = res.data.rows.length; i < res.data.count; i++) {
+        // res.data.rows.push({i: i});
+        li.push( keyNames )
+      }
+
+    }
+
+    if(table) {
+      let tab = table.page.info();
+      if(tab.start != 0 && tab.start + +tab.length != res.data.count) {
+
+        // Then fill the array in the middle
+        // Empty in start
+        for(let i = 0; i < tab.start; i++) {
+          li.push(keyNames )
+        }
+        // Data in Middle
+        li.push(...res.data.rows);
+        // Empty data in the end
+        for(let i = tab.start + res.data.rows.length; i < res.data.count; i++) {
+          li.push( keyNames )
+        }
+      }
+
+
+      // Fill Data at the end of the Array
+      if( tab.start != 0 && tab.start + +tab.length == res.data.count
+        // table.page.info().end == res.data.count
+        ) {
+        let tab = table.page.info();
+
+        for(let i = 0; i < tab.start; i++) {
+          // res.data.rows.push({i: i});
+          li.push(keyNames)
+        }
+        li.push(...res.data.rows);
+      }
+
+    }
+
+    return li;
+  }
+
+  searchDataRequestCB(res, table) {
+    
+    this.response = res.data.rows;
+    let li = this.calc(res, table);
+
+    // In order to refresh DataTable, we have to reassign the data variable, dataObject here.
+    // TODO: Data to send to html
+    // NumberOfPages: Send number of rowCount/limit
+    // CurrentPageNo:
+    // TotalCountofRows:
+    this.dataObject = {};
+    
+    this.populateDataTable(li, true);
+  }
+
+  searchDataRequest(org = null, table?) {
+
+    // if no table, then send all default, page=1 & limit=25
+    // else, send table data
+    let data = this.compileDataForPage(org, table);
 
     // this.hasData = false;
     this.showSpinner = true;
@@ -268,13 +360,16 @@ export class OrdersComponent implements OnInit  {
 
     const self = this;
     // return this.searchData(org)
-    return this.genericService.searchData(data)
+    return this.genericService
+    .successMockCall(data)
+    // .searchData(data)
     .subscribe(
         response => {
           if (response) {
             if (response) {
-              this.populateDataTable(response, true);
               this.showSpinner = false;
+              // this.populateDataTable(response, true);
+              this.searchDataRequestCB(response, table);
             }
           }
         },
@@ -297,6 +392,7 @@ export class OrdersComponent implements OnInit  {
 
   orgChange(value) {
     this.dataObject.isDataAvailable = false;
+    this.org = value;
     this.searchDataRequest(value);
   }
 
@@ -367,7 +463,6 @@ export class OrdersComponent implements OnInit  {
     this.genericService.postOrderReceiptList(data)
         .subscribe(
             (res) => {
-              console.log("res isss: ", res);
               this.showSpinner = false;
               this.receiptList = res.data;
 
