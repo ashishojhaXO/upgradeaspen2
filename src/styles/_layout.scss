@@ -18,6 +18,42 @@ label {
   }
 }
 
+.btn-success {
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: 1px;
+}
+
+.btn-primary {
+  text-align: center;
+  background-color: #f06d30;
+  color: #fff;
+  border: 1px solid #666;
+  border-radius: 4px;
+  font-family: HelveticaNeue;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: 1px;
+}
+
+.btn-secondary {
+  text-align: center;
+  background-color: transparent;
+  color: #4e9b49;
+  border: 1px solid;
+  border-radius: 4px;
+  font-family: HelveticaNeue;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: 1px;
+}
+
 .datepicker-icon {
   position: relative !important;
   left: -62px !important;
@@ -44,7 +80,8 @@ label {
 .header {
   position: relative;
   z-index: 9999 !important;
-  background-color: $header-bardk-bg;
+  background-color: #252425;
+  //background-color: $header-bardk-bg;
 
   .navbar-toggle.profile-toggle{
     background-color: #384349 !important;
@@ -842,7 +879,7 @@ a.organizations:before {
 }
 
 a.active-bar {
-  border-bottom: 4px solid $quaternary-border !important;
+  border-bottom: 4px solid #4E9C49 !important;
 }
 
 span.sitemap-menu i {
@@ -1477,7 +1514,7 @@ table.table.data-control tr td select {
 }
 
 .header-bottom1 {
-  background: $septenary-bg;
+  background: #252425;
 }
 
 nav#cssmenu {
@@ -1753,6 +1790,7 @@ nav#cssmenu {
 
 .content-area {
   padding: 15px;
+  padding-top: 40px;
 
   .popover {
     z-index: 106000;
@@ -2057,13 +2095,21 @@ ul.bottom-menu li a:hover {
   right: 0;
   font-size: 12px;
   a {
-    color: $secondary-color;
+    color: #eeedef;
+    //color: $secondary-color;
     padding: 10px 16px;
     text-decoration: none;
     display: block;
     cursor: pointer;
     text-align: left;
-    background: $septenary-bg;
+    background: #252425;
+    //background: $septenary-bg;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    font-family: HelveticaNeue;
 
     &:hover {
       background-color: $septenary-bg;
@@ -2085,17 +2131,22 @@ ul.password-re li {
 
   .breadcrumb {
     padding: 0;
+    padding-bottom: 5px;
     background: none;
 
     li {
       a {
-        color: $active-color;
-        font-family: $quaternary-font;
+        //color: $active-color;
+        font-family: HelveticaNeue;
         font-size: $font-primary;
+        color: #54575a;
+        font-weight: bold;
+        text-transform: uppercase;
       }
       &.active span {
         color: $inactive-color;
-        font-family: $quaternary-font;
+        text-transform: uppercase;
+        font-family: HelveticaNeue;
         font-size: $font-primary;
       }
     }
@@ -2103,7 +2154,7 @@ ul.password-re li {
 }
 
 .breadcrumb > li + li:before {
-  color: #3fa8f4;
+  color: #54575a;
 }
 
 .alert-danger,
@@ -2293,9 +2344,16 @@ table.select-partner-table:last-child th {
   margin-right: 10px;
   position: relative;
   width: 100px;
+  font-family: HelveticaNeue;
+  font-weight: 300;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
 
   .fa-caret-down {
-    color: $quinary-color;
+    //color: $quinary-color;
+    color: #ffffff;
     position: absolute;
     top: 5px;
     right: -8px;
@@ -3026,18 +3084,24 @@ div.modal-dialog {
     display: block;
   }
   .breadcrumbsection {
-    float: right;
-    width: 75%;
-    margin: 0px 0 20px;
+    //float: right;
+    //width: 75%;
+    //margin: 0px 0 20px;
     .breadcrumbinner {
       width: auto;
-      float: right;
+      //float: right;
+      margin-top: 20px;
       h4 {
-        color: #1e80c3;
-        float: left;
-        font-weight: bold;
-        font-size: 12px;
-        margin: 5px 5px 0 0;
+        font-family: HelveticaNeue;
+        font-size: 10px;
+        font-weight: 500;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: 0.35px;
+        color: #7665a0;
+        //float: left;
+        margin: 5px 5px 15px 0;
         text-transform: uppercase;
         position: relative;
         top: -1px;
@@ -3047,14 +3111,14 @@ div.modal-dialog {
         padding: 0 12px 0 0;
         .breadcrumblabel {
           color: #888;
-          font-size: 12px;
+          font-size: 10px;
           padding: 0 12px 0 0;
           text-decoration: none;
           text-transform: uppercase;
-          font-weight: bold;
+          //font-weight: bold;
           .breadcrumbValue {
             color: #656565;
-            font-weight: 200;
+            font-weight: bold;
             padding: 0 0 0 3px;
             text-transform: uppercase;
           }
@@ -3083,7 +3147,10 @@ div.modal-dialog {
   top: -10px;
   text-transform: uppercase;
   margin-right: 30px;
-  h3 { font-size: 15px; }
+  h3 {
+    font-size: 15px;
+    color: #eeedef;
+  }
 }
 
 .sidebar-content {
@@ -3098,12 +3165,36 @@ div.modal-dialog {
 
 .sidebar-form-control {
   margin: 10px 0px;
+  > button {
+    text-align: center;
+    background-color: #f06d30;
+    color: #fff;
+    border: 1px solid #666;
+    width: 98%;
+    height: 30px;
+    border-radius: 4px;
+    position: relative;
+    top: 20px;
+    font-family: HelveticaNeue;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: 1px;
+  }
   .title {
-    color: #878787;
+    color: #eeedef;
     font-size: 12px;
     margin-bottom: 9px;
     text-transform: capitalize;
     margin: 0 0 10px;
+    font-family: HelveticaNeue;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: 1px;
+
   }
   .sidebar-container {
     width: 98%;
@@ -3127,7 +3218,7 @@ div.modal-dialog {
       text-align: center;
       line-height: 30px;
       border-radius: 4px;
-      background-color: #0777bc;
+      background-color: #54575a;
       color: #fff;
       cursor: pointer;
     }
@@ -3575,14 +3666,19 @@ div.crumbs-main {
 .ng-tooltip {
   position: absolute;
   max-width: 150px;
-  font-size: 14px;
+  font-size: 10px;
   text-align: center;
-  color: #f8f8f2;
+  color: #54575a;
   padding: 3px 8px;
-  background: grey;
+  background: #f5cd3d;
   border-radius: 4px;
   z-index: 100000;
   opacity: 0;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: 0.5px;
 }
 .ng-tooltip:after {
   content: "";

@@ -13,7 +13,7 @@
     {
       "index": 4,
       "name": "dashboards",
-      "title": "Dashboards",
+      "title": "DASHBOARDS",
       "selected": false,
       "id": "dashboards",
       "url":"app/dashboards",
@@ -47,7 +47,7 @@
     {
       "index": 5,
       "name": "reports",
-      "title": "Reports",
+      "title": "REPORTS",
       "selected": false,
       "id": "reports",
       "url":"app/reports",
@@ -81,7 +81,7 @@
     {
       "index": 6,
       "name": "orders",
-      "title": "Orders",
+      "title": "ORDERS",
       "selected": false,
       "id": "orders",
       "url":"app/order"
@@ -89,7 +89,7 @@
     {
       "index": 7,
       "name": "payments",
-      "title": "Payments",
+      "title": "PAYMENTS",
       "selected": false,
       "id": "payments",
       "url":"app/payment"
@@ -97,7 +97,7 @@
     {
       "index": 9,
       "name": "admin",
-      "title": "Admin",
+      "title": "ADMIN",
       "selected": false,
       "id": "admin",
       "url":"app/admin",
