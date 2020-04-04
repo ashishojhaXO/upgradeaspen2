@@ -10,10 +10,12 @@ import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
 import {Router, ActivatedRoute} from '@angular/router';
+import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-modal.component';
 import {DataTableOptions} from '../../../models/dataTableOptions';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
 import Swal from 'sweetalert2';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-reconciliation',
@@ -86,7 +88,34 @@ export class ReconciliationComponent implements OnInit  {
     hasData: boolean;
     selectedInvoiceDetails: any;
     memo: string;
+    @ViewChild('UploadInvoice') uploadInvoice: PopUpModalComponent;
+    uploadForm: FormGroup;
+    uploadModel: any;
+    select2Options = {
+        placeholder: { id: '', text: 'Select a channel' }
+    };
+    channelOptions = [
+        { id: '', text: 'Empty'},
+        { id: 8, text: 'facebook'},
+        { id: 101, text: 'Dynamic Media - Google'},
+        { id: 1, text: 'Facebook'},
+        { id: 7, text: 'Dynamic Media - Pinterest'},
+        { id: 5, text: 'Pinterest'},
+        { id: 4, text: 'Google'},
+        { id: 102, text: 'Display'},
+        { id: 31, text: 'Facebook'},
+        { id: 33, text: 'Pinterest'}
+    ];
+
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
+
+      this.uploadModel = {
+          channel: '',
+          emails: [],
+          comments: '',
+          file: '',
+          fileAsBase64: ''
+      };
   }
 
   ngOnInit() {
@@ -517,5 +546,202 @@ export class ReconciliationComponent implements OnInit  {
       let a = "data:text/csv;base64," + b64;
       $('<a href=' + a + ' download="data.csv">')[0].click();
       return arr;
+    }
+
+    handleShowModal(modalComponent: PopUpModalComponent) {
+        modalComponent.show();
+    }
+
+    OnSelectValueChange(e) {
+        if (e.value && e.value !== this.uploadModel.channel) {
+            this.uploadModel.channel = e.value;
+            this.getChannelEmails();
+        }
+    }
+
+    getChannelEmails() {
+        this.channelEmails().subscribe(
+            response => {
+                if (response && response.data && response.data.length) {
+                   const corrObj =  response.data.find(x => x.channel_id === this.uploadModel.channel);
+                   if (corrObj && corrObj.email && corrObj.email.length) {
+                       this.uploadModel.emails = corrObj.email.map(function (email) {
+                           return { display: email, value: email};
+                       });
+                   }
+                }
+            },
+            err => {
+                if(err.status === 401) {
+                    const self = this;
+                    this.widget.refreshElseSignout(
+                        this,
+                        err,
+                        this.getChannelEmails.bind(self)
+                    );
+                } else {
+                    this.showSpinner = false;
+                }
+            });
+    }
+
+    handleCloseModal(modalComponent: PopUpModalComponent) {
+        modalComponent.hide();
+    }
+
+    _updateDataModel(e) {
+        this.uploadModel.emails = e.dataModel;
+    }
+
+    OnProcessFile(e) {
+        this.convertToBase64(e);
+    }
+
+    convertToBase64(file): void {
+        const __this = this;
+        this.uploadModel.file = file;
+        const myReader = new FileReader();
+        myReader.onloadend = (e) => {
+            __this.uploadModel.fileAsBase64 = myReader.result;
+            __this.uploadModel.fileAsBase64 = __this.uploadModel.fileAsBase64.indexOf(',') !== -1 ? __this.uploadModel.fileAsBase64.split(',')[1] : __this.uploadModel.fileAsBase64;
+        };
+        myReader.readAsDataURL(file);
+    }
+
+    OnUpload(modalComponent: PopUpModalComponent) {
+        this.showSpinner = true;
+        this.updateChannelEmails().subscribe(
+            response => {
+                if (response) {
+                    this.uploadFile().subscribe(
+                        response1 => {
+                            if (response1) {
+                                this.showSpinner = false;
+                                Swal({
+                                    title: 'Invoice emailed successfully',
+                                    text: 'Invoice has been successfully emailed',
+                                    type: 'success'
+                                }).then( () => {
+                                    modalComponent.hide();
+                                    this.uploadModel.file = null;
+                                });
+                            }
+                        },
+                        err => {
+                            if(err.status === 401) {
+                                const self = this;
+                                this.widget.refreshElseSignout(
+                                    this,
+                                    err,
+                                    this.OnUpload.bind(self, modalComponent)
+                                );
+                            } else {
+                                Swal({
+                                    title: 'Invoice email failed',
+                                    text: 'There was an error emailing the invoice. Please try again',
+                                    type: 'error'
+                                })
+                                this.showSpinner = false;
+                            }
+                        });
+                }
+            },
+            err => {
+                if(err.status === 401) {
+                    const self = this;
+                    this.widget.refreshElseSignout(
+                        this,
+                        err,
+                        this.OnUpload.bind(self, modalComponent)
+                    );
+                } else {
+                    // Swal({
+                    //     title: 'Invoice email failed',
+                    //     text: 'There was an error emailing the invoice. Please try again',
+                    //     type: 'error'
+                    // })
+                    this.showSpinner = false;
+                }
+            });
+    }
+
+    validated() {
+      let valid = true;
+      for (const prop in this.uploadModel) {
+          if (prop !== 'comments') {
+              if (Object.prototype.toString.call(this.uploadModel[prop]) === '[object Array]' && !this.uploadModel[prop].length) {
+                  valid = false;
+              } else if (!this.uploadModel[prop]) {
+                  valid = false;
+              }
+          }
+      }
+      return valid;
+    }
+
+    uploadFile() {
+        const AccessToken: any = localStorage.getItem('accessToken');
+        let token = '';
+        if (AccessToken) {
+            // token = AccessToken.accessToken;
+            token = AccessToken;
+        }
+        const data = JSON.stringify({
+            channel : this.uploadModel.channel,
+            file: this.uploadModel.fileAsBase64,
+            fileName: this.uploadModel.file.name
+        });
+
+        const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+        const options = new RequestOptions({headers: headers});
+        const url = this.api_fs.api + '/api/payments/invoices/channels/email';
+        return this.http
+            .post(url, data, options)
+            .map(res => {
+                return res.json();
+            }).share();
+    }
+
+    channelEmails() {
+        const AccessToken: any = localStorage.getItem('accessToken');
+        let token = '';
+        if (AccessToken) {
+            // token = AccessToken.accessToken;
+            token = AccessToken;
+        }
+
+        const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+        const options = new RequestOptions({headers: headers});
+        const url = this.api_fs.api + '/api/payments/invoices/channels';
+        return this.http
+            .get(url, options)
+            .map(res => {
+                return res.json();
+            }).share();
+    }
+
+    updateChannelEmails() {
+        const AccessToken: any = localStorage.getItem('accessToken');
+        let token = '';
+        if (AccessToken) {
+            // token = AccessToken.accessToken;
+            token = AccessToken;
+        }
+
+        const data = JSON.stringify({
+            channel_id : this.uploadModel.channel,
+            email : this.uploadModel.emails.map(function (email) {
+                return email.value;
+            }),
+        });
+
+        const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+        const options = new RequestOptions({headers: headers});
+        const url = this.api_fs.api + '/api/payments/invoices/channels';
+        return this.http
+            .put(url, data, options)
+            .map(res => {
+                return res.json();
+            }).share();
     }
 }
