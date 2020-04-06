@@ -30,34 +30,38 @@
 .nav.navbar-nav.main-menu > div .bottom-menu {
     display: flex;
     position: fixed;
-    background: #333333;
+    background: #54575A;
     width: 100%;
     left: 0px;
-    padding-left: 15px;
+
+    padding: 3px 0px 3px 15px;
 }
 
  .nav.navbar-nav.main-menu > div .bottom-menu > div {
     margin: 5px 20px 12px 0px;
  }
 
+.nav.navbar-nav.main-menu > div .bottom-menu > div a {
+  background: #54575A !important;
+}
+
+.nav.navbar-nav.main-menu > div .bottom-menu > div a.active-bar {
+  border-bottom-color: #DC6A35 !important;
+}
+
 .nav.navbar-nav.main-menu a {
     text-decoration: none;
     padding: 2px;
     margin: 2px;
-    color: #ffffff !important;
+    color: #eeedef !important;
+    background: #252425 !important;
     font-size: 12px;
-    font-family: "lucidagrande-bold", sans-serif !important;
-    background: transparent;
+    line-height: normal;
+    letter-spacing: 1px;
+    font-family: "HelveticaNeue","lucidagrande-bold", sans-serif !important;
     cursor: pointer;
-    margin-bottom: 6px;
+    //margin-bottom: 6px;
+    padding-bottom: 10px;
 }
 
-// div.nav.navbar-nav {
-// div.nav.navbar-nav.main-menu {
-//   margin-top: 12px;
-// }
-
-div.active {
-  background: #333333 !important;
-}
 

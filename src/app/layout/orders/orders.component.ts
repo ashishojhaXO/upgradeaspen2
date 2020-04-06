@@ -20,6 +20,8 @@ import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up
 import { PopUpModalComponent } from '../../shared/components/pop-up-modal/pop-up-modal.component';
 import { modalConfigDefaults } from 'ngx-bootstrap/modal/modal-options.class';
 
+import { CsvService } from '../../../services/csv'
+
 @Component({
   selector: 'app-orders',
   templateUrl: './orders.component.html',
@@ -43,8 +45,14 @@ export class OrdersComponent implements OnInit  {
     isAddRow: false,
     isColVisibility: true,
     isRowHighlight: true,
+
+    // For Csv functionality searchDataRequestCsv
     isDownloadAsCsv: true,
-    isDownloadAsCsvFunction: () => {},
+    isDownloadAsCsvFunc: ( table, pageLength, csv?) => {
+      this.apiMethod(table, pageLength, csv);
+    },
+    //
+
     isDownloadOption: {
       value: true,
       icon: '',
@@ -71,16 +79,14 @@ export class OrdersComponent implements OnInit  {
     isHideColumns: [ "Vendor_Receipt_Id","internal_line_item_id","internal_order_id"],
 
     // TODO: Check for PageLen change event also...
-    // isApiCallForNextPage: {
-    //   value: true,
-    //   apiMethod: (table) => {
-    //     console.log(
-    //       "apiMethod here, table here: ", table,
-    //       " this: ", this, " run blah: ", this.getOrders()
-    //     );
-    //     // Make ApiCall to backend with PageNo, Limit,
-    //   }
-    // }
+    isApiCallForNextPage: {
+      value: true,
+      apiMethod: ( table, pageLength, csv?) => {
+        // Make ApiCall to backend with PageNo, Limit,
+        this.apiMethod(table, pageLength, csv);
+      },
+
+    },
 
     isTree: true,
     // isChildRowActions required when there need to be actions below every row.
@@ -90,15 +96,15 @@ export class OrdersComponent implements OnInit  {
       htmlFunction: (row) => {
 
         let ngHtmlContent = '<div>' +
-          '<button class="btn action-btn api-action" data-action="retryCharge" '+ ( row.Status.trim() == "ERROR_PROCESSING_PAYMENT" ? "" : "disabled" ) + ' data-order-id="'+row.Order_Id + '" data-line-item-id="'+row.Line_Item_Id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
-          '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-credit-card" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span> Retry Charge</button>' +
-          '<button class="btn action-btn api-action" data-action="regenerateReceipt" data-order-id="'+row.Order_Id+ '" data-line-item-id= "'+ row.Line_Item_Id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
-          '><span style="margin-right: 5px; position: relative;"> <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-newspaper-o" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Regenerate Receipt</button>' +
-          // '<button class="btn action-btn api-action" data-action="reprocess" data-order-id="row.Order_Id " style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
-          // '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-cogs" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Reprocess</button>' +
-          '<button class="btn action-btn api-action" data-action="recalculate" data-order-id="'+ row.Order_Id + '" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
-          '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-calculator" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Recalculate</button>' +
-        '</div>';
+            '<button class="btn action-btn api-action" data-action="retryCharge" '+ ( row.Status.trim() == "ERROR_PROCESSING_PAYMENT" ? "" : "disabled" ) + ' data-order-id="'+row.Order_Id + '" data-line-item-id="'+row.Line_Item_Id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+            '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-credit-card" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span> Retry Charge</button>' +
+            '<button class="btn action-btn api-action" data-action="regenerateReceipt" data-order-id="'+row.Order_Id+ '" data-line-item-id= "'+ row.Line_Item_Id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+            '><span style="margin-right: 5px; position: relative;"> <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-newspaper-o" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Regenerate Receipt</button>' +
+            // '<button class="btn action-btn api-action" data-action="reprocess" data-order-id="row.Order_Id " style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+            // '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-cogs" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Reprocess</button>' +
+            '<button class="btn action-btn api-action" data-action="recalculate" data-order-id="'+ row.Order_Id + '" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+            '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-calculator" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Recalculate</button>' +
+            '</div>';
 
         return ngHtmlContent;
       }
@@ -113,7 +119,7 @@ export class OrdersComponent implements OnInit  {
   selectedOrderID: any;
   selectedLineItemID: any;
   hideTable: any;
-  hasTemplates: any;
+  allowOrderFunctionality: any;
   orderPayment: number;
   // retryChargeState: boolean = true;
 
@@ -122,13 +128,16 @@ export class OrdersComponent implements OnInit  {
   selectedRow: any;
   @ViewChild('AddUser') addUser: PopUpModalComponent;
 
+  response: any;
+  org: string;
+
   constructor(
-    private okta: OktaAuthService,
-    private route: ActivatedRoute,
-    private router: Router,
-    protected genericService: GenericService,
-    protected popUp: AppPopUpComponent,
-    private http: Http) {
+      private okta: OktaAuthService,
+      private route: ActivatedRoute,
+      private router: Router,
+      protected genericService: GenericService,
+      protected popUp: AppPopUpComponent,
+      private http: Http) {
   }
 
 
@@ -144,17 +153,32 @@ export class OrdersComponent implements OnInit  {
 
     const groups = localStorage.getItem('loggedInUserGroup') || '';
     const grp = JSON.parse(groups);
+
     grp.forEach(function (item) {
       if(item === 'ROOT' || item === 'SUPER_USER') {
         this.isRoot = true;
       }
     }, this);
 
-    const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
-    this.hasTemplates = customerInfo.org.hasTemplates;
+    this.allowOrderFunctionality = localStorage.getItem('allowOrderFunctionality') || 'true';
+    if (this.isRoot) {
+      this.allowOrderFunctionality = 'true';
+    }
 
     this.searchDataRequest();
     this.searchOrgRequest();
+  }
+
+  apiMethod = (table, pageLength, csv?) => {
+    this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
+
+    if(csv){
+      // Later we need csv function here
+      this.searchDataRequestCsv(null, table, csv);
+    }
+    else {
+      this.searchDataRequest(null, table);
+    }
   }
 
   searchOrgRequest() {
@@ -200,6 +224,47 @@ export class OrdersComponent implements OnInit  {
     );
   }
 
+
+  searchDataRequestCsv(org = null, table?, csv?) {
+
+    // if no table, then send all default, page=1 & limit=25
+    // else, send table data
+    let data = {
+      page: 0,
+      limit: 10000000,
+      org: org ? org : ''
+    };
+
+    // this.hasData = false;
+    this.showSpinner = true;
+
+    return this.genericService.getOrdersLineItemsCsv(data, this.isRoot)
+    .subscribe(
+      (res) => {
+        // this.hasData = true;
+        this.showSpinner = false;
+        let csv = new CsvService()
+        csv.successCBCsv(res, table)
+      },
+      (err) => {
+        this.showSpinner = false;
+        this.errorCB(err)
+
+        if(err.status === 401) {
+          let self = this;
+          this.widget.refreshElseSignout(
+            this,
+            err,
+            self.searchDataRequestCsv.bind(self, org, table)
+          );
+        } else {
+          this.showSpinner = false;
+        }
+      }
+    );
+
+  }
+
   searchOrgData() {
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
@@ -240,24 +305,130 @@ export class OrdersComponent implements OnInit  {
   }
   // Success & Error CBs/
 
-  searchDataRequest(org = null) {
+  compileDataForPage(org, table) {
+    // if no table, then send all default, page=1 & limit=25
+    // else, send table data
+    let data = {
+      page: 1,
+      limit: +localStorage.getItem("gridPageCount"),
+      org: this.org ? this.org : ''
+    };
+
+    if(table) {
+      let tab = table.page.info();
+      data = {
+        page: tab.page + 1,
+        limit: tab.length,
+        org: this.org ? this.org : ''
+      };
+    }
+
+    return data;
+  }
+
+  calc(res, table) {
+    let li = [];
+    let keyNames = {};
+    let keyNamesList = Object.keys(res.data.rows[0]);
+    for(let i = 0; i < keyNamesList.length; i++ ) {
+      keyNames[keyNamesList[i]] = null;
+    }
+
+    // Even when table is not there, still we need to run this,
+    // Since, data will be of the first page.
+    // If !table
+    // Data is in the start, It is the 1st page data, fill the array in the starting
+    if (!table || table.page.info().start == 0) {
+      li.push(...res.data.rows);
+      for(let i = res.data.rows.length; i < res.data.count; i++) {
+        // res.data.rows.push({i: i});
+        li.push( keyNames )
+      }
+
+    }
+
+    if(table) {
+      let tab = table.page.info();
+      if(tab.start != 0 && tab.start + +tab.length != res.data.count) {
+
+        // Then fill the array in the middle
+        // Empty in start
+        for(let i = 0; i < tab.start; i++) {
+          li.push(keyNames )
+        }
+        // Data in Middle
+        li.push(...res.data.rows);
+        // Empty data in the end
+        for(let i = tab.start + res.data.rows.length; i < res.data.count; i++) {
+          li.push( keyNames )
+        }
+      }
+
+
+      // Fill Data at the end of the Array
+      if( tab.start != 0 && tab.start + +tab.length == res.data.count
+        // table.page.info().end == res.data.count
+        ) {
+        let tab = table.page.info();
+
+        for(let i = 0; i < tab.start; i++) {
+          // res.data.rows.push({i: i});
+          li.push(keyNames)
+        }
+        li.push(...res.data.rows);
+      }
+
+    }
+
+    return li;
+  }
+
+  searchDataRequestCB(res, table) {
+    
+    this.response = res.data.rows;
+    let li = this.calc(res, table);
+
+    // In order to refresh DataTable, we have to reassign the data variable, dataObject here.
+    // TODO: Data to send to html
+    // NumberOfPages: Send number of rowCount/limit
+    // CurrentPageNo:
+    // TotalCountofRows:
+    this.dataObject = {};
+    
+    this.populateDataTable(li, true);
+  }
+
+  searchDataRequest(org = null, table?) {
+
+    // if no table, then send all default, page=1 & limit=25
+    // else, send table data
+    let data = this.compileDataForPage(org, table);
+
+    // this.hasData = false;
+    this.showSpinner = true;
+
     const self = this;
-    return this.searchData(org).subscribe(
+    // return this.searchData(org)
+    return this.genericService
+    // .successMockCall(data)
+    .getOrdersLineItems(data, this.isRoot)
+    .subscribe(
         response => {
           if (response) {
             if (response) {
-              this.populateDataTable(response, true);
               this.showSpinner = false;
+              // this.populateDataTable(response, true);
+              this.searchDataRequestCB(response, table);
             }
           }
         },
         err => {
           if(err.status === 401) {
             this.widget.refreshElseSignout(
-              this,
-              err,
-              self.searchDataRequest.bind(self, org),
-              self.errorCallback.bind(self)
+                this,
+                err,
+                self.searchDataRequest.bind(self, org, table),
+                self.errorCallback.bind(self)
             );
           } else {
             this.showSpinner = false;
@@ -267,26 +438,10 @@ export class OrdersComponent implements OnInit  {
     );
   }
 
-  searchData(org = null) {
-    const AccessToken: any = localStorage.getItem('accessToken');
-    let token = '';
-    if (AccessToken) {
-      // token = AccessToken.accessToken;
-      token = AccessToken;
-    }
-
-    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
-    const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/orders/line-items' + (this.isRoot ? ('?org_uuid=' + org) : '');
-    return this.http
-        .get(url, options)
-        .map(res => {
-          return res.json();
-        }).share();
-  }
 
   orgChange(value) {
     this.dataObject.isDataAvailable = false;
+    this.org = value;
     this.searchDataRequest(value);
   }
 
@@ -315,7 +470,7 @@ export class OrdersComponent implements OnInit  {
     this.gridData['result'] = tableData;
     this.gridData['headers'] = headers;
 
-    this.options[0].isPlayOption.value = this.hasTemplates;
+    this.options[0].isPlayOption.value = this.allowOrderFunctionality === 'true' ? true : false;
 
     this.gridData['options'] = this.options[0];
     this.gridData.columnsToColor = [
@@ -355,21 +510,20 @@ export class OrdersComponent implements OnInit  {
     this.showSpinner = true;
 
     this.genericService.postOrderReceiptList(data)
-    .subscribe(
-      (res) => {
-        console.log("res isss: ", res);
-        this.showSpinner = false;
-        this.receiptList = res.data;
+        .subscribe(
+            (res) => {
+              this.showSpinner = false;
+              this.receiptList = res.data;
 
-        // Show modal popUp, from there run this.handleDownloadLink(receiptId)
-        this.addUser.show();
-      },
-      (rej) => {
-        this.showSpinner = false;
-        this.errorCB(rej);
-      }
+              // Show modal popUp, from there run this.handleDownloadLink(receiptId)
+              this.addUser.show();
+            },
+            (rej) => {
+              this.showSpinner = false;
+              this.errorCB(rej);
+            }
 
-    )
+        )
   }
 
   handleDownloadLink(dataObj: any) {
@@ -422,10 +576,10 @@ export class OrdersComponent implements OnInit  {
         err => {
           if(err.status === 401) {
             this.widget.refreshElseSignout(
-              this,
-              err,
-              self.searchDownloadLink.bind(self, downloadId, orderId),
-              self.errorCallback.bind(self)
+                this,
+                err,
+                self.searchDownloadLink.bind(self, downloadId, orderId),
+                self.errorCallback.bind(self)
             );
           } else {
             Swal({
@@ -470,17 +624,17 @@ export class OrdersComponent implements OnInit  {
     let data = {};
 
     this.genericService.getOrders(data)
-    .subscribe(
-      (res) => {
-        this.showSpinner = false;
-        // this.successCB.apply(this, [res])
-        this.successCB(res)
-      },
-      (rej) => {
-        this.showSpinner = false;
-        this.errorCB(rej)
-      }
-    )
+        .subscribe(
+            (res) => {
+              this.showSpinner = false;
+              // this.successCB.apply(this, [res])
+              this.successCB(res)
+            },
+            (rej) => {
+              this.showSpinner = false;
+              this.errorCB(rej)
+            }
+        )
   }
 
   successCB(res) {
@@ -492,16 +646,16 @@ export class OrdersComponent implements OnInit  {
     // let body = res.json();
     let body = res;
     // if (res && res.status == 200) {
-      let popUpOptions = {
-        title: 'Success',
-        text: body.message,
-        type: 'success',
-        reverseButtons: true,
-        showCloseButton: true,
-        showCancelButton: true,
-        cancelButtonText: "Cancel"
-      };
-      this.popUp.showPopUp(popUpOptions);
+    let popUpOptions = {
+      title: 'Success',
+      text: body.message,
+      type: 'success',
+      reverseButtons: true,
+      showCloseButton: true,
+      showCancelButton: true,
+      cancelButtonText: "Cancel"
+    };
+    this.popUp.showPopUp(popUpOptions);
     // }
   }
 
@@ -511,16 +665,16 @@ export class OrdersComponent implements OnInit  {
     this.showSpinner = false;
     let body = res.json();
     // if (res && res.status == 400) {
-      let popUpOptions = {
-        title: 'Error',
-        text: body.message || genericErrorString,
-        type: 'error',
-        reverseButtons: true,
-        showCloseButton: true,
-        showCancelButton: true,
-        cancelButtonText: "Cancel"
-      }
-      this.popUp.showPopUp(popUpOptions);
+    let popUpOptions = {
+      title: 'Error',
+      text: body.message || genericErrorString,
+      type: 'error',
+      reverseButtons: true,
+      showCloseButton: true,
+      showCancelButton: true,
+      cancelButtonText: "Cancel"
+    }
+    this.popUp.showPopUp(popUpOptions);
     // }
   }
 
@@ -551,17 +705,17 @@ export class OrdersComponent implements OnInit  {
     };
 
     return this.genericService
-      .regenerateReceipt(data)
-      .subscribe(
-        (res) => {
-          this.showSpinner = false;
-          this.successCB(res)
-        },
-        (rej) => {
-          this.showSpinner = false;
-          this.errorCB(rej)
-        }
-      )
+        .regenerateReceipt(data)
+        .subscribe(
+            (res) => {
+              this.showSpinner = false;
+              this.successCB(res)
+            },
+            (rej) => {
+              this.showSpinner = false;
+              this.errorCB(rej)
+            }
+        )
   }
 
   reprocess(option) {
@@ -570,17 +724,17 @@ export class OrdersComponent implements OnInit  {
     let data = {};
 
     return this.genericService
-      .reprocess(data)
-      .subscribe(
-        (res) => {
-          this.showSpinner = false;
-          this.successCB(res)
-        },
-        (rej) => {
-          this.showSpinner = false;
-          this.errorCB(rej)
-        }
-      )
+        .reprocess(data)
+        .subscribe(
+            (res) => {
+              this.showSpinner = false;
+              this.successCB(res)
+            },
+            (rej) => {
+              this.showSpinner = false;
+              this.errorCB(rej)
+            }
+        )
   }
 
   recalculate(option) {
@@ -591,17 +745,17 @@ export class OrdersComponent implements OnInit  {
     let data = {"order_id": order_id};
 
     return this.genericService
-      .recalculate(data)
-      .subscribe(
-        (res) => {
-          this.showSpinner = false;
-          this.successCB(res)
-        },
-        (rej) => {
-          this.showSpinner = false;
-          this.errorCB(rej)
-        }
-      )
+        .recalculate(data)
+        .subscribe(
+            (res) => {
+              this.showSpinner = false;
+              this.successCB(res)
+            },
+            (rej) => {
+              this.showSpinner = false;
+              this.errorCB(rej)
+            }
+        )
   }
 
   handleActions(ev: any) {

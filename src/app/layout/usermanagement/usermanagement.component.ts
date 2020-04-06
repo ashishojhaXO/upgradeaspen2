@@ -18,6 +18,7 @@ import { OktaAuthService } from '../../../services/okta.service';
 import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up.component';
 import { GenericService } from '../../../services/generic.service';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
+import { CsvService } from '../../../services/csv';
 
 @Component({
   selector: 'app-usermanagement',
@@ -38,10 +39,12 @@ export class UserManagementComponent implements OnInit  {
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
+    // For Csv functionality searchDataRequestCsv
     isDownloadAsCsv: true,
     isDownloadAsCsvFunc: ( table, pageLength, csv?) => {
       this.apiMethod(table, pageLength, csv);
     },
+    //
     isDownloadOption: false,
     isRowSelection: null,
     isPageLength: true,
@@ -345,15 +348,18 @@ export class UserManagementComponent implements OnInit  {
     };
 
     // this.hasData = false;
-    // this.showSpinner = true;
+    this.showSpinner = true;
 
     return this.genericService.getUsersCsv(data)
     .subscribe(
       (res) => {
         this.hasData = true;
-        // this.showSpinner = false;
+        this.showSpinner = false;
         // this.successCB.apply(this, [res])
-        this.successCBCsv(res, table)
+        // this.successCBCsv(res, table)
+        this.showSpinner = false;
+        let csv = new CsvService()
+        csv.successCBCsv(res, table)
       },
       (err) => {
         this.showSpinner = false;
@@ -613,7 +619,7 @@ export class UserManagementComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err,
-              // self.searchDataRequest.bind(self)
+              self.getRoles.bind(self)
             );
         } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
