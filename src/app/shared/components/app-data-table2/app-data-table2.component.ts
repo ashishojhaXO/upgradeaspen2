@@ -591,7 +591,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 }
 
                                 const rowEle = __this.dataObject.gridData.result[index];
-                                const extendedRow = rowEle.id == rowEle.suppliedId;
+                                const extendedRow = rowEle.id && rowEle.id == rowEle.suppliedId;
 
                                 field.value = __this.dataObject.gridData.result[index][field.name];
 
@@ -893,6 +893,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     }
                 });
 
+                // Using table.on for PageLength change, instead of class select input-sm
+                table.off("length");
                 table.on("length", function (ev) {
                     __this.dataObject.gridData.options.isPageLengthNo = table.page.len();
                     localStorage.setItem('gridPageCount', table.page.len() );

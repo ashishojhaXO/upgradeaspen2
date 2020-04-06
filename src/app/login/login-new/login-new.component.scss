@@ -7,7 +7,8 @@
 }
 
 #login-bg-image {
-    background: url(../../../assets/images/login_background_dark.jpg) no-repeat;
+    background: #252425;
+    //background: url(../../../assets/images/login_background_dark.jpg) no-repeat;
     background-size: cover;
 }
 .login-bg-image {
@@ -36,15 +37,18 @@
         }
     }
     .logoWrapper{
-        background-color: rgb(29,38,45);
+        background: #404041;
+        //background-color: rgb(29,38,45);
         padding: 2em;
         align-items: center;
         @include flexbox;
         img{
-        width: 100%;
-        max-width: 320px;
+        max-width: 20%;
         margin: auto;
         display: block;
+        }
+        .logo-text {
+            max-width: 80%;
         }
     }
     .loginFormWrapper {
@@ -61,8 +65,9 @@
         padding: 10px 25px;
         line-height: 1;
         border-radius: 5px;
-        width: auto;
-        margin-right: 0px;
+        width: 100%;
+        background: #4e9b49;
+        //margin-right: 0px;
         }
         span.forgotLink{
         color: #3FA8F4;
@@ -78,7 +83,7 @@
     color: #999;
     font-size: 12px;
 }
-  
+
 @media (max-width: 767px) {
     .col-equal-height{
         display: block !important;

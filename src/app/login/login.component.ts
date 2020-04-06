@@ -165,7 +165,7 @@ export class LoginComponent implements OnInit {
                 let self = this;
                 this.widget.refreshElseSignout(
                   this,
-                  err, 
+                  err,
                   self.performActions.bind(self)
                 );
         } else {

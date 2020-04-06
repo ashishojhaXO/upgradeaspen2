@@ -24,6 +24,7 @@ export class BaseService {
   postOrdersProcessedReportDownload = "/admin/report/download";
   GET_JOBS_ENDPOINT = "/reports/admin/canned-reports";
   POST_JOB_REPORT_EXECUTE = "/reports/admin/report";
+  GET_ORDERS_LINE_ITEMS_ENDPOINT = "/orders/line-items"
 
 
   LOGIN_URL = this.BASE_URL + '/v4/login';

@@ -83,7 +83,6 @@ export class InvoiceComponent implements OnInit  {
   }
 
   searchDataRequest(invoiceId) {
-    let self = this;
     this.searchData(invoiceId).subscribe(
         response => {
           if (response && response.data) {
@@ -130,7 +129,7 @@ export class InvoiceComponent implements OnInit  {
             this.widget.refreshElseSignout(
               this,
               err,
-              self.searchDataRequest.bind(self, invoiceId),
+              self.searchDataRequest.bind(self, invoiceId)
             );
 
           } else {
@@ -148,7 +147,6 @@ export class InvoiceComponent implements OnInit  {
   }
 
   getKenshooProfileDetails(invoice, profileName, invoice_header_id) {
-    let self = this;
     this.searchProfileData(profileName, invoice_header_id).subscribe(
         response => {
           if (response && response.data) {
