@@ -34,6 +34,7 @@ export class InvoiceComponent implements OnInit  {
   @ViewChild('AddPayment') addPayment: PopUpModalComponent;
   @Input() invoiceId: any;
   @Input() invoiceNumber: any;
+  @Input() orgId: any;  
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
   }
@@ -186,9 +187,11 @@ export class InvoiceComponent implements OnInit  {
       // token = AccessToken.accessToken;
       token = AccessToken;
     }
+    let org=this.orgId; 
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/payments/invoices/line-items?profile_name=' + profileName + '&invoice_header_id=' + InvoiceHeaderID;
+    var url = this.api_fs.api + '/api/payments/invoices/line-items?profile_name=' + profileName + '&invoice_header_id=' + InvoiceHeaderID
+    +( org ? ('&org_uuid=' + org) : '');
     return this.http
         .get(url, options)
         .map(res => {
@@ -203,9 +206,10 @@ export class InvoiceComponent implements OnInit  {
       // token = AccessToken.accessToken;
       token = AccessToken;
     }
+    let org=this.orgId; 
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/payments/invoices/' + invoiceId;
+    var url = this.api_fs.api + '/api/payments/invoices/' + invoiceId+( org ? ('?org_uuid=' + org) : '');
     return this.http
         .get(url, options)
         .map(res => {
