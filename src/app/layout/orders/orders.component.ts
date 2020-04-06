@@ -168,8 +168,9 @@ export class OrdersComponent implements OnInit  {
       // Later we need csv function here
       // this.searchDataRequestCsv(null, table);
     }
-    else
+    else {
       this.searchDataRequest(null, table);
+    }
   }
 
   searchOrgRequest() {
@@ -357,12 +358,11 @@ export class OrdersComponent implements OnInit  {
     // this.hasData = false;
     this.showSpinner = true;
 
-
     const self = this;
     // return this.searchData(org)
     return this.genericService
-    .successMockCall(data)
-    // .searchData(data)
+    // .successMockCall(data)
+    .getOrdersLineItems(data)
     .subscribe(
         response => {
           if (response) {

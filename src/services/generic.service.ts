@@ -136,7 +136,8 @@ export class GenericService {
     );
   }
 
-  /**
+  /*
+
    * GET UsersCsv Method
    * @param dataObj
    */
@@ -323,16 +324,23 @@ export class GenericService {
    * Get order line-items 
    * @param dataObj
    */
-  searchData(dataObj, isRoot=null) {
-    let org = dataObj.org || null;
-    const data = JSON.stringify(dataObj);
+  getOrdersLineItems(data, isRoot=null) {
+
+    let org = data.org || null;
+    let limit = data.limit || 25;
+    let pageNo = data.page || 1;
+
+    // const data = JSON.stringify(dataObj);
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
 
     return this.service.Call(
       'get', 
       apiPath.api +
       this.base.API + 
-      this.base.GET_ORDERS_LINE_ITEMS_ENDPOINT + (isRoot ? ('?org_uuid=' + org) : ''),
+      this.base.GET_ORDERS_LINE_ITEMS_ENDPOINT 
+        + '?limit='+limit+'&page='+pageNo
+        + (isRoot ? ('&org_uuid=' + org) : '')
+        ,
       data
     );
 
