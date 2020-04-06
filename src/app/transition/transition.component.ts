@@ -27,7 +27,7 @@ export class TransitionComponent implements OnInit {
   widget;
 
   constructor(
-    private okta: OktaAuthService, 
+    private okta: OktaAuthService,
     private route: ActivatedRoute, private router: Router, private http: Http, private sanitizer: DomSanitizer, private changeDetectorRef: ChangeDetectorRef) {
     this.showSpinner = false;
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
@@ -77,8 +77,8 @@ export class TransitionComponent implements OnInit {
                 let self = this;
                 this.widget.refreshElseSignout(
                   this,
-                  err, 
-                  self.getCustomerInfoRequest.bind(self)
+                  err,
+                  self.getCutomerInfoError.bind(self)
                 );
           } else {
             this.showSpinner = false;

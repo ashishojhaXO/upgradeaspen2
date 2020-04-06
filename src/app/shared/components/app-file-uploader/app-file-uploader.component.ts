@@ -20,6 +20,7 @@ export class AppFileUploaderComponent implements OnInit {
 
     // task: AngularFireUploadTask;
     @Input() uploadedFile: any;
+    @Input() acceptType: any;
     @Output() processFile: EventEmitter<any> = new EventEmitter();
     isHovering: boolean;
 

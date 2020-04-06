@@ -1,7 +1,7 @@
 .sidebar {
   float: left;
-  background-color: #3F4649;
-  border-right: 6px solid #0777bc;
+  background-color: #54575a;
+  border-right: 6px solid #4e9b49;
   height: 123vh;
   width: 240px;
   overflow-y: auto;
@@ -19,7 +19,7 @@
 .sidebar.closed {
   float: left;
   background-color: #3F4649;
-  border-right: 6px solid #0777bc;
+  border-right: 6px solid #4e9b49;
   height: 123vh;
   width: 0%;
   -webkit-transition-property: width; /* Safari */
@@ -36,12 +36,13 @@
   float: right;
   margin: 0px 0px 5px 5px;
   width: 30px;
-  border: 6px solid #0777bc;
-  background-color: #0777bc;
+  border: 6px solid #4e9b49;
+  background-color: #4e9b49;
   cursor: pointer;
   .fa {
     position: relative;
     left: 6px;
+    color: #54575a;
   }
 }
 
@@ -51,8 +52,8 @@
   float: right;
   margin: 0px 0px 5px 5px;
   width: 30px;
-  border: 6px solid #0777bc;
-  background-color: #0777bc;
+  border: 6px solid #4e9b49;
+  background-color: #4e9b49;
   cursor: pointer;
   position: absolute;
   left: 10px;

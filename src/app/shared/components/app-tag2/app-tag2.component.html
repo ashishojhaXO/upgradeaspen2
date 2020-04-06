@@ -1,6 +1,7 @@
 <tag-input [(ngModel)]='dataModel'
            name="dataModel"
            [errorMessages]="errorMessages"
+           [maxItems]="maxItems"
            [validators]="validators"
            [editable]='true'
            (onTagEdited)="onTagEdited($event)"

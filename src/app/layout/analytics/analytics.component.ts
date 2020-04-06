@@ -94,8 +94,8 @@ export class AnalyticsComponent implements OnInit {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
-              self.getToken.bind(self) 
+              err,
+              self.getToken.bind(self)
             );
           } else {
             this.showSpinner = false;
@@ -184,8 +184,8 @@ export class AnalyticsComponent implements OnInit {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
-              self.getUserService.bind(self)
+              err,
+              self.getUserDetails.bind(self)
             );
          } else {
            this.showSpinner = false;
