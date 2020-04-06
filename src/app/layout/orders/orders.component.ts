@@ -20,6 +20,8 @@ import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up
 import { PopUpModalComponent } from '../../shared/components/pop-up-modal/pop-up-modal.component';
 import { modalConfigDefaults } from 'ngx-bootstrap/modal/modal-options.class';
 
+import { CsvService } from '../../../services/csv'
+
 @Component({
   selector: 'app-orders',
   templateUrl: './orders.component.html',
@@ -43,8 +45,14 @@ export class OrdersComponent implements OnInit  {
     isAddRow: false,
     isColVisibility: true,
     isRowHighlight: true,
+
+    // For Csv functionality searchDataRequestCsv
     isDownloadAsCsv: true,
-    isDownloadAsCsvFunction: () => {},
+    isDownloadAsCsvFunc: ( table, pageLength, csv?) => {
+      this.apiMethod(table, pageLength, csv);
+    },
+    //
+
     isDownloadOption: {
       value: true,
       icon: '',
@@ -166,7 +174,7 @@ export class OrdersComponent implements OnInit  {
 
     if(csv){
       // Later we need csv function here
-      // this.searchDataRequestCsv(null, table);
+      this.searchDataRequestCsv(null, table, csv);
     }
     else {
       this.searchDataRequest(null, table);
@@ -214,6 +222,47 @@ export class OrdersComponent implements OnInit  {
           }
         }
     );
+  }
+
+
+  searchDataRequestCsv(org = null, table?, csv?) {
+
+    // if no table, then send all default, page=1 & limit=25
+    // else, send table data
+    let data = {
+      page: 0,
+      limit: 10000000,
+      org: org ? org : ''
+    };
+
+    // this.hasData = false;
+    this.showSpinner = true;
+
+    return this.genericService.getOrdersLineItemsCsv(data, this.isRoot)
+    .subscribe(
+      (res) => {
+        // this.hasData = true;
+        this.showSpinner = false;
+        let csv = new CsvService()
+        csv.successCBCsv(res, table)
+      },
+      (err) => {
+        this.showSpinner = false;
+        this.errorCB(err)
+
+        if(err.status === 401) {
+          let self = this;
+          this.widget.refreshElseSignout(
+            this,
+            err,
+            self.searchDataRequestCsv.bind(self, org, table)
+          );
+        } else {
+          this.showSpinner = false;
+        }
+      }
+    );
+
   }
 
   searchOrgData() {
@@ -362,7 +411,7 @@ export class OrdersComponent implements OnInit  {
     // return this.searchData(org)
     return this.genericService
     // .successMockCall(data)
-    .getOrdersLineItems(data)
+    .getOrdersLineItems(data, this.isRoot)
     .subscribe(
         response => {
           if (response) {

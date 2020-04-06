@@ -132,7 +132,9 @@ export class GenericService {
 
     return this.service.Call(
       'get', 
-      apiPath.api + this.base.API + this.base.GET_USERS_ENDPOINT + '?limit='+limit+'&page='+page+ ( org ? ('&org_uuid=' + org) : '')
+      apiPath.api + 
+      this.base.API + 
+      this.base.GET_USERS_ENDPOINT + '?limit='+limit+'&page='+page+ ( org ? ('&org_uuid=' + org) : '')
     );
   }
 
@@ -328,7 +330,7 @@ export class GenericService {
 
     let org = data.org || null;
     let limit = data.limit || 25;
-    let pageNo = data.page || 1;
+    let page = data.page || 1;
 
     // const data = JSON.stringify(dataObj);
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
@@ -338,12 +340,33 @@ export class GenericService {
       apiPath.api +
       this.base.API + 
       this.base.GET_ORDERS_LINE_ITEMS_ENDPOINT 
-        + '?limit='+limit+'&page='+pageNo
-        + (isRoot ? ('&org_uuid=' + org) : '')
-        ,
+        + '?limit='+limit+'&page='+page
+        // + (isRoot ? ('&org_uuid=' + org) : ''),
+        + ( org ? ('&org_uuid=' + org)  : ''),
       data
     );
 
+  }
+
+  getOrdersLineItemsCsv(data, isRoot=null) {
+
+    let limit = data.limit != null ? data.limit : 25;
+    let page = data.page != null ? data.page : 1;
+    let org = data.org;
+
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+
+    return this.service.Call(
+      'get', 
+      apiPath.api + this.base.API + 
+      this.base.GET_ORDERS_LINE_ITEMS_ENDPOINT 
+        + '?limit='+limit+'&page='+page
+        // + (isRoot ? ('&org_uuid=' + org) : '')
+        + ( org ? ('&org_uuid=' + org)  : '')
+        ,
+      {},
+      {"Content-Type": "application/csv"}
+    );
   }
 
 
