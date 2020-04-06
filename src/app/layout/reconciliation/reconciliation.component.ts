@@ -121,7 +121,6 @@ export class ReconciliationComponent implements OnInit  {
     this.channelData = this.getChannel();
     this.selectedChannel = [this.channelData[0]];
     this.searchDataRequest();
-    this.getChannelEmails();
   }
 
     handleSelect(selectedItem, type) {
@@ -539,6 +538,7 @@ export class ReconciliationComponent implements OnInit  {
     }
 
     handleShowModal(modalComponent: PopUpModalComponent) {
+        this.getChannelEmails();
         modalComponent.show();
     }
 
