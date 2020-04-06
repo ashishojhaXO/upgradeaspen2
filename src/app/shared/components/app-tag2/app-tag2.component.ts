@@ -15,6 +15,7 @@ export interface AutoCompleteModel {
 export class AppTag2Component implements OnInit {
 
   @Input() dataModel: any;
+  @Input() maxItems: any;
   @Input() primaryPlaceholder: string;
   @Input() secondaryPlaceholder: string;
   @Input() validation_func: string;
@@ -39,6 +40,7 @@ export class AppTag2Component implements OnInit {
     this.validators = [ this[this.validation_func] ];
     this.errorMessages = {};
     this.errorMessages[this.validation_func] = this.validationMessages;
+    this.maxItems = this.maxItems ? this.maxItems : 100;
   }
 
   OnAddingtag(e) {

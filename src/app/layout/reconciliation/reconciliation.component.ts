@@ -94,18 +94,7 @@ export class ReconciliationComponent implements OnInit  {
     select2Options = {
         placeholder: { id: '', text: 'Select a channel' }
     };
-    channelOptions = [
-        { id: '', text: 'Empty'},
-        { id: 8, text: 'facebook'},
-        { id: 101, text: 'Dynamic Media - Google'},
-        { id: 1, text: 'Facebook'},
-        { id: 7, text: 'Dynamic Media - Pinterest'},
-        { id: 5, text: 'Pinterest'},
-        { id: 4, text: 'Google'},
-        { id: 102, text: 'Display'},
-        { id: 31, text: 'Facebook'},
-        { id: 33, text: 'Pinterest'}
-    ];
+    channelOptions: any;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
 
@@ -132,6 +121,7 @@ export class ReconciliationComponent implements OnInit  {
     this.channelData = this.getChannel();
     this.selectedChannel = [this.channelData[0]];
     this.searchDataRequest();
+    this.getChannelEmails();
   }
 
     handleSelect(selectedItem, type) {
@@ -555,7 +545,15 @@ export class ReconciliationComponent implements OnInit  {
     OnSelectValueChange(e) {
         if (e.value && e.value !== this.uploadModel.channel) {
             this.uploadModel.channel = e.value;
-            this.getChannelEmails();
+            const corrObj =  this.channelOptions.find(x => x.id == this.uploadModel.channel);
+            if (corrObj && corrObj.email) {
+                this.uploadModel.emails = [{ display: corrObj.email, value: corrObj.email}];
+            }
+            // if (corrObj && corrObj.email && corrObj.email.length) {
+            //     this.uploadModel.emails = corrObj.email.map(function (email) {
+            //         return { display: email, value: email};
+            //     });
+            // }
         }
     }
 
@@ -563,12 +561,12 @@ export class ReconciliationComponent implements OnInit  {
         this.channelEmails().subscribe(
             response => {
                 if (response && response.data && response.data.length) {
-                   const corrObj =  response.data.find(x => x.channel_id === this.uploadModel.channel);
-                   if (corrObj && corrObj.email && corrObj.email.length) {
-                       this.uploadModel.emails = corrObj.email.map(function (email) {
-                           return { display: email, value: email};
-                       });
-                   }
+                    this.channelOptions = response.data.map(function (d) {
+                        return { id: d.channel_id , text: d.channel, email: d.email };
+                    });
+                    this.channelOptions.splice(0, 0, {
+                        id: '', text: 'Empty', email : ''
+                    });
                 }
             },
             err => {
@@ -610,40 +608,14 @@ export class ReconciliationComponent implements OnInit  {
 
     OnUpload(modalComponent: PopUpModalComponent) {
         this.showSpinner = true;
+        this.performChannelEmailUpdate(modalComponent);
+        this.performChannelInvoiceUpload(modalComponent);
+    }
+
+    performChannelEmailUpdate(modalComponent: PopUpModalComponent) {
         this.updateChannelEmails().subscribe(
             response => {
                 if (response) {
-                    this.uploadFile().subscribe(
-                        response1 => {
-                            if (response1) {
-                                this.showSpinner = false;
-                                Swal({
-                                    title: 'Invoice emailed successfully',
-                                    text: 'Invoice has been successfully emailed',
-                                    type: 'success'
-                                }).then( () => {
-                                    modalComponent.hide();
-                                    this.uploadModel.file = null;
-                                });
-                            }
-                        },
-                        err => {
-                            if(err.status === 401) {
-                                const self = this;
-                                this.widget.refreshElseSignout(
-                                    this,
-                                    err,
-                                    this.OnUpload.bind(self, modalComponent)
-                                );
-                            } else {
-                                Swal({
-                                    title: 'Invoice email failed',
-                                    text: 'There was an error emailing the invoice. Please try again',
-                                    type: 'error'
-                                })
-                                this.showSpinner = false;
-                            }
-                        });
                 }
             },
             err => {
@@ -652,7 +624,7 @@ export class ReconciliationComponent implements OnInit  {
                     this.widget.refreshElseSignout(
                         this,
                         err,
-                        this.OnUpload.bind(self, modalComponent)
+                        this.performChannelEmailUpdate.bind(self)
                     );
                 } else {
                     // Swal({
@@ -660,6 +632,43 @@ export class ReconciliationComponent implements OnInit  {
                     //     text: 'There was an error emailing the invoice. Please try again',
                     //     type: 'error'
                     // })
+                    this.showSpinner = false;
+                }
+            });
+    }
+
+    performChannelInvoiceUpload(modalComponent: PopUpModalComponent) {
+        this.uploadFile().subscribe(
+            response1 => {
+                if (response1) {
+                    this.showSpinner = false;
+                    Swal({
+                        title: 'Invoice emailed successfully',
+                        text: 'Invoice has been successfully emailed',
+                        type: 'success'
+                    }).then( () => {
+                        modalComponent.hide();
+                        this.uploadModel.file = '';
+                        this.uploadModel.fileAsBase64 = '';
+                        this.uploadModel.emails = [];
+                        this.uploadModel.channel = '';
+                    });
+                }
+            },
+            err => {
+                if(err.status === 401) {
+                    const self = this;
+                    this.widget.refreshElseSignout(
+                        this,
+                        err,
+                        this.performChannelInvoiceUpload.bind(self)
+                    );
+                } else {
+                    Swal({
+                        title: 'Invoice email failed',
+                        text: 'There was an error emailing the invoice. Please try again',
+                        type: 'error'
+                    })
                     this.showSpinner = false;
                 }
             });
@@ -677,29 +686,6 @@ export class ReconciliationComponent implements OnInit  {
           }
       }
       return valid;
-    }
-
-    uploadFile() {
-        const AccessToken: any = localStorage.getItem('accessToken');
-        let token = '';
-        if (AccessToken) {
-            // token = AccessToken.accessToken;
-            token = AccessToken;
-        }
-        const data = JSON.stringify({
-            channel : this.uploadModel.channel,
-            file: this.uploadModel.fileAsBase64,
-            fileName: this.uploadModel.file.name
-        });
-
-        const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
-        const options = new RequestOptions({headers: headers});
-        const url = this.api_fs.api + '/api/payments/invoices/channels/email';
-        return this.http
-            .post(url, data, options)
-            .map(res => {
-                return res.json();
-            }).share();
     }
 
     channelEmails() {
@@ -728,11 +714,18 @@ export class ReconciliationComponent implements OnInit  {
             token = AccessToken;
         }
 
+        let channel = '';
+        const corrObj =  this.channelOptions.find(x => x.id == this.uploadModel.channel);
+        if (corrObj) {
+            channel = corrObj.id;
+        }
+
         const data = JSON.stringify({
-            channel_id : this.uploadModel.channel,
-            email : this.uploadModel.emails.map(function (email) {
-                return email.value;
-            }),
+            channel_id : channel,
+            email : this.uploadModel.emails[0].value
+            // email : this.uploadModel.emails.map(function (email) {
+            //     return email.value;
+            // }),
         });
 
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
@@ -740,6 +733,36 @@ export class ReconciliationComponent implements OnInit  {
         const url = this.api_fs.api + '/api/payments/invoices/channels';
         return this.http
             .put(url, data, options)
+            .map(res => {
+                return res.json();
+            }).share();
+    }
+
+    uploadFile() {
+        const AccessToken: any = localStorage.getItem('accessToken');
+        let token = '';
+        if (AccessToken) {
+            // token = AccessToken.accessToken;
+            token = AccessToken;
+        }
+
+        let channel = '';
+        const corrObj =  this.channelOptions.find(x => x.id == this.uploadModel.channel);
+        if (corrObj) {
+            channel = corrObj.id;
+        }
+
+        const data = JSON.stringify({
+            channel_id : channel,
+            file: this.uploadModel.fileAsBase64,
+            fileName: this.uploadModel.file.name
+        });
+
+        const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+        const options = new RequestOptions({headers: headers});
+        const url = this.api_fs.api + '/api/payments/invoices/channels/email';
+        return this.http
+            .post(url, data, options)
             .map(res => {
                 return res.json();
             }).share();

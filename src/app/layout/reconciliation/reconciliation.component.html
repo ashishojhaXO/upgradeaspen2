@@ -88,7 +88,7 @@
           <div class="form-group-fields">
             <label class="col-lg-4 col-md-4" style="padding-left: 0px">Email : </label>
             <div class="col-lg-8 col-md-8 form-field" style="padding: 0px; border: 1px solid #aaa; border-radius: 4px">
-              <app-tag2 [dataModel]="uploadModel.emails" primaryPlaceholder="Add Email Addresses" validation_func="email_validation" validationMessages="Please be sure to use a valid email format"
+              <app-tag2 [maxItems]="1" [dataModel]="uploadModel.emails" primaryPlaceholder="Add Email Addresses" validation_func="email_validation" validationMessages="Please be sure to use a valid email format"
                         secondaryPlaceholder="Add Email" (updateDataModel)="_updateDataModel($event)" ></app-tag2>
             </div>
           </div>
