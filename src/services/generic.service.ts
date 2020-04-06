@@ -6,6 +6,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastsManager } from 'ng2-toastr';
 import { Service } from './util';
 
+// Testing
+import { TestClass } from './TestClass';
+// Testing-
+
+
 @Injectable()
 export class GenericService {
 
@@ -99,19 +104,10 @@ export class GenericService {
    * Success Mock Call
    * @param dataObj
    */
-  successMockCall() {
+  successMockCall(data) {
 
-
-    let json = {
-      "data":
-      {
-        "count":479,
-        "rows":[
-          {"email_id":"fu.io+F7@gmail.com","first_name":"Ra","last_name":"Ve","external_id":"00ujj","external_status":"EX","last_login (GMT)":"2019-11-05 10:00:52","company_name":"Fu","created_at (GMT)":"2019-02-26 02:17:52","updated_at (GMT)":null}
-        ]
-      }
-    }
-    return json;
+    let test = new TestClass();
+    return test.someHttpEP();
   }
 
   /**
@@ -136,11 +132,14 @@ export class GenericService {
 
     return this.service.Call(
       'get', 
-      apiPath.api + this.base.API + this.base.GET_USERS_ENDPOINT + '?limit='+limit+'&page='+page+ ( org ? ('&org_uuid=' + org) : '')
+      apiPath.api + 
+      this.base.API + 
+      this.base.GET_USERS_ENDPOINT + '?limit='+limit+'&page='+page+ ( org ? ('&org_uuid=' + org) : '')
     );
   }
 
-  /**
+  /*
+
    * GET UsersCsv Method
    * @param dataObj
    */
@@ -235,7 +234,6 @@ export class GenericService {
   ordersProcessedReportDownload(dataObj) {
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
     const data = JSON.stringify(dataObj);
-    console.log("dataObj: ", dataObj, " data; ", data);
 
     return this.service.Call(
       'post', 
@@ -321,6 +319,56 @@ export class GenericService {
     );
 
   }
+
+
+  /**
+   * GET getOrders
+   * Get order line-items 
+   * @param dataObj
+   */
+  getOrdersLineItems(data, isRoot=null) {
+
+    let org = data.org || null;
+    let limit = data.limit || 25;
+    let page = data.page || 1;
+
+    // const data = JSON.stringify(dataObj);
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+
+    return this.service.Call(
+      'get', 
+      apiPath.api +
+      this.base.API + 
+      this.base.GET_ORDERS_LINE_ITEMS_ENDPOINT 
+        + '?limit='+limit+'&page='+page
+        // + (isRoot ? ('&org_uuid=' + org) : ''),
+        + ( org ? ('&org_uuid=' + org)  : ''),
+      data
+    );
+
+  }
+
+  getOrdersLineItemsCsv(data, isRoot=null) {
+
+    let limit = data.limit != null ? data.limit : 25;
+    let page = data.page != null ? data.page : 1;
+    let org = data.org;
+
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+
+    return this.service.Call(
+      'get', 
+      apiPath.api + this.base.API + 
+      this.base.GET_ORDERS_LINE_ITEMS_ENDPOINT 
+        + '?limit='+limit+'&page='+page
+        // + (isRoot ? ('&org_uuid=' + org) : '')
+        + ( org ? ('&org_uuid=' + org)  : '')
+        ,
+      {},
+      {"Content-Type": "application/csv"}
+    );
+  }
+
 
   /**
    * Create Admin User Service from formData
