@@ -1,9 +1,9 @@
 <div [style.display]="hideTable ? 'none' : 'block'">
   <div class="col-lg-12 col-md-12">
-    <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">ORDERS</p>
+    <p class="pull-left page-title">ORDERS</p>
     <div class="alert-btn type-create pull-right">
-      <a class="button btn btn-success" *ngIf="allowOrderFunctionality !== 'false'" routerLink="/app/order/create" href="javascript:void(0)">CREATE NEW ORDER</a>
-      <a (click)="reLoad()" class="button btn btn-success" style="background-color: #0777bc"><i class="fa fa-fw fa-refresh" aria-hidden="true"></i>Reload</a>
+      <a class="btn btn-primary" *ngIf="allowOrderFunctionality !== 'false'" routerLink="/app/order/create" href="javascript:void(0)">Create New Order</a>
+      <a (click)="reLoad()" class="btn btn-secondary"><i class="fa fa-fw fa-refresh" aria-hidden="true"></i>Reload</a>
     </div>
   </div>
   <div *ngIf="isRoot">
@@ -87,7 +87,7 @@
 
 <div style="position: relative" *ngIf="hideTable">
   <div class="pull-right" style="position: absolute; right: 0; z-index: 1">
-    <a (click)="showOrders()" class="button btn btn-success" style="background-color: #0777bc"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Back to Orders</a>
+    <a (click)="showOrders()" class="btn btn-secondary"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Back to Orders</a>
   </div>
 
   <app-order-dashboard *ngIf="selectedOrderID && selectedLineItemID" [orderID]="selectedOrderID" [lineItemID]="selectedLineItemID"></app-order-dashboard>
