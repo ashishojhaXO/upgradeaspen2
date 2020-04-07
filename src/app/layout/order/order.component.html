@@ -1,6 +1,6 @@
 <div>
   <div class="col-lg-12 col-md-12">
-    <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">{{existingOrder ? 'MODIFY ' : 'CREATE '}} ORDER</p>
+    <p class="pull-left page-title">{{existingOrder ? 'MODIFY ' : 'CREATE '}} ORDER</p>
   </div>
   <p style="clear: both"></p>
   <!--<div class="col-lg-2 col-md-2 col-sm-12" style="border: 1px solid #fff; background: #fff; border-radius: 4px">-->
@@ -14,7 +14,7 @@
   <!--</div>-->
   <div class="col-lg-12 col-md-12 col-sm-12">
     <div style="background: #fff; border-radius: 4px">
-      <label style="padding: 0px; margin: 10px 0px 20px 15px; font-size: 16px"><span style="border-bottom:3px solid #38A6F7;">ORDER</span></label>
+      <label style="padding: 0px; margin: 10px 0px 20px 15px; font-size: 16px"><span class="underline">ORDER</span></label>
       <div class="col-lg-12 col-md-12 col-sm-12" style="padding: 15px 0px 20px 0px; background: #fff">
         <label class="col-lg-2 col-md-2 col-sm-12">Template</label>
         <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -4px;">
@@ -128,7 +128,7 @@
         </div>
       </div>
       <div style="padding-left: 15px" *ngIf="template">
-        <label class="col-lg-12 col-md-12 col-sm-12" style="padding: 0px; margin: 30px 0px 10px 0px; font-size: 16px"><span style="border-bottom:3px solid #38A6F7;">LINE ITEMS</span></label>
+        <label class="col-lg-12 col-md-12 col-sm-12" style="padding: 0px; margin: 30px 0px 10px 0px; font-size: 16px"><span class="underline">LINE ITEMS</span></label>
         <button class="btn btn-primary" *ngIf="!paymentReceived" (click)="addLineItem()">ADD</button>
         <button class="btn btn-primary" *ngIf="!paymentReceived" (click)="removeLineItem()">REMOVE</button>
         <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject && dataFieldConfiguration.length && paymentReceived !== null">

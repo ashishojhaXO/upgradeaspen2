@@ -30,7 +30,7 @@ label {
   text-align: center;
   background-color: #f06d30;
   color: #fff;
-  border: 1px solid #666;
+  border: 1px solid #f06d30;
   border-radius: 4px;
   font-family: HelveticaNeue;
   font-weight: 500;
@@ -38,11 +38,14 @@ label {
   font-style: normal;
   line-height: normal;
   letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 6px 12px;
 }
 
 .btn-secondary {
   text-align: center;
   background-color: transparent;
+  text-transform: uppercase;
   color: #4e9b49;
   border: 1px solid;
   border-radius: 4px;
@@ -52,6 +55,19 @@ label {
   font-style: normal;
   line-height: normal;
   letter-spacing: 1px;
+  padding: 6px 12px;
+}
+
+p.page-title {
+  color: #f06d30;
+  display: inline;
+  font-size: 24px;
+  line-height: normal;
+  letter-spacing: 0.85px;
+}
+
+.underline {
+  border-bottom:3px solid #f06d30;
 }
 
 .datepicker-icon {
@@ -741,14 +757,14 @@ button {
   font-size: $font-primary;
 
   &.btn {
-    color: $tertiary-color;
-    background: $secondary-bg;
-    border-radius: 2px;
-    padding: 5px;
-    margin-right: 5px;
-    text-transform: uppercase;
-    border: 1px solid $senary-border;
-    width: 70px;
+    //color: $tertiary-color;
+    //background: $secondary-bg;
+    //border-radius: 2px;
+    //padding: 5px;
+    //margin-right: 5px;
+    //text-transform: uppercase;
+    //border: 1px solid $senary-border;
+    //width: 70px;
 
     &.save {
       padding: 6px 10px;
@@ -1240,11 +1256,13 @@ ul.tpas li a:hover {
 }
 
 a {
-  color: $quinary-color;
+  //color: $quinary-color;
+  color: #54575a;
   text-decoration: none;
 
   &:hover {
-    color: $quinary-color;
+    color: #f06d30;
+    //color: $quinary-color;
   }
 
   &.disabled {
