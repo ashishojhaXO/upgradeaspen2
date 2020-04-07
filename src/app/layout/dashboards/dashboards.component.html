@@ -41,7 +41,7 @@
     </div>
   </div>
   <div class="sidebar-form-control">
-    <button (click)="search()">SUBMIT</button>
+    <button (click)="search()">SEARCH</button>
   </div>
 </app-sidebar1>
 <div class="app-container">
@@ -72,7 +72,7 @@
     </div>
   </div>
   <div *ngIf="chartConfig.data.length">
-    <a class="btn btn-success pull-right mb-1" (click)="exportAll()" title="Export All"><i class="fa fa-fw fa-download" aria-hidden="true"></i>Export All</a>
+    <a class="btn btn-secondary pull-right mb-1" (click)="exportAll()" title="Export All"><i class="fa fa-fw fa-download" aria-hidden="true"></i>Export All</a>
     <div class="clear-fix"></div>
     <app-charts #chart [config]="chartConfig"></app-charts>
   </div>

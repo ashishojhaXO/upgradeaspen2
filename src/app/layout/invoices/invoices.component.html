@@ -1,8 +1,8 @@
 <div [style.display]="hideTable ? 'none' : 'block'">
   <div class="col-lg-12 col-md-12">
-    <p class="pull-left" style="color: #0777bc;font-size: 20px;display: inline;">INVOICES</p>
+    <p class="pull-left page-title">INVOICES</p>
     <div class="pull-right">
-      <a (click)="reLoad()" class="button btn btn-success" style="background-color: #0777bc"><i class="fa fa-fw fa-refresh" aria-hidden="true"></i>Reload</a>
+      <a (click)="reLoad()" class="button btn btn-secondary"><i class="fa fa-fw fa-refresh" aria-hidden="true"></i>Reload</a>
     </div>
   </div>
   <div *ngIf="isRoot">
@@ -34,7 +34,7 @@
 </div>
 <div style="position: relative" *ngIf="hideTable">
   <div class="pull-right" style="position: absolute; right: 0; z-index: 1">
-    <a (click)="showInvoices()" class="button btn btn-success" style="background-color: #0777bc"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Back to invoices</a>
+    <a (click)="showInvoices()" class="button btn btn-secondary"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Back to invoices</a>
   </div>
   <app-invoice [orgId]="orgValue" [invoiceId]="selectedInvoice" [invoiceNumber]="selectedInvoiceNumber"></app-invoice>
 </div>
