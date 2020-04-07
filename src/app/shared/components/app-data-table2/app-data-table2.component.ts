@@ -489,46 +489,14 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     this.dataObject.gridData.options.isOrder :
                     [[1, 'asc']],
 
-                // TODO: FTM Random
-                // ajax: function(data, callback, settings){
-                    // console.log("ajax: ");
-                    // __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table);
-                // },
-                // serverSide: true,
-                // recordsTotal Looks wrong
-                // recordsTotal: dataSet.length,
-                // displayStart: 2,
-                // recordsFiltered: 25,
-                // totalPages: 10,
-                // currentPage: 4,
-
-                // processing: true,
-                // serverSide: true,
-                // ajax: {
-                //     data: function() {
-                //         var info = $('#' + __this.tableId).DataTable().page.info();
-
-                //         $('#' + __this.tableId).DataTable().ajax.url(
-                //             'https://plazo-dev.fusionseven.net/api/test?limit=25'+''+'&page='+info.page+1
-                //         )
-
-                //     },
-                //     dataSrc: function (params) {
-                //         console.log("dataSrc paramas: ", params);
-                //         return params.data.rows
-                //     }
-                // },
                 initComplete: function(settings) {
                     $('#' + __this.tableId + ' tbody td').each(function () {
                         $(this).attr('title', $(this).text());
                     });
                 },
                 pageLength: pageLength,
-                // sort: false,
-                sort: true,
+                // sort: true,
                 displayStart: this.dataObject.gridData.options.isDisplayStart || 0,
-
-                // FTM/
 
                 rowCallback: function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                     // Get row ID
@@ -914,23 +882,23 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 
                 let currentPage = table.page.info().page;
 
-                // order
-                // On order of table
-                table.off('order.dt');
-                table.on('order.dt', function(e, settings, ordArr){
+                // // Order
+                // // On order of table
+                // table.off('order.dt');
+                // table.on('order.dt', function(e, settings, ordArr){
 
-                    // let redrawPageNumber = table.page.info().page;
+                //     // let redrawPageNumber = table.page.info().page;
 
-                    console.log('OORRDER....', "e: ", e, "sett: ", settings, " ordArr: ", ordArr, 
-                        "currenPage: ", currentPage,
-                        " table.page.info: ", table.page.info(),
-                        "PAGES: ", table.page.info().pages
-                    );
+                //     console.log('OORRDER....', "e: ", e, "sett: ", settings, " ordArr: ", ordArr, 
+                //         "currenPage: ", currentPage,
+                //         " table.page.info: ", table.page.info(),
+                //         "PAGES: ", table.page.info().pages
+                //     );
 
-                    // table.page(table.page.info().pages).draw(false);
-                    // table.off('order.dt');
-                });
-                // order-
+                //     // table.page(table.page.info().pages).draw(false);
+                //     // table.off('order.dt');
+                // });
+                // // Order-
 
 
                 $(document).off( 'keyup', 'input.input-sm');
@@ -942,6 +910,30 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 });
 
             }
+                // TODO: remove after testing, as we need this a little above in the code
+                // Order
+                // On order of table
+                let currentPage1 = table.page.info().page;
+                table.off('order.dt');
+                table.on('order.dt', function(e, settings, ordArr){
+
+                    // let redrawPageNumber = table.page.info().page;
+
+                    console.log('OORRDER....', "e: ", e, "sett: ", settings, " ordArr: ", ordArr, 
+                        "currenPage1: ", currentPage1,
+                        " table.page.info: ", table.page.info(),
+                        "PAGES: ", table.page.info().pages
+                    );
+
+                    // table.off('order.dt');
+                    // setTimeout( ( table ) => {
+                    //     console.log("setTO ", table);
+                    //     table.off('order.dt');
+                    // }, 0, table );
+
+                    // table.page(table.page.info().pages).draw(false);
+                });
+                // Order-
 
             // Highlight pre checked rows
             if (__this.dataObject.gridData && __this.dataObject.gridData.result) {
