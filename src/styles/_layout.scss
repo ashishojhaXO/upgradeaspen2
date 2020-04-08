@@ -58,12 +58,21 @@ label {
   padding: 6px 12px;
 }
 
+.btn-secondary:hover {
+  background: #4e9b49 !important;
+  color: #fff !important;
+}
+
 p.page-title {
   color: #f06d30;
   display: inline;
   font-size: 24px;
   line-height: normal;
   letter-spacing: 0.85px;
+}
+
+.swal2-popup .swal2-styled.swal2-confirm {
+  background-color: #f06d30 !important;
 }
 
 .underline {
@@ -772,7 +781,7 @@ button {
     }
 
     &:hover {
-      color: $tertiary-color;
+      //color: $tertiary-color;
     }
   }
 
@@ -874,6 +883,16 @@ ul.main-menu li a {
 
 .bottom-menu {
   margin-top: 10px;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.bottom-menu::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE and Edge */
+.bottom-menu {
+  -ms-overflow-style: none;
 }
 
 .bottom-menu li a {
@@ -1808,8 +1827,6 @@ nav#cssmenu {
 
 .content-area {
   padding: 15px;
-  padding-top: 40px;
-
   .popover {
     z-index: 106000;
   }
@@ -3187,7 +3204,7 @@ div.modal-dialog {
     text-align: center;
     background-color: #f06d30;
     color: #fff;
-    border: 1px solid #666;
+    border: 1px solid #f06d30;
     width: 98%;
     height: 30px;
     border-radius: 4px;
@@ -3346,7 +3363,7 @@ table.dataContainer tbody td {
 
 
 table.dataContainer tbody tr.selected {
-  background: #0085c7 !important;
+  background: #4e9b49 !important;
 }
 
 .dataTables_filter {

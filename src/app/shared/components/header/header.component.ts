@@ -1,4 +1,4 @@
-import { Component, OnInit, Directive, DoCheck, ViewChild, ChangeDetectorRef, HostListener } from '@angular/core';
+import {Component, OnInit, Directive, DoCheck, ViewChild, ChangeDetectorRef, HostListener, Output, EventEmitter} from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
@@ -29,6 +29,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   @ViewChild('popoverButton') private;
   @ViewChild('ResetPassword') modalReset: PopUpModalComponent;
   @ViewChild('navItems') navItems: AppNavComponent;
+  @Output() hasSubMenus =  new EventEmitter<any>();
 
   loggedInUser: string;
   loggedInVendor: string;
@@ -87,6 +88,10 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
       new: '',
       confirm: ''
     };
+  }
+
+  __hasSubMenus(e) {
+    this.hasSubMenus.emit(e);
   }
 
   ngOnInit() {

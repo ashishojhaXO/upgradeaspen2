@@ -105,7 +105,7 @@
                             </div>
                             <div class="col-sm-12">
                                 <div [class]="invoice.isKenshoo ? 'col-sm-9' : 'col-sm-11'"><span></span></div>
-                                <div class="col-sm-1" style="padding-left: 42px; padding-right: -1px"><button class="btn pull-right" style="position: relative; left: 19px; margin-top: 30px; margin-bottom: 10px" (click)="handleShowModal(AddPayment, invoice)">Pay</button></div>
+                                <div class="col-sm-1" style="padding-left: 42px; padding-right: -1px"><button class="btn pull-right btn-primary" style="position: relative; left: 19px; margin-top: 30px; margin-bottom: 10px" (click)="handleShowModal(AddPayment, invoice)">Pay</button></div>
                             </div>
                         </div>
 
@@ -128,10 +128,10 @@
             </div>
         </div>
         <div class="app-modal-footer">
-            <button type="button" class="action-btn" (click)= "OnPay(AddPayment)">
+            <button type="button" class="btn btn-primary" (click)= "OnPay(AddPayment)">
                 Submit
             </button>
-            <button type="button" class="inaction-btn" (click)="handleCloseModal(AddPayment)">
+            <button type="button" class="button btn btn-secondary" (click)="handleCloseModal(AddPayment)">
                 Cancel
             </button>
         </div>
