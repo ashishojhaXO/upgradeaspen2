@@ -26,7 +26,7 @@
         <div class="publishWrapper" *ngIf="isPublished"></div>
       </div>
       <!-- organization name -->
-      <div class="form-group-fields row">
+      <div class="form-group-fields row" *ngIf="isRoot">
         <label for="organization" class="col-xs-12 col-sm-2">Organization</label>
         <div class="col-xs-12 col-sm-6">
           <select formControlName="orgName" class="form-control">
