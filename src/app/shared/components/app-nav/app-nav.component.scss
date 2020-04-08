@@ -28,8 +28,9 @@
 }
 
 .nav.navbar-nav.main-menu > div .bottom-menu {
-    display: flex;
+    display: -webkit-box;
     position: fixed;
+    overflow: auto;
     background: #54575A;
     width: 100%;
     left: 0px;

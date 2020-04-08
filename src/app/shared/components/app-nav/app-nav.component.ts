@@ -1,4 +1,4 @@
-import {Component, OnInit, Directive, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, OnInit, Directive, Input, OnChanges, SimpleChanges, Output, EventEmitter} from '@angular/core';
 import { Router } from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 
@@ -17,6 +17,7 @@ export class AppNavComponent implements OnInit, OnChanges {
     @Input() mainUlClass: any;
     @Input() random: any;
     @Input() urlPath: string;
+    @Output() _hasSubMenus =  new EventEmitter<any>();
     // urlPath: string;
 
     subMenu: any;
@@ -58,7 +59,6 @@ export class AppNavComponent implements OnInit, OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         //
         this.selectedUrl = this.router.url;
-
         // Set selected on the main nav level
         this.setSelectedMenu(this.mainmenu)
 
@@ -78,11 +78,13 @@ export class AppNavComponent implements OnInit, OnChanges {
     setSelectedMenu(mainmenu) {
         // i.selected = bool;
         // this.selected = i;
-        if(mainmenu) {
+        if (mainmenu) {
             mainmenu.forEach(element => {
                 element.selected = (this.selectedUrl.substr(1) === element.url) || (this.selectedUrl.substr(0, this.selectedUrl.lastIndexOf('/')).substr(1) === element.url);
-            });
-
+                if (element.selected) {
+                    this._hasSubMenus.emit({ hasSubMenu : !!(element.submenu && element.submenu.length) , level: element.level });
+                }
+            }), this;
         }
     }
 

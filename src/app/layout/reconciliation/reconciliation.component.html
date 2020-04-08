@@ -59,7 +59,7 @@
 </div>
 <div style="position: relative" *ngIf="hideTable">
   <div class="pull-right" style="position: absolute; right: 0; z-index: 1">
-    <a (click)="showReDashboard()" class="button btn btn-success" style="background-color: #0777bc"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Back To Reconciliation Dashboard</a>
+    <a (click)="showReDashboard()" class="button btn btn-secondary"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Back To Reconciliation Dashboard</a>
   </div>
   <app-reconciliation-profiles [period]="selectedPeriod" [supplier]="selectedSupplier" [invoiceId]="selectedInvoice" [invoiceNumber]="selectedInvoiceNumber"></app-reconciliation-profiles>
 </div>

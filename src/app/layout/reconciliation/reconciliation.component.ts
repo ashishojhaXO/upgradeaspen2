@@ -51,8 +51,8 @@ export class ReconciliationComponent implements OnInit  {
       },
       isPlayOption: {
         value : true,
-        icon : 'fa-plus-square',
-        tooltip: 'View'
+        icon : 'fa-info-circle',
+        tooltip: 'View Info'
       },
       isRowSelection: null,
       isPageLength: true,
