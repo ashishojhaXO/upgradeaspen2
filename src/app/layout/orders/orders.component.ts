@@ -154,13 +154,24 @@ export class OrdersComponent implements OnInit  {
     const groups = localStorage.getItem('loggedInUserGroup') || '';
     const grp = JSON.parse(groups);
 
+    console.log('grp >>>')
+    console.log(grp);
+
+    let isUser = false;
     grp.forEach(function (item) {
-      if(item === 'ROOT' || item === 'SUPER_USER') {
+      if (item === 'USER') {
+        isUser = true;
+      }
+      else if(item === 'ROOT' || item === 'SUPER_USER') {
         this.isRoot = true;
       }
     }, this);
 
     this.allowOrderFunctionality = localStorage.getItem('allowOrderFunctionality') || 'true';
+
+    if (isUser) {
+      this.allowOrderFunctionality = 'false';
+    }
     if (this.isRoot) {
       this.allowOrderFunctionality = 'true';
     }
@@ -384,7 +395,7 @@ export class OrdersComponent implements OnInit  {
   }
 
   searchDataRequestCB(res, table) {
-    
+
     this.response = res.data.rows;
     let li = this.calc(res, table);
 
@@ -394,7 +405,7 @@ export class OrdersComponent implements OnInit  {
     // CurrentPageNo:
     // TotalCountofRows:
     this.dataObject = {};
-    
+
     this.populateDataTable(li, true);
   }
 
