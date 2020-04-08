@@ -20,6 +20,11 @@ import { GenericService } from '../../../services/generic.service';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import { CsvService } from '../../../services/csv';
 
+// import { DataTablePluginExt } from "../../../services/data-table-plugin-ext";
+// import { DataTablePluginExt } from "../../../services/data-table-plugin-ext";
+
+var DataTablePluginExt = require("../../../services/data-table-plugin-ext.js");
+
 @Component({
   selector: 'app-usermanagement',
   templateUrl: './usermanagement.component.html',
@@ -54,11 +59,16 @@ export class UserManagementComponent implements OnInit  {
     // To start the DataTables from a particular page number
     isDisplayStart: 0,
 
+    isColumnDefs: [
+      { type: "name-string-not-nullund", targets: 1 }
+    ],
+
     // If dataTable is having `isApiCallForNextPage`
     // Then we will also have to send isOrder
     // We might have to write a PlugIn/Extension for DataTables
     // $.fn.dataTable.ext.sort
-    isOrder: [[1, 'desc']],
+    // isOrder: [[1, 'desc']],
+    isOrder: [[1, 'name-string-not-nullund-asc']],
     // For limited pagewise data
     isApiCallForNextPage: {
       value: true,
@@ -159,9 +169,12 @@ export class UserManagementComponent implements OnInit  {
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
 
     this.searchDataRequest();
-    // this.getUsers();
 
     this.searchOrgRequest();
+
+    // Init Datatables Extension Plug-ins
+    // new DataTablePluginExt() 
+
   }
 
   apiMethod = (table, pageLength, csv?) => {

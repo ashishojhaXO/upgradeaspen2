@@ -409,6 +409,13 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     })
                 }
 
+                
+                if (this.dataObject.gridData.options.isColumnDefs) {
+                    console.log("col Defs: ", columnDefs);
+                    columnDefs.push( ...this.dataObject.gridData.options.isColumnDefs )
+                    console.log("AFTER col Defs: ", columnDefs);
+                }
+
                 if (this.dataObject.gridData.options.isDownloadAsCsv) {
                     let dict = {
                         extend: 'csv',
