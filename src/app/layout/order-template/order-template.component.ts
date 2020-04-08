@@ -31,8 +31,27 @@ export class OrderTemplateComponent implements OnInit {
   orderFieldsArr = [];
   lineFieldsArr = [];
   isPublished:boolean = false;
+  orgInfo: any;
+  orgArr = [];
+  selectedOrg: any;
+  orgValue = '';
+  isRoot: boolean;
 
-  constructor(private okta: OktaAuthService, private http: Http,private route: ActivatedRoute, private router: Router) { }
+  constructor(private okta: OktaAuthService, private http: Http,private route: ActivatedRoute, private router: Router) {
+    const groups = localStorage.getItem('loggedInUserGroup') || '';
+    const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
+    this.orgInfo = custInfo.org;
+
+    console.log('custInfo >>>')
+    console.log(custInfo);
+
+    const grp = JSON.parse(groups);
+    grp.forEach(function (item) {
+      if(item === 'ROOT' || item === 'SUPER_USER') {
+        this.isRoot = true;
+      }
+    }, this);
+   }
 
   ngOnInit() {
     this.showSpinner = true;
@@ -58,7 +77,7 @@ export class OrderTemplateComponent implements OnInit {
   formOnInIt() {
     this.templateForm = new FormGroup({
       templateName: new FormControl(null, Validators.required),
-      orgName: new FormControl(null, Validators.required)
+      orgName: new FormControl(null, this.isRoot ? Validators.required: null)
     });
   }
 
@@ -71,6 +90,7 @@ export class OrderTemplateComponent implements OnInit {
           response.org_list.forEach(function (ele) {
             this.organizations.push({
               id: ele.id,
+              org_uuid: ele.org_uuid,
               text: ele.org_name
             });
           }, this);
@@ -115,7 +135,9 @@ export class OrderTemplateComponent implements OnInit {
       if(this.orderForm.model.attributes.length && this.lineItemForm.model.attributes.length){
         this.templateResponse.template_id = "";
         this.templateResponse.template_name = this.templateForm.value.templateName;
-        this.templateResponse.org_id = this.templateForm.value.orgName;
+        if(this.isRoot){
+         this.templateResponse.org_uuid = this.organizations.find(x => x.id == this.templateForm.value.orgName).org_uuid;
+        }
         if (this.isPublished){
           this.templateResponse.isPublish = 1;
         }else {
