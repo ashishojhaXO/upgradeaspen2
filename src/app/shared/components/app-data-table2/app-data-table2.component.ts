@@ -410,11 +410,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 }
 
                 
-                if (this.dataObject.gridData.options.isColumnDefs) {
-                    console.log("col Defs: ", columnDefs);
-                    columnDefs.push( ...this.dataObject.gridData.options.isColumnDefs )
-                    console.log("AFTER col Defs: ", columnDefs);
-                }
 
                 if (this.dataObject.gridData.options.isDownloadAsCsv) {
                     let dict = {
@@ -464,6 +459,16 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 if (this.dataObject.gridData.options.isPagination) {
                     domConfig += 'p';
                 }
+
+                // columnDefs
+                if (this.dataObject.gridData.options.isColumnDefs) {
+                    console.log("col Defs: ", columnDefs);
+                    columnDefs.push( ...this.dataObject.gridData.options.isColumnDefs )
+                    console.log("AFTER col Defs: ", columnDefs);
+                }
+
+                console.log("---- columns: ", columns);
+
             }
 
             if (!domConfig) {
@@ -938,7 +943,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     //     table.off('order.dt');
                     // }, 0, table );
 
-                    // table.page(table.page.info().pages).draw(false);
+                    // table.page(currentPage1).draw(false);
                 });
                 // Order-
 

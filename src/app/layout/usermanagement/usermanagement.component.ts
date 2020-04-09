@@ -23,7 +23,8 @@ import { CsvService } from '../../../services/csv';
 // import { DataTablePluginExt } from "../../../services/data-table-plugin-ext";
 // import { DataTablePluginExt } from "../../../services/data-table-plugin-ext";
 
-var DataTablePluginExt = require("../../../services/data-table-plugin-ext.js");
+// var DataTablePluginExt = 
+// require("../../../services/data-table-plugin-ext.js");
 
 @Component({
   selector: 'app-usermanagement',
@@ -56,19 +57,27 @@ export class UserManagementComponent implements OnInit  {
     isPageLengthNo: 25,
     isPagination: true,
     isTree: true,
+
     // To start the DataTables from a particular page number
     isDisplayStart: 0,
 
     isColumnDefs: [
-      { type: "name-string-not-nullund", targets: 1 }
+      { 
+        type: 'name-string-not-nullund', 
+        targets: '_all',
+        render: (data, type, row, meta)=>{ 
+          console.log("REND data: ", data, " type: ", type, " row: ", row, " meta: ", meta); 
+          return data; 
+        }
+      }
     ],
 
     // If dataTable is having `isApiCallForNextPage`
     // Then we will also have to send isOrder
     // We might have to write a PlugIn/Extension for DataTables
     // $.fn.dataTable.ext.sort
-    // isOrder: [[1, 'desc']],
-    isOrder: [[1, 'name-string-not-nullund-asc']],
+    // isOrder: [[1, 'asc']],
+    // isOrder: [[1, 'name-string-not-nullund-desc']],
     // For limited pagewise data
     isApiCallForNextPage: {
       value: true,
@@ -174,6 +183,7 @@ export class UserManagementComponent implements OnInit  {
 
     // Init Datatables Extension Plug-ins
     // new DataTablePluginExt() 
+    // this.loadScript("../../../services/data-table-plugin-ext.js");
 
   }
 
