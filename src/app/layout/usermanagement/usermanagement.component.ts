@@ -61,11 +61,13 @@ export class UserManagementComponent implements OnInit  {
     // To start the DataTables from a particular page number
     isDisplayStart: 0,
 
+    // TODO: How is this 'blah' thing even happening!!!
     isColumnDefs: [
       { 
-        type: 'name-string-not-nullund', 
+        // type: 'name-string-not-nullund', 
         // type: 'name-string-not-nullund-a', 
-        // type: 'blah',
+        type: 'blah',
+        // type: 'string',
         targets: '_all',
         render: (data, type, row, meta)=>{ 
           return data; 
@@ -78,7 +80,8 @@ export class UserManagementComponent implements OnInit  {
     // We might have to write a PlugIn/Extension for DataTables
     // $.fn.dataTable.ext.sort
     // isOrder: [[1, 'desc']],
-    // isOrder: [[1, 'name-string-not-nullund-desc']],
+    // isOrder: [[1, 'name-string-not-nullund']],
+    // isOrdering: false,
     // For limited pagewise data
     isApiCallForNextPage: {
       value: true,
