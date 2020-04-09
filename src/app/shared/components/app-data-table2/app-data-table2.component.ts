@@ -493,6 +493,10 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     style: this.dataObject.gridData.options.isRowSelection && this.dataObject.gridData.options.isRowSelection.isMultiple ? 'multi' : 'os',
                 },
 
+                // ordering: this.dataObject.gridData.options.isOrdering ? 
+                //     this.dataObject.gridData.options.isOrdering : 
+                //     true,
+
                 order: this.dataObject.gridData.options.isOrder ?
                     this.dataObject.gridData.options.isOrder :
                     [[1, 'asc']],
@@ -889,7 +893,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                 
                 let currentPage = table.page.info().page;
-                // Order Here
+                // order Here
                 // On Click of sort on table header, run the below sequence
                 // $('th').off('click');
                 $('th').on('click', function (e) {
