@@ -78,7 +78,23 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }];
   dashboard: any;
   widget: any;
-
+  orgArr = [];
+  selectedOrg: any;
+  orgValue = '';
+  orgInfo: any;
+  isRoot: boolean;
+  settings: any = { 
+    singleSelection: true,
+    text: 'Select ' ,
+    selectAllText: 'Select All',
+    unSelectAllText: 'UnSelect All',
+    labelKey: 'itemName',
+    searchBy: ['itemName'],
+    enableCheckAll: true,
+    enableSearchFilter: true,
+    showTooltip: true,
+    tooltipElementsSize: 10
+};
   @ViewChild('chart') chartRef;
   @ViewChild('table') tableRef;
 
@@ -86,6 +102,24 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       private okta: OktaAuthService,
       private route: ActivatedRoute, private router: Router, private http: Http) {
     this.showSpinner = false;
+    const groups = localStorage.getItem('loggedInUserGroup') || '';
+    const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
+    this.orgInfo = custInfo.org;
+
+    console.log('custInfo >>>')
+    console.log(custInfo);
+
+    const grp = JSON.parse(groups);
+    grp.forEach(function (item) {
+      if(item === 'ROOT' || item === 'SUPER_USER') {
+        this.isRoot = true;
+      }
+    }, this);
+    if(this.isRoot){
+    this.selectedOrg = [{id: "ac34b344-b3c4-11e9-9e7c-0a76cb863686", itemName: "Home Depot"}];
+    }else{
+      this.selectedOrg = [{}];
+    }
   }
 
   getDependentConfig(dependsOn: any) {
@@ -160,9 +194,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
     console.log('filter dataObj >>')
     console.log(obj);
-
+    let org=this.orgValue;
     return this.http
-        .post(this.api_fs.api + '/api/reports/org/homd/filters', obj, options )
+        .post(this.api_fs.api + '/api/reports/org/homd/filters'+( org ? ('?org_id=' + org) : ''), obj, options )
         .map(res => {
           const result = res.json();
           const ret = [];
@@ -307,7 +341,12 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     this.height = '50vh';
     this.dashboardConfig = {};
     this.dashboardConfig.filterProps = JSON.parse(JSON.stringify(this.defaultFilters));
-
+    if(this.isRoot){
+     this.searchOrgRequest();
+    }
+    if(this.selectedOrg[0].id){
+      this.orgValue = this.selectedOrg[0].id; 
+    }
     if (this.dashboardType === 'pacing' || this.dashboardType === 'spend') {
       this
           .getFilter(this.dashboardType)
@@ -375,11 +414,12 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     if (AccessToken) {
       token = AccessToken;
     }
+    let org=this.orgValue;
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
 
     return this.http
-        .get(this.api_fs.api + '/api/reports/org/homd/seed-filters', options).toPromise()
+        .get(this.api_fs.api + '/api/reports/org/homd/seed-filters'+( org ? ('?org_id=' + org) : ''), options).toPromise()
         .then(data => data.json())
         .catch();
   }
@@ -403,10 +443,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     };
 
     this.showSpinner = false;
-
+    let org=this.orgValue;
     const dataObj = JSON.stringify(obj);
     return this.http.post(
-        this.api_fs.api + '/api/reports/org/homd/seed-dashboard/v1',
+        this.api_fs.api + '/api/reports/org/homd/seed-dashboard/v1'+( org ? ('?org_id=' + org) : ''),
         dataObj,
         options
     ).toPromise()
@@ -800,13 +840,14 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     if (AccessToken) {
       token = AccessToken;
     }
+    let org=this.orgValue;
 
     console.log('token >>>>')
     console.log(token);
 
     const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
     const options = new RequestOptions({headers: headers});
-    return this.http.get(this.api_fs.api + '/api/reports/org/Home%20Depot/template/dashboard?templatename=' + dashboardType, options).toPromise()
+    return this.http.get(this.api_fs.api + '/api/reports/org/Home%20Depot/template/dashboard?templatename=' + dashboardType+( org ? ('&org_id=' + org) : ''), options).toPromise()
         .then(data => data.json())
         .catch();
   }
@@ -946,12 +987,12 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
     console.log('data to post >>')
     console.log(data);
-
+    let org=this.orgValue;
     var url;
     if(dataObj.dashboard === 'pacing') {
-      url = this.api_fs.api + '/api/reports/pacing/v1';
+      url = this.api_fs.api + '/api/reports/pacing/v1'+( org ? ('?org_id=' + org) : '');
     } else if(dataObj.dashboard === 'spend') {
-      url = this.api_fs.api + '/api/reports/spend/v1';
+      url = this.api_fs.api + '/api/reports/spend/v1'+( org ? ('?org_id=' + org) : '');
     }
     return this.http
         .post(url, data, options)
@@ -977,4 +1018,62 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     // console.log(this.tableRef);
     this.tableRef.exportTable();
   }
+  searchOrgRequest() {
+    return this.searchOrgData().subscribe(
+        response => {
+          if (response && response.data) {
+            response.data.forEach(function (ele) {
+              this.orgArr.push({
+                id: ele.org_uuid,
+                itemName: ele.org_name
+              });
+            }, this);
+          }
+        },
+        err => {
+
+          if(err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.searchOrgRequest.bind(self)
+            );
+          } else {
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+  searchOrgData() {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/orgs';
+    return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+  
+  handleSelect(selectedItem, type) {
+   if(selectedItem.id){     
+    console.log("Org",selectedItem);
+    this.selectedOrg = [selectedItem];  
+    this.ngOnInit();
+   }  
+ }
+
+ handleDeSelect(selectedItem, type) {
+  this.selectedOrg = [{}];  
+  this.orgValue="";
+  this.ngOnInit();
+ }
 }

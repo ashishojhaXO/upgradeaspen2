@@ -3,6 +3,19 @@
     <h3>FILTERS</h3>
   </div>
   <div class="sidebar-form-control">
+    <div class="sidebar-form-control" *ngIf="isRoot">
+      <p class="title">Org</p>
+      <div class="sidebar-container dash-cust-width">
+        <app-multiselect-drop-down [data]="orgArr"
+                                   [selectedItems]="selectedOrg"
+                                   [loading]="loading"
+                                   [settings]="settings"
+                                   [dropDownAction]="this"
+                                   (onSelect)="handleSelect($event, 'selectedOrg')"
+                                   (onDeSelect)="handleDeSelect($event, 'selectedOrg')"
+        ></app-multiselect-drop-down>
+      </div>
+    </div>
     <div *ngFor="let filter of dashboardConfig.filterProps; let i = index;">
       <div class="sidebar-form-control" *ngIf="filter.type === 'toggle'" >
         <p class="title">{{filter.label}}</p>

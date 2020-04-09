@@ -5,6 +5,19 @@
   </div>
   <div class="sidebar-form-control">
     <div>
+      <div class="sidebar-form-control" *ngIf="isRoot">
+        <p class="title">Org</p>
+        <div class="sidebar-container dash-cust-width">
+          <app-multiselect-drop-down [data]="orgArr"
+                                     [selectedItems]="selectedOrg"
+                                     [loading]="loading"
+                                     [settings]="settings"
+                                     [dropDownAction]="this"
+                                     (onSelect)="handleOrgSelect($event, 'selectedOrg')"
+                                     (onDeSelect)="handleOrgDeSelect($event, 'selectedOrg')"
+          ></app-multiselect-drop-down>
+        </div>
+      </div>
       <div class="sidebar-form-control">
         <p class="title">Period</p>
         <div class="sidebar-container">
