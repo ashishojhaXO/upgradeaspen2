@@ -149,7 +149,7 @@ export class ReconciliationComponent implements OnInit  {
       this.searchOrgRequest();
      }
      if(this.selectedOrg[0].id){
-       this.orgValue = this.selectedOrg[0].id; 
+       this.orgValue = this.selectedOrg[0].id;
      }
     this.searchDataRequest();
   }
@@ -580,6 +580,8 @@ export class ReconciliationComponent implements OnInit  {
             const corrObj =  this.channelOptions.find(x => x.id == this.uploadModel.channel);
             if (corrObj && corrObj.email) {
                 this.uploadModel.emails = [{ display: corrObj.email, value: corrObj.email}];
+            } else {
+                this.uploadModel.emails = [];
             }
             // if (corrObj && corrObj.email && corrObj.email.length) {
             //     this.uploadModel.emails = corrObj.email.map(function (email) {
@@ -812,7 +814,7 @@ export class ReconciliationComponent implements OnInit  {
             }
           },
           err => {
-  
+
             if(err.status === 401) {
               let self = this;
               this.widget.refreshElseSignout(
@@ -833,7 +835,7 @@ export class ReconciliationComponent implements OnInit  {
         // token = AccessToken.accessToken;
         token = AccessToken;
       }
-  
+
       const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
       const options = new RequestOptions({headers: headers});
       var url = this.api_fs.api + '/api/orgs';
@@ -844,15 +846,15 @@ export class ReconciliationComponent implements OnInit  {
           }).share();
     }
     handleOrgSelect(selectedItem, type) {
-      if(selectedItem.id){     
+      if(selectedItem.id){
        console.log("Org",selectedItem);
-       this.selectedOrg = [selectedItem];  
+       this.selectedOrg = [selectedItem];
        this.ngOnInit();
-      }  
+      }
     }
-   
+
     handleOrgDeSelect(selectedItem, type) {
-     this.selectedOrg = [{}];  
+     this.selectedOrg = [{}];
      this.orgValue="";
      this.ngOnInit();
     }
