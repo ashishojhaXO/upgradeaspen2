@@ -889,7 +889,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                 
                 let currentPage = table.page.info().page;
-                // Order
+                // Order Here
                 // On Click of sort on table header, run the below sequence
                 // $('th').off('click');
                 $('th').on('click', function (e) {
