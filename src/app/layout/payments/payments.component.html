@@ -260,10 +260,10 @@
         </div>
       </div>
       <div class="app-modal-footer" *ngIf="!newForm">
-        <button type="button" class="action-btn" [disabled]="!paymentForm.valid" [style.cursor]="!paymentForm.valid ? 'not-allowed' : 'pointer'" (click)= "OnSubmit(AddPayment)">
+        <button type="button" class="btn btn-primary" [disabled]="!paymentForm.valid" [style.cursor]="!paymentForm.valid ? 'not-allowed' : 'pointer'" (click)= "OnSubmit(AddPayment)">
           Add
         </button>
-        <button type="button" class="inaction-btn" (click)="handleCloseModal(AddPayment)">
+        <button type="button" class="btn btn-secondary" (click)="handleCloseModal(AddPayment)">
           Close
         </button>
       </div>

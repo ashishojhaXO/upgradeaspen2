@@ -485,11 +485,11 @@ export class OrdersComponent implements OnInit  {
 
     this.gridData['options'] = this.options[0];
     this.gridData.columnsToColor = [
-      { index: 11, name: 'MERCHANT PROCESSING FEE', color: 'rgb(47,132,234,0.2)'},
-      { index: 15, name: 'LINE ITEM MEDIA BUDGET', color: 'rgb(47,132,234,0.2)'},
-      { index: 16, name: 'KENSHOO FEE', color: 'rgb(47,132,234,0.2)'},
-      { index: 17, name: 'THD FEE', color: 'rgb(47,132,234,0.2)'},
-      { index: 10, name: 'LINE ITEM TOTAL BUDGET', color: 'rgb(47,132,234,0.4)'}
+      { index: 13, name: 'MERCHANT PROCESSING FEE', color: 'rgb(47,132,234,0.2)'},
+      { index: 17, name: 'LINE ITEM MEDIA BUDGET', color: 'rgb(47,132,234,0.2)'},
+      { index: 18, name: 'KENSHOO FEE', color: 'rgb(47,132,234,0.2)'},
+      { index: 19, name: 'THD FEE', color: 'rgb(47,132,234,0.2)'},
+      { index: 12, name: 'LINE ITEM TOTAL BUDGET', color: 'rgb(47,132,234,0.4)'}
     ];
     this.dashboard = 'paymentGrid';
     this.dataObject.gridData = this.gridData;

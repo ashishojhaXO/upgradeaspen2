@@ -110,10 +110,10 @@
       </div>
     </div>
     <div class="app-modal-footer">
-      <button type="button" [disabled]="!validated()" [style.cursor]="!validated() ? 'not-allowed' : 'pointer'" [style.opacity]="!validated() ? 0.7 : 1"  class="action-btn" (click)="OnUpload(UploadInvoice)">
+      <button type="button" [disabled]="!validated()" [style.cursor]="!validated() ? 'not-allowed' : 'pointer'" [style.opacity]="!validated() ? 0.7 : 1"  class="btn btn-primary" (click)="OnUpload(UploadInvoice)">
         Submit
       </button>
-      <button type="button" class="inaction-btn" (click)="handleCloseModal(UploadInvoice)">
+      <button type="button" class="btn btn-secondary" (click)="handleCloseModal(UploadInvoice)">
         Close
       </button>
     </div>
