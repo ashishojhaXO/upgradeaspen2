@@ -21,7 +21,7 @@ import { AppDataTable2Component } from '../../shared/components/app-data-table2/
 import { CsvService } from '../../../services/csv';
 
 // import { DataTablePluginExt } from "../../../services/data-table-plugin-ext";
-// import { DataTablePluginExt } from "../../../services/data-table-plugin-ext";
+// import { DataTablePluginExt } from "./../../../scripts/data-table/data-table-plugin-ext.js";
 
 // var DataTablePluginExt = 
 // require("../../../services/data-table-plugin-ext.js");
@@ -64,6 +64,8 @@ export class UserManagementComponent implements OnInit  {
     isColumnDefs: [
       { 
         type: 'name-string-not-nullund', 
+        // type: 'name-string-not-nullund-a', 
+        // type: 'blah',
         targets: '_all',
         render: (data, type, row, meta)=>{ 
           return data; 
@@ -75,7 +77,7 @@ export class UserManagementComponent implements OnInit  {
     // Then we will also have to send isOrder
     // We might have to write a PlugIn/Extension for DataTables
     // $.fn.dataTable.ext.sort
-    // isOrder: [[1, 'asc']],
+    // isOrder: [[1, 'desc']],
     // isOrder: [[1, 'name-string-not-nullund-desc']],
     // For limited pagewise data
     isApiCallForNextPage: {

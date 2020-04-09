@@ -75,8 +75,20 @@ export class OrdersComponent implements OnInit  {
     // since isActionColPosition is 1, isOrder is also required to be sent,
     // since default ordering assigned in dataTable is [[1, 'asc']]
     // isOrder: [[2, 'asc']],
-    isOrder: [[3, 'asc']],
+    // isOrder: [[3, 'asc']],
     isHideColumns: [ "Vendor_Receipt_Id","internal_line_item_id","internal_order_id"],
+
+    isColumnDefs: [
+      { 
+        type: 'name-string-not-nullund', 
+        // type: 'name-string-not-nullund-a', 
+        // type: 'random',
+        targets: '_all',
+        render: (data, type, row, meta)=>{ 
+          return data; 
+        }
+      }
+    ],
 
     // TODO: Check for PageLen change event also...
     isApiCallForNextPage: {
