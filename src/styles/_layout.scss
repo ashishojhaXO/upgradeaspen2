@@ -58,8 +58,8 @@ label {
   padding: 6px 12px;
 }
 
-.btn-secondary:hover {
-  background: #4e9b49 !important;
+.btn-primary:hover, .btn-secondary:hover {
+  background: #54575a !important;
   color: #fff !important;
 }
 
@@ -69,6 +69,38 @@ p.page-title {
   font-size: 24px;
   line-height: normal;
   letter-spacing: 0.85px;
+}
+
+.org-dropdown select {
+  background-image:
+          linear-gradient(45deg, transparent 50%, white 50%),
+          linear-gradient(135deg, white 50%, transparent 50%),
+          linear-gradient(to right, #54575a, #54575a) !important;
+  background-position:
+          calc(100% - 20px) calc(1em + 2px),
+          calc(100% - 15px) calc(1em + 2px),
+          100% 0 !important;
+  background-size:
+          5px 5px,
+          5px 5px,
+          2.5em 2.5em !important;
+  background-repeat: no-repeat !important;
+}
+
+select {
+  background-image:
+          linear-gradient(45deg, transparent 50%, #54575a 50%),
+          linear-gradient(135deg, #54575a 50%, transparent 50%),
+          linear-gradient(to right, transparent, transparent) !important;
+  background-position:
+          calc(100% - 20px) calc(1em + 2px),
+          calc(100% - 15px) calc(1em + 2px),
+          100% 0 !important;
+  background-size:
+          5px 5px,
+          5px 5px,
+          2.5em 2.5em !important;
+  background-repeat: no-repeat !important;
 }
 
 .swal2-popup .swal2-styled.swal2-confirm {
@@ -790,6 +822,7 @@ button {
   }
 
   &.action-btn {
+    margin-right: 10px;
     padding: 7px 15px;
     width: 87px;
     background: $secondary-bg;
@@ -1388,7 +1421,8 @@ label.search-icon i {
 }
 
 .modal-header {
-  background: $secondary-bg;
+  //background: $secondary-bg;
+  background: #f06d30;
   color: $tertiary-color;
   font-size: 14px;
 
@@ -2610,6 +2644,10 @@ button.disabled {
   display: none;
 }
 
+.page-header {
+  margin: 10px 20px 0px 20px;
+}
+
 .page-header .spinner {
   background: #f1f1f1;
   opacity: 0.8;
@@ -3275,7 +3313,15 @@ div.modal-dialog div.dataTableWrapper {
 }
 
 table.dataTable tbody td.selected a {
-  color: #3FA8F4 !important;
+  //color: #3FA8F4 !important;
+}
+
+table.dataTable tbody tr.selected a, table.dataTable tbody th.selected a, table.dataTable tbody td.selected a {
+  color: #fff !important;
+}
+
+table.dataTable tbody tr.selected a:hover, table.dataTable tbody th.selected a:hover, table.dataTable tbody td.selected a:hover {
+  color: #f06d30 !important;
 }
 
 .selector.selectorarrow.selectorarrowleft {
@@ -3363,7 +3409,7 @@ table.dataContainer tbody td {
 
 
 table.dataContainer tbody tr.selected {
-  background: #4e9b49 !important;
+  background: #ADACAC !important;
 }
 
 .dataTables_filter {

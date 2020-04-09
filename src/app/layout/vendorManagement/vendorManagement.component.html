@@ -157,10 +157,10 @@
       </div>
     </div>
     <div class="app-modal-footer">
-      <button type="button" [disabled]="!vendorForm.valid" [style.cursor]="!vendorForm.valid ? 'not-allowed' : 'pointer'" [style.opacity]="!vendorForm.valid ? 0.7 : 1" class="action-btn" (click)="OnSubmit(AddVendor)">
+      <button type="button" [disabled]="!vendorForm.valid" [style.cursor]="!vendorForm.valid ? 'not-allowed' : 'pointer'" [style.opacity]="!vendorForm.valid ? 0.7 : 1" class="btn btn-primary" (click)="OnSubmit(AddVendor)">
         {{ editID ? ' Update' : ' Add ' }}
       </button>
-      <button type="button" class="inaction-btn" (click)="handleCloseModal(AddVendor)">
+      <button type="button" class="btn btn-secondary" (click)="handleCloseModal(AddVendor)">
         Close
       </button>
     </div>

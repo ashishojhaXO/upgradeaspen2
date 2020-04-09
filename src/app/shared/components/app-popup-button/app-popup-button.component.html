@@ -29,11 +29,11 @@
         </div>
       </div>
       <div class="app-modal-footer">
-        <button type="button" class="inaction-btn" (click)="handleCloseModal(displayPopUp)">
-          Cancel
-        </button>
-        <button type="button" class="action-btn" (click)="onValueUpdate(displayPopUp)">
+        <button type="button" class="btn btn-primary" (click)="onValueUpdate(displayPopUp)">
           Save
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="handleCloseModal(displayPopUp)">
+          Cancel
         </button>
       </div>
     </app-pop-up-modal>

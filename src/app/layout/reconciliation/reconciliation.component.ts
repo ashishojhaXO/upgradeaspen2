@@ -41,6 +41,7 @@ export class ReconciliationComponent implements OnInit  {
       isAddRow: false,
       isColVisibility: true,
       isDownloadAsCsv: true,
+      isRowHighlight: true,
       isDownloadAsCsvFunc: ( table, pageLength, csv?) => {
         this.apiMethod(table, pageLength, csv);
       },

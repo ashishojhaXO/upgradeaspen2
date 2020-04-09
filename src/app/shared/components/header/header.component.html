@@ -109,10 +109,10 @@
         </div>
       </div>
       <div class="app-modal-footer">
-        <button type="button" [disabled]="!resetForm.valid" class="action-btn" (click)="OnReset(ResetPassword)">
+        <button type="button" [disabled]="!resetForm.valid" class="btn btn-primary" (click)="OnReset(ResetPassword)">
           Reset
         </button>
-        <button type="button" class="inaction-btn" (click)="handleCloseModal(ResetPassword)">
+        <button type="button" class="btn btn-secondary" (click)="handleCloseModal(ResetPassword)">
           Cancel
         </button>
       </div>
