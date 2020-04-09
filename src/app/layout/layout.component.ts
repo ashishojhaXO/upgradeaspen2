@@ -12,6 +12,7 @@ import 'datatables.net';
 export class LayoutComponent implements DoCheck, OnInit {
 
   activeSidebar: boolean;
+  hasSubMenu: boolean;
 
   constructor(public router: Router, private route: ActivatedRoute, private breadcrumbsConfig: McBreadcrumbsConfig) {
   }
@@ -27,6 +28,10 @@ export class LayoutComponent implements DoCheck, OnInit {
 
   ngOnInit() {
 
+  }
+
+  _hasSubMenus(e) {
+    this.hasSubMenu = e.hasSubMenu;
   }
 
 }

@@ -41,6 +41,7 @@ export class ReconciliationComponent implements OnInit  {
       isAddRow: false,
       isColVisibility: true,
       isDownloadAsCsv: true,
+      isRowHighlight: true,
       isDownloadAsCsvFunc: ( table, pageLength, csv?) => {
         this.apiMethod(table, pageLength, csv);
       },
@@ -51,8 +52,8 @@ export class ReconciliationComponent implements OnInit  {
       },
       isPlayOption: {
         value : true,
-        icon : 'fa-plus-square',
-        tooltip: 'View'
+        icon : 'fa-info-circle',
+        tooltip: 'View Info'
       },
       isRowSelection: null,
       isPageLength: true,
@@ -88,6 +89,12 @@ export class ReconciliationComponent implements OnInit  {
     hasData: boolean;
     selectedInvoiceDetails: any;
     memo: string;
+    orgArr = [];
+    selectedOrg: any;
+    orgValue = '';
+    orgInfo: any;
+    isRoot: boolean;
+
     @ViewChild('UploadInvoice') uploadInvoice: PopUpModalComponent;
     uploadForm: FormGroup;
     uploadModel: any;
@@ -105,6 +112,24 @@ export class ReconciliationComponent implements OnInit  {
           file: '',
           fileAsBase64: ''
       };
+      const groups = localStorage.getItem('loggedInUserGroup') || '';
+    const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
+    this.orgInfo = custInfo.org;
+
+    console.log('custInfo >>>')
+    console.log(custInfo);
+
+    const grp = JSON.parse(groups);
+    grp.forEach(function (item) {
+      if(item === 'ROOT' || item === 'SUPER_USER') {
+        this.isRoot = true;
+      }
+    }, this);
+    if(this.isRoot){
+    this.selectedOrg = [{id: "ac34b344-b3c4-11e9-9e7c-0a76cb863686", itemName: "Home Depot"}];
+    }else{
+      this.selectedOrg = [{}];
+    }
   }
 
   ngOnInit() {
@@ -120,6 +145,12 @@ export class ReconciliationComponent implements OnInit  {
     this.selectedPeriod = [this.periodData[1]];
     this.channelData = this.getChannel();
     this.selectedChannel = [this.channelData[0]];
+    if(this.isRoot){
+      this.searchOrgRequest();
+     }
+     if(this.selectedOrg[0].id){
+       this.orgValue = this.selectedOrg[0].id; 
+     }
     this.searchDataRequest();
   }
 
@@ -182,9 +213,10 @@ export class ReconciliationComponent implements OnInit  {
     const obj = JSON.stringify(dataObj);
     console.log('obj >>')
     console.log(obj)
+    let org=this.orgValue;
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
-    const url = this.api_fs.api + '/api/reports/reconciliation';
+    const url = this.api_fs.api + '/api/reports/reconciliation'+( org ? ('?org_id=' + org) : '');
     return this.http
       .post(url, obj, options)
       .map(res => {
@@ -766,5 +798,62 @@ export class ReconciliationComponent implements OnInit  {
             .map(res => {
                 return res.json();
             }).share();
+    }
+    searchOrgRequest() {
+      return this.searchOrgData().subscribe(
+          response => {
+            if (response && response.data) {
+              response.data.forEach(function (ele) {
+                this.orgArr.push({
+                  id: ele.org_uuid,
+                  itemName: ele.org_name
+                });
+              }, this);
+            }
+          },
+          err => {
+  
+            if(err.status === 401) {
+              let self = this;
+              this.widget.refreshElseSignout(
+                this,
+                err,
+                self.searchOrgRequest.bind(self)
+              );
+            } else {
+              this.showSpinner = false;
+            }
+          }
+      );
+    }
+    searchOrgData() {
+      const AccessToken: any = localStorage.getItem('accessToken');
+      let token = '';
+      if (AccessToken) {
+        // token = AccessToken.accessToken;
+        token = AccessToken;
+      }
+  
+      const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+      const options = new RequestOptions({headers: headers});
+      var url = this.api_fs.api + '/api/orgs';
+      return this.http
+          .get(url, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    }
+    handleOrgSelect(selectedItem, type) {
+      if(selectedItem.id){     
+       console.log("Org",selectedItem);
+       this.selectedOrg = [selectedItem];  
+       this.ngOnInit();
+      }  
+    }
+   
+    handleOrgDeSelect(selectedItem, type) {
+     this.selectedOrg = [{}];  
+     this.orgValue="";
+     this.ngOnInit();
     }
 }

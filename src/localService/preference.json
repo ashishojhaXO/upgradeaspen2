@@ -14,6 +14,7 @@
       "index": 4,
       "name": "dashboards",
       "title": "DASHBOARDS",
+      "level": 1,
       "selected": false,
       "id": "dashboards",
       "url":"app/dashboards",
@@ -23,6 +24,7 @@
           "name": "Pacing",
           "title": "Pacing",
           "selected": false,
+          "level": 2,
           "id": "pacing",
           "url": "app/dashboards/pacing"
         },
@@ -30,6 +32,7 @@
           "index": 2,
           "name": "Spend",
           "title": "Spend",
+          "level": 2,
           "selected": false,
           "id": "spend",
           "url": "app/dashboards/spend"
@@ -38,6 +41,7 @@
           "index": 3,
           "name": "Reconciliation",
           "title": "Reconciliation",
+          "level": 2,
           "selected": false,
           "id": "reconciliation",
           "url": "app/dashboards/reconciliation"
@@ -49,6 +53,7 @@
       "name": "reports",
       "title": "REPORTS",
       "selected": false,
+      "level": 1,
       "id": "reports",
       "url":"app/reports",
       "submenu": [
@@ -57,6 +62,7 @@
           "name": "reportsSummary",
           "title": "Summary",
           "selected": true,
+          "level": 2,
           "id": "reportsSummary",
           "url": "app/reports/reportsSummary"
         },
@@ -65,6 +71,7 @@
           "name": "adHocReportBuilder",
           "title": "AdHoc Report Builder",
           "selected": false,
+          "level": 2,
           "id": "adHocReportBuilder",
           "url": "app/reports/adHocReportBuilder"
         },
@@ -73,6 +80,7 @@
           "name": "alertNotification",
           "title": "Alert Notification",
           "selected": false,
+          "level": 2,
           "id": "alertNotification",
           "url": "app/reports/alertNotification"
         }
@@ -82,6 +90,7 @@
       "index": 6,
       "name": "orders",
       "title": "ORDERS",
+      "level": 1,
       "selected": false,
       "id": "orders",
       "url":"app/order"
@@ -90,6 +99,7 @@
       "index": 7,
       "name": "payments",
       "title": "PAYMENTS",
+      "level": 1,
       "selected": false,
       "id": "payments",
       "url":"app/payment"
@@ -99,11 +109,13 @@
       "name": "admin",
       "title": "ADMIN",
       "selected": false,
+      "level": 1,
       "id": "admin",
       "url":"app/admin",
       "submenu": [
         {
           "index": 1,
+          "level": 2,
           "name": "orgmanagement",
           "title": "Org Management",
           "id": "orgmanagement",
@@ -111,6 +123,7 @@
         },
         {
           "index": 2,
+          "level": 2,
           "name": "usermanagement",
           "title": "User Management",
           "id": "usermanagement",
@@ -118,6 +131,7 @@
         },
         {
           "index": 3,
+          "level": 2,
           "name": "vendormanagement",
           "title": "Vendor Management",
           "id": "vendormanagement",
@@ -125,6 +139,7 @@
         },
         {
           "index": 4,
+          "level": 2,
           "name": "invoices",
           "title": "Invoice Management",
           "id": "invoices",
@@ -132,6 +147,7 @@
         },
         {
           "index": 5,
+          "level": 2,
           "name": "emailmanagement",
           "title": "Email Management",
           "id": "emailmanagement",
@@ -139,6 +155,7 @@
         },
         {
           "index": 6,
+          "level": 2,
           "name": "support",
           "title": "Support",
           "id": "support",
@@ -146,6 +163,7 @@
         },
         {
           "index": 6,
+          "level": 2,
           "name": "uploads",
           "title": "Uploads",
           "id": "uploads",
@@ -153,6 +171,7 @@
         },
         {
           "index": 7,
+          "level": 2,
           "name": "baseFields",
           "title": "Configure Base Fields",
           "id": "baseFields",
@@ -160,6 +179,7 @@
         },
         {
           "index": 8,
+          "level": 2,
           "name": "ordertemplate",
           "title": "Configure Template",
           "id": "ordertemplate",
@@ -167,6 +187,7 @@
         },
         {
           "index": 9,
+          "level": 2,
           "name": "ordertemplatelist",
           "title": "Template List",
           "id": "ordertemplatelist",
@@ -174,6 +195,7 @@
         },
         {
           "index": 10,
+          "level": 2,
           "name": "analytics",
           "title": "Analytics",
           "id": "analyticsReport",
@@ -181,6 +203,7 @@
         },
         {
           "index": 11,
+          "level": 2,
           "name": "operationsdashboard",
           "title": "Operations Dashboard",
           "id": "operationsdashboard",
@@ -188,6 +211,7 @@
         },
         {
           "index": 12,
+          "level": 2,
           "name": "jobs",
           "title": "Jobs",
           "id": "jobs",

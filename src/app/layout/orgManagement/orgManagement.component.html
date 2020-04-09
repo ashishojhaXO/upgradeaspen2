@@ -139,10 +139,10 @@
       </div>
     </div>
     <div class="app-modal-footer">
-      <button type="button" [disabled]="!orgForm.valid" [style.cursor]="!orgForm.valid ? 'not-allowed' : 'pointer'" class="action-btn" (click)="OnSubmit(AddOrg)">
+      <button type="button" [disabled]="!orgForm.valid" [style.cursor]="!orgForm.valid ? 'not-allowed' : 'pointer'" class="btn btn-primary" (click)="OnSubmit(AddOrg)">
         {{ editID ? ' Update' : ' Add ' }}
       </button>
-      <button type="button" class="inaction-btn" (click)="handleCloseModal(AddOrg)">
+      <button type="button" class="btn btn-secondary" (click)="handleCloseModal(AddOrg)">
         Close
       </button>
     </div>

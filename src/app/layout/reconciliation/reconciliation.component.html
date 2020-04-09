@@ -5,6 +5,19 @@
   </div>
   <div class="sidebar-form-control">
     <div>
+      <div class="sidebar-form-control" *ngIf="isRoot">
+        <p class="title">Org</p>
+        <div class="sidebar-container dash-cust-width">
+          <app-multiselect-drop-down [data]="orgArr"
+                                     [selectedItems]="selectedOrg"
+                                     [loading]="loading"
+                                     [settings]="settings"
+                                     [dropDownAction]="this"
+                                     (onSelect)="handleOrgSelect($event, 'selectedOrg')"
+                                     (onDeSelect)="handleOrgDeSelect($event, 'selectedOrg')"
+          ></app-multiselect-drop-down>
+        </div>
+      </div>
       <div class="sidebar-form-control">
         <p class="title">Period</p>
         <div class="sidebar-container">
@@ -59,7 +72,7 @@
 </div>
 <div style="position: relative" *ngIf="hideTable">
   <div class="pull-right" style="position: absolute; right: 0; z-index: 1">
-    <a (click)="showReDashboard()" class="button btn btn-success" style="background-color: #0777bc"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Back To Reconciliation Dashboard</a>
+    <a (click)="showReDashboard()" class="button btn btn-secondary"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Back To Reconciliation Dashboard</a>
   </div>
   <app-reconciliation-profiles [period]="selectedPeriod" [supplier]="selectedSupplier" [invoiceId]="selectedInvoice" [invoiceNumber]="selectedInvoiceNumber"></app-reconciliation-profiles>
 </div>
@@ -110,10 +123,10 @@
       </div>
     </div>
     <div class="app-modal-footer">
-      <button type="button" [disabled]="!validated()" [style.cursor]="!validated() ? 'not-allowed' : 'pointer'" [style.opacity]="!validated() ? 0.7 : 1"  class="action-btn" (click)="OnUpload(UploadInvoice)">
+      <button type="button" [disabled]="!validated()" [style.cursor]="!validated() ? 'not-allowed' : 'pointer'" [style.opacity]="!validated() ? 0.7 : 1"  class="btn btn-primary" (click)="OnUpload(UploadInvoice)">
         Submit
       </button>
-      <button type="button" class="inaction-btn" (click)="handleCloseModal(UploadInvoice)">
+      <button type="button" class="btn btn-secondary" (click)="handleCloseModal(UploadInvoice)">
         Close
       </button>
     </div>
