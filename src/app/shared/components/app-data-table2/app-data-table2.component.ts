@@ -409,6 +409,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     })
                 }
 
+                
+
                 if (this.dataObject.gridData.options.isDownloadAsCsv) {
                     let dict = {
                         extend: 'csv',
@@ -457,6 +459,12 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 if (this.dataObject.gridData.options.isPagination) {
                     domConfig += 'p';
                 }
+
+                // columnDefs
+                if (this.dataObject.gridData.options.isColumnDefs) {
+                    columnDefs.push( ...this.dataObject.gridData.options.isColumnDefs )
+                }
+
             }
 
             if (!domConfig) {
@@ -489,45 +497,14 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     this.dataObject.gridData.options.isOrder :
                     [[1, 'asc']],
 
-                // TODO: FTM Random
-                // ajax: function(data, callback, settings){
-                    // console.log("ajax: ");
-                    // __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod(table);
-                // },
-                // serverSide: true,
-                // recordsTotal Looks wrong
-                // recordsTotal: dataSet.length,
-                // displayStart: 2,
-                // recordsFiltered: 25,
-                // totalPages: 10,
-                // currentPage: 4,
-
-                // processing: true,
-                // serverSide: true,
-                // ajax: {
-                //     data: function() {
-                //         var info = $('#' + __this.tableId).DataTable().page.info();
-
-                //         $('#' + __this.tableId).DataTable().ajax.url(
-                //             'https://plazo-dev.fusionseven.net/api/test?limit=25'+''+'&page='+info.page+1
-                //         )
-
-                //     },
-                //     dataSrc: function (params) {
-                //         console.log("dataSrc paramas: ", params);
-                //         return params.data.rows
-                //     }
-                // },
                 initComplete: function(settings) {
                     $('#' + __this.tableId + ' tbody td').each(function () {
                         $(this).attr('title', $(this).text());
                     });
                 },
                 pageLength: pageLength,
-                sort: false,
+                // sort: true,
                 displayStart: this.dataObject.gridData.options.isDisplayStart || 0,
-
-                // FTM/
 
                 rowCallback: function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                     // Get row ID
@@ -881,6 +858,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 table.off('draw');
             });
 
+
             // If we decide to get data of only 1 page to show in the table and not all data
             if (__this.dataObject.gridData.options.isApiCallForNextPage ) {
 
@@ -909,8 +887,17 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     table.off("length");
                 });
 
-
+                
                 let currentPage = table.page.info().page;
+                // Order Here
+                // On Click of sort on table header, run the below sequence
+                // $('th').off('click');
+                $('th').on('click', function (e) {
+                    table.page(currentPage).draw(false);
+                })
+                // Order-
+
+
                 $(document).off( 'keyup', 'input.input-sm');
                 $(document).on( 'keyup', 'input.input-sm', function (ev) {
                     // If currentPage exists, currentPage is not the same as table's page & also input value goes empty
