@@ -462,12 +462,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                 // columnDefs
                 if (this.dataObject.gridData.options.isColumnDefs) {
-                    console.log("col Defs: ", columnDefs);
                     columnDefs.push( ...this.dataObject.gridData.options.isColumnDefs )
-                    console.log("AFTER col Defs: ", columnDefs);
                 }
-
-                console.log("---- columns: ", columns);
 
             }
 

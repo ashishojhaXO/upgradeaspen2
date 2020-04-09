@@ -66,7 +66,6 @@ export class UserManagementComponent implements OnInit  {
         type: 'name-string-not-nullund', 
         targets: '_all',
         render: (data, type, row, meta)=>{ 
-          // console.log("REND data: ", data, " type: ", type, " row: ", row, " meta: ", meta); 
           return data; 
         }
       }
