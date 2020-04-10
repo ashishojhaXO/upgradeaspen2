@@ -478,6 +478,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 pageLength = this.dataObject.gridData.options.isPageLengthNo;
             }
 
+            console.log("***: ", this.dataObject.gridData.options.isOrder )
+
             // TODO: HERE
             const dataTableOptions = {
                 scrollY: this.height ? this.height : 320,
@@ -693,7 +695,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             const table = $('#' + this.tableId).DataTable(dataTableOptions);
             this.table = table;
 
-            console.log('table >>>');
+            console.log('--- TABLE >>>');
             console.log(table);
 
             // Set column display box location

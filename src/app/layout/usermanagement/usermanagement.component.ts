@@ -64,9 +64,9 @@ export class UserManagementComponent implements OnInit  {
     // TODO: How is this 'blah' thing even happening!!!
     isColumnDefs: [
       { 
-        // type: 'name-string-not-nullund', 
+        type: 'name-string-not-nullund', 
         // type: 'name-string-not-nullund-a', 
-        type: 'blah',
+        // type: 'blah',
         // type: 'string',
         targets: '_all',
         render: (data, type, row, meta)=>{ 
@@ -81,6 +81,7 @@ export class UserManagementComponent implements OnInit  {
     // $.fn.dataTable.ext.sort
     // isOrder: [[1, 'desc']],
     // isOrder: [[1, 'name-string-not-nullund']],
+    isOrder: [],
     // isOrdering: false,
     // For limited pagewise data
     isApiCallForNextPage: {
