@@ -79,8 +79,9 @@ export class UserManagementComponent implements OnInit  {
     // Then we will also have to send isOrder
     // We might have to write a PlugIn/Extension for DataTables
     // $.fn.dataTable.ext.sort
-    isOrder: [[1, 'desc']],
+    // isOrder: [[1, 'desc']],
     // isOrder: [[1, 'name-string-not-nullund']],
+    isOrder: [],
     // isOrdering: false,
     // For limited pagewise data
     isApiCallForNextPage: {

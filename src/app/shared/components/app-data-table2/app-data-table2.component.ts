@@ -695,7 +695,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             const table = $('#' + this.tableId).DataTable(dataTableOptions);
             this.table = table;
 
-            console.log('table >>>');
+            console.log('--- TABLE >>>');
             console.log(table);
 
             // Set column display box location
@@ -898,9 +898,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // order Here
                 // On Click of sort on table header, run the below sequence
                 // $('th').off('click');
-                // $('th').on('click', function (e) {
-                //     table.page(currentPage).draw(false);
-                // })
+                $('th').on('click', function (e) {
+                    table.page(currentPage).draw(false);
+                })
                 // Order-
 
 

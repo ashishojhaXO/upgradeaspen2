@@ -75,14 +75,15 @@ export class OrdersComponent implements OnInit  {
     // since isActionColPosition is 1, isOrder is also required to be sent,
     // since default ordering assigned in dataTable is [[1, 'asc']]
     // isOrder: [[3, 'asc']],
-    isOrder: [[3, 'desc']],
+    // isOrder: [[3, 'desc']],
+    // isOrder: [[3, 'name-string-not-nullund-desc']],
+    isOrder: [],
     isHideColumns: [ "Vendor_Receipt_Id","internal_line_item_id","internal_order_id"],
 
     // TODO: How is this 'blah' thing even happening!!!
     isColumnDefs: [
       { 
         type: 'name-string-not-nullund', 
-        // type: 'name-string-not-nullund-a', 
         // type: 'blah',
         targets: '_all',
         render: (data, type, row, meta) =>{ 
@@ -158,8 +159,6 @@ export class OrdersComponent implements OnInit  {
       protected genericService: GenericService,
       protected popUp: AppPopUpComponent,
       private http: Http) {
-
-        console.log( "const: OPTTT: ", this.options[0] );
   }
 
 
@@ -198,15 +197,8 @@ export class OrdersComponent implements OnInit  {
       this.allowOrderFunctionality = 'true';
     }
 
-    this.initVars();
-
     this.searchDataRequest();
     this.searchOrgRequest();
-  }
-
-  initVars() {
-    this.options[0] = [...this.options[0], {isOrder: [[3, 'desc']]} ];
-    console.log( "iniVars: " , this.options[0])
   }
 
   apiMethod = (table, pageLength, csv?) => {
@@ -513,8 +505,6 @@ export class OrdersComponent implements OnInit  {
     this.options[0].isPlayOption.value = this.allowOrderFunctionality === 'true' ? true : false;
 
     this.gridData['options'] = this.options[0];
-
-    console.log(" OPTSS: ", this.options[0]);
 
     this.gridData.columnsToColor = [
       { index: 13, name: 'MERCHANT PROCESSING FEE', color: 'rgb(47,132,234,0.2)'},
