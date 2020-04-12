@@ -32,8 +32,8 @@ label {
   color: #fff;
   border: 1px solid #f06d30;
   border-radius: 4px;
-  font-family: HelveticaNeue;
-  font-weight: 500;
+  font-family: sans-serif;
+  font-weight: 700;
   font-stretch: normal;
   font-style: normal;
   line-height: normal;
@@ -49,12 +49,12 @@ label {
   color: #4e9b49;
   border: 1px solid;
   border-radius: 4px;
-  font-family: HelveticaNeue;
-  font-weight: 500;
+  font-family: sans-serif;
+  font-weight: 700;
   font-stretch: normal;
   font-style: normal;
   line-height: normal;
-  letter-spacing: 1px;
+  //letter-spacing: 1px;
   padding: 6px 12px;
 }
 
@@ -68,7 +68,13 @@ p.page-title {
   display: inline;
   font-size: 24px;
   line-height: normal;
-  letter-spacing: 0.85px;
+  font-weight: 100;
+  font-family: sans-serif;
+  //letter-spacing: 0.85px;
+}
+
+.breadcrumb > li {
+  letter-spacing: 0.5px;
 }
 
 .org-dropdown select {
@@ -2164,7 +2170,7 @@ ul.bottom-menu li a:hover {
   right: 0;
   font-size: 12px;
   a {
-    color: #eeedef;
+    color: #adadad;
     //color: $secondary-color;
     padding: 10px 16px;
     text-decoration: none;
@@ -2178,10 +2184,11 @@ ul.bottom-menu li a:hover {
     font-style: normal;
     line-height: normal;
     letter-spacing: normal;
-    font-family: HelveticaNeue;
+    font-family: sans-serif;
 
     &:hover {
       background-color: $septenary-bg;
+      color: #eeedef
     }
   }
 }
@@ -2206,7 +2213,7 @@ ul.password-re li {
     li {
       a {
         //color: $active-color;
-        font-family: HelveticaNeue;
+        font-family: sans-serif;
         font-size: $font-primary;
         color: #54575a;
         font-weight: bold;
@@ -2215,8 +2222,9 @@ ul.password-re li {
       &.active span {
         color: $inactive-color;
         text-transform: uppercase;
-        font-family: HelveticaNeue;
+        font-family: sans-serif;
         font-size: $font-primary;
+        font-weight: 100;
       }
     }
   }
@@ -2353,6 +2361,8 @@ select.input_fields::-ms-expand {
 .navbar-default .navbar-nav > .active > a:hover {
   background-color: $septenary-bg;
   color: $tertiary-color !important;
+  letter-spacing: 0.5px;
+  font-weight: 500 !important;
   font-family: $quinary-font !important;
 }
 
@@ -2413,12 +2423,16 @@ table.select-partner-table:last-child th {
   margin-right: 10px;
   position: relative;
   width: 100px;
-  font-family: HelveticaNeue;
+  color: #adadad;
+  font-family: sans-serif;
   font-weight: 300;
   font-stretch: normal;
   font-style: normal;
   line-height: normal;
   letter-spacing: normal;
+  &:hover {
+    color: #eeedef;
+  }
 
   .fa-caret-down {
     //color: $quinary-color;
@@ -3165,13 +3179,13 @@ div.modal-dialog {
       //float: right;
       margin-top: 20px;
       h4 {
-        font-family: HelveticaNeue;
+        font-family: sans-serif;
         font-size: 10px;
         font-weight: 500;
         font-stretch: normal;
         font-style: normal;
         line-height: normal;
-        letter-spacing: 0.35px;
+        //letter-spacing: 0.35px;
         color: #7665a0;
         //float: left;
         margin: 5px 5px 15px 0;
@@ -3214,25 +3228,28 @@ div.modal-dialog {
 
 //SideBar Styles
 .sidebar-title {
-  color: #878787;
+  color: #adadad;
   text-align: center;
   position: relative;
   top: -10px;
+  margin-left: 30px;
   text-transform: uppercase;
-  margin-right: 30px;
+  //margin-right: 30px;
   h3 {
     font-size: 15px;
-    color: #eeedef;
+    color: #adadad;
+    font-weight: 100;
+    letter-spacing: 0.5px;
   }
 }
 
 .sidebar-content {
-  color: #878787;
+  color: #adadad;
   margin: 0px 5px 0px 10px;
 }
 
 .sidebar-sub-title {
-  color: #878787;
+  color: #adadad;
   margin: 10px 0px 20px 0px;
 }
 
@@ -3248,25 +3265,26 @@ div.modal-dialog {
     border-radius: 4px;
     position: relative;
     top: 20px;
-    font-family: HelveticaNeue;
+    font-family: sans-serif;
     font-weight: 500;
     font-stretch: normal;
     font-style: normal;
     line-height: normal;
-    letter-spacing: 1px;
+    //letter-spacing: 1px;
   }
   .title {
-    color: #eeedef;
+    color: #adadad;
     font-size: 12px;
     margin-bottom: 9px;
+    letter-spacing: 0.5px;
     text-transform: capitalize;
     margin: 0 0 10px;
-    font-family: HelveticaNeue;
+    font-family: sans-serif;
     font-weight: 300;
     font-stretch: normal;
     font-style: normal;
     line-height: normal;
-    letter-spacing: 1px;
+    //letter-spacing: 1px;
 
   }
   .sidebar-container {
@@ -3282,7 +3300,7 @@ div.modal-dialog {
       line-height: 30px;
       border-radius: 4px;
       cursor: pointer;
-      font-weight: 200;
+      font-weight: 500;
     }
     label.active {
       margin: 5px;
