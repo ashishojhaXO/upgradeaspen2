@@ -83,7 +83,9 @@ virtual-scroll {
         //width: 220px;
         height: 39px;
 /*        box-shadow: 0px 1px 5px $box-shadow-color;
-*/      padding: 8px;
+*/
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
         display: flex;
         position: relative;
@@ -93,6 +95,9 @@ virtual-scroll {
             top: 50%;
             transform: translateY(-50%);
         }
+      .c-angle-down, .c-angle-up {
+        padding: 0px;
+      }
     }
 }
 .dropdown-list{

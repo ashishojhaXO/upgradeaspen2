@@ -9,6 +9,7 @@ import { Item, Badge, Search, TemplateRenderer, CIcon } from './menu-item';
 import { DataService } from './multiselect.service';
 import { Subscription } from 'rxjs';
 import { VirtualScrollComponent, ChangeEvent } from './virtual-scroll';
+import {TooltipModule} from './../../../directives/tooltip.module';
 
 export const DROPDOWN_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -130,7 +131,7 @@ export class AngularMultiSelect implements OnInit, ControlValueAccessor, OnChang
         showTooltip: false,
         tooltipElementsSize: 10
     };
-    tooltipText = '';
+    tooltipText = 'HELLO';
     public parseError: boolean;
     public filteredList: any = [];
     constructor(public _elementRef: ElementRef, private cdr: ChangeDetectorRef, private ds: DataService) {
@@ -296,6 +297,7 @@ export class AngularMultiSelect implements OnInit, ControlValueAccessor, OnChang
                 found = true;
             }
         });
+        this.updateTooltipText();
         return found;
     }
     addSelected(item: any) {
@@ -647,7 +649,7 @@ export class AngularMultiSelect implements OnInit, ControlValueAccessor, OnChang
 }
 
 @NgModule({
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, TooltipModule],
     declarations: [AngularMultiSelect, ClickOutsideDirective, ScrollDirective, styleDirective, ListFilterPipe, Item, TemplateRenderer, Badge, Search, setPosition, VirtualScrollComponent, CIcon],
     exports: [AngularMultiSelect, ClickOutsideDirective, ScrollDirective, styleDirective, ListFilterPipe, Item, TemplateRenderer, Badge, Search, setPosition, VirtualScrollComponent, CIcon],
     providers: [DataService]

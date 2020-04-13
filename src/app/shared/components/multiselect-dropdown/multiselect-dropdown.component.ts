@@ -73,7 +73,7 @@ export class MultiSelectDropdownComponent implements OnInit {
     addNewItemOnFilter: false,
     addNewButtonText: 'Add',
     maxHeight: 250,
-    showTooltip: false,
+    showTooltip: true,
     tooltipElementsSize: 10
   };
 
