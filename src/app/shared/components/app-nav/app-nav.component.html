@@ -16,19 +16,19 @@
             >{{ mm.title }}
             </a>
 
-                <app-nav
-                    *ngIf="mm.id == 'orders' && mm.submenu && showSubmenu"
-                    [mainmenu]="mm.submenu"
-                    mainUlClass="bottom-menu"
-                    random="{{mm.id}}"
-                    urlPath="{{urlPath}}"
-                >
-                </app-nav>
+                <!--<app-nav-->
+                    <!--*ngIf="mm.id == 'orders' && mm.submenu && showSubmenu"-->
+                    <!--[mainmenu]="mm.submenu"-->
+                    <!--mainUlClass="bottom-menu"-->
+                    <!--random="{{mm.id}}"-->
+                    <!--urlPath="{{urlPath}}"-->
+                <!--&gt;-->
+                <!--</app-nav>-->
 
                 <app-nav
                     *ngIf="mm.id != 'orders' && mm.submenu"
                     [mainmenu]="mm.submenu"
-                    mainUlClass="bottom-menu"
+                    mainUlClass="{{showSubmenu ? 'bottom-menu' : ''}}"
                     random="{{mm.id}}"
                     urlPath="{{urlPath}}"
                 >
