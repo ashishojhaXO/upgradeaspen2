@@ -25,10 +25,12 @@
           </label>
         </div>
       </div>
-      <div class="sidebar-form-control" *ngIf="filter.type === 'dropdown' && selectedView != 'Monthly'" >
-        <p class="title">{{filter.label}}:</p>
-        <app-wrapper-multiselect-drop-down [updatedValue]="filter.values" (valueUpdate)="updateFilterConfig($event)" [filterConfig]="filter" [dependentConfig]="getDependentConfig(filter.dependentOn)"
-        ></app-wrapper-multiselect-drop-down>
+      <div class="sidebar-form-control" *ngIf="filter.type === 'dropdown'" >
+        <div [hidden]="selectedView != 'Monthly' ? null : 'hidden'">
+          <p class="title">{{filter.label}}:</p>
+          <app-wrapper-multiselect-drop-down [updatedValue]="filter.values" (valueUpdate)="updateFilterConfig($event)" [filterConfig]="filter" [dependentConfig]="getDependentConfig(filter.dependentOn)"
+          ></app-wrapper-multiselect-drop-down>
+        </div>
       </div>
       <div class="sidebar-form-control" *ngIf="filter.type === 'popupButton'" >
         <p class="title">{{filter.label}}:</p>
