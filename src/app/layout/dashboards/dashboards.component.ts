@@ -15,6 +15,7 @@ import * as chartConfig from './chartConfig.json';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import {PopupDataAction} from '../../shared/components/app-popup-button/popup-data-action';
 import { OktaAuthService } from '../../../services/okta.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-dashboard',
@@ -83,7 +84,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   orgValue = '';
   orgInfo: any;
   isRoot: boolean;
-  settings: any = { 
+  settings: any = {
     singleSelection: true,
     text: 'Select ' ,
     selectAllText: 'Select All',
@@ -116,7 +117,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       }
     }, this);
     if(this.isRoot){
-    this.selectedOrg = [{id: "ac34b344-b3c4-11e9-9e7c-0a76cb863686", itemName: "Home Depot"}];
+    this.selectedOrg = [{id: custInfo.org.org_id, itemName: custInfo.org.org_name}];
     }else{
       this.selectedOrg = [{}];
     }
@@ -345,14 +346,14 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
      this.searchOrgRequest();
     }
     if(this.selectedOrg[0].id){
-      this.orgValue = this.selectedOrg[0].id; 
+      this.orgValue = this.selectedOrg[0].id;
     }
     if (this.dashboardType === 'pacing' || this.dashboardType === 'spend') {
       this
           .getFilter(this.dashboardType)
           .then(
               response => {
-                if (response && response.data) {
+                if (response && response.data && response.data.views) {
                   this.getSeedData()
                       .then(
                           response1 => {
@@ -382,6 +383,15 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
                             }
 
                           });
+                } else {
+                  Swal({
+                    title: 'No Template Definition Available',
+                    text: 'There is no template definition available for the selected org',
+                    type: 'error'
+                  }).then( () => {
+                    // this.router.navigate(['/app/admin/invoices']);
+                  });
+                  this.showSpinner = false;
                 }
               },
               error => {
@@ -1062,17 +1072,17 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           return res.json();
         }).share();
   }
-  
+
   handleSelect(selectedItem, type) {
-   if(selectedItem.id){     
+   if(selectedItem.id){
     console.log("Org",selectedItem);
-    this.selectedOrg = [selectedItem];  
+    this.selectedOrg = [selectedItem];
     this.ngOnInit();
-   }  
+   }
  }
 
  handleDeSelect(selectedItem, type) {
-  this.selectedOrg = [{}];  
+  this.selectedOrg = [{}];
   this.orgValue="";
   this.ngOnInit();
  }
