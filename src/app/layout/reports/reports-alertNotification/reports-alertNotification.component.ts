@@ -44,8 +44,26 @@ export class AlertNoticationdashboardsComponent implements OnInit {
   externalAuth: any;
   showSpinner: boolean;
   widget: any;
+  isRoot: boolean;
+  orgInfo: any;
+  orgArr = [];
+  selectedOrg: any;
+  orgValue = '';
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
+    const groups = localStorage.getItem('loggedInUserGroup') || '';
+    const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
+    this.orgInfo = custInfo.org;
+
+    console.log('custInfo >>>')
+    console.log(custInfo);
+
+    const grp = JSON.parse(groups);
+    grp.forEach(function (item) {
+      if(item === 'ROOT' || item === 'SUPER_USER') {
+        this.isRoot = true;
+      }
+    }, this);
   }
 
   ngOnInit() {
@@ -57,6 +75,7 @@ export class AlertNoticationdashboardsComponent implements OnInit {
 
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
+    this.searchOrgRequest();
     this.searchDataRequest();
   }
 
@@ -91,9 +110,10 @@ export class AlertNoticationdashboardsComponent implements OnInit {
       // token = AccessToken.accessToken;
       token = AccessToken;
     }
+    let org=this.orgValue; 
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/reports/alert';
+    var url = this.api_fs.api + '/api/reports/alert'+( org ? ('?org_uuid=' + org) : '');
     return this.http
         .get(url, options)
         .map(res => {
@@ -138,6 +158,55 @@ export class AlertNoticationdashboardsComponent implements OnInit {
   }
 
   reLoad(){
+    this.showSpinner = true;
+    this.dataObject.isDataAvailable = false;
+    this.searchDataRequest();
+  }
+  searchOrgRequest() {
+    return this.searchOrgData().subscribe(
+        response => {
+          if (response && response.data) {
+            response.data.forEach(function (ele) {
+              this.orgArr.push({
+                id: ele.org_uuid,
+                text: ele.org_name
+              });
+            }, this);
+          }
+        },
+        err => {
+
+          if(err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.searchOrgRequest.bind(self)
+            );
+          } else {
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+  searchOrgData() {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/orgs';
+    return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+  orgChange(value) {
     this.showSpinner = true;
     this.dataObject.isDataAvailable = false;
     this.searchDataRequest();
