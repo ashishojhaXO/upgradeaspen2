@@ -69,7 +69,8 @@
           "../node_modules/jspdf/dist/jspdf.min.js",
           "../node_modules/mermaid/dist/mermaid.js",
           "../node_modules/mermaid/dist/mermaid.core.js",
-          "scripts/data-table/data-table-plugin-ext.js"
+          "scripts/data-table/data-table-plugin-ext.js",
+          "scripts/data-table/data-table-search-plugin-ext.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
