@@ -152,6 +152,7 @@ export class OrdersComponent implements OnInit  {
 
   response: any;
   org: string;
+  selectedVendorUuid:any;
 
   constructor(
       private okta: OktaAuthService,
@@ -586,6 +587,7 @@ export class OrdersComponent implements OnInit  {
     console.log(dataObj.data);
     this.selectedOrderID = dataObj.data.internal_order_id;
     this.selectedLineItemID = dataObj.data.internal_line_item_id;
+    this.selectedVendorUuid= dataObj.data.vendor_uuid;
     this.hideTable = true;
   }
 

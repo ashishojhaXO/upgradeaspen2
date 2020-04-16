@@ -29,6 +29,7 @@ export class OrderPaymentComponent {
   showSpinner: boolean;
   // domain: string;
   api_fs: any;
+  vendorUuid:any;
 
   constructor(
       private route: ActivatedRoute,
@@ -53,10 +54,12 @@ export class OrderPaymentComponent {
       console.log('window[\'fs_widget_config\'] >>')
       console.log(window['fs_widget_config']);
       const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
-      window['fs_widget_config'].vendor_id = this.vendorId = customerInfo.vendor.vendor_id;
+      this.vendorUuid=this.route.snapshot.paramMap.get('vendor_uuid');
+      this.initVendorUuid();
+      window['fs_widget_config'].vendor_id = this.vendorId = this.vendorUuid;
       window['fs_widget_config'].api_key = customerInfo.org.x_api_key;
       window['fs_widget_config'].org_id = customerInfo.org.org_id;
-
+      console.log("vendorUuid",this.vendorId);
       // Temp assignment FOR TESTING:
       // window['fs_widget_config'].vendor_id = '592f94f3-e2b1-4621-b1c0-c795ee2a1814'
       // this.vendorId = '592f94f3-e2b1-4621-b1c0-c795ee2a1814';
@@ -85,6 +88,17 @@ export class OrderPaymentComponent {
       Swal({
         title: 'No Order ID found',
         text: 'We did not find an order to be paid for',
+        type: 'error'
+      }).then( () => {
+        this.router.navigate(['/app/order/orders']);
+      });
+    }
+  }
+  initVendorUuid(){
+    if (!this.vendorUuid) {
+      Swal({
+        title: 'No Vendor ID found',
+        text: 'We did not find vendor id for this order',
         type: 'error'
       }).then( () => {
         this.router.navigate(['/app/order/orders']);
