@@ -895,6 +895,10 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                 let __t = this;
 
+            if (__this.dataObject.gridData.options.isColumnSearch) {
+                console.log("=====IFFI SEARCH========", $ );
+                __this.dataObject.gridData.options.isColumnSearch($, document, table)
+            }
   // THIS RANDOM
 //   $(document).ready(function() {
 

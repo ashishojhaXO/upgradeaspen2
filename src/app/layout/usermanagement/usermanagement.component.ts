@@ -26,6 +26,8 @@ import { CsvService } from '../../../services/csv';
 // var DataTablePluginExt = 
 // require("../../../services/data-table-plugin-ext.js");
 
+import DataTableColumnSearchPluginExt from '../../../scripts/data-table/data-table-search-plugin-ext';
+
 @Component({
   selector: 'app-usermanagement',
   templateUrl: './usermanagement.component.html',
@@ -74,7 +76,7 @@ export class UserManagementComponent implements OnInit  {
         targets: '_all',
         title: function(title) {
           console.log("TTTT: ", title);
-          return '<i class="fa fa-info-circle fa-lg"></i>'
+          return '<i class="fa fa-info-circle fa-lg"></i>';
         }
 
       }
@@ -96,6 +98,12 @@ export class UserManagementComponent implements OnInit  {
       },
 
     },
+
+    isColumnSearch: ($, table) => {
+      console.log("DDDDD: ", $, table);
+      let d = new DataTableColumnSearchPluginExt($, document, table);
+      console.log("NOWDDDDD: ", d)
+    }
 
   }];
   dashboard: any;
@@ -194,6 +202,19 @@ export class UserManagementComponent implements OnInit  {
     // Init Datatables Extension Plug-ins
     // new DataTablePluginExt() 
     // this.loadScript("../../../services/data-table-plugin-ext.js");
+
+    console.log("UMM: ", 
+      $('#example thead th')
+      .each( function () {
+        console.log("DODODO");
+              var title = $("#example thead th").text();
+              // $("#example thead th").html( '<input type="text" placeholder="Search '+title+'" />' );
+              $("#example thead th").append( '<input type="text" placeholder="Search '+title+'" />' );
+      
+      } )
+    )
+
+
 
   }
 
