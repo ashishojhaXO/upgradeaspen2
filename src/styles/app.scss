@@ -87,3 +87,6 @@ a[href^="tel"]{
 .swal2-container {
   z-index: 10600 !important;
 }
+.prevent-click:active{
+  pointer-events: none;
+}

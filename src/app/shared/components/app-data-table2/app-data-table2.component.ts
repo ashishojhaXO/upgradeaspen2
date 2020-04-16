@@ -550,8 +550,12 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         });
 
                         if (!isValid) {
-                            $('td', row).find('a.fa-download').css('pointer-events', 'none');
-                            $('td', row).find('a.fa-download').addClass('disabled');
+                             // $('td', row).find('a.fa-download').css('pointer-events', 'none');
+                             $('td', row).find('a.fa-download').addClass('disabled');
+                             $('td', row).find('a.fa-download').attr('title', __this.dataObject.gridData.options.isDownloadOption.dependencyToolTip ? __this.dataObject.gridData.options.isDownloadOption.dependencyToolTip :'');
+                             if(__this.dataObject.gridData.options.isDownloadOption.dependencyToolTip){
+                             $('td', row).find('a.fa-download').addClass('prevent-click');
+                             }
                         }
                     }
 

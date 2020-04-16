@@ -57,7 +57,8 @@ export class OrdersComponent implements OnInit  {
       value: true,
       icon: '',
       dependency: ['Vendor_Receipt_Id'],
-      tooltip: 'Download Vendor Receipt'
+      tooltip: 'Download Vendor Receipt',
+      dependencyToolTip:'Vendor receipt generation is pending'
     },
     isPlayOption: {
       value : true,
