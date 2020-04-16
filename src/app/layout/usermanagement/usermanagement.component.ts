@@ -65,13 +65,18 @@ export class UserManagementComponent implements OnInit  {
     isColumnDefs: [
       { 
         type: 'name-string-not-nullund', 
-        // type: 'name-string-not-nullund-a', 
-        // type: 'blah',
-        // type: 'string',
         targets: '_all',
         render: (data, type, row, meta)=>{ 
           return data; 
         }
+      },
+      {
+        targets: '_all',
+        title: function(title) {
+          console.log("TTTT: ", title);
+          return '<i class="fa fa-info-circle fa-lg"></i>'
+        }
+
       }
     ],
 

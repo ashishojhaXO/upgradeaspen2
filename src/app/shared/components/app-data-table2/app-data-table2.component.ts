@@ -896,35 +896,35 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 let __t = this;
 
   // THIS RANDOM
-  $(document).ready(function() {
+//   $(document).ready(function() {
 
-  console.log("=====SEARCH========", $ );
+//   console.log("=====SEARCH========", $ );
 
-      // Setup - add a text input to each footer cell
-      $('#' + __t.tableId + ' tfoot th').each( function () {
-          var title = $(__t).text();
-          $(__t).html( '<input type="text" placeholder="Search '+title+'" />' );
-      } );
+//       // Setup - add a text input to each footer cell
+//       $('#' + __t.tableId + ' thead th').each( function () {
+//           var title = $(__t).text();
+//           $(__t).append( '<input type="text" placeholder="Search '+title+'" />' );
+//       } );
   
-      // DataTable
-      var table = $( '#' + __t.tableId).DataTable();
+//       // DataTable
+//     //   var table = $( '#' + __t.tableId).DataTable();
   
-      // Apply the search
-      table.columns().every( function () {
+//       // Apply the search
+//       table.columns().every( function () {
   
-    console.log("=====SEARCH========", $, " ", __t.tableId );
+//     console.log("=====SEARCH========", $, " ", __t.tableId );
 
-          var that = this;
+//           var that = this;
   
-          $( 'input', this.footer() ).on( 'keyup change clear', function () {
-              if ( that.search() !== this.value ) {
-                  that
-                      .search( this.value )
-                      .draw();
-              }
-          } );
-      } );
-  } );
+//           $( 'input', this.footer() ).on( 'keyup change clear', function () {
+//               if ( that.search() !== this.value ) {
+//                   that
+//                       .search( this.value )
+//                       .draw();
+//               }
+//           } );
+//       } );
+//   } );
 
 // THIS RANDOM-
 
