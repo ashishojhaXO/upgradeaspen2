@@ -564,28 +564,44 @@ export class UserManagementComponent implements OnInit  {
       this.searchDataRequest(value);
   }
 
+
   setDataTableHeaders( ) {
     // Ideally pass data into this function & then set the DataTableHeaders
     let tableData = this.response;
     let headers = [];
 
+    let icon = '<i class="fa fa-search col-search" (click)="colSearch" aria-hidden="true"></i>';
+
     if (tableData && tableData.length) {
       const keys = Object.keys(tableData[0]);
       for (let i = 0; i < keys.length; i++) {
+        let title = keys[i].replace(/_/g,' ').toUpperCase();
         headers.push({
           key: keys[i],
-          title: keys[i].replace(/_/g,' ').toUpperCase(),
+          title: title + " " + icon,
+          // + this.searchInputElem(title),
           data: keys[i],
           isFilterRequired: true,
           isCheckbox: false,
           class: 'nocolvis',
           editButton: false,
-          width: '150'
+          width: '150',
+
+          // render: function (data, type, row, meta) {
+          //   console.log("---HEAD Rend")
+
+          //   return "BLah: " + meta.row + 1; // This contains the row index
+          // }
+
         });
       }
     }
 
     return headers;
+  }
+
+  colSearch() {
+    console.log("COLSEARCH CLIK")
   }
 
   populateDataTable(response, initialLoad) {
