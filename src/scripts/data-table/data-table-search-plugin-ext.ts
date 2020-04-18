@@ -51,9 +51,9 @@ export default class DataTableColumnSearchPluginExt {
   constructor($, document, table) {
 
     // this.attachSearchIcon($)
-    this.attachElemsToColumnHeader($, document);
-    // this.attachClickInputSearch($)
-    this.attachClickToSearch($)
+    // this.attachElemsToColumnHeader($, document);
+    this.attachClickInputSearch($)
+    // this.attachClickToSearch($)
     this.attachSearchToInput($, table);
   }
 
@@ -77,7 +77,10 @@ export default class DataTableColumnSearchPluginExt {
     $(document)
     .ready( function(){
       $(".col-search").click( function(e) {
-        $(this).parent("th")
+        let dd = $(this);
+        console.log("-----e THIS: ", e, this , " dd: ", dd); 
+        dd.siblings("input").toggle();
+        // $(this).parent("th")
       })
     })
 
@@ -110,8 +113,9 @@ export default class DataTableColumnSearchPluginExt {
 
     let d = $(".col-search")
     d.click( function (e, n) { 
-      console.log("THIS: ", this ); 
       let dd = $(this);
+      console.log("THIS: ", this , " dd: ", dd); 
+      dd.siblings("input").toggle();
 
     } )
 
@@ -119,21 +123,31 @@ export default class DataTableColumnSearchPluginExt {
 
   attachSearchToInput($, table) {
       // DataTable
-      // var table = $('#example').DataTable();
+      var table = $('#example').DataTable();
 
       $(document).ready( function() {
   
+            console.log("doctabCOL");
         // Apply the search
         table.columns().every( function () {
+            console.log("tabCOL");
+
             var that = this;
     
-            $( 'input', this.footer() ).on( 'keyup change clear', function () {
+            // $( 'input', this.footer() )
+            $( 'input' )
+            // $( '.col-search-input' )
+            .on( 'keyup change clear', function () {
+              
+              console.log("INPPPPP");
+
                 if ( that.search() !== this.value ) {
                     that
                         .search( this.value )
                         .draw();
                 }
             } );
+
         } );
 
 

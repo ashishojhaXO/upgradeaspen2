@@ -573,7 +573,7 @@ export class UserManagementComponent implements OnInit  {
     let title = "T";
 
     let icon = '<i class="fa fa-search col-search" (click)="colSearch" aria-hidden="true"></i>';
-    let searchInputElem = '<input type="text" class="col-search-input" placeholder="Search '+title+'" />' 
+    let searchInputElem = '<input type="text" class="col-search-input display-none display-block" placeholder="Search '+title+'" />' 
 
     let icse = icon + "&nbsp;" + searchInputElem;
 

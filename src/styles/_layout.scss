@@ -3844,9 +3844,16 @@ div.crumbs-main {
   background: #2196F3;
 }
 
-.col-search-input {
-  // display: inline;
-  // visibility: hidden;
-  display: none;
+// .col-search-input {
+//   // display: inline;
+//   // visibility: hidden;
+//   display: none;
+// }
+
+.display-block {
+  display: block;
 }
 
+.display-none {
+  display: none;
+}
