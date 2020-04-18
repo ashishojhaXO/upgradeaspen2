@@ -570,7 +570,12 @@ export class UserManagementComponent implements OnInit  {
     let tableData = this.response;
     let headers = [];
 
+    let title = "T";
+
     let icon = '<i class="fa fa-search col-search" (click)="colSearch" aria-hidden="true"></i>';
+    let searchInputElem = '<input type="text" class="col-search-input" placeholder="Search '+title+'" />' 
+
+    let icse = icon + "&nbsp;" + searchInputElem;
 
     if (tableData && tableData.length) {
       const keys = Object.keys(tableData[0]);
@@ -578,7 +583,7 @@ export class UserManagementComponent implements OnInit  {
         let title = keys[i].replace(/_/g,' ').toUpperCase();
         headers.push({
           key: keys[i],
-          title: title + " " + icon,
+          title: title + " " + icse,
           // + this.searchInputElem(title),
           data: keys[i],
           isFilterRequired: true,

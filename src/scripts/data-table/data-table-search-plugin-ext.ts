@@ -52,6 +52,7 @@ export default class DataTableColumnSearchPluginExt {
 
     // this.attachSearchIcon($)
     this.attachElemsToColumnHeader($, document);
+    // this.attachClickInputSearch($)
     this.attachClickToSearch($)
     this.attachSearchToInput($, table);
   }
@@ -70,6 +71,16 @@ export default class DataTableColumnSearchPluginExt {
 
   getAllElems($: JQueryStatic, title :string ) {
     return "<div class='random'>" + this.searchIcon($) + "&nbsp;" + this.searchInputElem(title) + "</div>";
+  }
+
+  attachClickInputSearch($) {
+    $(document)
+    .ready( function(){
+      $(".col-search").click( function(e) {
+        $(this).parent("th")
+      })
+    })
+
   }
 
   attachElemsToColumnHeader($, document) {
