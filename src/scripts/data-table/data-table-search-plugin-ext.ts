@@ -130,12 +130,12 @@ export default class DataTableColumnSearchPluginExt {
             console.log("doctabCOL");
         // Apply the search
         table.columns().every( function () {
-            console.log("tabCOL");
 
             var that = this;
+            console.log("---tabCOL this:", this);
     
             // $( 'input', this.footer() )
-            $( 'input' )
+            $( 'input', this.header() )
             // $( '.col-search-input' )
             .on( 'keyup change clear', function () {
               
