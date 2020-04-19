@@ -671,6 +671,7 @@ export class OrderComponent implements OnInit  {
     OnTemplateChange(e) {
         if (e.value && e.value !== this.template) {
             this.template = e.value;
+            this.dataFieldConfiguration = [];
             this.searchTemplateDetails(this.template);
         }
     }
