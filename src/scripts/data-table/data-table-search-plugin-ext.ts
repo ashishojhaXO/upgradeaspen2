@@ -13,7 +13,7 @@ export default class DataTableColumnSearchPluginExt {
   searchIcon($){
     // If default way not available to attach icon in DataTables table headers, 
     // then, we attach here
-    let icon = '<i class="fa fa-search col-search" (click)="colSearch" aria-hidden="true"></i>';
+    let icon = '<i class="fa fa-filter col-search" (click)="colSearch" aria-hidden="true"></i>';
     // '<i class="fa fa-search" aria-hidden="true"></i>';
     return icon;
   }

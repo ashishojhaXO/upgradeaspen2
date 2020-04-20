@@ -111,9 +111,9 @@ export class OrdersComponent implements OnInit  {
 
     },
 
-    isColumnSearch: ($, table) => {
-      let d = new DataTableColumnSearchPluginExt($, document, table);
-    },
+    // isColumnSearch: ($, table) => {
+    //   let d = new DataTableColumnSearchPluginExt($, document, table);
+    // },
 
     isTree: true,
     // isChildRowActions required when there need to be actions below every row.
