@@ -68,7 +68,7 @@ export default class DataTableColumnSearchPluginExt {
 
   searchInputElem(title) {
     let searchInputElem = 
-    '<input type="text" class="col-search-input display-none display-block" placeholder="Search '+title+'" />' 
+    '<input type="text" class="input-sm col-search-input display-none display-block" placeholder="Search '+title+'" />' 
     // '<input type="text" class="col-search-input" placeholder="Search '+title+'" />' 
     return searchInputElem;
   }
@@ -101,7 +101,7 @@ export default class DataTableColumnSearchPluginExt {
 
       // $('#example thead th')
       // $('table:first thead th')
-      $('table:first thead th.sorting')
+      $('table:first thead th.sorting, .sorting_asc, .sorting_desc')
       .each( function () {
         // var title = $("#example thead th").text();
         var title = $(this).text();
@@ -150,7 +150,8 @@ export default class DataTableColumnSearchPluginExt {
             // $( 'input', this.footer() )
             $( 'input', this.header() )
             // $( '.col-search-input' )
-            .on( 'keyup change clear', function () {
+            .on( 'keyup change clear', function (e) {
+              e.stopPropagation();
               
               console.log("INPPPPP");
 
