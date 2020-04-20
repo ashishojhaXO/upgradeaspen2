@@ -32,6 +32,7 @@ export class OrderDashboardComponent implements OnInit  {
   memo: string;
   @Input() orderID: any;
   @Input() lineItemID: any;
+  @Input() vendorUuid: any;  
   config: any;
   options: any;
   orderDetails: any;
@@ -199,7 +200,7 @@ export class OrderDashboardComponent implements OnInit  {
 
   payOrder() {
     if (!this.orderDetails.payment_received_date) {
-      this.router.navigate(['/app/orderPayment/', this.orderID]);
+      this.router.navigate(['/app/orderPayment/', this.orderID, this.vendorUuid]);
     }
   }
 

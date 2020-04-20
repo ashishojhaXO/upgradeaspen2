@@ -671,6 +671,7 @@ export class OrderComponent implements OnInit  {
     OnTemplateChange(e) {
         if (e.value && e.value !== this.template) {
             this.template = e.value;
+            this.dataFieldConfiguration = [];
             this.searchTemplateDetails(this.template);
         }
     }
@@ -1035,7 +1036,7 @@ export class OrderComponent implements OnInit  {
                             type: 'success'
                         }).then(() => {
                             // this.router.navigate(['/app/targetAud/']);
-                            this.router.navigate(['/app/orderPayment/' + response.order_id]);
+                            this.router.navigate(['/app/orderPayment/' + response.order_id, reqObj.vendor_id]);
                         });
                     }
                 },

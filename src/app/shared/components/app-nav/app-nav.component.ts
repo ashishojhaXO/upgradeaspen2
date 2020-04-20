@@ -82,6 +82,7 @@ export class AppNavComponent implements OnInit, OnChanges {
             mainmenu.forEach(element => {
                 element.selected = (this.selectedUrl.substr(1) === element.url) || (this.selectedUrl.substr(0, this.selectedUrl.lastIndexOf('/')).substr(1) === element.url);
                 if (element.selected) {
+                    this.showSubmenu = element.submenu && element.submenu.length;
                     this._hasSubMenus.emit({ hasSubMenu : !!(element.submenu && element.submenu.length) , level: element.level });
                 }
             }), this;

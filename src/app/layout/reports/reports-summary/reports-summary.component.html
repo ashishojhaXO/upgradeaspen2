@@ -6,6 +6,17 @@
           <a (click)="reLoad()" class="btn btn-secondary"><i class="fa fa-fw fa-refresh" aria-hidden="true"></i>Reload</a>
         </div>
       </div>
+  <div *ngIf="isRoot">
+        <label class="col-xs-12 col-sm-2">Select Org: </label>
+        <div class="col-xs-12 col-sm-6">
+          <select [(ngModel)]="orgValue" class="form-control" (change)='orgChange(orgValue)'>
+            <option [value]="''" >All</option>
+            <option *ngFor="let org of orgArr" [value]="org.id">
+              {{ org.text }}
+            </option>
+          </select>
+        </div>
+  </div>
   <div class="">
     <div class="gridOverflow pull-left" *ngIf="dataObject.isDataAvailable" style="padding: 10px">
         <app-data-table2 [dataObject]="dataObject" (triggerActions)="this[$event.action]($event)"></app-data-table2>
