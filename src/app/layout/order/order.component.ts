@@ -1036,7 +1036,7 @@ export class OrderComponent implements OnInit  {
                             type: 'success'
                         }).then(() => {
                             // this.router.navigate(['/app/targetAud/']);
-                            this.router.navigate(['/app/orderPayment/' + response.order_id]);
+                            this.router.navigate(['/app/orderPayment/' + response.order_id, reqObj.vendor_id]);
                         });
                     }
                 },
