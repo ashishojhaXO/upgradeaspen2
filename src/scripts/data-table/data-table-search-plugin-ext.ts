@@ -66,9 +66,6 @@ export default class DataTableColumnSearchPluginExt {
   }
 
   docReady($, table) {
-          console.log("docREDD tab: ", $, table)
-          // var tab = table;
-
     // DataTable
     var table = $('#example').DataTable();
     let currentPage = table.page.info().page;
@@ -83,12 +80,6 @@ export default class DataTableColumnSearchPluginExt {
         // $( 'input.input-sm', this.header() )
         $( '.col-search-input', this.header() )
         .on( 'click keyup change clear', function (e) {
-          console.log("STTOOO tab: ", 
-            table, 
-            currentPage, 
-            table.page.info().page, 
-            this.value
-          )
           e.stopPropagation();
           // if ( that.search() !== this.value ) {
           if ( 
@@ -96,14 +87,6 @@ export default class DataTableColumnSearchPluginExt {
             currentPage != table.page.info().page || 
             this.value.trim() != "" 
           ) {
-            console.log("INIF",
-              that.search(), 
-              table,
-              currentPage,
-              table.page.info().page,
-              this.value
-            );
-
             that
             .search( this.value )
             .page(currentPage)
@@ -111,18 +94,13 @@ export default class DataTableColumnSearchPluginExt {
           }
         });
 
-      }
-      );
-
+      });
     }
   }
 
   attachSearchToInput($, table) {
     // DataTable
     // var table = $('#example').DataTable();
-
-    var tab = table;
-          console.log("ATTTT: ", table);
 
     $(document).ready( this.docReady($, table))
 
