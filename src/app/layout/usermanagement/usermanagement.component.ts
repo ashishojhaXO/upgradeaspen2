@@ -20,11 +20,7 @@ import { GenericService } from '../../../services/generic.service';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import { CsvService } from '../../../services/csv';
 
-// import { DataTablePluginExt } from "../../../services/data-table-plugin-ext";
-// import { DataTablePluginExt } from "./../../../scripts/data-table/data-table-plugin-ext.js";
-
-// var DataTablePluginExt = 
-// require("../../../services/data-table-plugin-ext.js");
+import DataTableColumnSearchPluginExt from '../../../scripts/data-table/data-table-search-plugin-ext';
 
 @Component({
   selector: 'app-usermanagement',
@@ -65,13 +61,18 @@ export class UserManagementComponent implements OnInit  {
     isColumnDefs: [
       { 
         type: 'name-string-not-nullund', 
-        // type: 'name-string-not-nullund-a', 
-        // type: 'blah',
-        // type: 'string',
         targets: '_all',
         render: (data, type, row, meta)=>{ 
           return data; 
         }
+      },
+      {
+        targets: '_all',
+        title: function(title) {
+          console.log("TTTT: ", title);
+          return '<i class="fa fa-info-circle fa-lg"></i>';
+        }
+
       }
     ],
 
@@ -91,6 +92,10 @@ export class UserManagementComponent implements OnInit  {
       },
 
     },
+
+    isColumnSearch: ($, table) => {
+      let d = new DataTableColumnSearchPluginExt($, document, table);
+    }
 
   }];
   dashboard: any;
@@ -189,6 +194,17 @@ export class UserManagementComponent implements OnInit  {
     // Init Datatables Extension Plug-ins
     // new DataTablePluginExt() 
     // this.loadScript("../../../services/data-table-plugin-ext.js");
+    // console.log("UMM: ", 
+    //   $('#example thead th')
+    //   .each( function () {
+    //     console.log("DODODO");
+    //           var title = $("#example thead th").text();
+    //           // $("#example thead th").html( '<input type="text" placeholder="Search '+title+'" />' );
+    //           $("#example thead th").append( '<input type="text" placeholder="Search '+title+'" />' );
+    //   } )
+    // )
+
+
 
   }
 
@@ -538,28 +554,52 @@ export class UserManagementComponent implements OnInit  {
       this.searchDataRequest(value);
   }
 
+
   setDataTableHeaders( ) {
     // Ideally pass data into this function & then set the DataTableHeaders
     let tableData = this.response;
     let headers = [];
 
+    let title = "T";
+
+    let icon = 
+    '<i class="fa fa-search col-search" (click)="colSearch" aria-hidden="true"></i>';
+    let searchInputElem = 
+    '<input type="text" class="col-search-input display-none display-block" placeholder="Search '+title+'" />' 
+
+    let icse = icon + "&nbsp;" + searchInputElem;
+
     if (tableData && tableData.length) {
       const keys = Object.keys(tableData[0]);
       for (let i = 0; i < keys.length; i++) {
+        let title = keys[i].replace(/_/g,' ').toUpperCase();
         headers.push({
           key: keys[i],
-          title: keys[i].replace(/_/g,' ').toUpperCase(),
+          title: title,
+          // + " " + icse,
+          // + this.searchInputElem(title),
           data: keys[i],
           isFilterRequired: true,
           isCheckbox: false,
           class: 'nocolvis',
           editButton: false,
-          width: '150'
+          width: '150',
+
+          // render: function (data, type, row, meta) {
+          //   console.log("---HEAD Rend")
+
+          //   return "BLah: " + meta.row + 1; // This contains the row index
+          // }
+
         });
       }
     }
 
     return headers;
+  }
+
+  colSearch() {
+    console.log("COLSEARCH CLIK")
   }
 
   populateDataTable(response, initialLoad) {
