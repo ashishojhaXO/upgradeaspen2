@@ -77,9 +77,10 @@ export default class DataTableColumnSearchPluginExt {
     $(document)
     .ready( function(){
       $(".col-search").click( function(e) {
+        e.stopPropagation();
         let dd = $(this);
         console.log("-----e THIS: ", e, this , " dd: ", dd); 
-        dd.siblings("input").toggle();
+        dd.siblings("input").toggleClass("display-none");
         // $(this).parent("th")
       })
     })
@@ -109,17 +110,21 @@ export default class DataTableColumnSearchPluginExt {
 
   }
 
-  attachClickToSearch($) {
+  // attachClickToSearch($) {
 
-    let d = $(".col-search")
-    d.click( function (e, n) { 
-      let dd = $(this);
-      console.log("THIS: ", this , " dd: ", dd); 
-      dd.siblings("input").toggle();
+  //   let d = $(".col-search")
+  //   d.click( function (e, n) { 
+  //     if ( e.target !== this ) {
+  //       console.log("IF THIS");
+  //       return;
+  //     }
+  //     let dd = $(this);
+  //     console.log("THIS: ", this , " dd: ", dd); 
+  //     dd.siblings("input").toggle();
 
-    } )
+  //   } )
 
-  }
+  // }
 
   attachSearchToInput($, table) {
       // DataTable
