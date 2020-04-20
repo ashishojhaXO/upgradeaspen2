@@ -93,9 +93,9 @@ export class UserManagementComponent implements OnInit  {
 
     },
 
-    isColumnSearch: ($, table) => {
-      let d = new DataTableColumnSearchPluginExt($, document, table);
-    }
+    // isColumnSearch: ($, table) => {
+    //   let d = new DataTableColumnSearchPluginExt($, document, table);
+    // }
 
   }];
   dashboard: any;

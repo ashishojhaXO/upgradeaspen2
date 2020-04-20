@@ -22,6 +22,8 @@ import { DatePipe } from '@angular/common';
 // import { OktaAuthService } from '../../../../services/okta.service';
 import set = Reflect.set;
 
+import DataTableColumnSearchPluginExt from '../../../../scripts/data-table/data-table-search-plugin-ext';
+
 declare var $: any;
 
 @Component({
@@ -69,6 +71,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         //     this.tableId = this.externalTableId;
         // }
         // this.initializeTable();
+
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -702,6 +705,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             console.log('--- TABLE >>>, this');
             console.log(table, this);
 
+        // Attaching Column search to all tables
+        let columnSearch = new DataTableColumnSearchPluginExt($, document, table);
+
             // Set column display box location
             $('.dt-button.buttons-collection.buttons-colvis').on('click', function () {
                 $('.dt-button-collection').css('left', '-90px');
@@ -897,9 +903,10 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     table.off("length");
                 });
 
-                if (__this.dataObject.gridData.options.isColumnSearch) {
-                    __this.dataObject.gridData.options.isColumnSearch($, document, table)
-                }
+                // Column Search enabled
+                // if (__this.dataObject.gridData.options.isColumnSearch) {
+                //     __this.dataObject.gridData.options.isColumnSearch($, document, table)
+                // }
                 
                 let currentPage = table.page.info().page;
                 // order Here
