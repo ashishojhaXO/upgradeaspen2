@@ -572,8 +572,10 @@ export class UserManagementComponent implements OnInit  {
 
     let title = "T";
 
-    let icon = '<i class="fa fa-search col-search" (click)="colSearch" aria-hidden="true"></i>';
-    let searchInputElem = '<input type="text" class="col-search-input display-none display-block" placeholder="Search '+title+'" />' 
+    let icon = 
+    '<i class="fa fa-search col-search" (click)="colSearch" aria-hidden="true"></i>';
+    let searchInputElem = 
+    '<input type="text" class="col-search-input display-none display-block" placeholder="Search '+title+'" />' 
 
     let icse = icon + "&nbsp;" + searchInputElem;
 
@@ -583,7 +585,8 @@ export class UserManagementComponent implements OnInit  {
         let title = keys[i].replace(/_/g,' ').toUpperCase();
         headers.push({
           key: keys[i],
-          title: title + " " + icse,
+          title: title,
+          // + " " + icse,
           // + this.searchInputElem(title),
           data: keys[i],
           isFilterRequired: true,

@@ -51,7 +51,7 @@ export default class DataTableColumnSearchPluginExt {
   constructor($, document, table) {
 
     // this.attachSearchIcon($)
-    // this.attachElemsToColumnHeader($, document);
+    this.attachElemsToColumnHeader($, document);
     this.attachClickInputSearch($)
     // this.attachClickToSearch($)
     this.attachSearchToInput($, table);
@@ -60,17 +60,21 @@ export default class DataTableColumnSearchPluginExt {
   searchIcon($){
     // If default way not available to attach icon in DataTables table headers, 
     // then, we attach here
-    let icon = '<i class="fa fa-search" aria-hidden="true"></i>';
+    let icon = 
+    '<i class="fa fa-search col-search" (click)="colSearch" aria-hidden="true"></i>';
+    // '<i class="fa fa-search" aria-hidden="true"></i>';
     return icon;
   }
 
   searchInputElem(title) {
-    let searchInputElem = '<input type="text" class="col-search-input" placeholder="Search '+title+'" />' 
+    let searchInputElem = 
+    '<input type="text" class="col-search-input display-none display-block" placeholder="Search '+title+'" />' 
+    // '<input type="text" class="col-search-input" placeholder="Search '+title+'" />' 
     return searchInputElem;
   }
 
-  getAllElems($: JQueryStatic, title :string ) {
-    return "<div class='random'>" + this.searchIcon($) + "&nbsp;" + this.searchInputElem(title) + "</div>";
+  getAllElems($: JQueryStatic, title: string ) {
+    return "&nbsp;" + this.searchIcon($) + "&nbsp;" + this.searchInputElem(title);
   }
 
   attachClickInputSearch($) {
@@ -90,18 +94,22 @@ export default class DataTableColumnSearchPluginExt {
   attachElemsToColumnHeader($, document) {
     console.log("DOC: ", document)
 
+    let self = this;
+
     $(document)
     .ready( function(){
 
-      $('#example thead th')
+      // $('#example thead th')
+      // $('table:first thead th')
+      $('table:first thead th.sorting')
       .each( function () {
-        console.log("DODODO");
         // var title = $("#example thead th").text();
         var title = $(this).text();
+        console.log("DODODO", title);
         // $("#example thead th").html( '<input type="text" placeholder="Search '+title+'" />' );
         // $("#example thead th").append( '<input type="text" placeholder="Search '+title+'" />' );
         $(this).append( 
-          this.getAllElems($, title)
+          self.getAllElems($, title)
         );
       
       } );
