@@ -20,12 +20,6 @@ import { GenericService } from '../../../services/generic.service';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import { CsvService } from '../../../services/csv';
 
-// import { DataTablePluginExt } from "../../../services/data-table-plugin-ext";
-// import { DataTablePluginExt } from "./../../../scripts/data-table/data-table-plugin-ext.js";
-
-// var DataTablePluginExt = 
-// require("../../../services/data-table-plugin-ext.js");
-
 import DataTableColumnSearchPluginExt from '../../../scripts/data-table/data-table-search-plugin-ext';
 
 @Component({
@@ -100,9 +94,7 @@ export class UserManagementComponent implements OnInit  {
     },
 
     isColumnSearch: ($, table) => {
-      console.log("DDDDD: ", $, table);
       let d = new DataTableColumnSearchPluginExt($, document, table);
-      console.log("NOWDDDDD: ", d)
     }
 
   }];
@@ -202,17 +194,15 @@ export class UserManagementComponent implements OnInit  {
     // Init Datatables Extension Plug-ins
     // new DataTablePluginExt() 
     // this.loadScript("../../../services/data-table-plugin-ext.js");
-
-    console.log("UMM: ", 
-      $('#example thead th')
-      .each( function () {
-        console.log("DODODO");
-              var title = $("#example thead th").text();
-              // $("#example thead th").html( '<input type="text" placeholder="Search '+title+'" />' );
-              $("#example thead th").append( '<input type="text" placeholder="Search '+title+'" />' );
-      
-      } )
-    )
+    // console.log("UMM: ", 
+    //   $('#example thead th')
+    //   .each( function () {
+    //     console.log("DODODO");
+    //           var title = $("#example thead th").text();
+    //           // $("#example thead th").html( '<input type="text" placeholder="Search '+title+'" />' );
+    //           $("#example thead th").append( '<input type="text" placeholder="Search '+title+'" />' );
+    //   } )
+    // )
 
 
 

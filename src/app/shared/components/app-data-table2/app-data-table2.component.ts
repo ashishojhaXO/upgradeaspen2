@@ -893,45 +893,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     table.off("length");
                 });
 
-                let __t = this;
-
-            if (__this.dataObject.gridData.options.isColumnSearch) {
-                console.log("=====IFFI SEARCH========", $ );
-                __this.dataObject.gridData.options.isColumnSearch($, document, table)
-            }
-  // THIS RANDOM
-//   $(document).ready(function() {
-
-//   console.log("=====SEARCH========", $ );
-
-//       // Setup - add a text input to each footer cell
-//       $('#' + __t.tableId + ' thead th').each( function () {
-//           var title = $(__t).text();
-//           $(__t).append( '<input type="text" placeholder="Search '+title+'" />' );
-//       } );
-  
-//       // DataTable
-//     //   var table = $( '#' + __t.tableId).DataTable();
-  
-//       // Apply the search
-//       table.columns().every( function () {
-  
-//     console.log("=====SEARCH========", $, " ", __t.tableId );
-
-//           var that = this;
-  
-//           $( 'input', this.footer() ).on( 'keyup change clear', function () {
-//               if ( that.search() !== this.value ) {
-//                   that
-//                       .search( this.value )
-//                       .draw();
-//               }
-//           } );
-//       } );
-//   } );
-
-// THIS RANDOM-
-
+                if (__this.dataObject.gridData.options.isColumnSearch) {
+                    __this.dataObject.gridData.options.isColumnSearch($, document, table)
+                }
                 
                 let currentPage = table.page.info().page;
                 // order Here
