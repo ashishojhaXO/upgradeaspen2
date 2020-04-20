@@ -107,7 +107,7 @@ export default class DataTableColumnSearchPluginExt {
             that
             .search( this.value )
             .page(currentPage)
-            .draw(false);
+            .draw('page');
           }
         });
 
