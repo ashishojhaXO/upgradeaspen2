@@ -13,6 +13,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import { GenericService } from '../../../services/generic.service';
 import { DataTableOptions } from '../../../models/dataTableOptions';
 import Swal from 'sweetalert2';
+import { OktaAuthService } from '../../../services/okta.service';
 
 @Component({
   selector: 'app-order-payment',
@@ -30,11 +31,13 @@ export class OrderPaymentComponent {
   // domain: string;
   api_fs: any;
   vendorUuid:any;
+  widget: any;
 
   constructor(
       private route: ActivatedRoute,
       private genericService: GenericService,
-      private router: Router
+      private router: Router,
+      private okta: OktaAuthService,
   ) {
 
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
@@ -68,6 +71,7 @@ export class OrderPaymentComponent {
 
   ngOnInit() {
     this.initVars();
+    this.widget = this.okta.getWidget();
     // set Pay by CC/ACH by default
     this.selectionType = 'default';
     if ( this.selectionType == 'default') {
@@ -158,11 +162,26 @@ export class OrderPaymentComponent {
             (res) => {
               this.showSpinner = false;
               // this.successCB.apply(this, [res])
-              this.successCB(res)
+              this.successCB(res);
             },
-            (rej) => {
-              this.showSpinner = false;
-              this.errorCB(rej)
+            (err) => {
+              if(err.status === 401) {
+                let self = this;
+                this.widget.refreshElseSignout(
+                    this,
+                    err,
+                    self.postPaymentMethods.bind(self, option)
+                );
+              } else {
+                this.showSpinner = false;
+                Swal({
+                  title: 'An error occurred',
+                  html: err.message,
+                  type: 'error'
+                });
+              }
+
+              //this.errorCB(rej)
             }
         )
   }
@@ -186,14 +205,22 @@ export class OrderPaymentComponent {
 
               });
             },
-            (rej) => {
-              this.showSpinner = false;
-              Swal({
-                title: 'Default Payment Method Change Failed',
-                text: 'We are having trouble changing the default payment method. Please try again',
-                type: 'error'
-              }).then( () => {})
-
+            (err) => {
+              if(err.status === 401) {
+                let self = this;
+                this.widget.refreshElseSignout(
+                    this,
+                    err,
+                    self.setDefaultPaymentMethod.bind(self, option)
+                );
+              } else {
+                this.showSpinner = false;
+                Swal({
+                  title: 'Default Payment Method Change Failed',
+                  html: err.message,
+                  type: 'error'
+                });
+              }
             });
   }
 
