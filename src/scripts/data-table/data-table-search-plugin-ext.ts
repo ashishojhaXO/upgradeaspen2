@@ -65,31 +65,66 @@ export default class DataTableColumnSearchPluginExt {
 
   }
 
-  attachSearchToInput($, table) {
+  docReady($, table) {
+          console.log("docREDD tab: ", $, table)
+          // var tab = table;
+
     // DataTable
     var table = $('#example').DataTable();
-          console.log("ATTTT: ", table);
+    let currentPage = table.page.info().page;
 
-    $(document).ready( function() {
+    return function() {
       // Apply the search
-      table.columns().every( function () {
+      // table
+      table
+      .columns().every( function () {
         var that = this;
         // $( 'input', this.footer() )
-        $( 'input.input-sm', this.header() )
-        // $( '.col-search-input' )
+        // $( 'input.input-sm', this.header() )
+        $( '.col-search-input', this.header() )
         .on( 'click keyup change clear', function (e) {
-          console.log("STTOOO")
+          console.log("STTOOO tab: ", 
+            table, 
+            currentPage, 
+            table.page.info().page, 
+            this.value
+          )
           e.stopPropagation();
-          if ( that.search() !== this.value ) {
+          // if ( that.search() !== this.value ) {
+          if ( 
+            that.search() !== this.value || 
+            currentPage != table.page.info().page || 
+            this.value.trim() != "" 
+          ) {
+            console.log("INIF",
+              that.search(), 
+              table,
+              currentPage,
+              table.page.info().page,
+              this.value
+            );
+
             that
             .search( this.value )
-            .draw();
+            .page(currentPage)
+            .draw(false);
           }
         });
 
-      });
+      }
+      );
 
-    })
+    }
+  }
+
+  attachSearchToInput($, table) {
+    // DataTable
+    // var table = $('#example').DataTable();
+
+    var tab = table;
+          console.log("ATTTT: ", table);
+
+    $(document).ready( this.docReady($, table))
 
   }
 

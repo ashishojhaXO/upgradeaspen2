@@ -909,8 +909,13 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                 $(document).off( 'keyup', 'input.input-sm');
                 $(document).on( 'keyup', 'input.input-sm', function (ev) {
+                    console.log(
+                        "aDT2: ", ev, 
+                        " CurrPAG: ", currentPage, 
+                        " table.page.info().page ", table.page.info().page 
+                    )
                     // If currentPage exists, currentPage is not the same as table's page & also input value goes empty
-                    if(currentPage && currentPage != table.page.info().page && ev.currentTarget.value.trim() == "" ){
+                    if(currentPage && currentPage != table.page.info().page || ev.currentTarget.value.trim() == "" ){
                         table.page(currentPage).draw(false);
                     }
                 });
