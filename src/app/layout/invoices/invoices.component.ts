@@ -32,7 +32,6 @@ export class InvoicesComponent implements OnInit  {
     isSearchColumn: true,
     isTableInfo: true,
     isEditOption: false,
-    isDeleteOption: false,
     isAddRow: false,
     isPlayOption: {
       value : true,
@@ -46,6 +45,16 @@ export class InvoicesComponent implements OnInit  {
       value: true,
       icon: '',
       tooltip: 'View/Download Invoice'
+    },
+    isCustomOption: {
+      value: true,
+      icon: 'fa-book',
+      tooltip: 'Reconcile'
+    },
+    isDeleteOption: {
+      value: true,
+      icon: '',
+      tooltip: 'Delete Invoice'
     },
     isPageLength: true,
     isPagination: true,
@@ -75,7 +84,7 @@ export class InvoicesComponent implements OnInit  {
   orgArr = [];
   selectedOrg: any;
   orgValue = '';
-  
+
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
     const groups = localStorage.getItem('loggedInUserGroup') || '';
     const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
@@ -100,7 +109,7 @@ export class InvoicesComponent implements OnInit  {
     this.height = '50vh';
 
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
-    this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));    
+    this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
     this.searchOrgRequest();
     this.searchDataRequest();
   }
@@ -137,7 +146,7 @@ export class InvoicesComponent implements OnInit  {
       // token = AccessToken.accessToken;
       token = AccessToken;
     }
-    let org=this.orgValue;    
+    let org=this.orgValue;
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/payments/invoices/all'+( org ? ('?org_uuid=' + org) : '');
@@ -227,6 +236,127 @@ export class InvoicesComponent implements OnInit  {
         type: 'error'
       });
     }
+  }
+
+  handleDelete(dataObj: any) {
+    Swal({
+      title: 'Are you sure you want to delete this invoice?',
+      text: "You won't be able to revert this!",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+      if (result.value) {
+        this.deleteInvoice(dataObj.data.id);
+      }
+    });
+  }
+
+  deleteInvoice(invoiceId){
+    return this.deleteInvoiceReq(invoiceId).subscribe(
+        response => {
+          if (response) { Swal({
+            title: 'Invoice deleted successfully',
+            text: 'Invoice has been deleted successfully',
+            type: 'success'
+          }).then( () => {
+            this.reLoad();
+          });
+          }
+        },
+        err => {
+          if (err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+                this,
+                err,
+                self.deleteInvoice.bind(self, invoiceId)
+            );
+          } else {
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+  deleteInvoiceReq(invoiceId) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken;
+    }
+    const headers = new Headers({ 'Content-Type': 'application/json', 'token': token, 'callingapp': 'aspen' });
+    const options = new RequestOptions({ headers: headers });
+    var url = this.api_fs.api + '/api/payments/invoices/'+invoiceId;
+    return this.http
+        .delete(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
+  handleCustom(dataObj: any) {
+    Swal({
+      title: 'Are you sure you want to reconcile this invoice?',
+      text: '',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+      if (result.value) {
+        this.reconcileInvoice(dataObj.data.invoice_number);
+      }
+    });
+  }
+
+  reconcileInvoice(invoiceNum){
+    return this.reconcileInvoiceReq(invoiceNum).subscribe(
+        response => {
+          if (response) { Swal({
+            title: 'Invoice reconciled successfully',
+            text: 'Invoice has been reconciled successfully',
+            type: 'success'
+          }).then( () => {
+            this.reLoad();
+          });
+          }
+        },
+        err => {
+          if (err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+                this,
+                err,
+                self.reconcileInvoice.bind(self, invoiceNum)
+            );
+          } else {
+            this.showSpinner = false;
+          }
+        }
+    );
+  }
+  reconcileInvoiceReq(invoiceNum) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken;
+    }
+
+    const data = {
+        'invoice_number' : invoiceNum
+     };
+
+    const headers = new Headers({ 'Content-Type': 'application/json', 'token': token, 'callingapp': 'aspen' });
+    const options = new RequestOptions({ headers: headers });
+    var url = this.api_fs.api + '/payments/invoices/reconciliation/re-execute';
+    return this.http
+        .post(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   searchDownloadLink(downloadId, invoiceId) {

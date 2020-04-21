@@ -37,11 +37,11 @@ export class ReconciliationComponent implements OnInit {
       icon: 'fa-arrow-circle-o-down',
       tooltip: 'Download'
     },
-    isDeleteOption: {
-      value: true,
-      icon: '',
-      tooltip: 'Delete'
-    },
+    // isDeleteOption: {
+    //   value: true,
+    //   icon: '',
+    //   tooltip: 'Delete'
+    // },
     isAddRow: false,
     isColVisibility: true,
     isDownloadAsCsv: true,
@@ -872,7 +872,7 @@ export class ReconciliationComponent implements OnInit {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes'
     }).then((result) => {
-      if (result.value) {        
+      if (result.value) {
         this.deleteInvoice(dataObj.data.invoice_header_id);
       }
     });

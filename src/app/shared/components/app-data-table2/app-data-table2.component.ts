@@ -317,12 +317,12 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 }
 
                 if (this.dataObject.gridData.options.isDeleteOption && this.dataObject.gridData.options.isDeleteOption.value) {
-                    columnButtonDefs += '<a class="fa fa-trash fa-action-view deleteLink" title="' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete' ) + '" style="cursor: pointer"></a>';
+                    columnButtonDefs += '<a class="fa fa-trash fa-action-view deleteLink" title="' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete' ) + '" style="margin-right: 15px; cursor: pointer"></a>';
                     //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete' )  + '</span>';
                 }
                 if (this.dataObject.gridData.options.isCustomOption && this.dataObject.gridData.options.isCustomOption.value) {
                     const iconClass = this.dataObject.gridData.options.isCustomOption.icon ? this.dataObject.gridData.options.isCustomOption.icon : 'fa-play';
-                    columnButtonDefs += '<a class="fa ' + iconClass  + ' fa-action-view customLink" title="' + (this.dataObject.gridData.options.isCustomOption.tooltip ? this.dataObject.gridData.options.isCustomOption.tooltip : 'Click' ) + '" style="margin-right: 15px;margin-left:15px; cursor: pointer">';
+                    columnButtonDefs += '<a class="fa ' + iconClass  + ' fa-action-view customLink" title="' + (this.dataObject.gridData.options.isCustomOption.tooltip ? this.dataObject.gridData.options.isCustomOption.tooltip : 'Click' ) + '" style="margin-right: 15px;cursor: pointer">';
                 }
 
                 if (this.dataObject.gridData.options.isEmailOption) {
@@ -412,7 +412,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     })
                 }
 
-                
+
 
                 if (this.dataObject.gridData.options.isDownloadAsCsv) {
                     let dict = {
@@ -498,8 +498,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     style: this.dataObject.gridData.options.isRowSelection && this.dataObject.gridData.options.isRowSelection.isMultiple ? 'multi' : 'os',
                 },
 
-                // ordering: this.dataObject.gridData.options.isOrdering ? 
-                //     this.dataObject.gridData.options.isOrdering : 
+                // ordering: this.dataObject.gridData.options.isOrdering ?
+                //     this.dataObject.gridData.options.isOrdering :
                 //     true,
 
                 order: this.dataObject.gridData.options.isOrder ?
@@ -907,7 +907,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // if (__this.dataObject.gridData.options.isColumnSearch) {
                 //     __this.dataObject.gridData.options.isColumnSearch($, document, table)
                 // }
-                
+
                 let currentPage = table.page.info().page;
                 // order Here
                 // On Click of sort on table header, run the below sequence
@@ -921,9 +921,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 $(document).off( 'keyup', 'input.input-sm');
                 $(document).on( 'keyup', 'input.input-sm', function (ev) {
                     console.log(
-                        "aDT2: ", ev, 
-                        " CurrPAG: ", currentPage, 
-                        " table.page.info().page ", table.page.info().page 
+                        "aDT2: ", ev,
+                        " CurrPAG: ", currentPage,
+                        " table.page.info().page ", table.page.info().page
                     )
                     // If currentPage exists, currentPage is not the same as table's page & also input value goes empty
                     if(currentPage && currentPage != table.page.info().page || ev.currentTarget.value.trim() == "" ){
