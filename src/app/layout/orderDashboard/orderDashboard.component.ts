@@ -254,7 +254,7 @@ export class OrderDashboardComponent implements OnInit  {
             this.showSpinner = false;
             Swal({
               title: 'Order Deletion Failed',
-              text: err.message,
+              html: err._body ? JSON.parse(err._body).message : 'No error definition available',
               type: 'error'
             }).then( () => {
              // this.router.navigate(['/app/admin/invoices']);

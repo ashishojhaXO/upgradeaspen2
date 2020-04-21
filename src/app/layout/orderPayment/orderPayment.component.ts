@@ -149,7 +149,7 @@ export class OrderPaymentComponent {
   paymentsChargeData: any;
 
   setPaymentsMethodsData() {
-    this.paymentsMethodsData = { vendor_id : this.vendorId } ;
+    this.paymentsMethodsData = { vendor_id : '' } ;
   }
 
   postPaymentMethods(option) {
@@ -173,14 +173,15 @@ export class OrderPaymentComponent {
                     self.postPaymentMethods.bind(self, option)
                 );
               } else {
+                console.log('err >>')
+                console.log(err);
                 this.showSpinner = false;
                 Swal({
                   title: 'An error occurred',
-                  html: err.message,
+                  html: err._body ? JSON.parse(err._body).message : 'No error definition available',
                   type: 'error'
                 });
               }
-
               //this.errorCB(rej)
             }
         )
@@ -217,7 +218,7 @@ export class OrderPaymentComponent {
                 this.showSpinner = false;
                 Swal({
                   title: 'Default Payment Method Change Failed',
-                  html: err.message,
+                  html: err._body ? JSON.parse(err._body).message : 'No error definition available',
                   type: 'error'
                 });
               }
