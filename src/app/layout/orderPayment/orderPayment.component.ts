@@ -149,7 +149,7 @@ export class OrderPaymentComponent {
   paymentsChargeData: any;
 
   setPaymentsMethodsData() {
-    this.paymentsMethodsData = { vendor_id : '' } ;
+    this.paymentsMethodsData = { vendor_id : this.vendorId } ;
   }
 
   postPaymentMethods(option) {
