@@ -124,7 +124,7 @@ export class OrdersListComponent implements OnInit  {
             this.showSpinner = false;
             Swal({
               title: 'An error occurred',
-              html: err.message,
+              html: err._body ? JSON.parse(err._body).message : 'No error definition available',
               type: 'error'
             });
           }
@@ -250,7 +250,7 @@ export class OrdersListComponent implements OnInit  {
           this.showSpinner = false;
           Swal({
             title: 'An error occurred',
-            html: err.message,
+            html: err._body ? JSON.parse(err._body).message : 'No error definition available',
             type: 'error'
           });
         }
