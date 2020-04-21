@@ -6,6 +6,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-orders-template-list',
@@ -115,11 +116,16 @@ export class OrdersTemplateListComponent implements OnInit  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.searchDataRequest.bind(self)
             );
           } else {
             this.showSpinner = false;
+            Swal({
+              title: 'An error occurred',
+              html: err.message,
+              type: 'error'
+            });
           }
         }
     );

@@ -76,12 +76,12 @@ export class BaseFieldsComponent implements OnInit {
             self.createBase.bind(self, template)
           );
         } else {
-          Swal({
-            title: 'Error',
-            text: err._body ? (err._body.indexOf(':') !== -1 ? err._body.split(':')[1] : err._body) : 'An Error occurred',
-            type: 'error'
-          })
           this.showSpinner = false;
+          Swal({
+            title: 'An error occurred',
+            html: err.message,
+            type: 'error'
+          });
         }
       }
     );
