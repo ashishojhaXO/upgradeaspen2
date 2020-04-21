@@ -52,6 +52,7 @@ import { UserSettingsComponent } from './user-settings/user-settings.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
 import {EmailManagementComponent} from './../layout/emailManagement/emailManagement.component';
 import {OrderDashboardComponent} from './../layout/orderDashboard/orderDashboard.component';
+import {LineItemHistoryComponent} from './../layout/orderDashboard/lineItemHistory/lineItemHistory.component';
 import {UploadsComponent} from './../layout/uploads/uploads.component';
 
 // providers
@@ -68,7 +69,7 @@ import { OperationsDashboardComponent } from './operations-dashboard/operations-
 import { ReconciliationLineItemsComponent } from './reconciliation/reconciliation-line-items/reconciliation-line-items.component';
 import { ReconciliationProfilesComponent } from './reconciliation/reconciliation-profiles/reconciliation-profiles.component';
 
- 
+
 @NgModule({
     imports: [
         CommonModule,
@@ -135,9 +136,9 @@ import { ReconciliationProfilesComponent } from './reconciliation/reconciliation
         AnalyticsComponent,
         EmailManagementComponent,
         OrderDashboardComponent,
+        LineItemHistoryComponent,
         JobsComponent,
         OperationsDashboardComponent,
-        OrderDashboardComponent,
         UploadsComponent,
         ReconciliationLineItemsComponent,
         ReconciliationProfilesComponent

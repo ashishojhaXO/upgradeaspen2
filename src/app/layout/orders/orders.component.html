@@ -90,7 +90,11 @@
     <a (click)="showOrders()" class="btn btn-secondary"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Back to Orders</a>
   </div>
 
-  <app-order-dashboard *ngIf="selectedOrderID && selectedLineItemID" [vendorUuid]="selectedVendorUuid" [orderID]="selectedOrderID" [lineItemID]="selectedLineItemID"></app-order-dashboard>
-
+  <div *ngIf="isHomeDepot; else regular">
+    <app-line-item-history *ngIf="selectedLineItemID" [lineItemID]="selectedLineItemID"></app-line-item-history>
+  </div>
+  <ng-template #regular>
+    <app-order-dashboard *ngIf="selectedOrderID && selectedLineItemID" [vendorUuid]="selectedVendorUuid" [orderID]="selectedOrderID" [lineItemID]="selectedLineItemID"></app-order-dashboard>
+  </ng-template>
 </div>
 <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>

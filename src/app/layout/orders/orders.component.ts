@@ -38,6 +38,7 @@ export class OrdersComponent implements OnInit  {
   isRoot: boolean;
   orgArr: any;
   orgValue = '';
+  isHomeDepot: boolean;
   options: Array<any> = [{
     isSearchColumn: true,
     isTableInfo: true,
@@ -84,17 +85,17 @@ export class OrdersComponent implements OnInit  {
 
     // TODO: How is this 'blah' thing even happening!!!
     isColumnDefs: [
-      { 
-        type: 'name-string-not-nullund', 
+      {
+        type: 'name-string-not-nullund',
         // type: 'blah',
         targets: '_all',
-        render: (data, type, row, meta) =>{ 
+        render: (data, type, row, meta) =>{
           return data;
         }
       },
-      { 
-        type: 'name-string-not-nullund', 
-        // type: 'name-string-not-nullund-a', 
+      {
+        type: 'name-string-not-nullund',
+        // type: 'name-string-not-nullund-a',
         // type: 'blah',
         targets: 2,
         orderable: false,
@@ -511,6 +512,14 @@ export class OrdersComponent implements OnInit  {
 
     this.options[0].isPlayOption.value = this.allowOrderFunctionality === 'true' ? true : false;
 
+    const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
+    if (customerInfo && customerInfo.org && customerInfo.org.org_name === 'Home Depot') {
+      this.options[0].isPlayOption.icon = 'fa-history';
+      this.options[0].isPlayOption.tooltip = 'View History';
+      this.options[0].isPlayOption.value = true;
+      this.isHomeDepot = true;
+    }
+
     this.gridData['options'] = this.options[0];
 
     this.gridData.columnsToColor = [
@@ -590,9 +599,10 @@ export class OrdersComponent implements OnInit  {
   handleRun(dataObj: any) {
     console.log('dataObj.data >>')
     console.log(dataObj.data);
+
     this.selectedOrderID = dataObj.data.internal_order_id;
-    this.selectedLineItemID = dataObj.data.internal_line_item_id;
-    this.selectedVendorUuid= dataObj.data.vendor_uuid;
+    this.selectedLineItemID = this.isHomeDepot ? dataObj.data.Line_Item_Id : dataObj.data.internal_line_item_id;
+    this.selectedVendorUuid = dataObj.data.vendor_uuid;
     this.hideTable = true;
   }
 
