@@ -32,7 +32,7 @@ export class OrderDashboardComponent implements OnInit  {
   memo: string;
   @Input() orderID: any;
   @Input() lineItemID: any;
-  @Input() vendorUuid: any;  
+  @Input() vendorUuid: any;
   config: any;
   options: any;
   orderDetails: any;
@@ -251,14 +251,14 @@ export class OrderDashboardComponent implements OnInit  {
                 self.cancelOrderRequest.bind(self, orderID),
             );
           } else {
+            this.showSpinner = false;
             Swal({
               title: 'Order Deletion Failed',
-              text: 'An error occurred while deleting order : ' + orderID + '. Please try again',
+              text: err.message,
               type: 'error'
             }).then( () => {
              // this.router.navigate(['/app/admin/invoices']);
             });
-            this.showSpinner = false;
           }
         }
     );

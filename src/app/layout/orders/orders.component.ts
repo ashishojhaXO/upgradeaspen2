@@ -21,6 +21,7 @@ import { PopUpModalComponent } from '../../shared/components/pop-up-modal/pop-up
 import { modalConfigDefaults } from 'ngx-bootstrap/modal/modal-options.class';
 
 import { CsvService } from '../../../services/csv'
+import DataTableColumnSearchPluginExt from '../../../scripts/data-table/data-table-search-plugin-ext';
 
 @Component({
   selector: 'app-orders',
@@ -109,6 +110,10 @@ export class OrdersComponent implements OnInit  {
       },
 
     },
+
+    // isColumnSearch: ($, table) => {
+    //   let d = new DataTableColumnSearchPluginExt($, document, table);
+    // },
 
     isTree: true,
     // isChildRowActions required when there need to be actions below every row.

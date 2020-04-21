@@ -279,6 +279,11 @@ export class CustomFormbuilderComponent implements OnInit {
           );
         } else {
           this.showSpinner = false;
+          Swal({
+            title: 'An error occurred',
+            html: err.message,
+            type: 'error'
+          });
         }
       }
     );

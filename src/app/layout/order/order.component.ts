@@ -143,6 +143,11 @@ export class OrderComponent implements OnInit  {
                     );
                 } else {
                     this.showSpinner = false;
+                    Swal({
+                        title: 'An error occurred',
+                        html: err.message,
+                        type: 'error'
+                    });
                 }
             }
         );
@@ -188,6 +193,11 @@ export class OrderComponent implements OnInit  {
                     );
                 } else {
                     this.showSpinner = false;
+                    Swal({
+                        title: 'An error occurred',
+                        html: err.message,
+                        type: 'error'
+                    });
                 }
             }
         );
@@ -464,6 +474,11 @@ export class OrderComponent implements OnInit  {
                     );
                 } else {
                     this.showSpinner = false;
+                    Swal({
+                        title: 'An error occurred',
+                        html: err.message,
+                        type: 'error'
+                    });
                 }
             }
         );
@@ -1017,12 +1032,21 @@ export class OrderComponent implements OnInit  {
                     }
                 },
                 err => {
-                    this.showSpinner = false;
-                    Swal({
-                        title: 'Order ' + (this.orderId ? 'Update' : 'Submission') + ' Failed',
-                        html: 'An error occurred while ' + (this.orderId ? 'updating' : 'submitting') + ' the order. Please try again',
-                        type: 'error'
-                    });
+                    if(err.status === 401) {
+                        let self = this;
+                        this.widget.refreshElseSignout(
+                            this,
+                            err,
+                            self.OnSubmit.bind(self)
+                        );
+                    } else {
+                        this.showSpinner = false;
+                        Swal({
+                            title: 'An error occurred',
+                            html: err.message,
+                            type: 'error'
+                        });
+                    }
                 }
             );
         } else {
@@ -1036,17 +1060,26 @@ export class OrderComponent implements OnInit  {
                             type: 'success'
                         }).then(() => {
                             // this.router.navigate(['/app/targetAud/']);
-                            this.router.navigate(['/app/orderPayment/' + response.order_id]);
+                            this.router.navigate(['/app/orderPayment/' + response.order_id, reqObj.vendor_id]);
                         });
                     }
                 },
                 err => {
-                    this.showSpinner = false;
-                    Swal({
-                        title: 'Order ' + (this.orderId ? 'Update' : 'Submission') + ' Failed',
-                        html: 'An error occurred while ' + (this.orderId ? 'updating' : 'submitting') + ' the order. Please try again',
-                        type: 'error'
-                    });
+                    if(err.status === 401) {
+                        let self = this;
+                        this.widget.refreshElseSignout(
+                            this,
+                            err,
+                            self.OnSubmit.bind(self)
+                        );
+                    } else {
+                        this.showSpinner = false;
+                        Swal({
+                            title: 'An error occurred',
+                            html: err.message,
+                            type: 'error'
+                        });
+                    }
                 }
             );
         }

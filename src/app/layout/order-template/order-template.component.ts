@@ -108,6 +108,11 @@ export class OrderTemplateComponent implements OnInit {
           );
         } else {
           this.showSpinner = false;
+          Swal({
+            title: 'An error occurred',
+            html: err.message,
+            type: 'error'
+          });
         }
       }
     );
@@ -234,12 +239,12 @@ export class OrderTemplateComponent implements OnInit {
               self.createTemplate.bind(self, template)
             );
         } else {
-          Swal({
-            title: 'Error',
-            text: err._body ? (err._body.indexOf(':') !== -1 ? err._body.split(':')[1] : err._body) : 'An Error occurred',
-            type: 'error'
-          })
           this.showSpinner = false;
+          Swal({
+            title: 'An error occurred',
+            html: err.message,
+            type: 'error'
+          });
         }
       }
     );
@@ -329,10 +334,10 @@ export class OrderTemplateComponent implements OnInit {
             );
         } else {
           Swal({
-            title: 'Error',
-            text: err._body ? (err._body.indexOf(':') !== -1 ? err._body.split(':')[1] : err._body) : 'An Error occurred',
+            title: 'An error occurred',
+            html: err.message,
             type: 'error'
-          })
+          });
           this.showSpinner = false;
         }
       }

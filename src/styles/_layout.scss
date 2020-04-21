@@ -3841,3 +3841,19 @@ div.crumbs-main {
   font-size: larger;
 }
 
+thead th:hover .col-search {
+  visibility: visible;
+}
+
+.col-search {
+  position: relative;
+  visibility: hidden;
+}
+
+.display-block {
+  display: block;
+}
+
+.display-none {
+  display: none;
+}
