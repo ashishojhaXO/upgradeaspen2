@@ -281,7 +281,7 @@ export class OrderTemplateComponent implements OnInit {
   getTemplate(templateId){
     this.getTemplateService(templateId).subscribe(
       response => {
-        if (response && response.status == 200) {
+        if (response) {
           this.showSpinner = false;
           console.log('template edit fields', response);
           this.templateField = response.orderTemplateData;
