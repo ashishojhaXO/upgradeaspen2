@@ -38,7 +38,7 @@ export class OrdersComponent implements OnInit  {
   isRoot: boolean;
   orgArr: any;
   orgValue = '';
-  isHomeDepot: boolean;
+  isHistory: boolean;
   options: Array<any> = [{
     isSearchColumn: true,
     isTableInfo: true,
@@ -67,7 +67,11 @@ export class OrdersComponent implements OnInit  {
       icon : 'fa-info-circle',
       tooltip: 'View Details'
     },
-
+    isCustomOption: {
+      value : true,
+      icon : 'fa-history',
+      tooltip: 'View History'
+    },
     // Commenting out fixedColumn, as we need subRow isTree children child row, to show action buttons
     // fixedColumn: 1,
     isPageLength: true,
@@ -512,13 +516,13 @@ export class OrdersComponent implements OnInit  {
 
     this.options[0].isPlayOption.value = this.allowOrderFunctionality === 'true' ? true : false;
 
-    const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
-    if (customerInfo && customerInfo.org && customerInfo.org.org_name === 'Home Depot') {
-      this.options[0].isPlayOption.icon = 'fa-history';
-      this.options[0].isPlayOption.tooltip = 'View History';
-      this.options[0].isPlayOption.value = true;
-      this.isHomeDepot = true;
-    }
+    // const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
+    // if (customerInfo && customerInfo.org && customerInfo.org.org_name === 'Home Depot') {
+    //   this.options[0].isPlayOption.icon = 'fa-history';
+    //   this.options[0].isPlayOption.tooltip = 'View History';
+    //   this.options[0].isPlayOption.value = true;
+    //   this.isHomeDepot = true;
+    // }
 
     this.gridData['options'] = this.options[0];
 
@@ -601,9 +605,18 @@ export class OrdersComponent implements OnInit  {
     console.log(dataObj.data);
 
     this.selectedOrderID = dataObj.data.internal_order_id;
-    this.selectedLineItemID = this.isHomeDepot ? dataObj.data.Line_Item_Id : dataObj.data.internal_line_item_id;
+    this.selectedLineItemID = dataObj.data.internal_line_item_id;
     this.selectedVendorUuid = dataObj.data.vendor_uuid;
     this.hideTable = true;
+    this.isHistory = false;
+  }
+
+  handleCustom(dataObj: any) {
+      this.selectedOrderID = dataObj.data.internal_order_id;
+      this.selectedLineItemID = dataObj.data.Line_Item_Id;
+      this.selectedVendorUuid = dataObj.data.vendor_uuid;
+      this.hideTable = true;
+      this.isHistory = true;
   }
 
   searchDownloadLink(downloadId, orderId) {
