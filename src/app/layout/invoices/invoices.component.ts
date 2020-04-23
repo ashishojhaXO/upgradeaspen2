@@ -351,7 +351,7 @@ export class InvoicesComponent implements OnInit  {
 
     const headers = new Headers({ 'Content-Type': 'application/json', 'token': token, 'callingapp': 'aspen' });
     const options = new RequestOptions({ headers: headers });
-    var url = this.api_fs.api + '/payments/invoices/reconciliation/re-execute';
+    var url = this.api_fs.api + '/api/payments/invoices/reconciliation/re-execute';
     return this.http
         .post(url, data, options)
         .map(res => {
