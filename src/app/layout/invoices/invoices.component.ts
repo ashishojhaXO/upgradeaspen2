@@ -276,6 +276,11 @@ export class InvoicesComponent implements OnInit  {
             );
           } else {
             this.showSpinner = false;
+            Swal({
+              title: 'An error occurred',
+              html: err._body ? JSON.parse(err._body).message : 'No error definition available',
+              type: 'error'
+            });
           }
         }
     );
@@ -334,6 +339,11 @@ export class InvoicesComponent implements OnInit  {
             );
           } else {
             this.showSpinner = false;
+            Swal({
+              title: 'An error occurred',
+              html: err._body ? JSON.parse(err._body).message : 'No error definition available',
+              type: 'error'
+            });
           }
         }
     );
