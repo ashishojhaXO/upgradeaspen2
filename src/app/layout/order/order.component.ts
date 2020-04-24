@@ -26,7 +26,7 @@ import { OktaAuthService } from '../../../services/okta.service';
 export class OrderComponent implements OnInit  {
 
     gridData: any;
-    dataObject: any;
+    dataObject: any = {};
     isDataAvailable: boolean;
     height: any;
     options: Array<any> = [{
@@ -76,6 +76,7 @@ export class OrderComponent implements OnInit  {
     select2Options = {
         placeholder: { id: '', text: 'Select an option' }
     };
+    vendor_id: any;
 
     // gridDataResult: Object[] = new Array(Object);
     gridDataResult: Object[] = [];
@@ -102,6 +103,9 @@ export class OrderComponent implements OnInit  {
 
         this.route.params.subscribe(params => {
             if (params['id']) {
+                if (params['vendorId']) {
+                    this.vendor_id = params['vendorId'];
+                }
                 this.searchDateRequest(params['id'], params['lineItemId']);
                 // if(this.templates.length) {
                 //   this.template = '41';
@@ -865,6 +869,7 @@ export class OrderComponent implements OnInit  {
         }
         this.dashboard = 'orderLineItem';
         this.dataObject.gridData = this.gridData;
+        this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
         this.dataObject.paymentReceived = this.paymentReceived;
     }
 
@@ -924,6 +929,11 @@ export class OrderComponent implements OnInit  {
 
         const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
         const reqObj: any = {};
+
+        if (!this.vendor_id) {
+            this.vendor_id = customerInfo.vendor.vendor_id;
+        }
+
         if (!this.orderId) {
             reqObj.vendor_id =  customerInfo.vendor.vendor_id;
             reqObj.org_id = customerInfo.org.org_id;
@@ -1053,6 +1063,10 @@ export class OrderComponent implements OnInit  {
             this.submitData(reqObj).subscribe(
                 response => {
                     if (response) {
+
+                        console.log('reqObj >>')
+                        console.log(reqObj);
+
                         this.showSpinner = false;
                         Swal({
                             title: 'Order Successfully ' + (this.orderId ? 'Updated' : 'Submitted'),
@@ -1060,7 +1074,7 @@ export class OrderComponent implements OnInit  {
                             type: 'success'
                         }).then(() => {
                             // this.router.navigate(['/app/targetAud/']);
-                            this.router.navigate(['/app/orderPayment/' + response.order_id, reqObj.vendor_id]);
+                            this.router.navigate(['/app/orderPayment/' + response.order_id, this.vendor_id]);
                         });
                     }
                 },
