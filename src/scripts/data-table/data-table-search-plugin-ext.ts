@@ -11,7 +11,7 @@ export default class DataTableColumnSearchPluginExt {
   }
 
   searchIcon($){
-    // If default way not available to attach icon in DataTables table headers, 
+    // If default way not available to attach icon in DataTables table headers,
     // then, we attach here
     let icon = '<i class="fa fa-filter col-search" (click)="colSearch" aria-hidden="true"></i>';
     // '<i class="fa fa-search" aria-hidden="true"></i>';
@@ -19,8 +19,8 @@ export default class DataTableColumnSearchPluginExt {
   }
 
   searchInputElem(title) {
-    let searchInputElem = '<input type="text" class="input-sm col-search-input display-none display-block" placeholder="Search '+title+'" />' 
-    // '<input type="text" class="col-search-input" placeholder="Search '+title+'" />' 
+    let searchInputElem = '<input type="text" class="input-sm col-search-input display-none display-block" placeholder="Search '+title+'" />'
+    // '<input type="text" class="col-search-input" placeholder="Search '+title+'" />'
     return searchInputElem;
   }
 
@@ -55,10 +55,10 @@ export default class DataTableColumnSearchPluginExt {
         var title = $(this).text();
         // $("#example thead th").html( '<input type="text" placeholder="Search '+title+'" />' );
         // $("#example thead th").append( '<input type="text" placeholder="Search '+title+'" />' );
-        $(this).append( 
+        $(this).append(
           self.getAllElems($, title)
         );
-      
+
       } );
 
     })
@@ -67,7 +67,10 @@ export default class DataTableColumnSearchPluginExt {
 
   docReady($, table) {
     // DataTable
-    var table = $('#example').DataTable();
+   // var table = $('#example').DataTable();
+    if (!table.page.info()) {
+      return;
+    }
     let currentPage = table.page.info().page;
 
     return function() {
@@ -82,10 +85,10 @@ export default class DataTableColumnSearchPluginExt {
         .on( 'click keyup change clear', function (e) {
           e.stopPropagation();
           // if ( that.search() !== this.value ) {
-          if ( 
-            that.search() !== this.value || 
-            currentPage != table.page.info().page || 
-            this.value.trim() != "" 
+          if (
+            that.search() !== this.value ||
+            currentPage != table.page.info().page ||
+            this.value.trim() != ""
           ) {
             that
             .search( this.value )

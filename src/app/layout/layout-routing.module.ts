@@ -146,7 +146,7 @@ const routes: Routes = [
                         },
                     },
                     {
-                        path: 'create/:id',
+                        path: 'create/:id/:vendorId',
                         component: OrderComponent,
                         data: {
                             breadcrumbs: true,
@@ -154,7 +154,7 @@ const routes: Routes = [
                         },
                     },
                     {
-                        path: 'create/:id/:lineItemId',
+                        path: 'create/:id/:vendorId/:lineItemId',
                         component: OrderComponent,
                         data: {
                             breadcrumbs: true,

@@ -206,7 +206,7 @@ export class OrderTemplateComponent implements OnInit {
       response => {
         console.log('response >>')
         console.log(response);
-        if (response && response.status == 200) {
+        if (response) {
           console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>', response.message);
           let status;
           if(this.isPublished){

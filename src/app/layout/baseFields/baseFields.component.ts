@@ -58,7 +58,7 @@ export class BaseFieldsComponent implements OnInit {
         console.log('response >>')
         console.log(response);
         this.showSpinner = false;
-        if (response && response.status == 200) {
+        if (response) {
           console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>', response.message);
           Swal({
             title: 'Base fields generated',
