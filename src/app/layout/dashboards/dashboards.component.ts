@@ -16,6 +16,7 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 import {PopupDataAction} from '../../shared/components/app-popup-button/popup-data-action';
 import { OktaAuthService } from '../../../services/okta.service';
 import Swal from 'sweetalert2';
+import {moment} from 'ngx-bootstrap/chronos/test/chain';
 
 @Component({
   selector: 'app-dashboard',
@@ -98,6 +99,11 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 };
   @ViewChild('chart') chartRef;
   @ViewChild('table') tableRef;
+  dateOptions = {
+    format: "MMM YYYY",
+    showClear: false
+  };
+  period: any= {};
 
   constructor(
       private okta: OktaAuthService,
@@ -195,7 +201,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
     console.log('filter dataObj >>')
     console.log(obj);
-    let org=this.orgValue;
+    let org = this.orgValue;
     return this.http
         .post(this.api_fs.api + '/api/reports/org/homd/filters'+( org ? ('?org_id=' + org) : ''), obj, options )
         .map(res => {
@@ -331,9 +337,25 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     this.search();
   }
 
+  OnPeriodChange(e, filter) {
+    if (e) {
+      this.period.display = moment(e._d, 'DD/MM/YYYY').format('MMM YYYY');
+      this.period.value = moment(e._d, 'DD/MM/YYYY').format('YYYY-MM-DD');
+    } else {
+      this.period.display = filter.values && filter.values.length ? filter.values[0].itemName : '';
+      this.period.value = filter.values && filter.values.length ? filter.values[0].id : '';
+    }
+
+    this.dashboardConfig.filterProps.map(function (x) {
+      if (x.f7Name === 'period' && x.values && x.values.length) {
+        x.values[0].id = this.period.value;
+        x.values[0].itemName = this.period.display;
+      }
+    }, this);
+  }
+
   ngOnInit() {
     this.widget = this.okta.getWidget();
-
     this.showSpinner = true;
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
@@ -541,6 +563,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           id: seedResponse['period'].values.startDate,
           itemName: this.getMonthName(seedResponse['period'].values.startDate.split('-')[1].replace('0','')) + ' ' + seedResponse['period'].values.startDate.split('-')[0]
         }];
+        this.period.display = periodFilter.values[0].itemName;
+        this.period.value =  periodFilter.values[0].id;
       }
     }
   }
@@ -883,7 +907,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     } else {
       dateField = this.formatDate(new Date());
     }
-
     // dateField = '2019-04-01';
 
     const startDate = dateField + 'T00:00:00Z';

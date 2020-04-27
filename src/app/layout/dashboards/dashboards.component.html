@@ -28,8 +28,22 @@
       <div class="sidebar-form-control" *ngIf="filter.type === 'dropdown'" >
         <div [hidden]="selectedView != 'Monthly' ? null : 'hidden'">
           <p class="title">{{filter.label}}:</p>
-          <app-wrapper-multiselect-drop-down [updatedValue]="filter.values" (valueUpdate)="updateFilterConfig($event)" [filterConfig]="filter" [dependentConfig]="getDependentConfig(filter.dependentOn)"
-          ></app-wrapper-multiselect-drop-down>
+          <div *ngIf="filter.f7Name === 'period'; else regularDropDown" style="height: 40px">
+            <input class="input-form-control" style="text-align: center; width: 215px; height: 38px; cursor: pointer"
+                   a2e-datetimepicker
+                   [title]="period.display"
+                   (ngModelChange)="OnPeriodChange($event, filter)"
+                   [(ngModel)]="period.value"
+                   [value]="period.display"
+                   [options]="dateOptions"/>
+            <span style="padding: 10px 12px; position: relative; left: 176px; top: -29px; background: #eeeeee; color: #555555;">
+                    <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+          </div>
+          <ng-template #regularDropDown>
+            <app-wrapper-multiselect-drop-down [updatedValue]="filter.values" (valueUpdate)="updateFilterConfig($event)" [filterConfig]="filter" [dependentConfig]="getDependentConfig(filter.dependentOn)"
+            ></app-wrapper-multiselect-drop-down>
+          </ng-template>
         </div>
       </div>
       <div class="sidebar-form-control" *ngIf="filter.type === 'popupButton'" >
