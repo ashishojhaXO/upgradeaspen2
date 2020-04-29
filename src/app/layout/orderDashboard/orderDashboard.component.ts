@@ -31,6 +31,7 @@ export class OrderDashboardComponent implements OnInit  {
   invoices = [];
   memo: string;
   @Input() orderID: any;
+  @Input() displayOrderID: any;
   @Input() lineItemID: any;
   @Input() vendorUuid: any;
   config: any;
@@ -199,8 +200,10 @@ export class OrderDashboardComponent implements OnInit  {
   }
 
   payOrder() {
+    console.log('this.displayOrderID >>')
+    console.log(this.displayOrderID);
     if (!this.orderDetails.payment_received_date) {
-      this.router.navigate(['/app/orderPayment/', this.orderID, this.vendorUuid]);
+      this.router.navigate(['/app/orderPayment/', this.orderID, this.vendorUuid, this.displayOrderID]);
     }
   }
 
@@ -222,13 +225,13 @@ export class OrderDashboardComponent implements OnInit  {
         confirmButtonText: 'Yes'
       }).then((result) => {
         if (result.value) {
-          this.cancelOrderRequest(this.orderID);
+          this.cancelOrderRequest(this.orderID, this.displayOrderID);
         }
       });
     }
   }
 
-  cancelOrderRequest(orderID) {
+  cancelOrderRequest(orderID, displayOrderID) {
     this.cancelRequest(orderID).subscribe(
         response => {
           console.log('response >>')
@@ -236,7 +239,7 @@ export class OrderDashboardComponent implements OnInit  {
           this.showSpinner = false;
           Swal({
             title: 'Order Successfully Delete',
-            text: 'Order : ' + orderID + ' has been successfully deleted',
+            text: 'Order : ' + displayOrderID + ' has been successfully deleted',
             type: 'success'
           }).then( () => {
            this.router.navigate(['/app/order/orders']);
