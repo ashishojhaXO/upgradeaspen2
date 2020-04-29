@@ -238,9 +238,7 @@ export class OrderPaymentComponent {
 
   postPaymentsCharge(option) {
     this.setPaymentsChargeData(option);
-
     this.showSpinner = true;
-
     this.genericService
         .postPaymentsCharge(this.paymentsChargeData)
         .subscribe( (res) => {
@@ -253,17 +251,23 @@ export class OrderPaymentComponent {
                 this.router.navigate(['/app/order/orders']);
               });
             },
-            (rej) => {
-              this.showSpinner = false;
-              Swal({
-                title: 'Payment Charge Failed',
-                text: 'We are having trouble charging for the order ' + this.orderId + ' using the selected payment type. Please try again',
-                type: 'error'
-              }).then( () => {})
-              this.errorCB.apply(this, [rej])
+            (err) => {
+              if(err.status === 401) {
+                let self = this;
+                this.widget.refreshElseSignout(
+                    this,
+                    err,
+                    self.postPaymentsCharge.bind(self, option)
+                );
+              } else {
+                this.showSpinner = false;
+                Swal({
+                  title: 'Payment Charge Failed',
+                  text: 'We are having trouble charging for the order ' + this.orderId + ' using the selected payment type. Please try again',
+                  type: 'error'
+                });
+              }
+              // this.errorCB.apply(this, [rej]);
             });
   }
-
-
-
 }
