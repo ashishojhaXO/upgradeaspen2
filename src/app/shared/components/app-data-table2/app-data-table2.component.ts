@@ -498,10 +498,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     style: this.dataObject.gridData.options.isRowSelection && this.dataObject.gridData.options.isRowSelection.isMultiple ? 'multi' : 'os',
                 },
 
-                // ordering: this.dataObject.gridData.options.isOrdering ?
-                //     this.dataObject.gridData.options.isOrdering :
-                //     true,
-
                 order: this.dataObject.gridData.options.isOrder ?
                     this.dataObject.gridData.options.isOrder :
                     [[1, 'asc']],
@@ -702,8 +698,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             const table = $('#' + this.tableId).DataTable(dataTableOptions);
             this.table = table;
 
-            console.log('--- TABLE >>>, this');
-            console.log(table, this);
+            console.log('---this,table>>>');
+            console.log( this, table,);
 
         // Attaching Column search to all tables
         let columnSearch = new DataTableColumnSearchPluginExt($, document, table);
@@ -866,10 +862,18 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             });
 
             // Handle table draw event ( like pagination, sorting )
-            table.on('draw', function () {
+            table.on('draw', function (ev) {
                 // Update state of "Select all" control
                 console.log('drawn....');
                 __this.adjustHeight(__this);
+
+                let elem = this
+
+                // Sending table after its drawn
+                __this.triggerActions.emit({
+                    action: 'handleDataTableInit',
+                    data: table
+                });
 
                 table.off('draw');
             });
@@ -909,6 +913,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // }
 
                 let currentPage = table.page.info().page;
+                        console.log("111COMMINGHERE---", table, currentPage)
                 // order Here
                 // On Click of sort on table header, run the below sequence
                 // $('th').off('click');
@@ -920,11 +925,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                 $(document).off( 'keyup', 'input.input-sm');
                 $(document).on( 'keyup', 'input.input-sm', function (ev) {
-                    console.log(
-                        "aDT2: ", ev,
-                        " CurrPAG: ", currentPage,
-                        " table.page.info().page ", table.page.info().page
-                    )
                     // If currentPage exists, currentPage is not the same as table's page & also input value goes empty
                     if(currentPage && currentPage != table.page.info().page || ev.currentTarget.value.trim() == "" ){
                         table.page(currentPage).draw(false);

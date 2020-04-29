@@ -163,6 +163,7 @@ export class OrdersComponent implements OnInit  {
   response: any;
   org: string;
   selectedVendorUuid:any;
+  currentTable: any;
 
   constructor(
       private okta: OktaAuthService,
@@ -213,10 +214,8 @@ export class OrdersComponent implements OnInit  {
     this.searchOrgRequest();
   }
 
-  currentTable: any;
-
   apiMethod = (table, pageLength, csv?) => {
-    this.currentTable = table;
+    // this.currentTable = table;
 
     console.log("this.appDataTable2Component, table: ");
     console.log(this.appDataTable2Component, table);
@@ -385,6 +384,8 @@ export class OrdersComponent implements OnInit  {
       keyNames[keyNamesList[i]] = null;
     }
 
+    console.log("CALAL: ", table);
+
     // Even when table is not there, still we need to run this,
     // Since, data will be of the first page.
     // If !table
@@ -435,6 +436,7 @@ export class OrdersComponent implements OnInit  {
   }
 
   searchDataRequestCB(res, table) {
+    console.log("sDRCD res: ", res)
 
     this.response = res.data.rows;
     let li = this.calc(res, table);
@@ -445,6 +447,8 @@ export class OrdersComponent implements OnInit  {
     // CurrentPageNo:
     // TotalCountofRows:
     this.dataObject = {};
+
+    console.log("sDRCB: ", li);
 
     this.populateDataTable(li, true);
   }
@@ -465,12 +469,13 @@ export class OrdersComponent implements OnInit  {
     .getOrdersLineItems(data, this.isRoot)
     .subscribe(
         response => {
-          if (response) {
-            if (response) {
-              this.showSpinner = false;
-              // this.populateDataTable(response, true);
-              this.searchDataRequestCB(response, table);
-            }
+          if (response && response.data.rows) {
+            this.showSpinner = false;
+            // this.populateDataTable(response, true);
+            this.searchDataRequestCB(response, table);
+          } else {
+            this.showSpinner = false;
+            console.log("No data to show")
           }
         },
         err => {
@@ -493,7 +498,19 @@ export class OrdersComponent implements OnInit  {
   orgChange(value) {
     this.dataObject.isDataAvailable = false;
     this.org = value;
+
+    // Seeting the DataTable page to 0, the first page
+    if(this.currentTable) {
+    // if(this.appDataTable2Component && this.appDataTable2Component.table) {
+      // console.log("INIFaDT2C")
+      // this.currentTable.page(0)
+      this.options[0].isDisplayStart = this.currentTable && this.currentTable.page.info().start ? this.currentTable.page.info().start : 0;
+
+      // this.appDataTable2Component.table.page(0)
+    }
+
     this.searchDataRequest(value, this.currentTable);
+    // this.searchDataRequest(value);
   }
 
   populateDataTable(response, initialLoad) {
@@ -555,6 +572,7 @@ export class OrdersComponent implements OnInit  {
   }
 
   handleRow(rowObj: any, rowData: any) {
+    console.log("handROW: rO, rD: ", rowObj, rowData);
     if(this[rowObj.action])
       this[rowObj.action](rowObj);
   }
@@ -835,7 +853,28 @@ export class OrdersComponent implements OnInit  {
         )
   }
 
+  handleDataTableInit(ev) {
+    this.currentTable = ev.data;
+  }
+
+  handleEvents(ev: any) {
+    const event = ev.event;
+    // $(ev.elem).data('action');
+
+    if(this[event]) {
+      this[event](ev);
+    } else {
+      // Some problem
+      // Function does not exists in this class, if data-action string is correct
+      // Else if all functions exists, then, data-action string coming from html is not correct
+      console.log(`Orders Error: Problem executing function: ${event}`)
+    }
+
+  }
+
   handleActions(ev: any) {
+    console.log("hAev: ", ev)
+
     const action = $(ev.elem).data('action');
 
     if(this[action]) {
