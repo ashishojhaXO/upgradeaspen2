@@ -213,7 +213,14 @@ export class OrdersComponent implements OnInit  {
     this.searchOrgRequest();
   }
 
+  currentTable: any;
+
   apiMethod = (table, pageLength, csv?) => {
+    this.currentTable = table;
+
+    console.log("this.appDataTable2Component, table: ");
+    console.log(this.appDataTable2Component, table);
+
     this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
 
     if(csv){
@@ -486,7 +493,7 @@ export class OrdersComponent implements OnInit  {
   orgChange(value) {
     this.dataObject.isDataAvailable = false;
     this.org = value;
-    this.searchDataRequest(value);
+    this.searchDataRequest(value, this.currentTable);
   }
 
   populateDataTable(response, initialLoad) {
@@ -678,9 +685,13 @@ export class OrdersComponent implements OnInit  {
   }
 
   reLoad() {
+    console.log("RELO this.appDataTable2Component,:  ");
+    console.log(this.appDataTable2Component );
+
     this.showSpinner = true;
     this.dataObject.isDataAvailable = false;
-    this.searchDataRequest();
+
+    this.searchDataRequest(this.org, this.currentTable);
   }
 
   getOrders() {
