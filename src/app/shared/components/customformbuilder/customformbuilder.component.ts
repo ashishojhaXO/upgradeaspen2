@@ -17,6 +17,7 @@ export class CustomFormbuilderComponent implements OnInit {
   @Input('fieldData') fieldData;
   @Input('editTemplate') editTemplate;
   @Input('builderFor') builderFor;
+  @Input('parent') parent;
   api_fs: any;
   externalAuth: any;
   showSpinner: boolean;
@@ -402,43 +403,72 @@ export class CustomFormbuilderComponent implements OnInit {
   }
 
   ValidateAPILookUp(item) {
+    this.parent.showSpinner = true;
+
     this.performApiLookUpForValue(item.request_type, item.request_url, item.request_payload).subscribe(
         responseLookup => {
-          if (item.request_mapped_property) {
-            if (item.dropType === 'autocomplete' || item.dropType === 'checkbox' || item.dropType === 'radio') {
-              if (Object.prototype.toString.call(responseLookup[item.request_mapped_property]) === '[object Array]') {
-                item.default_value = responseLookup[item.request_mapped_property].length ? responseLookup[item.request_mapped_property][0] : '';
-                const options = [];
-                responseLookup[item.request_mapped_property].forEach(function (prop) {
-                  options.push({
-                    "option": prop
-                  });
-                });
-                item.attr_list.options = options;
-              } else {
-                item.default_value = responseLookup[item.request_mapped_property];
-                item.attr_list.options = [{
-                  "option": responseLookup[item.request_mapped_property]
-                }];
-              }
-            } else {
-              item.default_value = responseLookup[item.request_mapped_property];
-            }
-          } else {
+          // if (item.request_mapped_property) {
+          //   if (item.dropType === 'autocomplete' || item.dropType === 'checkbox' || item.dropType === 'radio') {
+          //     if (Object.prototype.toString.call(responseLookup[item.request_mapped_property]) === '[object Array]') {
+          //       item.default_value = responseLookup[item.request_mapped_property].length ? responseLookup[item.request_mapped_property][0] : '';
+          //       const options = [];
+          //       responseLookup[item.request_mapped_property].forEach(function (prop) {
+          //         options.push({
+          //           "option": prop
+          //         });
+          //       });
+          //       item.attr_list.options = options;
+                
+          //       console.log("ITEM: ", item, ", options: ", options)
+
+          //     } else {
+          //       item.default_value = responseLookup[item.request_mapped_property];
+          //       item.attr_list.options = [{
+          //         "option": responseLookup[item.request_mapped_property]
+          //       }];
+          //     }
+          //   } else {
+          //     item.default_value = responseLookup[item.request_mapped_property];
+          //   }
+          // } 
+          // else {
+
+
+            // this.showSpinner = true;
+            this.parent.showSpinner = false;
+
             Swal({
               title: 'Validation Successful',
-              html: item.request_mapped_property ? responseLookup[item.request_mapped_property] : JSON.stringify(responseLookup),
+              // html: item.request_mapped_property ? responseLookup[item.request_mapped_property] : JSON.stringify(responseLookup),
+              html: "Field validated successfully.",
               type: 'success'
+            }).then((value)=>{
+              this.parent.showSpinner = false;
+            }, (err)=>{
+              this.parent.showSpinner = false;
             });
-          }
+              // this.showSpinner = false;
+              this.parent.showSpinner = false;
+
+            let keys = Object.keys(responseLookup).filter((value, index)=> {
+              return value != "status";
+            })
+
+            item.request_mapped_property = keys[0];
+
+          // }
         },
         err => {
+            this.parent.showSpinner = false;
           Swal({
             title: 'Validation Failed',
             html: 'Response could not be validated',
             type: 'error'
           });
         });
+            this.parent.showSpinner = false;
+
+
   }
 
   performApiLookUpForValue(requestType, requestUrl, requestPayload) {
