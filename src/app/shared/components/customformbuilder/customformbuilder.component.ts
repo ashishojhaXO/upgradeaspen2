@@ -402,7 +402,6 @@ export class CustomFormbuilderComponent implements OnInit {
   }
 
   ValidateAPILookUp(item) {
-    console.log("INSI VALIII", item, this);
     this.performApiLookUpForValue(item.request_type, item.request_url, item.request_payload).subscribe(
         responseLookup => {
           // if (item.request_mapped_property) {
