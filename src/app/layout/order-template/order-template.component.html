@@ -53,7 +53,9 @@
           <p>Customize the field(s) by drag and drop below fields in the 'Drop Here' area. Use <i class="fa fa-ellipsis-v dndHandle" style="font-size: 16px; margin: 0px 5px"></i> to rearrange. </p>
           <!--<p>All the core fields marked with asterix(*) symbol should be included in the template.</p>-->
           <div class="order-container">
-            <app-customformbuilder #orderForm [editTemplate]="editTemplate" [fieldData]="orderFieldsArr" [builderFor]="'order'"></app-customformbuilder>
+            <app-customformbuilder #orderForm 
+            [parent]="this"
+            [editTemplate]="editTemplate" [fieldData]="orderFieldsArr" [builderFor]="'order'"></app-customformbuilder>
           </div>
         </div>
         <div class="publishWrapper" *ngIf="isPublished"></div>

@@ -17,6 +17,7 @@ export class CustomFormbuilderComponent implements OnInit {
   @Input('fieldData') fieldData;
   @Input('editTemplate') editTemplate;
   @Input('builderFor') builderFor;
+  @Input('parent') parent;
   api_fs: any;
   externalAuth: any;
   showSpinner: boolean;
@@ -402,6 +403,8 @@ export class CustomFormbuilderComponent implements OnInit {
   }
 
   ValidateAPILookUp(item) {
+    this.parent.showSpinner = true;
+
     this.performApiLookUpForValue(item.request_type, item.request_url, item.request_payload).subscribe(
         responseLookup => {
           // if (item.request_mapped_property) {
@@ -431,7 +434,8 @@ export class CustomFormbuilderComponent implements OnInit {
           // else {
 
 
-            this.showSpinner = true;
+            // this.showSpinner = true;
+            this.parent.showSpinner = false;
 
             Swal({
               title: 'Validation Successful',
@@ -439,11 +443,12 @@ export class CustomFormbuilderComponent implements OnInit {
               html: "Field validated successfully.",
               type: 'success'
             }).then((value)=>{
-              this.showSpinner = false;
+              this.parent.showSpinner = false;
             }, (err)=>{
-              this.showSpinner = false;
+              this.parent.showSpinner = false;
             });
-              this.showSpinner = false;
+              // this.showSpinner = false;
+              this.parent.showSpinner = false;
 
             let keys = Object.keys(responseLookup).filter((value, index)=> {
               return value != "status";
