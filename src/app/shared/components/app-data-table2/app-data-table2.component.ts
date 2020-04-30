@@ -796,13 +796,17 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             });
 
             // Delete Click
-            $('#' + this.tableId + ' tbody').on('click', '.deleteLink', function () {
+            $('#' + this.tableId + ' tbody').on('click', '.deleteLink', function (ev) {
                 // const data = table.row($(this).parents('tr')).data();
+
                 __this.triggerActions.emit({
                     action: 'handleDelete',
                     data: __this.dataObject.gridData.result[table.row($(this).parents('tr')).index()],
-                    rowIndex: table.row($(this).parents('tr')).index()
+                    rowIndex: table.row($(this).parents('tr')).index(),
+                    event: ev
                 });
+
+                return false;
             });
 
             // Custom Icon Click
