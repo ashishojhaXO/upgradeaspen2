@@ -180,21 +180,13 @@
         {
           "index": 8,
           "level": 2,
-          "name": "ordertemplate",
-          "title": "Configure Template",
-          "id": "ordertemplate",
-          "url": "app/admin/ordertemplate"
-        },
-        {
-          "index": 9,
-          "level": 2,
           "name": "ordertemplatelist",
           "title": "Template List",
           "id": "ordertemplatelist",
           "url": "app/admin/ordertemplatelist"
         },
         {
-          "index": 10,
+          "index": 9,
           "level": 2,
           "name": "analytics",
           "title": "Analytics",
@@ -202,7 +194,7 @@
           "url": "app/admin/analytics"
         },
         {
-          "index": 11,
+          "index": 10,
           "level": 2,
           "name": "operationsdashboard",
           "title": "Operations Dashboard",
@@ -210,7 +202,7 @@
           "url": "app/admin/operationsdashboard"
         },
         {
-          "index": 12,
+          "index": 11,
           "level": 2,
           "name": "jobs",
           "title": "Jobs",
