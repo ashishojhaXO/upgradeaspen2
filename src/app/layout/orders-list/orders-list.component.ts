@@ -54,6 +54,7 @@ export class OrdersListComponent implements OnInit  {
   templateArr = [];
   editID = '';
   payID = '';
+  vendorID: string;
 
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
@@ -73,6 +74,9 @@ export class OrdersListComponent implements OnInit  {
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
     this.getTemplates();
     this.searchDataRequest(this.templateValue);
+
+    this.vendorID = JSON.parse(localStorage.getItem("customerInfo") ).vendor.vendor_id;
+
   }
 
   cancelOrder() {
@@ -207,15 +211,27 @@ export class OrdersListComponent implements OnInit  {
   handleEdit(dataObj: any) {
     console.log('rowData >>>')
     console.log(dataObj.data);
-    this.editID = dataObj.data.id;
+    // this.editID = dataObj.data.id;
+    this.editID = dataObj.data.order_id;
     this.router.navigate(['/app/order/create', this.editID]);
   }
+  
+  loggedInVendor: any;
 
   handleRun(dataObj: any){
+    console.log('rowData >>>', dataObj)
+    console.log(dataObj.data);
+    // this.payID = dataObj.data.id;
+    this.payID = dataObj.data.order_id;
+    this.router.navigate(['/app/orderPayment/', this.payID, this.vendorID]);
+  }
+
+  handleDelete(dataObj: any) {
     console.log('rowData >>>')
     console.log(dataObj.data);
-    this.payID = dataObj.data.id;
-    this.router.navigate(['/app/orderPayment/', this.payID]);
+    // this.editID = dataObj.data.id;
+    this.editID = dataObj.data.order_id;
+    this.router.navigate(['/app/order/delete', this.editID]);
   }
 
   getOrganizations() {
