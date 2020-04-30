@@ -17,6 +17,7 @@ import {PopupDataAction} from '../../shared/components/app-popup-button/popup-da
 import { OktaAuthService } from '../../../services/okta.service';
 import Swal from 'sweetalert2';
 import {moment} from 'ngx-bootstrap/chronos/test/chain';
+import {ToasterModule, ToasterService, ToasterConfig} from 'angular2-toaster';
 
 @Component({
   selector: 'app-dashboard',
@@ -104,10 +105,17 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     showClear: false
   };
   period: any= {};
+  private toasterService:ToasterService;
+  public toasterconfig : ToasterConfig = new ToasterConfig({
+    positionClass: 'toast-top-right',
+    showCloseButton: true,
+    timeout: 50000,
+  });
 
   constructor(
       private okta: OktaAuthService,
-      private route: ActivatedRoute, private router: Router, private http: Http) {
+      private route: ActivatedRoute, private router: Router, private http: Http,
+      toasterService: ToasterService) {
     this.showSpinner = false;
     const groups = localStorage.getItem('loggedInUserGroup') || '';
     const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
@@ -127,6 +135,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     }else{
       this.selectedOrg = [{}];
     }
+    this.toasterService = toasterService;
   }
 
   getDependentConfig(dependsOn: any) {
@@ -406,14 +415,15 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
                           });
                 } else {
-                  Swal({
+                  this.toasterService.pop('success', 'No Template Definition Available', 'There is no template definition available for the selected org');
+                  this.showSpinner = false;
+                 /* Swal({
                     title: 'No Template Definition Available',
                     text: 'There is no template definition available for the selected org',
                     type: 'error'
                   }).then( () => {
                     // this.router.navigate(['/app/admin/invoices']);
-                  });
-                  this.showSpinner = false;
+                  }); */
                 }
               },
               error => {

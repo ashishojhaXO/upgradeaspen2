@@ -18,7 +18,7 @@ import { Ng2MultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
 import { AppPopUpComponent } from './shared/components/app-pop-up/app-pop-up.component';
 import { RouteGuard } from './shared/guard/route.guard';
-
+import {ToasterModule,ToasterService} from 'angular2-toaster';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
     return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
@@ -48,12 +48,13 @@ export function HttpLoaderFactory(http: Http) {
         }),
         SlimLoadingBarModule.forRoot(),
         Ng2MultiSelectDropDownModule.forRoot(),
-        ConfirmationPopoverModule.forRoot(),
+        ConfirmationPopoverModule.forRoot(),        
+        ToasterModule
     ],
     providers: [
         // AuthGuard, 
         RouteGuard,
-        Validator, Common, Title
+        Validator, Common, Title, ToasterService
     ],
     bootstrap: [AppComponent]
 })
