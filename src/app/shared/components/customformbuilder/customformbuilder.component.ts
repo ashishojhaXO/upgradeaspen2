@@ -404,33 +404,33 @@ export class CustomFormbuilderComponent implements OnInit {
   ValidateAPILookUp(item) {
     this.performApiLookUpForValue(item.request_type, item.request_url, item.request_payload).subscribe(
         responseLookup => {
-          Swal({
-            title: 'Validation Successful',
-            html: item.request_mapped_property ? responseLookup[item.request_mapped_property] : JSON.stringify(responseLookup),
-            type: 'success'
-          }).then((result) => {
-            if (item.request_mapped_property) {
-              if (item.dropType === 'autocomplete' || item.dropType === 'checkbox' || item.dropType === 'radio') {
-                if( Object.prototype.toString.call( responseLookup[item.request_mapped_property] ) === '[object Array]' ) {
-                  item.default_value = responseLookup[item.request_mapped_property].length ? responseLookup[item.request_mapped_property][0] : '';
-                  const options = [];
-                  responseLookup[item.request_mapped_property].forEach(function (prop) {
-                    options.push({
-                      "option": prop
-                    });
+          if (item.request_mapped_property) {
+            if (item.dropType === 'autocomplete' || item.dropType === 'checkbox' || item.dropType === 'radio') {
+              if (Object.prototype.toString.call(responseLookup[item.request_mapped_property]) === '[object Array]') {
+                item.default_value = responseLookup[item.request_mapped_property].length ? responseLookup[item.request_mapped_property][0] : '';
+                const options = [];
+                responseLookup[item.request_mapped_property].forEach(function (prop) {
+                  options.push({
+                    "option": prop
                   });
-                  item.attr_list.options = options;
-                } else {
-                  item.default_value = responseLookup[item.request_mapped_property];
-                  item.attr_list.options = [{
-                    "option" : responseLookup[item.request_mapped_property]
-                  }];
-                }
+                });
+                item.attr_list.options = options;
               } else {
                 item.default_value = responseLookup[item.request_mapped_property];
+                item.attr_list.options = [{
+                  "option": responseLookup[item.request_mapped_property]
+                }];
               }
+            } else {
+              item.default_value = responseLookup[item.request_mapped_property];
             }
-          });
+          } else {
+            Swal({
+              title: 'Validation Successful',
+              html: item.request_mapped_property ? responseLookup[item.request_mapped_property] : JSON.stringify(responseLookup),
+              type: 'success'
+            });
+          }
         },
         err => {
           Swal({
@@ -450,18 +450,19 @@ export class CustomFormbuilderComponent implements OnInit {
     }
 
     const data = requestPayload ? requestPayload : {};
+    const apiPath = this.api_fs.api;
 
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
     if(requestType === 'post') {
       return this.http
-          .post(this.api_fs.api + requestUrl, data, options)
+          .post(apiPath + requestUrl, data, options)
           .map(res => {
             return res.json();
           }).share();
     } else if (requestType === 'get') {
       return this.http
-          .get(this.api_fs.api + requestUrl, options)
+          .get(apiPath + requestUrl, options)
           .map(res => {
             return res.json();
           }).share();
