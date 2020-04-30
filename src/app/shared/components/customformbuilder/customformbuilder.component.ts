@@ -402,35 +402,62 @@ export class CustomFormbuilderComponent implements OnInit {
   }
 
   ValidateAPILookUp(item) {
+    console.log("INSI VALIII", item);
     this.performApiLookUpForValue(item.request_type, item.request_url, item.request_payload).subscribe(
         responseLookup => {
-          if (item.request_mapped_property) {
-            if (item.dropType === 'autocomplete' || item.dropType === 'checkbox' || item.dropType === 'radio') {
-              if (Object.prototype.toString.call(responseLookup[item.request_mapped_property]) === '[object Array]') {
-                item.default_value = responseLookup[item.request_mapped_property].length ? responseLookup[item.request_mapped_property][0] : '';
-                const options = [];
-                responseLookup[item.request_mapped_property].forEach(function (prop) {
-                  options.push({
-                    "option": prop
-                  });
-                });
-                item.attr_list.options = options;
-              } else {
-                item.default_value = responseLookup[item.request_mapped_property];
-                item.attr_list.options = [{
-                  "option": responseLookup[item.request_mapped_property]
-                }];
-              }
-            } else {
-              item.default_value = responseLookup[item.request_mapped_property];
-            }
-          } else {
+                console.log("resLOO: ", responseLookup)
+          // if (item.request_mapped_property) {
+          //   if (item.dropType === 'autocomplete' || item.dropType === 'checkbox' || item.dropType === 'radio') {
+          //     if (Object.prototype.toString.call(responseLookup[item.request_mapped_property]) === '[object Array]') {
+          //       item.default_value = responseLookup[item.request_mapped_property].length ? responseLookup[item.request_mapped_property][0] : '';
+          //       const options = [];
+          //       responseLookup[item.request_mapped_property].forEach(function (prop) {
+          //         options.push({
+          //           "option": prop
+          //         });
+          //       });
+          //       item.attr_list.options = options;
+                
+          //       console.log("ITEM: ", item, ", options: ", options)
+
+          //     } else {
+          //       item.default_value = responseLookup[item.request_mapped_property];
+          //       item.attr_list.options = [{
+          //         "option": responseLookup[item.request_mapped_property]
+          //       }];
+          //     }
+          //   } else {
+          //     item.default_value = responseLookup[item.request_mapped_property];
+          //   }
+          // } 
+          // else {
+
+          console.log("THIII: ", this);
+
+          this.showSpinner = true;
+
             Swal({
               title: 'Validation Successful',
               html: item.request_mapped_property ? responseLookup[item.request_mapped_property] : JSON.stringify(responseLookup),
               type: 'success'
+            }).then((value)=>{
+              console.log("Swla good", value);
+          console.log("NOWTHIII: ", this);
+              this.showSpinner = false;
+            }, (err)=>{
+              console.log("Swla err", err)
+              this.showSpinner = false;
             });
-          }
+              this.showSpinner = false;
+
+            let keys = Object.keys(responseLookup).filter((value, index)=> {
+              return value != "status";
+            })
+            console.log("KEYYY", responseLookup,  keys);
+
+            item.request_mapped_property = keys[0];
+
+          // }
         },
         err => {
           Swal({

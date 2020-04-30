@@ -204,7 +204,14 @@
                   ></select2>
                 </div>
                 <div style="padding: 10px 0px">
-                  <button [disabled]="item.request_dependent_property && item.request_dependent_property.length ? 'disabled' : null" type="button" class="btn btn-info" style="float: right" (click)="ValidateAPILookUp(item)">Validate</button>
+                  <button
+                    [disabled]="item.request_dependent_property && item.request_dependent_property.length ? 'disabled' : null" 
+                    type="button" 
+                    class="btn btn-info" 
+                    style="float: right" 
+                    (click)="ValidateAPILookUp(item)">
+                      Validate
+                  </button>
                 </div>
               </div>
               <div class="form-group-fields">
