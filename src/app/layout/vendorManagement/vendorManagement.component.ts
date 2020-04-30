@@ -284,6 +284,55 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     console.log('rowData >>>')
     console.log(dataObj.data);
     this.editID = dataObj.data.id;
+    this.vendorModel.org = dataObj.data.org_uuid;
+    this.vendorForm.patchValue({
+      org : dataObj.data.org_uuid
+    });
+
+    this.vendorModel.external_vendor_id = dataObj.data.external_vendor_id;
+    this.vendorForm.patchValue({
+      external_vendor_id : dataObj.data.external_vendor_id
+    });
+    this.vendorModel.first_name = dataObj.data.first_name;
+    this.vendorForm.patchValue({
+      first_name : dataObj.data.first_name
+    });
+    this.vendorModel.last_name = dataObj.data.last_name;
+    this.vendorForm.patchValue({
+      last_name : dataObj.data.last_name
+    });
+    this.vendorModel.company_name = dataObj.data.company_name;
+    this.vendorForm.patchValue({
+      company_name : dataObj.data.company_name
+    });
+    this.vendorModel.email = dataObj.data.email;
+    this.vendorForm.patchValue({
+      email : dataObj.data.email
+    });
+    this.vendorModel.address_1 = dataObj.data.address_1;
+    this.vendorForm.patchValue({
+      address_1 : dataObj.data.address_1
+    });
+    this.vendorModel.address_2 = dataObj.data.address_2;
+    this.vendorForm.patchValue({
+      address_2 : dataObj.data.address_2
+    });
+    this.vendorModel.city = dataObj.data.city;
+    this.vendorForm.patchValue({
+      city : dataObj.data.city
+    });
+    this.vendorModel.state = dataObj.data.state;
+    this.vendorForm.patchValue({
+      state : dataObj.data.state
+    });
+    this.vendorModel.zip = dataObj.data.zip;
+    this.vendorForm.patchValue({
+      zip : dataObj.data.zip
+    });
+    this.vendorModel.country = dataObj.data.country;
+    this.vendorForm.patchValue({
+      country : dataObj.data.country
+    });
     this.addVendor.show();
 
     //  this.router.navigate(['/app/reports/adHocReportBuilder', rowData.id]);
