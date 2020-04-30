@@ -213,7 +213,7 @@ export class OrdersListComponent implements OnInit  {
     console.log(dataObj.data);
     // this.editID = dataObj.data.id;
     this.editID = dataObj.data.order_id;
-    this.router.navigate(['/app/order/create', this.editID]);
+    this.router.navigate(['/app/order/create', this.editID, this.vendorID]);
   }
   
   loggedInVendor: any;
@@ -227,11 +227,22 @@ export class OrdersListComponent implements OnInit  {
   }
 
   handleDelete(dataObj: any) {
+    // if(dataObj.event) {
+    //   console.log("IFFFFFF")
+    //   dataObj.event.preventDefault();
+    // } 
+
     console.log('rowData >>>')
     console.log(dataObj.data);
     // this.editID = dataObj.data.id;
     this.editID = dataObj.data.order_id;
-    this.router.navigate(['/app/order/delete', this.editID]);
+    Swal({
+      title: 'To be Implemented',
+      html: "Functionality to be implemented.",
+      type: 'info'
+    });
+
+    // this.router.navigate(['/app/order/delete', this.editID]);
   }
 
   getOrganizations() {
