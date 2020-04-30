@@ -402,10 +402,9 @@ export class CustomFormbuilderComponent implements OnInit {
   }
 
   ValidateAPILookUp(item) {
-    console.log("INSI VALIII", item);
+    console.log("INSI VALIII", item, this);
     this.performApiLookUpForValue(item.request_type, item.request_url, item.request_payload).subscribe(
         responseLookup => {
-                console.log("resLOO: ", responseLookup)
           // if (item.request_mapped_property) {
           //   if (item.dropType === 'autocomplete' || item.dropType === 'checkbox' || item.dropType === 'radio') {
           //     if (Object.prototype.toString.call(responseLookup[item.request_mapped_property]) === '[object Array]') {
@@ -432,20 +431,17 @@ export class CustomFormbuilderComponent implements OnInit {
           // } 
           // else {
 
-          console.log("THIII: ", this);
 
-          this.showSpinner = true;
+            this.showSpinner = true;
 
             Swal({
               title: 'Validation Successful',
-              html: item.request_mapped_property ? responseLookup[item.request_mapped_property] : JSON.stringify(responseLookup),
+              // html: item.request_mapped_property ? responseLookup[item.request_mapped_property] : JSON.stringify(responseLookup),
+              html: "Field validated successfully.",
               type: 'success'
             }).then((value)=>{
-              console.log("Swla good", value);
-          console.log("NOWTHIII: ", this);
               this.showSpinner = false;
             }, (err)=>{
-              console.log("Swla err", err)
               this.showSpinner = false;
             });
               this.showSpinner = false;
@@ -453,7 +449,6 @@ export class CustomFormbuilderComponent implements OnInit {
             let keys = Object.keys(responseLookup).filter((value, index)=> {
               return value != "status";
             })
-            console.log("KEYYY", responseLookup,  keys);
 
             item.request_mapped_property = keys[0];
 
