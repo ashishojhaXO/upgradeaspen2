@@ -73,6 +73,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   orgArr = [];
   isRoot: boolean;
   orgInfo: any;
+  hideSubmit: any;
 
   constructor(
       private okta: OktaAuthService,
@@ -283,57 +284,6 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     console.log('rowData >>>')
     console.log(dataObj.data);
     this.editID = dataObj.data.id;
-
-    this.vendorModel.org = dataObj.data.org_uuid;
-    this.vendorForm.patchValue({
-      org : dataObj.data.org_uuid
-    });
-
-    this.vendorModel.external_vendor_id = dataObj.data.external_vendor_id;
-    this.vendorForm.patchValue({
-      external_vendor_id : dataObj.data.external_vendor_id
-    });
-    this.vendorModel.first_name = dataObj.data.first_name;
-    this.vendorForm.patchValue({
-      first_name : dataObj.data.first_name
-    });
-    this.vendorModel.last_name = dataObj.data.last_name;
-    this.vendorForm.patchValue({
-      last_name : dataObj.data.last_name
-    });
-    this.vendorModel.company_name = dataObj.data.company_name;
-    this.vendorForm.patchValue({
-      company_name : dataObj.data.company_name
-    });
-    this.vendorModel.email = dataObj.data.email;
-    this.vendorForm.patchValue({
-      email : dataObj.data.email
-    });
-    this.vendorModel.address_1 = dataObj.data.address_1;
-    this.vendorForm.patchValue({
-      address_1 : dataObj.data.address_1
-    });
-    this.vendorModel.address_2 = dataObj.data.address_2;
-    this.vendorForm.patchValue({
-      address_2 : dataObj.data.address_2
-    });
-    this.vendorModel.city = dataObj.data.city;
-    this.vendorForm.patchValue({
-      city : dataObj.data.city
-    });
-    this.vendorModel.state = dataObj.data.state;
-    this.vendorForm.patchValue({
-      state : dataObj.data.state
-    });
-    this.vendorModel.zip = dataObj.data.zip;
-    this.vendorForm.patchValue({
-      zip : dataObj.data.zip
-    });
-    this.vendorModel.country = dataObj.data.country;
-    this.vendorForm.patchValue({
-      country : dataObj.data.country
-    });
-
     this.addVendor.show();
 
     //  this.router.navigate(['/app/reports/adHocReportBuilder', rowData.id]);
@@ -401,6 +351,9 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
           if (response) {
             this.showSpinner = false;
             this.error = { type : response.data ? 'success' : 'fail' , message : response.data ?  'Vendor successfully ' + ( this.editID ? 'updated' : 'created' ) : 'Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
+            if (response.data) {
+              this.hideSubmit = true;
+            }
           }
         },
         err => {
@@ -491,56 +444,8 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   handleCloseModal(modalComponent: PopUpModalComponent) {
     this.error = '';
     this.editID = '';
-
-    this.vendorModel.org = '';
-    this.vendorForm.patchValue({
-      org : ''
-    });
-    this.vendorModel.external_vendor_id = '';
-    this.vendorForm.patchValue({
-      external_vendor_id : ''
-    });
-    this.vendorModel.first_name = '';
-    this.vendorForm.patchValue({
-      first_name : ''
-    });
-    this.vendorModel.last_name = '';
-    this.vendorForm.patchValue({
-      last_name : ''
-    });
-    this.vendorModel.company_name = '';
-    this.vendorForm.patchValue({
-      company_name : ''
-    });
-    this.vendorModel.email = '';
-    this.vendorForm.patchValue({
-      email : ''
-    });
-    this.vendorModel.address_1 = '';
-    this.vendorForm.patchValue({
-      address_1 : ''
-    });
-    this.vendorModel.address_2 = '';
-    this.vendorForm.patchValue({
-      address_2 : ''
-    });
-    this.vendorModel.city = '';
-    this.vendorForm.patchValue({
-      city : ''
-    });
-    this.vendorModel.state = '';
-    this.vendorForm.patchValue({
-      state : ''
-    });
-    this.vendorModel.zip = '';
-    this.vendorForm.patchValue({
-      zip : ''
-    });
-    this.vendorModel.country = '';
-    this.vendorForm.patchValue({
-      country : ''
-    });
-
+    this.hideSubmit = false;
+    this.vendorForm.reset();
     modalComponent.hide();
     this.dataObject.isDataAvailable = false;
     this.searchDataRequest(this.isRoot ? this.orgValue : this.orgInfo.org_id);
