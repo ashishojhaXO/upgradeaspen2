@@ -459,12 +459,16 @@ export class CustomFormbuilderComponent implements OnInit {
           // }
         },
         err => {
+            this.parent.showSpinner = false;
           Swal({
             title: 'Validation Failed',
             html: 'Response could not be validated',
             type: 'error'
           });
         });
+            this.parent.showSpinner = false;
+
+
   }
 
   performApiLookUpForValue(requestType, requestUrl, requestPayload) {
