@@ -53,7 +53,8 @@ export class BaseFieldsComponent implements OnInit {
   }
 
   onSubmitTemplate() {
-    this.showSpinner = true;
+    // this.showSpinner = true;
+
     if(this.baseForm.model.attributes.length){
       let baseItems = [];
       this.baseForm.model.attributes.forEach(element => {
