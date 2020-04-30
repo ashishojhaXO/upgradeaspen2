@@ -229,7 +229,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     }
 
     const obj: any = {};
-    if (this.isRoot) {
+    if (this.isRoot && org) {
       obj['org_uuid'] = org;
     }
     const dataObj = JSON.stringify(obj);
