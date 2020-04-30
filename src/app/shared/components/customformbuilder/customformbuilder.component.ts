@@ -228,39 +228,18 @@ export class CustomFormbuilderComponent implements OnInit {
             }else if(element.type == 'list'){
               element.dropType = 'autocomplete';
               element.attr_list =  {
-                "options": [
-                  {
-                      "option": "value1"
-                  },
-                  {
-                      "option": "value2"
-                  }
-                ]
+                "options": []
               }
             }else if(element.type == 'radio'){
               element.dropType = 'radio';
               element.attr_list =  {
-                "options": [
-                  {
-                      "option": "value1"
-                  },
-                  {
-                      "option": "value2"
-                  }
-                ]
+                "options": []
               }
             }else if(element.type == 'checkbox'){
               element.dropType = 'checkbox';
               element.checkboxDefault = [];
               element.attr_list =  {
-                "options": [
-                  {
-                      "option": "value1"
-                  },
-                  {
-                      "option": "value2"
-                  }
-                ]
+                "options": []
               }
             }else {
               element.dropType = element.type;
@@ -447,14 +426,14 @@ export class CustomFormbuilderComponent implements OnInit {
             }
           }
           Swal({
-            title: 'Test Successful',
+            title: 'Validation Successful',
             html: item.request_mapped_property ? responseLookup[item.request_mapped_property] : JSON.stringify(responseLookup),
             type: 'success'
           });
         },
         err => {
           Swal({
-            title: 'Test Failed',
+            title: 'Validation Failed',
             html: 'Response could not be validated',
             type: 'error'
           });
@@ -479,9 +458,9 @@ export class CustomFormbuilderComponent implements OnInit {
           .map(res => {
             return res.json();
           }).share();
-    } else if(requestType === 'get') {
+    } else if (requestType === 'get') {
       return this.http
-          .get(requestUrl, options)
+          .get(this.api_fs.api + requestUrl, options)
           .map(res => {
             return res.json();
           }).share();

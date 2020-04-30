@@ -14,8 +14,8 @@
             (dndEnd)="onDragEnd($event)">
             <i *ngIf="isBaseField" [ngClass]="item.icon" class="fa pull-left"></i>
             <h5 *ngIf="isBaseField" class="mb0 dragListItem">{{item.name}}</h5>
-            <h5 *ngIf="builderFor === 'order'" class="mb0 dragListItem">{{item.name}}<span *ngIf="item.core === 'order'">*</span></h5>
-            <h5 *ngIf="builderFor === 'lineitem'" class="mb0 dragListItem">{{item.name}}<span *ngIf="item.core === 'lineitem'">**</span></h5>
+            <h5 *ngIf="builderFor === 'order'" class="mb0 dragListItem">{{item.name}}</h5>
+            <h5 *ngIf="builderFor === 'lineitem'" class="mb0 dragListItem">{{item.name}}</h5>
           </div>
         </div>
       </div>
