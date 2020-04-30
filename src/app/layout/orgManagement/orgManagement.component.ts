@@ -49,7 +49,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     isRowSelection: null,
     isPageLength: true,
     isPagination: true,
-    fixedColumn: 1,
+    fixedColumn: 0,
     // Any number starting from 1 to ..., but not 0
     isActionColPosition: 0, // This can not be 0, since zeroth column logic might crash
     // since isActionColPosition is 1, isOrder is also required to be sent,
