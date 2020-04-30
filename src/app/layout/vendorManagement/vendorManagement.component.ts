@@ -471,7 +471,14 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
         response => {
           if (response) {
             this.showSpinner = false;
-            this.searchDataRequest(this.isRoot ? this.orgValue : this.orgInfo.org_id);
+            Swal({
+              title: 'Vendor Deletion Successful',
+              html: 'Vendor ' + id + ' successfully deleted',
+              type: 'success'
+            }).then( () => {
+              this.reLoad();
+            });
+
             // this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Vendor successfully deleted ' : 'Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
             // this.editID = '';
           }
