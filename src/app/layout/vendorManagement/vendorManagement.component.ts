@@ -16,6 +16,7 @@ import { FormControl, FormGroup, Validators} from '@angular/forms';
 import { OktaAuthService } from '../../../services/okta.service';
 import {DataTableAction } from '../../shared/components/app-data-table/data-table-action';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-vendormanagement',
@@ -345,20 +346,38 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     // console.log('rowData >>>!!!!')
     // console.log(rowData);
 
-    console.log('dataObj >>')
-    console.log(dataObj);
+    Swal({
+      title: 'Are you sure you want to delete this vendor?',
+      text: "You won't be able to revert this!",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+      if (result.value) {
+        if (dataObj.data.id) {
+          if (dataObj.data.id.no_of_orders > 0 && dataObj.data.id.no_of_users) {
 
-    if (dataObj.data.id) {
-      if (dataObj.data.id.no_of_orders > 0 && dataObj.data.id.no_of_users) {
-        if (!this.showError) {
-          this.showError = true;
-          this.toastr.error('ERROR!', 'Vendor cannot be deleted since it has existing order(s) or user(s) associated with it');
-          this.showError = false;
+            Swal({
+              title: 'Vendor Deletion Failed',
+              html: 'Vendor cannot be deleted since it has existing order(s) or user(s) associated with it',
+              type: 'error'
+            }).then( () => {
+              // this.router.navigate(['/app/admin/invoices']);
+            });
+
+            // if (!this.showError) {
+            //   this.showError = true;
+            //   this.toastr.error('ERROR!', 'Vendor cannot be deleted since it has existing order(s) or user(s) associated with it');
+            //   this.showError = false;
+            // }
+          } else {
+            this.performVendorDeletionRequest(dataObj.data.id);
+          }
         }
-      } else {
-        this.performVendorDeletionRequest(dataObj.data.id);
       }
-    }
+    });
   }
 
   handleDownload(rowObj: any, rowData: any) {
@@ -466,8 +485,19 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
               self.performVendorDeletionRequest.bind(self, id)
             );
           } else {
-            this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
-            this.showSpinner = false;
+
+            console.log('err >>')
+            console.log(err);
+
+            Swal({
+              title: 'Vendor Deletion Failed',
+              html: err._body ? JSON.parse(err._body).errorMessage : 'No error definition available',
+              type: 'error'
+            }).then( () => {
+              // this.router.navigate(['/app/admin/invoices']);
+            });
+            // this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
+             this.showSpinner = false;
           }
         }
     );
