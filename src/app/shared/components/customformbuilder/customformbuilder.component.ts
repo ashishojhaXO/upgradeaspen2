@@ -404,31 +404,32 @@ export class CustomFormbuilderComponent implements OnInit {
   ValidateAPILookUp(item) {
     this.performApiLookUpForValue(item.request_type, item.request_url, item.request_payload).subscribe(
         responseLookup => {
-          if (item.request_mapped_property) {
-            if (item.dropType === 'autocomplete' || item.dropType === 'checkbox' || item.dropType === 'radio') {
-              if( Object.prototype.toString.call( responseLookup[item.request_mapped_property] ) === '[object Array]' ) {
-                item.default_value = responseLookup[item.request_mapped_property].length ? responseLookup[item.request_mapped_property][0] : '';
-                const options = [];
-                responseLookup[item.request_mapped_property].forEach(function (prop) {
-                  options.push({
-                    "option": prop
-                  });
-                });
-                item.attr_list.options = options;
-              } else {
-                item.default_value = responseLookup[item.request_mapped_property];
-                item.attr_list.options = [{
-                  "option" : responseLookup[item.request_mapped_property]
-                }];
-              }
-            } else {
-              item.default_value = responseLookup[item.request_mapped_property];
-            }
-          }
           Swal({
             title: 'Validation Successful',
             html: item.request_mapped_property ? responseLookup[item.request_mapped_property] : JSON.stringify(responseLookup),
             type: 'success'
+          }).then((result) => {
+            if (item.request_mapped_property) {
+              if (item.dropType === 'autocomplete' || item.dropType === 'checkbox' || item.dropType === 'radio') {
+                if( Object.prototype.toString.call( responseLookup[item.request_mapped_property] ) === '[object Array]' ) {
+                  item.default_value = responseLookup[item.request_mapped_property].length ? responseLookup[item.request_mapped_property][0] : '';
+                  const options = [];
+                  responseLookup[item.request_mapped_property].forEach(function (prop) {
+                    options.push({
+                      "option": prop
+                    });
+                  });
+                  item.attr_list.options = options;
+                } else {
+                  item.default_value = responseLookup[item.request_mapped_property];
+                  item.attr_list.options = [{
+                    "option" : responseLookup[item.request_mapped_property]
+                  }];
+                }
+              } else {
+                item.default_value = responseLookup[item.request_mapped_property];
+              }
+            }
           });
         },
         err => {
