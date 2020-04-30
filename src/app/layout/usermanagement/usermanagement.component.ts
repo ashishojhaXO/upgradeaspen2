@@ -153,7 +153,7 @@ export class UserManagementComponent implements OnInit  {
       first: new FormControl('', Validators.required),
       last: new FormControl('', Validators.required),
       role: new FormControl('', Validators.required),
-      org: new FormControl('', Validators.required),
+      org: new FormControl('', this.isRoot ? Validators.required: null),
       vendor: new FormControl('', Validators.required),
     });
 
@@ -176,7 +176,7 @@ export class UserManagementComponent implements OnInit  {
         this.isRoot = true;
       }
     }, this);
-
+        
   }
 
   ngOnInit() {
@@ -770,6 +770,12 @@ export class UserManagementComponent implements OnInit  {
   handleShowModal(modalComponent: PopUpModalComponent) {
     this.getRoles();
     modalComponent.show();
+    if (this.orgArr.length) {
+      this.selectedOrg = this.orgArr[0].id;
+      this.userForm.patchValue({
+        org : this.orgArr[0].id
+      });
+    }
   }
 
   // Started
