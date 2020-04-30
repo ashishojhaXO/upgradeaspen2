@@ -708,9 +708,7 @@ export class UserManagementComponent implements OnInit  {
           if (response) {
             this.showSpinner = false;
             this.error = { type : 'success' , message : response };
-            if (response.data) {
-              this.hideSubmit = true;
-            }
+            this.hideSubmit = true;
           }
           // modalComponent.hide();
         },
