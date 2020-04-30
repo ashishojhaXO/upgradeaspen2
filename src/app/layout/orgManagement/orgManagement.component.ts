@@ -310,7 +310,8 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
         console.log(response);
         if (response) {
           this.showSpinner = false;
-          this.error += { type : response.data ? 'success' : 'fail' , message : response.data ?  '<br/> Default Vendor successfully ' + ( this.editID ? 'updated' : 'created' ) : ' </br> Default Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
+          const existingMessage = this.error.message;
+          this.error = { type : response.data ? 'success' : 'fail' , message : existingMessage + (response.data ?  '<br/> Default Vendor successfully ' + ( this.editID ? 'updated' : 'created' ) : ' </br> Default Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed')};
           if (response.data) {
             this.hideSubmit = true;
           }
@@ -382,6 +383,10 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
             vendorObj.zip = dataObj.zip;
             vendorObj.country = dataObj.country;
             this.performVendorAdditionRequest(vendorObj);
+          } else {
+            if (response.data) {
+              this.hideSubmit = true;
+            }
           }
         }
       },
