@@ -18,6 +18,7 @@ export class CustomFormbuilderComponent implements OnInit {
   @Input('editTemplate') editTemplate;
   @Input('builderFor') builderFor;
   @Input('parent') parent;
+  @Input() org: any;
   api_fs: any;
   externalAuth: any;
   showSpinner: boolean;
@@ -197,6 +198,13 @@ export class CustomFormbuilderComponent implements OnInit {
         }
       }
     }
+
+    if (changes['org']) {
+      if (this.org) {
+        this.getAttributes();
+        this.model.attributes = [];
+      }
+    }
   }
 
   OnDependentOnChanged(e: any, item): void {
@@ -276,9 +284,13 @@ export class CustomFormbuilderComponent implements OnInit {
       // token = AccessToken.accessToken;
       token = AccessToken;
     }
+
+    console.log('this.org >>>')
+    console.log(this.org);
+
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/orders/templates/attributes';
+    var url = this.api_fs.api + '/api/orders/templates/attributes' + ( this.org ? ('?org_uuid=' + this.org) : '');
     return this.http
         .get(url, options)
         .map(res => {
@@ -380,6 +392,9 @@ export class CustomFormbuilderComponent implements OnInit {
   validationSet(field: string, value:boolean, item){
     if(value){
       item.validation.push(field)
+      if (field === 'apiLookup') {
+        item.request_mapped_property = 'data';
+      }
     }else{
       item.validation.splice(item.validation.indexOf(field), 1)
       if(field === 'apiLookup') {
@@ -418,7 +433,7 @@ export class CustomFormbuilderComponent implements OnInit {
           //         });
           //       });
           //       item.attr_list.options = options;
-                
+
           //       console.log("ITEM: ", item, ", options: ", options)
 
           //     } else {
@@ -430,7 +445,7 @@ export class CustomFormbuilderComponent implements OnInit {
           //   } else {
           //     item.default_value = responseLookup[item.request_mapped_property];
           //   }
-          // } 
+          // }
           // else {
 
 

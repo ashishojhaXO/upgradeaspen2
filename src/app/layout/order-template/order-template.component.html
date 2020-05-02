@@ -29,12 +29,21 @@
       <div class="form-group-fields row" *ngIf="isRoot">
         <label for="organization" class="col-xs-12 col-sm-2">Organization</label>
         <div class="col-xs-12 col-sm-6">
-          <select formControlName="orgName" class="form-control">
-            <option [value]="null" disabled>Choose organization</option>
-            <option *ngFor="let org of organizations" [value]="org.id">
-              {{ org.text }}
-            </option>
-          </select>
+          <!--<select formControlName="orgName" class="form-control">-->
+            <!--<option [value]="null" disabled>Choose organization</option>-->
+            <!--<option *ngFor="let org of organizations" [value]="org.id">-->
+              <!--{{ org.text }}-->
+            <!--</option>-->
+          <!--</select>-->
+          {{valueReset}}
+          <select2 width="100%" *ngIf="organizations.length"
+                   class="col-lg-12 col-md-12"
+                   style="padding: 0px;"
+                   [value]="orgValue"
+                   [options]="select2Options"
+                   (valueChanged)="OnOrgChange($event);"
+                   [data]="organizations"></select2>
+
         </div>
         <div class="col-lg-8 col-md-8 form-field alert alert-danger" *ngIf="templateForm.get('orgName').invalid && (templateForm.get('orgName').dirty || templateForm.get('orgName').touched)">
           <div *ngIf="templateForm.get('orgName').errors['required']">
@@ -53,7 +62,8 @@
           <p>Customize the field(s) by drag and drop below fields in the 'Drop Here' area. Use <i class="fa fa-ellipsis-v dndHandle" style="font-size: 16px; margin: 0px 5px"></i> to rearrange. </p>
           <!--<p>All the core fields marked with asterix(*) symbol should be included in the template.</p>-->
           <div class="order-container">
-            <app-customformbuilder #orderForm 
+            <app-customformbuilder #orderForm
+            [org]="orgUUID"
             [parent]="this"
             [editTemplate]="editTemplate" [fieldData]="orderFieldsArr" [builderFor]="'order'"></app-customformbuilder>
           </div>
@@ -71,7 +81,7 @@
           <p>Customize the field(s) by drag and drop below fields in the 'Drop Here' area. Use <i class="fa fa-ellipsis-v dndHandle" style="font-size: 16px; margin: 0px 5px"></i> to rearrange. </p>
           <!--<p>All the core fields marked with double asterix(**) symbol should be included in the template.</p>-->
           <div class="lineitem-container">
-            <app-customformbuilder #lineItemForm [editTemplate]="editTemplate" [fieldData]="lineFieldsArr" [builderFor]="'lineitem'"></app-customformbuilder>
+            <app-customformbuilder #lineItemForm [org]="orgUUID" [editTemplate]="editTemplate" [fieldData]="lineFieldsArr" [builderFor]="'lineitem'"></app-customformbuilder>
           </div>
         </div>
         <div class="publishWrapper" *ngIf="isPublished"></div>
