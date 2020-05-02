@@ -319,6 +319,7 @@ export class OrderTemplateComponent implements OnInit {
             console.log(this.templateField.organizaion.org_id);
 
           this.orgValue = this.templateField.organizaion.org_id;
+          this.orgUUID = this.organizations.find( x=> x.id == this.orgValue).org_uuid;
           this.templateForm.controls['orgName'].setValue(this.templateField.organizaion.org_id);
           console.log('template edit fields array', this.templateField);
         }
