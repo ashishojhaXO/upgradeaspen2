@@ -64,19 +64,21 @@ export class OrderTemplateComponent implements OnInit {
     this.widget = this.okta.getWidget();
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
-    this.getOrganizations();
-
-    this.route.params.subscribe(params => {
-      if (params['id']) {
-        this.templateId = {
-          "template_id": +params['id']
-        };
-        this.editTemplate = true;
-        this.getTemplate(this.templateId);
-      }
-    });
 
     this.formOnInIt();
+    if (this.isRoot) {
+      this.getOrganizations();
+    } else {
+      this.route.params.subscribe(params => {
+        if (params['id']) {
+          this.templateId = {
+            "template_id": +params['id']
+          };
+          this.editTemplate = true;
+          this.getTemplate(this.templateId);
+        }
+      });
+    }
   }
 
   formOnInIt() {
@@ -102,6 +104,19 @@ export class OrderTemplateComponent implements OnInit {
           }, this);
           console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>', this.organizations);
           this.showSpinner = false;
+          this.route.params.subscribe(params => {
+            if (params['id']) {
+              this.templateId = {
+                "template_id": +params['id']
+              };
+              this.editTemplate = true;
+              this.getTemplate(this.templateId);
+            } else {
+              this.orgValue = this.organizations[1].id;
+              this.orgUUID = this.organizations[1].org_uuid;
+              this.templateForm.controls['orgName'].setValue(this.organizations[1].id);
+            }
+          });
         }
       },
       err => {
@@ -320,7 +335,9 @@ export class OrderTemplateComponent implements OnInit {
             console.log(this.templateField.organizaion.org_id);
 
           this.orgValue = this.templateField.organizaion.org_id;
-          this.orgUUID = this.organizations.find( x=> x.id == this.orgValue).org_uuid;
+          if (this.organizations.find( x=> x.id == this.orgValue)) {
+            this.orgUUID = this.organizations.find( x=> x.id == this.orgValue).org_uuid;
+          }
           this.templateForm.controls['orgName'].setValue(this.templateField.organizaion.org_id);
           console.log('template edit fields array', this.templateField);
         }
