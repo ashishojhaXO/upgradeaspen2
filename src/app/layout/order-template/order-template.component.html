@@ -64,6 +64,7 @@
           <div class="order-container">
             <app-customformbuilder #orderForm
             [org]="orgUUID"
+            [clearSelectedFields]="clearSelectedFields"
             [parent]="this"
             [editTemplate]="editTemplate" [fieldData]="orderFieldsArr" [builderFor]="'order'"></app-customformbuilder>
           </div>

@@ -37,6 +37,7 @@ export class OrderTemplateComponent implements OnInit {
   selectedOrg: any;
   orgValue = '';
   orgUUID = '';
+  clearSelectedFields = false;
   isRoot: boolean;
   select2Options = {
      placeholder: { id: '', text: 'Select organization' }
@@ -401,6 +402,11 @@ export class OrderTemplateComponent implements OnInit {
                         this.templateForm.controls['orgName'].setValue(this.orgValue);
                         this.orgUUID = this.organizations.find( x=> x.id == this.orgValue).org_uuid;
                         this.orderFieldsArr = [];
+                        this.clearSelectedFields = true;
+                        const __this = this;
+                        setTimeout(function () {
+                          __this.clearSelectedFields = false;
+                        }, 500);
                     } else {
                         const oldValue = JSON.parse(JSON.stringify(this.orgValue));
                         this.orgValue = '';
@@ -416,9 +422,6 @@ export class OrderTemplateComponent implements OnInit {
                 this.orgUUID = this.organizations.find( x=> x.id == this.orgValue).org_uuid;
                 this.orderFieldsArr = [];
             }
-
-            console.log('orderFieldsArr >>>')
-            console.log(this.orderFieldsArr);
         }
     }
 }
