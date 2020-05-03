@@ -16,6 +16,7 @@ export class CustomFormbuilderComponent implements OnInit {
   @Input() isBaseField: boolean;
   @Input('fieldData') fieldData;
   @Input('editTemplate') editTemplate;
+  @Input() clearSelectedFields: any;
   @Input('builderFor') builderFor;
   @Input('parent') parent;
   @Input() org: any;
@@ -199,9 +200,11 @@ export class CustomFormbuilderComponent implements OnInit {
       }
     }
 
-    if (changes['org']) {
+    if (changes['org'] || changes['clearSelectedFields']) {
       if (this.org) {
         this.getAttributes();
+      }
+      if (changes['clearSelectedFields']) {
         this.model.attributes = [];
       }
     }
