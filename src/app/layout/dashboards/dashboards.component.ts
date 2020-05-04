@@ -415,7 +415,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
                           });
                 } else {
-                  this.toasterService.pop('success', 'No Template Definition Available', 'There is no template definition available for the selected org');
+                  this.toasterService.pop('success', 'No Report Template Definition Available', 'There is no report template definition available for the selected org');
                   this.showSpinner = false;
                  /* Swal({
                     title: 'No Template Definition Available',
