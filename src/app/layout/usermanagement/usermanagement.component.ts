@@ -176,7 +176,7 @@ export class UserManagementComponent implements OnInit  {
         this.isRoot = true;
       }
     }, this);
-        
+
   }
 
   ngOnInit() {
@@ -760,6 +760,7 @@ export class UserManagementComponent implements OnInit  {
       });
     }
     modalComponent.hide();
+    this.reLoad();
 
     // TODO: Temporarily deactivating these 2 lines,
     // since they may not be needed on modal close

@@ -533,8 +533,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.hideSubmit = false;
     this.vendorForm.reset();
     modalComponent.hide();
-    this.dataObject.isDataAvailable = false;
-    this.searchDataRequest(this.isRoot ? this.orgValue : this.orgInfo.org_id);
+    this.reLoad();
   }
 
   handleShowModal(modalComponent: PopUpModalComponent) {
