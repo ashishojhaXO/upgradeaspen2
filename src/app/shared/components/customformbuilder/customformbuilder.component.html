@@ -11,7 +11,7 @@
         <!--a draggable element-->
         <div class="fields" *ngFor="let item of fieldModels">
           <div class="field pointer shadow-bg" [dndDraggable]="item" [dndEffectAllowed]="'copy'"
-            (dndEnd)="onDragEnd($event)">
+               (dndEnd)="onDragEnd($event)">
             <i *ngIf="isBaseField" [ngClass]="item.icon" class="fa pull-left"></i>
             <h5 *ngIf="isBaseField" class="mb0 dragListItem">{{item.name}}</h5>
             <h5 *ngIf="builderFor === 'order'" class="mb0 dragListItem">{{item.name}}</h5>
@@ -27,11 +27,11 @@
 
         <!-- dropdown section -->
         <section dndDropzone (dndDragover)="onDragover($event)" (dndDrop)="onDrop($event,model.attributes)"
-          class="dndDropArea empty" style="height: 500px; overflow-y: scroll">
+                 class="dndDropArea empty" style="height: 500px; overflow-y: scroll">
           <h3 *ngIf="model.attributes.length == 0" class="dropHere">Drop Here</h3>
           <div class="field" *ngFor="let item of model.attributes;let i= index;" (dndStart)="onDragStart($event)"
-            (dndCanceled)="onDragCanceled($event)" (dndMoved)="onDragged(item, model.attributes, 'move')"
-            [dndEffectAllowed]="'all'" [dndDraggable]="item">
+               (dndCanceled)="onDragCanceled($event)" (dndMoved)="onDragged(item, model.attributes, 'move')"
+               [dndEffectAllowed]="'all'" [dndDraggable]="item">
             <!-- drop wrapper -->
             <div class="row form-group-fields">
               <div class="col-xs-1"><i class="fa fa-ellipsis-v dndHandle" dndHandle></i></div>
@@ -148,32 +148,41 @@
             <!-- drop control customization -->
             <div *ngIf="item.toggle && !isBaseField" class="toggle-Wrapper">
               <div class="form-group-fields">
-                <label>Required</label>
-                <i *ngIf="item.validation.indexOf('required') != -1" (click)="validationSet('required', false, model.attributes[i])"
-                  class="fa fa-toggle-on red"></i>
-                <i *ngIf="item.validation.indexOf('required') == -1" (click)="validationSet('required', true, model.attributes[i])"
-                  class="fa fa-toggle-off"></i>
+                <label>isCalculated</label>
+                <i *ngIf="item.calculated === 1" (click)="onCalculatedClick(item)"
+                   class="fa fa-toggle-on red"></i>
+                <i *ngIf="item.calculated === 0 || !item.calculated" (click)="onCalculatedClick(item)"
+                   class="fa fa-toggle-off"></i>
+                <span></span>
+
+                <div *ngIf="item.calculated !== 1" style="display: inline">
+                  <label>Required</label>
+                  <i *ngIf="item.validation.indexOf('required') != -1" (click)="validationSet('required', false, model.attributes[i])"
+                     class="fa fa-toggle-on red"></i>
+                  <i *ngIf="item.validation.indexOf('required') == -1" (click)="validationSet('required', true, model.attributes[i])"
+                     class="fa fa-toggle-off"></i>
                   <span>&nbsp;&nbsp;&nbsp;</span>
-                <label>Disable</label>
-                <i *ngIf="item.validation.indexOf('disable') != -1" (click)="validationSet('disable', false, model.attributes[i])"
-                  class="fa fa-toggle-on red"></i>
-                <i *ngIf="item.validation.indexOf('disable') == -1" (click)="validationSet('disable', true, model.attributes[i])"
-                  class="fa fa-toggle-off"></i>
+                  <label>Disable</label>
+                  <i *ngIf="item.validation.indexOf('disable') != -1" (click)="validationSet('disable', false, model.attributes[i])"
+                     class="fa fa-toggle-on red"></i>
+                  <i *ngIf="item.validation.indexOf('disable') == -1" (click)="validationSet('disable', true, model.attributes[i])"
+                     class="fa fa-toggle-off"></i>
                   <span>&nbsp;&nbsp;&nbsp;</span>
-                <label>Post Order Change</label>
-                <i *ngIf="item.validation.indexOf('PostOrderChange') != -1" (click)="validationSet('PostOrderChange', false, model.attributes[i])"
-                  class="fa fa-toggle-on red"></i>
-                <i *ngIf="item.validation.indexOf('PostOrderChange') == -1" (click)="validationSet('PostOrderChange', true, model.attributes[i])"
-                  class="fa fa-toggle-off"></i>
-                  <span>&nbsp;&nbsp;&nbsp;</span>
-                <label>Api Lookup</label>
-                <i *ngIf="item.validation.indexOf('apiLookup') != -1" (click)="validationSet('apiLookup', false, model.attributes[i])"
-                  class="fa fa-toggle-on red"></i>
-                <i *ngIf="item.validation.indexOf('apiLookup') === -1" (click)="validationSet('apiLookup', true, model.attributes[i])"
-                  class="fa fa-toggle-off"></i>
-                <span class="pull-right ucfirst">{{item.dropType}}</span>
+                  <label>Post Order Change</label>
+                  <i *ngIf="item.validation.indexOf('PostOrderChange') != -1" (click)="validationSet('PostOrderChange', false, model.attributes[i])"
+                     class="fa fa-toggle-on red"></i>
+                  <i *ngIf="item.validation.indexOf('PostOrderChange') == -1" (click)="validationSet('PostOrderChange', true, model.attributes[i])"
+                     class="fa fa-toggle-off"></i>
+                  <span></span>
+                  <label>Api Lookup</label>
+                  <i *ngIf="item.validation.indexOf('apiLookup') != -1" (click)="validationSet('apiLookup', false, model.attributes[i])"
+                     class="fa fa-toggle-on red"></i>
+                  <i *ngIf="item.validation.indexOf('apiLookup') === -1" (click)="validationSet('apiLookup', true, model.attributes[i])"
+                     class="fa fa-toggle-off"></i>
+                  <span class="pull-right ucfirst">{{item.dropType}}</span>
+                </div>
               </div>
-              <div class="form-group-fields">
+              <div class="form-group-fields" *ngIf="item.calculated !== 1">
                 <label>Label</label>
                 <input class="form-control" type="text" [(ngModel)]="item.label" />
               </div>
@@ -181,7 +190,7 @@
                 <label>Name</label>
                 <input class="form-control" type="text" [(ngModel)]="item.name" [disabled]="true"/>
               </div>
-              <div class="form-group-fields" *ngIf="item.validation.indexOf('apiLookup') != -1"  style="margin: 20px 0px 20px 20px">
+              <div class="form-group-fields" *ngIf="item.validation.indexOf('apiLookup') != -1 && item.calculated !== 1"  style="margin: 20px 0px 20px 20px">
                 <h5>API Lookup Configuration</h5>
                 <label>Request Type</label>
                 <select class="form-control" [(ngModel)]="item.request_type">
@@ -189,7 +198,7 @@
                   <option value="post">POST</option>
                 </select>
                 <label>Request Url</label>
-                <input type="text" class="form-control" [(ngModel)]="item.request_url">
+                <input type="text" class="form-control" placeholder="example: /api/endpoint" [(ngModel)]="item.request_url">
                 <label>Payload</label>
                 <textarea type="text" class="form-control" [(ngModel)]="item.request_payload"></textarea>
                 <label>Property Name</label>
@@ -205,29 +214,29 @@
                 </div>
                 <div style="padding: 10px 0px">
                   <button
-                    [disabled]="item.request_dependent_property && item.request_dependent_property.length ? 'disabled' : null" 
-                    type="button" 
-                    class="btn btn-info" 
-                    style="float: right" 
-                    (click)="ValidateAPILookUp(item)">
-                      Validate
+                          [disabled]="item.request_dependent_property && item.request_dependent_property.length ? 'disabled' : null"
+                          type="button"
+                          class="btn btn-info"
+                          style="float: right"
+                          (click)="ValidateAPILookUp(item)">
+                    Validate
                   </button>
                 </div>
               </div>
-              <div class="form-group-fields">
+              <div *ngIf="item.calculated !== 1" class="form-group-fields">
                 <label>Default Value</label>
                 <input class="form-control" type="text" [(ngModel)]="item.default_value" *ngIf="item.dropType != 'date' && item.dropType != 'checkbox' && item.dropType != 'radio' && item.dropType != 'autocomplete'"/>
                 <input class="form-control" type="text" [(ngModel)]="item.default_value" *ngIf="item.dropType === 'radio' || item.dropType === 'autocomplete'" disabled/>
                 <input class="form-control" type="date" [(ngModel)]="item.default_value" *ngIf="item.dropType === 'date'"/>
                 <input class="form-control" type="text" [(ngModel)]="item.default_value" *ngIf="item.dropType === 'checkbox'" disabled/>
               </div>
-              <div class="form-group-fields">
+              <div *ngIf="item.calculated !== 1" class="form-group-fields">
                 <label>Regex</label>
                 <input class="form-control" type="text" [(ngModel)]="item.validation.regex" />
               </div>
 
               <!-- radio || checkbox || autocomplete -->
-              <div *ngIf="item.dropType=='radio'|| item.dropType=='checkbox' || item.dropType=='autocomplete'">
+              <div *ngIf="(item.dropType=='radio'|| item.dropType=='checkbox' || item.dropType=='autocomplete') && item.calculated !== 1">
                 <div class="row">
                   <div class="col-xs-8">
                     <div class="form-group-fields">
@@ -283,3 +292,5 @@
     <!-- formbuilder end -->
   </div>
 </div>
+
+

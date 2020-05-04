@@ -222,6 +222,7 @@ export class OrderComponent implements OnInit  {
 
                         const obj: any = {
                             id: ele.id,
+                            calculated: ele.calculated,
                             label : ele.label,
                             name: ele.name,
                             type: ele.type,
@@ -280,6 +281,7 @@ export class OrderComponent implements OnInit  {
 
                             const obj: any = {
                                 id: ele.id,
+                                calculated: ele.calculated,
                                 default_value: ele.default_value,
                                 label : ele.label,
                                 name: ele.name,
@@ -829,16 +831,18 @@ export class OrderComponent implements OnInit  {
         const lineItemRows = [];
 
         lineItemDef.forEach(function (key) {
-            headers.push({
-                key: key.name,
-                title: key.label.replace(/_/g,' ').toUpperCase() + ( key.validation && key.validation.length && key.validation.indexOf('required') !== -1 ? ' * ' : '' ),
-                data: key.name,
-                isFilterRequired: true,
-                isCheckbox: false,
-                class: 'nocolvis',
-                editButton: false,
-                width: '150'
-            });
+            if (key.calculated !== 1) {
+                headers.push({
+                    key: key.name,
+                    title: key.label.replace(/_/g, ' ').toUpperCase() + (key.validation && key.validation.length && key.validation.indexOf('required') !== -1 ? ' * ' : ''),
+                    data: key.name,
+                    isFilterRequired: true,
+                    isCheckbox: false,
+                    class: 'nocolvis',
+                    editButton: false,
+                    width: '150'
+                });
+            }
         });
 
         if (existingOrderInfo && existingOrderInfo.lineItems && existingOrderInfo.lineItems.length) {

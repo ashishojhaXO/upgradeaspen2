@@ -410,6 +410,10 @@ export class CustomFormbuilderComponent implements OnInit {
     }
   }
 
+  onCalculatedClick(item) {
+    item.calculated = item.calculated === 0 ? 1 : 0;
+  }
+
   onCheckboxClick(value, isChecked, item){
     if(isChecked) {
       item.checkboxDefault.push(value);
