@@ -481,8 +481,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     this.hideSubmit = false;
     this.orgForm.reset();
     modalComponent.hide();
-    this.dataObject.isDataAvailable = false;
-    this.searchDataRequest();
+    this.reLoad();
   }
 
   handleShowModal(modalComponent: PopUpModalComponent) {
