@@ -203,9 +203,9 @@ export class OrdersComponent implements OnInit  {
 
     this.allowOrderFunctionality = localStorage.getItem('allowOrderFunctionality') || 'true';
 
-    if (isUser) {
-      this.allowOrderFunctionality = 'false';
-    }
+    // if (isUser) {
+    //   this.allowOrderFunctionality = 'false';
+    // }
     if (this.isRoot) {
       this.allowOrderFunctionality = 'true';
     }
