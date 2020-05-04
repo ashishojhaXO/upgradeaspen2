@@ -76,6 +76,8 @@ export class OrderTemplateComponent implements OnInit {
           };
           this.editTemplate = true;
           this.getTemplate(this.templateId);
+        } else {
+          this.showSpinner = false;
         }
       });
     }
