@@ -99,18 +99,19 @@ export class OrderComponent implements OnInit  {
 
         this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
         this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
-        this.searchTemplates();
-
         this.route.params.subscribe(params => {
             if (params['id']) {
                 if (params['vendorId']) {
                     this.vendor_id = params['vendorId'];
                 }
+                this.searchTemplates(true);
                 this.searchDateRequest(params['id'], params['lineItemId']);
                 // if(this.templates.length) {
                 //   this.template = '41';
                 //   this.searchTemplateDetails(this.template);
                 // }
+            } else {
+                this.searchTemplates();
             }
         });
     }
@@ -174,7 +175,7 @@ export class OrderComponent implements OnInit  {
             }).share();
     }
 
-    searchTemplates() {
+    searchTemplates(existingOrder = false) {
         this.getTemplates().subscribe(
             response => {
                 this.showSpinner = false;
@@ -185,6 +186,14 @@ export class OrderComponent implements OnInit  {
                             text: ele.name
                         });
                     }, this);
+
+                    if (!existingOrder) {
+                        if (this.templates.length === 1) {
+                            this.template = this.templates[0].id;
+                            this.dataFieldConfiguration = [];
+                            this.searchTemplateDetails(this.template);
+                        }
+                    }
                 }
             },
             err => {
@@ -193,7 +202,7 @@ export class OrderComponent implements OnInit  {
                     this.widget.refreshElseSignout(
                         this,
                         err,
-                        self.searchTemplates.bind(self)
+                        self.searchTemplates.bind(self, existingOrder)
                     );
                 } else {
                     this.showSpinner = false;
