@@ -172,21 +172,40 @@ export class OrderTemplateComponent implements OnInit {
         let orderFields = [];
         let lineItems = [];
         this.orderForm.model.attributes.forEach(element => {
-          orderFields.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation', 'request_type', 'request_url', 'request_payload', 'request_mapped_property', 'request_dependent_property' ]))
+          orderFields.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation', 'request_type', 'request_url', 'request_payload', 'request_mapped_property', 'request_dependent_property', 'calculated' ]))
         });
         this.lineItemForm.model.attributes.forEach(element => {
-          lineItems.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation', 'request_type', 'request_url', 'request_payload', 'request_mapped_property', 'request_dependent_property']))
+          lineItems.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation', 'request_type', 'request_url', 'request_payload', 'request_mapped_property', 'request_dependent_property', 'calculated']))
         });
 
         orderFields.forEach(function (order) {
-          if(order.request_dependent_property && order.request_dependent_property.length) {
-            order.request_dependent_property = order.request_dependent_property.join(',');
+
+          if (order.calculated === 1) {
+            order.default_value = '';
+            order.request_dependent_property = '';
+            order.request_mapped_property = '';
+            order.request_type = '';
+            order.request_url = '';
+            order.validation = [];
+          } else {
+            if (order.request_dependent_property && order.request_dependent_property.length) {
+              order.request_dependent_property = order.request_dependent_property.join(',');
+            }
           }
         });
 
         lineItems.forEach(function (line) {
-          if(line.request_dependent_property && line.request_dependent_property.length) {
-            line.request_dependent_property = line.request_dependent_property.join(',');
+          if (line.calculated === 1) {
+            line.default_value = '';
+            line.request_dependent_property = '';
+            line.request_mapped_property = '';
+            line.request_type = '';
+            line.request_url = '';
+            line.validation = [];
+          } else {
+            if (line.request_dependent_property && line.request_dependent_property.length) {
+              line.request_dependent_property = line.request_dependent_property.join(',');
+            }
           }
         });
 
@@ -307,9 +326,6 @@ export class OrderTemplateComponent implements OnInit {
           console.log('template edit fields', response);
           this.templateField = response.orderTemplateData;
           this.orderFieldsArr = this.templateField.orderFields;
-
-          console.log('this.orderFieldsArr >>>')
-            console.log(this.orderFieldsArr);
 
           if (this.orderFieldsArr.length) {
             this.orderFieldsArr.forEach(function (field) {
