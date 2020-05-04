@@ -16,6 +16,7 @@ import { FormControl, FormGroup, Validators} from '@angular/forms';
 import { OktaAuthService } from '../../../services/okta.service';
 import {DataTableAction } from '../../shared/components/app-data-table/data-table-action';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-vendormanagement',
@@ -357,7 +358,19 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
           this.showError = false;
         }
       } else {
-        this.performVendorDeletionRequest(dataObj.data.id);
+        Swal({
+          title: 'Are you sure you want to delete this vendor?',
+          text: "You won't be able to revert this!",
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes'
+        }).then((result) => {
+          if (result.value) {           
+            this.performVendorDeletionRequest(dataObj.data.id);
+          }
+        });
       }
     }
   }
@@ -450,7 +463,15 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
         response => {
           if (response) {
             this.showSpinner = false;
-            this.searchDataRequest(this.isRoot ? this.orgValue : this.orgInfo.org_id);
+            Swal({
+              title: 'Vendor deleted successfully',
+              text: 'Vendor has been deleted successfully',
+              type: 'success'
+            }).then( () => {
+              this.reLoad();
+            });
+
+            //this.searchDataRequest(this.isRoot ? this.orgValue : this.orgInfo.org_id);
             // this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Vendor successfully deleted ' : 'Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
             // this.editID = '';
           }
@@ -463,9 +484,13 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
               err,
               self.performVendorDeletionRequest.bind(self, id)
             );
-          } else {
-            this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
+          } else {            
             this.showSpinner = false;
+            Swal({
+              title: 'An error occurred',
+              text: JSON.parse(err._body).errorMessage,
+              type: 'error'
+              });
           }
         }
     );
