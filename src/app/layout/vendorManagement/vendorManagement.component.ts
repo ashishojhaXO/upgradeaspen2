@@ -95,7 +95,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     }, this);
 
     this.vendorForm = new FormGroup({
-      org: new FormControl('', Validators.required),
+      org: new FormControl('', this.isRoot ? Validators.required : null),
       external_vendor_id: new FormControl('', Validators.required),
       first_name: new FormControl('', Validators.required),
       last_name: new FormControl('', Validators.required),
