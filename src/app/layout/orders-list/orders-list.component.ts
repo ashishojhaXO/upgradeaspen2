@@ -73,8 +73,6 @@ export class OrdersListComponent implements OnInit  {
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
     this.getTemplates();
-    this.searchDataRequest(this.templateValue);
-
     this.vendorID = JSON.parse(localStorage.getItem("customerInfo") ).vendor.vendor_id;
 
   }
@@ -215,7 +213,7 @@ export class OrdersListComponent implements OnInit  {
     this.editID = dataObj.data.order_id;
     this.router.navigate(['/app/order/create', this.editID, this.vendorID]);
   }
-  
+
   loggedInVendor: any;
 
   handleRun(dataObj: any){
@@ -230,7 +228,7 @@ export class OrdersListComponent implements OnInit  {
     // if(dataObj.event) {
     //   console.log("IFFFFFF")
     //   dataObj.event.preventDefault();
-    // } 
+    // }
 
     console.log('rowData >>>')
     console.log(dataObj.data);
@@ -263,6 +261,7 @@ export class OrdersListComponent implements OnInit  {
           }, this);
           console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>', this.templateArr);
           this.showSpinner = false;
+          this.searchDataRequest(this.templateArr.length === 1 ? this.templateArr[0].id : this.templateValue);
         }
       },
       err => {

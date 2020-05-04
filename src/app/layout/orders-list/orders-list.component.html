@@ -6,7 +6,7 @@
     </div>
   </div>
   <div class="">
-    <div>
+    <div *ngIf="templateArr.length > 1">
       <label for="templates" class="col-xs-12 col-sm-2">Templates: </label>
       <div class="col-xs-12 col-sm-6">
         <select [(ngModel)]="templateValue" class="form-control" (change)='templateChange(templateValue)'>
