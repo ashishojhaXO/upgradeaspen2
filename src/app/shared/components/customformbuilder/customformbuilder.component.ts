@@ -463,11 +463,11 @@ export class CustomFormbuilderComponent implements OnInit {
               html: "Field validated successfully.",
               type: 'success'
             }).then((value)=>{
-              this.onShowSpinner.emit(false);
+              // this.onShowSpinner.emit(false);
             }, (err)=>{
-              this.onShowSpinner.emit(false);
+              // this.onShowSpinner.emit(false);
             });
-              this.onShowSpinner.emit(false);
+              // this.onShowSpinner.emit(false);
 
             let keys = Object.keys(responseLookup).filter((value, index)=> {
               return value != "status";
@@ -478,18 +478,15 @@ export class CustomFormbuilderComponent implements OnInit {
           // }
         },
         err => {
-            // this.parent.showSpinner = false;
+          this.onShowSpinner.emit(false);
+
           Swal({
             title: 'Validation Failed',
             html: 'Response could not be validated',
             type: 'error'
           });
 
-          this.onShowSpinner.emit(false);
         });
-            // this.parent.showSpinner = false;
-        this.onShowSpinner.emit(false);
-
 
   }
 
