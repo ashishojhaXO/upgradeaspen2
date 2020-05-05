@@ -1,10 +1,11 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, Output } from '@angular/core';
 import { field } from "./customformbuilder.model";
 import Swal from 'sweetalert2';
 import { DndDropEvent, DropEffect } from 'ngx-drag-drop';
 import { Headers, RequestOptions, Http } from '@angular/http';
 import { OktaAuthService } from '../../../../services/okta.service';
 import {FormControl} from '@angular/forms';
+import { EventEmitter } from 'protractor';
 
 @Component({
   selector: 'app-customformbuilder',
@@ -18,7 +19,9 @@ export class CustomFormbuilderComponent implements OnInit {
   @Input('editTemplate') editTemplate;
   @Input() clearSelectedFields: any;
   @Input('builderFor') builderFor;
-  @Input('parent') parent;
+  // @Input('showSpin') showSpin;
+  // @Output('onShowSpinner') onShowSpinner: EventEmitter<any> = new EventEmitter<any>();
+  @Output('onShowSpinner') onShowSpinner: EventEmitter = new EventEmitter();
   @Input() org: any;
   api_fs: any;
   externalAuth: any;
@@ -425,7 +428,10 @@ export class CustomFormbuilderComponent implements OnInit {
   }
 
   ValidateAPILookUp(item) {
-    this.parent.showSpinner = true;
+    // this.parent.showSpinner = true;
+    // this.showSpin = true;
+    this.onShowSpinner.emit('true')
+    console.log("PARRR: ", this.onShowSpinner)
 
     this.performApiLookUpForValue(item.request_type, item.request_url, item.request_payload).subscribe(
         responseLookup => {
@@ -457,7 +463,9 @@ export class CustomFormbuilderComponent implements OnInit {
 
 
             // this.showSpinner = true;
-            this.parent.showSpinner = false;
+            // this.parent.showSpinner = false;
+            // this.showSpin = false;
+    this.onShowSpinner.emit('');
 
             Swal({
               title: 'Validation Successful',
@@ -465,12 +473,12 @@ export class CustomFormbuilderComponent implements OnInit {
               html: "Field validated successfully.",
               type: 'success'
             }).then((value)=>{
-              this.parent.showSpinner = false;
+              // this.parent.showSpinner = false;
             }, (err)=>{
-              this.parent.showSpinner = false;
+              // this.parent.showSpinner = false;
             });
               // this.showSpinner = false;
-              this.parent.showSpinner = false;
+              // this.parent.showSpinner = false;
 
             let keys = Object.keys(responseLookup).filter((value, index)=> {
               return value != "status";
@@ -481,14 +489,14 @@ export class CustomFormbuilderComponent implements OnInit {
           // }
         },
         err => {
-            this.parent.showSpinner = false;
+            // this.parent.showSpinner = false;
           Swal({
             title: 'Validation Failed',
             html: 'Response could not be validated',
             type: 'error'
           });
         });
-            this.parent.showSpinner = false;
+            // this.parent.showSpinner = false;
 
 
   }

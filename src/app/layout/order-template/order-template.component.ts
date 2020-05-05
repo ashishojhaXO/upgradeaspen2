@@ -459,4 +459,12 @@ export class OrderTemplateComponent implements OnInit {
             }
         }
     }
+
+  onShowSpinner(value) {
+    console.log("onSSS: ", value);
+    this.showSpinner = Boolean(value);
+  
+    console.log("onSSS tSS: ",this.showSpinner );
+  }
+
 }
