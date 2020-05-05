@@ -1037,8 +1037,14 @@ export class OrderComponent implements OnInit  {
                 }
             });
 
+            console.log('reqObj.orderDetail.lineItems[extendedLineItemIndex].lineItemFields >>>')
+            console.log(reqObj.orderDetail.lineItems[extendedLineItemIndex].lineItemFields);
+
             console.log('dataObj >>>')
             console.log(dataObj);
+
+            const displayLineItemObj = reqObj.orderDetail.lineItems[extendedLineItemIndex].lineItemFields.find(x=> x.name === 'line_item_id');
+            const displayLineItemId = displayLineItemObj ? displayLineItemObj.field_value : this.lineItemId;
 
             this.submitLineItemExtensionData(dataObj).subscribe(
                 response => {
@@ -1046,7 +1052,7 @@ export class OrderComponent implements OnInit  {
                         this.showSpinner = false;
                         Swal({
                             title: 'Line Item Extended',
-                            text: 'The Line Item ' + this.lineItemId + ' was successfully extended',
+                            text: 'The Line Item ' + displayLineItemId + ' was successfully extended',
                             type: 'success'
                         }).then(() => {
                             // this.router.navigate(['/app/targetAud/']);
