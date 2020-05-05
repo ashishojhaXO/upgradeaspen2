@@ -1,11 +1,10 @@
-import { Component, OnInit, Input, SimpleChanges, Output } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { field } from "./customformbuilder.model";
 import Swal from 'sweetalert2';
 import { DndDropEvent, DropEffect } from 'ngx-drag-drop';
 import { Headers, RequestOptions, Http } from '@angular/http';
 import { OktaAuthService } from '../../../../services/okta.service';
 import {FormControl} from '@angular/forms';
-import { EventEmitter } from 'protractor';
 
 @Component({
   selector: 'app-customformbuilder',
@@ -19,9 +18,7 @@ export class CustomFormbuilderComponent implements OnInit {
   @Input('editTemplate') editTemplate;
   @Input() clearSelectedFields: any;
   @Input('builderFor') builderFor;
-  // @Input('showSpin') showSpin;
-  // @Output('onShowSpinner') onShowSpinner: EventEmitter<any> = new EventEmitter<any>();
-  @Output('onShowSpinner') onShowSpinner: EventEmitter = new EventEmitter();
+  @Output('onShowSpinner') onShowSpinner: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Input() org: any;
   api_fs: any;
   externalAuth: any;
@@ -428,10 +425,7 @@ export class CustomFormbuilderComponent implements OnInit {
   }
 
   ValidateAPILookUp(item) {
-    // this.parent.showSpinner = true;
-    // this.showSpin = true;
-    this.onShowSpinner.emit('true')
-    console.log("PARRR: ", this.onShowSpinner)
+    this.onShowSpinner.emit(true)
 
     this.performApiLookUpForValue(item.request_type, item.request_url, item.request_payload).subscribe(
         responseLookup => {
@@ -461,11 +455,7 @@ export class CustomFormbuilderComponent implements OnInit {
           // }
           // else {
 
-
-            // this.showSpinner = true;
-            // this.parent.showSpinner = false;
-            // this.showSpin = false;
-    this.onShowSpinner.emit('');
+            this.onShowSpinner.emit(false);
 
             Swal({
               title: 'Validation Successful',
@@ -473,12 +463,11 @@ export class CustomFormbuilderComponent implements OnInit {
               html: "Field validated successfully.",
               type: 'success'
             }).then((value)=>{
-              // this.parent.showSpinner = false;
+              this.onShowSpinner.emit(false);
             }, (err)=>{
-              // this.parent.showSpinner = false;
+              this.onShowSpinner.emit(false);
             });
-              // this.showSpinner = false;
-              // this.parent.showSpinner = false;
+              this.onShowSpinner.emit(false);
 
             let keys = Object.keys(responseLookup).filter((value, index)=> {
               return value != "status";
@@ -495,8 +484,11 @@ export class CustomFormbuilderComponent implements OnInit {
             html: 'Response could not be validated',
             type: 'error'
           });
+
+          this.onShowSpinner.emit(false);
         });
             // this.parent.showSpinner = false;
+        this.onShowSpinner.emit(false);
 
 
   }
