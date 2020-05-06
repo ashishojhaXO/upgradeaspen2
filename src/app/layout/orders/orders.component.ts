@@ -238,14 +238,14 @@ export class OrdersComponent implements OnInit  {
       if(this.visible()){
         visible_columns.push($(this.header()).text());
       }
-   });       
+   });
 	  console.log('visible_columns', visible_columns);
-    let dtcolArr = table.columns().header().toArray().map(x => x.innerText); 
+    let dtcolArr = table.columns().header().toArray().map(x => x.innerText);
     let dtrowObject = {};
     let dtDataArr = [];
-    for (var i = 0; i < tblData.length; i++) {       
+    for (var i = 0; i < tblData.length; i++) {
       dtrowObject = {};
-      for (var x = 0; x < tblData[i].length; x++) { 
+      for (var x = 0; x < tblData[i].length; x++) {
         let colName= dtcolArr[x];
         dtrowObject[colName] = tblData[i][x];
       }
@@ -418,58 +418,59 @@ export class OrdersComponent implements OnInit  {
 
   calc(res, table) {
     let li = [];
-    let keyNames = {};
-    let keyNamesList = Object.keys(res.data.rows[0]);
-    for(let i = 0; i < keyNamesList.length; i++ ) {
-      keyNames[keyNamesList[i]] = null;
-    }
-
-    // Even when table is not there, still we need to run this,
-    // Since, data will be of the first page.
-    // If !table
-    // Data is in the start, It is the 1st page data, fill the array in the starting
-    if (!table || table.page.info().start == 0) {
-      li.push(...res.data.rows);
-      for(let i = res.data.rows.length; i < res.data.count; i++) {
-        // res.data.rows.push({i: i});
-        li.push( keyNames )
+    if (res.data.rows.length) {
+      let keyNames = {};
+      let keyNamesList = Object.keys(res.data.rows[0]);
+      for(let i = 0; i < keyNamesList.length; i++ ) {
+        keyNames[keyNamesList[i]] = null;
       }
 
-    }
-
-    if(table) {
-      let tab = table.page.info();
-      if(tab.start != 0 && tab.start + +tab.length != res.data.count) {
-
-        // Then fill the array in the middle
-        // Empty in start
-        for(let i = 0; i < tab.start; i++) {
-          li.push(keyNames )
-        }
-        // Data in Middle
+      // Even when table is not there, still we need to run this,
+      // Since, data will be of the first page.
+      // If !table
+      // Data is in the start, It is the 1st page data, fill the array in the starting
+      if (!table || table.page.info().start == 0) {
         li.push(...res.data.rows);
-        // Empty data in the end
-        for(let i = tab.start + res.data.rows.length; i < res.data.count; i++) {
+        for(let i = res.data.rows.length; i < res.data.count; i++) {
+          // res.data.rows.push({i: i});
           li.push( keyNames )
         }
+
       }
 
+      if(table) {
+        let tab = table.page.info();
+        if(tab.start != 0 && tab.start + +tab.length != res.data.count) {
 
-      // Fill Data at the end of the Array
-      if( tab.start != 0 && tab.start + +tab.length == res.data.count
+          // Then fill the array in the middle
+          // Empty in start
+          for(let i = 0; i < tab.start; i++) {
+            li.push(keyNames )
+          }
+          // Data in Middle
+          li.push(...res.data.rows);
+          // Empty data in the end
+          for(let i = tab.start + res.data.rows.length; i < res.data.count; i++) {
+            li.push( keyNames )
+          }
+        }
+
+
+        // Fill Data at the end of the Array
+        if( tab.start != 0 && tab.start + +tab.length == res.data.count
         // table.page.info().end == res.data.count
         ) {
-        let tab = table.page.info();
+          let tab = table.page.info();
 
-        for(let i = 0; i < tab.start; i++) {
-          // res.data.rows.push({i: i});
-          li.push(keyNames)
+          for(let i = 0; i < tab.start; i++) {
+            // res.data.rows.push({i: i});
+            li.push(keyNames)
+          }
+          li.push(...res.data.rows);
         }
-        li.push(...res.data.rows);
+
       }
-
     }
-
     return li;
   }
 
