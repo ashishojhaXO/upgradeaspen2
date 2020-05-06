@@ -163,7 +163,7 @@ export class BaseFieldsComponent implements OnInit {
             text: response.message,
             type: 'success'
           }).then((result) => {
-            this.orgValue = '';
+          //  this.orgValue = '';
             this.clearSelectedFields = true;
             const __this = this;
             setTimeout(function () {
