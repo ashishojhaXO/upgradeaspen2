@@ -164,6 +164,7 @@ export class OrdersComponent implements OnInit  {
   response: any;
   org: string;
   selectedVendorUuid:any;
+  currentTable: any;
 
   constructor(
       private okta: OktaAuthService,
@@ -215,6 +216,10 @@ export class OrdersComponent implements OnInit  {
   }
 
   apiMethod = (table, pageLength, csv?) => {
+    let searchVal = table.search();
+    if((searchVal.trim())!=""){
+      this.doDownloadOrderCsv(table);
+    }else{
     this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
 
     if(csv){
@@ -224,6 +229,46 @@ export class OrdersComponent implements OnInit  {
     else {
       this.searchDataRequest(null, table);
     }
+   }
+  }
+  doDownloadOrderCsv(table){
+    let tblData = table.rows( {page: 'current', filter : 'applied'} ).data();
+    var visible_columns = [];
+    table.columns().every( function () {
+      if(this.visible()){
+        visible_columns.push($(this.header()).text());
+      }
+   });       
+	  console.log('visible_columns', visible_columns);
+    let dtcolArr = table.columns().header().toArray().map(x => x.innerText); 
+    let dtrowObject = {};
+    let dtDataArr = [];
+    for (var i = 0; i < tblData.length; i++) {       
+      dtrowObject = {};
+      for (var x = 0; x < tblData[i].length; x++) { 
+        let colName= dtcolArr[x];
+        dtrowObject[colName] = tblData[i][x];
+      }
+      dtDataArr.push(dtrowObject);
+    }
+    console.log("dtDataArr",dtDataArr);
+
+    let rows = dtDataArr;
+    let arr: Array<String> = [];
+    if (rows && rows.length) {
+      rows.filter(res => delete res['ACTIONS']);
+      const filRows = rows.filter(res => delete res[""]);
+      arr.push(Object.keys(filRows[0]).join(",").replace(/_/g, ' ').toUpperCase());
+      let dataRows = filRows.map((k, v) => { return Object.values(k).join(", "); })
+      arr = arr.concat(dataRows);
+    }
+    let csvStr: String = "";
+    csvStr = arr.join("\n");
+    // var data = encode(csvStr);
+    let b64 = btoa(csvStr as string);
+    let a = "data:text/csv;base64," + b64;
+    $('<a href=' + a + ' download="data.csv">')[0].click();
+    return arr;
   }
 
   searchOrgRequest() {
@@ -429,7 +474,6 @@ export class OrdersComponent implements OnInit  {
   }
 
   searchDataRequestCB(res, table) {
-
     this.response = res.data.rows;
     let li = this.calc(res, table);
 
@@ -459,12 +503,13 @@ export class OrdersComponent implements OnInit  {
     .getOrdersLineItems(data, this.isRoot)
     .subscribe(
         response => {
-          if (response) {
-            if (response) {
-              this.showSpinner = false;
-              // this.populateDataTable(response, true);
-              this.searchDataRequestCB(response, table);
-            }
+          if (response && response.data.rows) {
+            this.showSpinner = false;
+            // this.populateDataTable(response, true);
+            this.searchDataRequestCB(response, table);
+          } else {
+            this.showSpinner = false;
+            console.log("No data to show")
           }
         },
         err => {
@@ -487,7 +532,18 @@ export class OrdersComponent implements OnInit  {
   orgChange(value) {
     this.dataObject.isDataAvailable = false;
     this.org = value;
-    this.searchDataRequest(value);
+
+    // Seeting the DataTable page to 0, the first page
+    if(this.currentTable) {
+    // if(this.appDataTable2Component && this.appDataTable2Component.table) {
+      // this.currentTable.page(0)
+      this.options[0].isDisplayStart = this.currentTable && this.currentTable.page.info().start ? this.currentTable.page.info().start : 0;
+
+      // this.appDataTable2Component.table.page(0)
+    }
+
+    this.searchDataRequest(value, this.currentTable);
+    // this.searchDataRequest(value);
   }
 
   populateDataTable(response, initialLoad) {
@@ -683,7 +739,8 @@ export class OrdersComponent implements OnInit  {
   reLoad() {
     this.showSpinner = true;
     this.dataObject.isDataAvailable = false;
-    this.searchDataRequest();
+
+    this.searchDataRequest(this.org, this.currentTable);
   }
 
   getOrders() {
@@ -827,6 +884,25 @@ export class OrdersComponent implements OnInit  {
               this.errorCB(rej)
             }
         )
+  }
+
+  handleDataTableInit(ev) {
+    this.currentTable = ev.data;
+  }
+
+  handleEvents(ev: any) {
+    const event = ev.event;
+    // $(ev.elem).data('action');
+
+    if(this[event]) {
+      this[event](ev);
+    } else {
+      // Some problem
+      // Function does not exists in this class, if data-action string is correct
+      // Else if all functions exists, then, data-action string coming from html is not correct
+      console.log(`Orders Error: Problem executing function: ${event}`)
+    }
+
   }
 
   handleActions(ev: any) {

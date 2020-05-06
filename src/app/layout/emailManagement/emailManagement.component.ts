@@ -16,11 +16,13 @@ import { FormControl, FormGroup, Validators} from '@angular/forms';
 import { OktaAuthService } from '../../../services/okta.service';
 import {DataTableAction } from '../../shared/components/app-data-table/data-table-action';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up.component';
 
 @Component({
   selector: 'app-emailmanagement',
   templateUrl: './emailManagement.component.html',
-  styleUrls: ['./emailManagement.component.scss']
+  styleUrls: ['./emailManagement.component.scss'],
+  providers: [AppPopUpComponent]
 })
 export class EmailManagementComponent implements OnInit, DataTableAction  {
 
@@ -75,7 +77,10 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
 
   constructor(
       private okta: OktaAuthService,
-      private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager) {
+      private route: ActivatedRoute, private router: Router, 
+      private http: Http, private toastr: ToastsManager,
+      protected popUp: AppPopUpComponent,
+      ) {
   }
 
   ngOnInit() {
@@ -264,11 +269,24 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
   }
 
   performEmailDeletionRequest(obj) {
+
     return this.performEmailDeletion(obj).subscribe(
         response => {
           if (response) {
             this.showSpinner = false;
             this.dataObject.isDataAvailable = false;
+
+            let popUpOptions = {
+              title: 'Success',
+              text: response.message,
+              type: 'success',
+              reverseButtons: true,
+              showCloseButton: true,
+              showCancelButton: true,
+              cancelButtonText: "Cancel"
+            };
+            this.popUp.showPopUp(popUpOptions);
+
             this.searchDataRequest();
             // this.error = { type : response.status === 'success' ? 'success' : 'fail' , message : response.message };
             //  this.editID = '';
@@ -285,6 +303,17 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
           } else {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
             this.showSpinner = false;
+
+            let popUpOptions = {
+              title: 'Error',
+              text: err.message,
+              type: 'error',
+              reverseButtons: true,
+              showCloseButton: true,
+              showCancelButton: true,
+              cancelButtonText: "Cancel"
+            };
+            this.popUp.showPopUp(popUpOptions);
           }
         }
     );
