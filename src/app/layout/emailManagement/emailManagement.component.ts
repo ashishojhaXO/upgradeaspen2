@@ -170,16 +170,22 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
     // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
   }
 
+  emailIdsToDelete: Array<String>;
+
   handleDelete(dataObj: any) {
     // console.log('rowData >>>!!!!')
     // console.log(rowData);
 
     console.log('this.selected >>!!!!')
-    console.log(this.selected);
+    console.log(this.selected, dataObj);
+    this.emailIdsToDelete.push(dataObj.data.emailid)
+    // this.emailIdsToDelete.push(dataObj.data.id)
 
-    const obj = { 'email_ids' : this.selected.map(function (m) {
-        return m.id;
-      })};
+    // const obj = { 'email_ids' : this.selected.map(function (m) {
+    //   return m.id;
+    // })};
+    
+    const obj = {'email_ids': this.emailIdsToDelete}
 
     this.performEmailDeletionRequest(obj);
   }
