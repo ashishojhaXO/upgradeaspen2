@@ -91,7 +91,7 @@
     "ngx-bootstrap": "^2.0.4",
     "ngx-breadcrumbs": "0.0.3",
     "ngx-chips": "1.5.11",
-    "ngx-color-picker": "^9.1.0",
+    "ngx-color-picker": "^4.5.3",
     "ngx-drag-drop": "^1.1.0",
     "ngx-papaparse": "1.2.5",
     "node-gyp": "^3.6.2",

@@ -157,12 +157,15 @@
               </div>
             </div>
             <p style="clear: both"></p>
-            <div class="form-group-fields">
+            <div class="form-group-fields org-create">
               <label class="col-lg-4 col-md-4 col-sm-4">Theme Color  </label>
               <input [value]="orgModel.themeColor"
                      style="cursor: pointer"
                      formControlName="themeColor"
                      class="col-lg-6 col-md-6 col-sm-6 form-field"
+                     [cpPositionOffset]="'6%'"
+                     [cpPositionRelativeToArrow]="true"
+                     [cpPosition]="'top'"
                      [cpOKButton]="true"
                      [cpCancelButton]="true"
                      [cpCancelButtonClass]= "'btn btn-secondary btn-xs'"
