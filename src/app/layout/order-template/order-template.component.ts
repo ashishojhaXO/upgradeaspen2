@@ -459,4 +459,9 @@ export class OrderTemplateComponent implements OnInit {
             }
         }
     }
+
+  onShowSpinner(value) {
+    this.showSpinner = value;
+  }
+
 }

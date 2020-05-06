@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { field } from "./customformbuilder.model";
 import Swal from 'sweetalert2';
 import { DndDropEvent, DropEffect } from 'ngx-drag-drop';
@@ -18,7 +18,7 @@ export class CustomFormbuilderComponent implements OnInit {
   @Input('editTemplate') editTemplate;
   @Input() clearSelectedFields: any;
   @Input('builderFor') builderFor;
-  @Input('parent') parent;
+  @Output('onShowSpinner') onShowSpinner: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Input() org: any;
   api_fs: any;
   externalAuth: any;
@@ -438,7 +438,7 @@ export class CustomFormbuilderComponent implements OnInit {
   }
 
   ValidateAPILookUp(item) {
-    this.parent.showSpinner = true;
+    this.onShowSpinner.emit(true)
 
     this.performApiLookUpForValue(item.request_type, item.request_url, item.request_payload).subscribe(
         responseLookup => {
@@ -468,9 +468,7 @@ export class CustomFormbuilderComponent implements OnInit {
           // }
           // else {
 
-
-            // this.showSpinner = true;
-            this.parent.showSpinner = false;
+            this.onShowSpinner.emit(false);
 
             Swal({
               title: 'Validation Successful',
@@ -478,12 +476,11 @@ export class CustomFormbuilderComponent implements OnInit {
               html: "Field validated successfully.",
               type: 'success'
             }).then((value)=>{
-              this.parent.showSpinner = false;
+              // this.onShowSpinner.emit(false);
             }, (err)=>{
-              this.parent.showSpinner = false;
+              // this.onShowSpinner.emit(false);
             });
-              // this.showSpinner = false;
-              this.parent.showSpinner = false;
+              // this.onShowSpinner.emit(false);
 
             let keys = Object.keys(responseLookup).filter((value, index)=> {
               return value != "status";
@@ -494,15 +491,15 @@ export class CustomFormbuilderComponent implements OnInit {
           // }
         },
         err => {
-            this.parent.showSpinner = false;
+          this.onShowSpinner.emit(false);
+
           Swal({
             title: 'Validation Failed',
             html: 'Response could not be validated',
             type: 'error'
           });
-        });
-            this.parent.showSpinner = false;
 
+        });
 
   }
 
