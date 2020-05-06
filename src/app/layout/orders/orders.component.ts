@@ -217,9 +217,6 @@ export class OrdersComponent implements OnInit  {
   apiMethod = (table, pageLength, csv?) => {
     // this.currentTable = table;
 
-    console.log("this.appDataTable2Component, table: ");
-    console.log(this.appDataTable2Component, table);
-
     this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
 
     if(csv){
@@ -384,8 +381,6 @@ export class OrdersComponent implements OnInit  {
       keyNames[keyNamesList[i]] = null;
     }
 
-    console.log("CALAL: ", table);
-
     // Even when table is not there, still we need to run this,
     // Since, data will be of the first page.
     // If !table
@@ -436,8 +431,6 @@ export class OrdersComponent implements OnInit  {
   }
 
   searchDataRequestCB(res, table) {
-    console.log("sDRCD res: ", res)
-
     this.response = res.data.rows;
     let li = this.calc(res, table);
 
@@ -447,8 +440,6 @@ export class OrdersComponent implements OnInit  {
     // CurrentPageNo:
     // TotalCountofRows:
     this.dataObject = {};
-
-    console.log("sDRCB: ", li);
 
     this.populateDataTable(li, true);
   }
@@ -502,7 +493,6 @@ export class OrdersComponent implements OnInit  {
     // Seeting the DataTable page to 0, the first page
     if(this.currentTable) {
     // if(this.appDataTable2Component && this.appDataTable2Component.table) {
-      // console.log("INIFaDT2C")
       // this.currentTable.page(0)
       this.options[0].isDisplayStart = this.currentTable && this.currentTable.page.info().start ? this.currentTable.page.info().start : 0;
 
@@ -572,7 +562,6 @@ export class OrdersComponent implements OnInit  {
   }
 
   handleRow(rowObj: any, rowData: any) {
-    console.log("handROW: rO, rD: ", rowObj, rowData);
     if(this[rowObj.action])
       this[rowObj.action](rowObj);
   }
@@ -703,9 +692,6 @@ export class OrdersComponent implements OnInit  {
   }
 
   reLoad() {
-    console.log("RELO this.appDataTable2Component,:  ");
-    console.log(this.appDataTable2Component );
-
     this.showSpinner = true;
     this.dataObject.isDataAvailable = false;
 
@@ -731,9 +717,6 @@ export class OrdersComponent implements OnInit  {
   }
 
   successCB(res) {
-    // console.log( " res.json(): ", res.json())
-    // this.populateDataTable(res.data.rows, false);
-
     // TODO: Some success callback here
     this.showSpinner = false;
     // let body = res.json();
@@ -777,7 +760,6 @@ export class OrdersComponent implements OnInit  {
     // Compile option/data
     let order_id = $(option.elem).data("orderId");
     let vendor_uuid = $(option.elem).data("vendorUuid");
-    console.log("option",option);
     // let line_item_id = $(option.elem).data("lineItemId");
     // let data = {
     //   "order_id": order_id
@@ -873,8 +855,6 @@ export class OrdersComponent implements OnInit  {
   }
 
   handleActions(ev: any) {
-    console.log("hAev: ", ev)
-
     const action = $(ev.elem).data('action');
 
     if(this[action]) {

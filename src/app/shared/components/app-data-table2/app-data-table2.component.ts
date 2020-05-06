@@ -329,18 +329,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     columnButtonDefs += '<a class="fa fa-envelope fa-action-view emailLink" style="cursor: pointer"></a>';
                 }
 
-                // if (columnButtonDefs) {
-                //     console.log("CDEFFEFEF 1", columns, columnDefs, columnButtonDefs)
-                //     columns.push({
-                //         title: 'ACTIONS'
-                //     });
-                //     columnDefs.push(
-                //         {
-                //         targets: -1,
-                //         defaultContent: columnButtonDefs
-                //     });
-                // }
-
                 if (columnButtonDefs) {
                     let actionColPosition =
                         this.dataObject.gridData.options.isActionColPosition && this.dataObject.gridData.options.isActionColPosition != null ?
@@ -481,8 +469,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 pageLength = this.dataObject.gridData.options.isPageLengthNo;
             }
 
-            console.log("***: ", this.dataObject.gridData.options.isOrder )
-
             // TODO: HERE
             const dataTableOptions = {
                 scrollY: this.height ? this.height : 320,
@@ -508,22 +494,10 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     });
                 },
                 pageLength: pageLength,
-                // sort: true,
                 displayStart: this.dataObject.gridData.options.isDisplayStart || 0,
+                // rowCallback: function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                // },
 
-                rowCallback: function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                    // Get row ID
-                    // console.log('ROW SELECTED >>')
-                    // console.log('header column length : ' + $('#example thead tr').eq(0).find('th').length);
-                    // console.log('body column length : ' + $('#example tbody tr').eq(0).find('td').length);
-
-                    //  var rowId = aData[0];
-                    // // If row ID is in the list of selected row IDs
-                    // if($.inArray(rowId, rows_selected) !== -1){
-                    //   $(row).find('input[type="checkbox"]').prop('checked', true);
-                    //   $(row).addClass('selected');
-                    // }
-                },
                 createdRow: function (row, data, index, cells) {
                     if (__this.dataObject.gridData.columnsToColor) {
                         __this.dataObject.gridData.columnsToColor.forEach(function (column) {
@@ -697,9 +671,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             // Initialize Data Table
             const table = $('#' + this.tableId).DataTable(dataTableOptions);
             this.table = table;
-
-            console.log('---this,table>>>');
-            console.log( this, table,);
 
         // Attaching Column search to all tables
         let columnSearch = new DataTableColumnSearchPluginExt($, document, table);
@@ -913,7 +884,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // }
 
                 let currentPage = table.page.info().page;
-                        console.log("111COMMINGHERE---", table, currentPage)
                 // order Here
                 // On Click of sort on table header, run the below sequence
                 // $('th').off('click');
@@ -944,7 +914,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             // FIX *** FOR PROBLEM WHERE THE COLUMN WIDTH IS RENDERED INCORRECTLY
             setTimeout(function () {
-                console.log("SETTTT")
                 table.columns.adjust().draw(false);
             }, 0);
 
