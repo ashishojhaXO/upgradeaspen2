@@ -96,7 +96,6 @@ export class OrderComponent implements OnInit  {
         this.widget = this.okta.getWidget();
 
         this.height = '50vh';
-
         this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
         this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
         this.route.params.subscribe(params => {
@@ -342,9 +341,15 @@ export class OrderComponent implements OnInit  {
                                                 options.push({ id: '', text: 'Empty'});
 
                                                 responseLookup[ele.request_mapped_property].forEach(function (prop) {
-                                                    options.push({
-                                                        id: prop, text: prop
-                                                    });
+                                                    if (typeof prop === 'object') {
+                                                        options.push({
+                                                            id: prop.key, text: prop.value
+                                                        });
+                                                    } else {
+                                                        options.push({
+                                                            id: prop, text: prop
+                                                        });
+                                                    }
                                                 });
                                                 responseLookup[ele.request_mapped_property].forEach(function (prop) {
                                                     this.data.controls.forEach(function (ctrl) {
@@ -403,9 +408,16 @@ export class OrderComponent implements OnInit  {
                                                     lineItem.value =  responseLookup[lineItem.request_mapped_property].length ? responseLookup[lineItem.request_mapped_property][0] : ''
                                                     const options = [];
                                                     responseLookup[lineItem.request_mapped_property].forEach(function (prop) {
-                                                        options.push({
-                                                            key: prop, text: prop
-                                                        });
+
+                                                        if (typeof prop === 'object') {
+                                                            options.push({
+                                                                key: prop.key, text: prop.value
+                                                            });
+                                                        } else {
+                                                            options.push({
+                                                                key: prop, text: prop
+                                                            });
+                                                        }
                                                     });
                                                     lineItem.options = options;
                                                 } else {
@@ -448,9 +460,16 @@ export class OrderComponent implements OnInit  {
                                                     lineItem.value =  responseLookup[lineItem.request_mapped_property].length ? responseLookup[lineItem.request_mapped_property][0] : ''
                                                     const options = [];
                                                     responseLookup[lineItem.request_mapped_property].forEach(function (prop) {
-                                                        options.push({
-                                                            key: prop, text: prop
-                                                        });
+
+                                                        if (typeof prop === 'object') {
+                                                            options.push({
+                                                                key: prop.key, text: prop.value
+                                                            });
+                                                        } else {
+                                                            options.push({
+                                                                key: prop, text: prop
+                                                            });
+                                                        }
                                                     });
                                                     lineItem.options = options;
                                                 } else {
@@ -630,18 +649,19 @@ export class OrderComponent implements OnInit  {
         }
 
         const data = requestPayload ? requestPayload : {};
+        const apiDomain = requestUrl.indexOf('http://') !== -1 || requestUrl.indexOf('https://') !== -1 ? '' : this.api_fs.api;
 
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
         const options = new RequestOptions({headers: headers});
         if(requestType === 'post') {
             return this.http
-                .post(this.api_fs.api + requestUrl, data, options)
+                .post(apiDomain + requestUrl, data, options)
                 .map(res => {
                     return res.json();
                 }).share();
         } else if (requestType === 'get') {
             return this.http
-                .get(this.api_fs.api + requestUrl, options)
+                .get(apiDomain + requestUrl, options)
                 .map(res => {
                     return res.json();
                 }).share();
@@ -740,9 +760,16 @@ export class OrderComponent implements OnInit  {
 
                                         options.push({ id: '', text: 'Empty'});
                                         responseLookup[ele.request_mapped_property].forEach(function (prop) {
-                                            options.push({
-                                                id: prop, text: prop
-                                            });
+
+                                            if (typeof prop === 'object') {
+                                                options.push({
+                                                    id: prop.key, text: prop.value
+                                                });
+                                            } else {
+                                                options.push({
+                                                    id: prop, text: prop
+                                                });
+                                            }
                                         });
                                         this.data.controls.forEach(function (ctrl) {
                                             if (ctrl.name === ele.name) {

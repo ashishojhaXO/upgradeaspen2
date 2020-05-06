@@ -512,19 +512,19 @@ export class CustomFormbuilderComponent implements OnInit {
     }
 
     const data = requestPayload ? requestPayload : {};
-    const apiPath = this.api_fs.api;
+    const apiDomain = requestUrl.indexOf('http://') !== -1 || requestUrl.indexOf('https://') !== -1 ? '' : this.api_fs.api;
 
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
     if(requestType === 'post') {
       return this.http
-          .post(apiPath + requestUrl, data, options)
+          .post(apiDomain + requestUrl, data, options)
           .map(res => {
             return res.json();
           }).share();
     } else if (requestType === 'get') {
       return this.http
-          .get(apiPath + requestUrl, options)
+          .get(apiDomain + requestUrl, options)
           .map(res => {
             return res.json();
           }).share();
