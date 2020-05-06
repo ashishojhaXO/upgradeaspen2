@@ -77,6 +77,7 @@ a[href^="tel"]{
 @import "layout";
 @import "organization";
 @import "responsive";
+@import 'node_modules/angular2-toaster/toaster';
 @-moz-document url-prefix() {
   table.table.admin-user thead th{
     font-weight: inherit;

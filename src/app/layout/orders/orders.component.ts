@@ -128,13 +128,13 @@ export class OrdersComponent implements OnInit  {
       htmlFunction: (row) => {
 
         let ngHtmlContent = '<div>' +
-            '<button class="btn action-btn api-action" data-action="retryCharge" '+ ( row.Status.trim() == "ERROR_PROCESSING_PAYMENT" ? "" : "disabled" ) + ' data-order-id="'+row.Order_Id + '" data-line-item-id="'+row.Line_Item_Id +'" data-vendor-uuid="'+ row.vendor_uuid +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+            '<button class="btn action-btn api-action" data-action="retryCharge" '+ ( row.Status.trim() == "ERROR_PROCESSING_PAYMENT" ? "" : "disabled" ) + ' data-order-id="'+row.internal_order_id + '" data-line-item-id="'+row.internal_line_item_id + '" data-vendor-uuid="'+ row.vendor_uuid +'" data-display-id="'+ row.Order_Id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
             '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-credit-card" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span> Retry Charge</button>' +
-            '<button class="btn action-btn api-action" data-action="regenerateReceipt" data-order-id="'+row.Order_Id+ '" data-line-item-id= "'+ row.Line_Item_Id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+            '<button class="btn action-btn api-action" data-action="regenerateReceipt" data-order-id="'+row.internal_order_id+ '" data-line-item-id= "'+ row.internal_line_item_id +'" data-display-id="'+ row.Order_Id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
             '><span style="margin-right: 5px; position: relative;"> <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-newspaper-o" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Regenerate Receipt</button>' +
             // '<button class="btn action-btn api-action" data-action="reprocess" data-order-id="row.Order_Id " style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
             // '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-cogs" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Reprocess</button>' +
-            '<button class="btn action-btn api-action" data-action="recalculate" data-order-id="'+ row.Order_Id + '" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+            '<button class="btn action-btn api-action" data-action="recalculate" data-order-id="'+ row.internal_order_id + '" data-display-id="'+ row.Order_Id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
             '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-calculator" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Recalculate</button>' +
             '</div>';
 
@@ -149,6 +149,7 @@ export class OrdersComponent implements OnInit  {
   showSpinner: boolean;
   widget: any;
   selectedOrderID: any;
+  selectedDisplayOrderID: any;
   selectedLineItemID: any;
   hideTable: any;
   allowOrderFunctionality: any;
@@ -202,9 +203,9 @@ export class OrdersComponent implements OnInit  {
 
     this.allowOrderFunctionality = localStorage.getItem('allowOrderFunctionality') || 'true';
 
-    if (isUser) {
-      this.allowOrderFunctionality = 'false';
-    }
+    // if (isUser) {
+    //   this.allowOrderFunctionality = 'false';
+    // }
     if (this.isRoot) {
       this.allowOrderFunctionality = 'true';
     }
@@ -602,11 +603,12 @@ export class OrdersComponent implements OnInit  {
 
   handleRun(dataObj: any) {
     console.log('dataObj.data >>')
-    console.log(dataObj.data);
+    console.log(dataObj.data.Order_Id);
 
     this.selectedOrderID = dataObj.data.internal_order_id;
     this.selectedLineItemID = dataObj.data.internal_line_item_id;
     this.selectedVendorUuid = dataObj.data.vendor_uuid;
+    this.selectedDisplayOrderID = dataObj.data.Order_Id ? dataObj.data.Order_Id : dataObj.data.internal_order_id;
     this.hideTable = true;
     this.isHistory = false;
   }
@@ -615,6 +617,7 @@ export class OrdersComponent implements OnInit  {
       this.selectedOrderID = dataObj.data.internal_order_id;
       this.selectedLineItemID = dataObj.data.Line_Item_Id;
       this.selectedVendorUuid = dataObj.data.vendor_uuid;
+      this.selectedDisplayOrderID = dataObj.data.Order_Id ? dataObj.data.Order_Id : dataObj.data.internal_order_id;
       this.hideTable = true;
       this.isHistory = true;
   }
@@ -701,7 +704,7 @@ export class OrdersComponent implements OnInit  {
         )
   }
 
-  successCB(res) {
+  successCB(res, display_id = null) {
     // console.log( " res.json(): ", res.json())
     // this.populateDataTable(res.data.rows, false);
 
@@ -723,7 +726,7 @@ export class OrdersComponent implements OnInit  {
     // }
   }
 
-  errorCB(res) {
+  errorCB(res, display_id = null) {
     let genericErrorString = "Some error occured, please contact the Server Admin with code: ORD_RC"
     // TODO: Some error callback here
     this.showSpinner = false;
@@ -747,8 +750,9 @@ export class OrdersComponent implements OnInit  {
 
     // Compile option/data
     let order_id = $(option.elem).data("orderId");
+    let display_id = $(option.elem).data("displayId");
     let vendor_uuid = $(option.elem).data("vendorUuid");
-    console.log("option",option);
+    console.log("display_id",display_id);
     // let line_item_id = $(option.elem).data("lineItemId");
     // let data = {
     //   "order_id": order_id
@@ -757,7 +761,7 @@ export class OrdersComponent implements OnInit  {
     // this.selectedOrderID = order_id;
     // this.hideTable = true;
 
-    this.router.navigate(['/app/orderPayment/', order_id, vendor_uuid]);
+    this.router.navigate(['/app/orderPayment/', order_id, vendor_uuid, display_id]);
   }
 
   regenerateReceipt(option) {
@@ -765,6 +769,7 @@ export class OrdersComponent implements OnInit  {
     // Compile option/data
     let order_id = $(option.elem).data("orderId");
     let line_item_id = $(option.elem).data("lineItemId");
+    let display_id = $(option.elem).data("displayId");
     let data = {
       order_id: order_id,
       line_item_id: line_item_id
@@ -775,11 +780,11 @@ export class OrdersComponent implements OnInit  {
         .subscribe(
             (res) => {
               this.showSpinner = false;
-              this.successCB(res)
+              this.successCB(res, display_id);
             },
             (rej) => {
               this.showSpinner = false;
-              this.errorCB(rej)
+              this.errorCB(rej,display_id);
             }
         )
   }

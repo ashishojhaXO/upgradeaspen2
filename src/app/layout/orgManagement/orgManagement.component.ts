@@ -49,7 +49,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     isRowSelection: null,
     isPageLength: true,
     isPagination: true,
-    fixedColumn: 1,
+    fixedColumn: 0,
     // Any number starting from 1 to ..., but not 0
     isActionColPosition: 0, // This can not be 0, since zeroth column logic might crash
     // since isActionColPosition is 1, isOrder is also required to be sent,
@@ -68,6 +68,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
   widget: any;
   editID: any;
   resultStatus: any;
+  hideSubmit = false;
 
   constructor(
     private okta: OktaAuthService,
@@ -309,7 +310,11 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
         console.log(response);
         if (response) {
           this.showSpinner = false;
-          this.error = { type : response.data ? 'success' : 'fail' , message : response.data ?  'Default Vendor successfully ' + ( this.editID ? 'updated' : 'created' ) : 'Default Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
+          const existingMessage = this.error.message;
+          this.error = { type : response.data ? 'success' : 'fail' , message : existingMessage + (response.data ?  '<br/> Default Vendor successfully ' + ( this.editID ? 'updated' : 'created' ) : ' </br> Default Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed')};
+          if (response.data) {
+            this.hideSubmit = true;
+          }
         }
       },
       err => {
@@ -378,6 +383,10 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
             vendorObj.zip = dataObj.zip;
             vendorObj.country = dataObj.country;
             this.performVendorAdditionRequest(vendorObj);
+          } else {
+            if (response.data) {
+              this.hideSubmit = true;
+            }
           }
         }
       },
@@ -469,55 +478,10 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
   handleCloseModal(modalComponent: PopUpModalComponent) {
     this.error = '';
     this.editID = '';
-
-    this.orgModel.first_name = '';
-    this.orgForm.patchValue({
-      first_name : ''
-    });
-    this.orgModel.last_name = '';
-    this.orgForm.patchValue({
-      last_name : ''
-    });
-    this.orgModel.org_name = '';
-    this.orgForm.patchValue({
-      org_name : ''
-    });
-    this.orgModel.email_id = '';
-    this.orgForm.patchValue({
-      email_id : ''
-    });
-    this.orgModel.alternate_email_id = '';
-    this.orgForm.patchValue({
-      alternate_email_id: ''
-    });
-    this.orgModel.address_1 = '';
-    this.orgForm.patchValue({
-      address_1 : ''
-    });
-    this.orgModel.address_2 = '';
-    this.orgForm.patchValue({
-      address_2 : ''
-    });
-    this.orgModel.city = '';
-    this.orgForm.patchValue({
-      city : ''
-    });
-    this.orgModel.state = '';
-    this.orgForm.patchValue({
-      state : ''
-    });
-    this.orgModel.zip = '';
-    this.orgForm.patchValue({
-      zip : ''
-    });
-    this.orgModel.country = '';
-    this.orgForm.patchValue({
-      country : ''
-    });
-
+    this.hideSubmit = false;
+    this.orgForm.reset();
     modalComponent.hide();
-    this.dataObject.isDataAvailable = false;
-    this.searchDataRequest();
+    this.reLoad();
   }
 
   handleShowModal(modalComponent: PopUpModalComponent) {

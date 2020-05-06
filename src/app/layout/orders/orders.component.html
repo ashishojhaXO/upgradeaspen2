@@ -94,7 +94,7 @@
     <app-line-item-history *ngIf="selectedLineItemID" [lineItemID]="selectedLineItemID"></app-line-item-history>
   </div>
   <ng-template #regular>
-    <app-order-dashboard *ngIf="selectedOrderID && selectedLineItemID" [vendorUuid]="selectedVendorUuid" [orderID]="selectedOrderID" [lineItemID]="selectedLineItemID"></app-order-dashboard>
+    <app-order-dashboard *ngIf="selectedOrderID && selectedLineItemID" [vendorUuid]="selectedVendorUuid" [orderID]="selectedOrderID" [lineItemID]="selectedLineItemID" [displayOrderID]="selectedDisplayOrderID"></app-order-dashboard>
   </ng-template>
 </div>
 <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>

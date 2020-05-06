@@ -28,7 +28,7 @@
         <form [formGroup]="orgForm" novalidate (keydown.enter)="$event.preventDefault()">
           <div class="form">
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Org Name : </label>
+              <label class="col-lg-4 col-md-4">Org Name <span class="mandatory">*</span> </label>
               <input formControlName="org_name" [(ngModel)]="orgModel.org_name" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['org_name'].invalid && (orgForm.controls['org_name'].dirty || orgForm.controls['org_name'].touched)" class="alert alert-danger">
@@ -37,7 +37,7 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Contact First Name : </label>
+              <label class="col-lg-4 col-md-4">Contact First Name <span class="mandatory">*</span> </label>
               <input formControlName="first_name" [(ngModel)]="orgModel.first_name" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['first_name'].invalid && (orgForm.controls['first_name'].dirty || orgForm.controls['first_name'].touched)" class="alert alert-danger">
@@ -46,7 +46,7 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Contact Last Name : </label>
+              <label class="col-lg-4 col-md-4">Contact Last Name <span class="mandatory">*</span> </label>
               <input formControlName="last_name" [(ngModel)]="orgModel.last_name" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['last_name'].invalid && (orgForm.controls['last_name'].dirty || orgForm.controls['last_name'].touched)" class="alert alert-danger">
@@ -55,7 +55,7 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Contact Email : </label>
+              <label class="col-lg-4 col-md-4">Contact Email <span class="mandatory">*</span> </label>
               <input formControlName="email_id" [(ngModel)]="orgModel.email_id" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['email_id'].invalid && (orgForm.controls['email_id'].dirty || orgForm.controls['email_id'].touched)" class="alert alert-danger">
@@ -67,7 +67,7 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Alternate Contact Email : </label>
+              <label class="col-lg-4 col-md-4">Alternate Contact Email  </label>
               <input formControlName="alternate_email_id" [(ngModel)]="orgModel.alternate_email_id" type="text"
                 class="col-lg-8 col-md-8 form-field" />
             </div>
@@ -83,20 +83,20 @@
               Contact Email and Alternate Contact Email should not be same!
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Address 1 : </label>
+              <label class="col-lg-4 col-md-4">Address 1 <span class="mandatory">*</span> </label>
               <input formControlName="address_1" [(ngModel)]="orgModel.address_1" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['address_1'].invalid && (orgForm.controls['address_1'].dirty || orgForm.controls['address_1'].touched)" class="alert alert-danger">
               <div *ngIf="orgForm.controls['address_1'].errors.required">
-                Address is required.
+                Address 1 is required.
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Address 2 : </label>
+              <label class="col-lg-4 col-md-4">Address 2 </label>
               <input formControlName="address_2" [(ngModel)]="orgModel.address_2" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">City : </label>
+              <label class="col-lg-4 col-md-4">City <span class="mandatory">*</span> </label>
               <input formControlName="city" [(ngModel)]="orgModel.city" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['city'].invalid && (orgForm.controls['city'].dirty || orgForm.controls['city'].touched)" class="alert alert-danger">
@@ -105,7 +105,7 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">State : </label>
+              <label class="col-lg-4 col-md-4">State <span class="mandatory">*</span> </label>
               <input formControlName="state" [(ngModel)]="orgModel.state" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['state'].invalid && (orgForm.controls['state'].dirty || orgForm.controls['state'].touched)" class="alert alert-danger">
@@ -114,7 +114,7 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Zip : </label>
+              <label class="col-lg-4 col-md-4">Zip <span class="mandatory">*</span> </label>
               <input formControlName="zip" [(ngModel)]="orgModel.zip" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['zip'].invalid && (orgForm.controls['zip'].dirty || orgForm.controls['zip'].touched)" class="alert alert-danger">
@@ -123,7 +123,7 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Country : </label>
+              <label class="col-lg-4 col-md-4">Country <span class="mandatory">*</span> </label>
               <input formControlName="country" [(ngModel)]="orgModel.country" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['country'].invalid && (orgForm.controls['country'].dirty || orgForm.controls['country'].touched)" class="alert alert-danger">
@@ -132,14 +132,14 @@
               </div>
             </div>
             <div *ngIf="error && error.message" style="text-align: center">
-              <span [class]="error.type === 'success' ? 'success' : 'fail'">{{error.message}}</span>
+              <span [class]="error.type === 'success' ? 'success' : 'fail'" [innerHTML]="error.message"></span>
             </div>
           </div>
         </form>
       </div>
     </div>
     <div class="app-modal-footer">
-      <button type="button" [disabled]="!orgForm.valid" [style.cursor]="!orgForm.valid ? 'not-allowed' : 'pointer'" class="btn btn-primary" (click)="OnSubmit(AddOrg)">
+      <button *ngIf="!hideSubmit" type="button" [disabled]="!orgForm.valid" [style.cursor]="!orgForm.valid ? 'not-allowed' : 'pointer'" class="btn btn-primary" (click)="OnSubmit(AddOrg)">
         {{ editID ? ' Update' : ' Add ' }}
       </button>
       <button type="button" class="btn btn-secondary" (click)="handleCloseModal(AddOrg)">

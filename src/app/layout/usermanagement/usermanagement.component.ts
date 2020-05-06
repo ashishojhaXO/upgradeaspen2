@@ -59,11 +59,11 @@ export class UserManagementComponent implements OnInit  {
 
     // TODO: How is this 'blah' thing even happening!!!
     isColumnDefs: [
-      { 
-        type: 'name-string-not-nullund', 
+      {
+        type: 'name-string-not-nullund',
         targets: '_all',
-        render: (data, type, row, meta)=>{ 
-          return data; 
+        render: (data, type, row, meta)=>{
+          return data;
         }
       },
       {
@@ -119,6 +119,7 @@ export class UserManagementComponent implements OnInit  {
   response: any;
   orgValue = '';
   hasData: boolean;
+  hideSubmit = false;
 
   sourceOptions = [
     {
@@ -152,7 +153,7 @@ export class UserManagementComponent implements OnInit  {
       first: new FormControl('', Validators.required),
       last: new FormControl('', Validators.required),
       role: new FormControl('', Validators.required),
-      org: new FormControl('', Validators.required),
+      org: new FormControl('', this.isRoot ? Validators.required: null),
       vendor: new FormControl('', Validators.required),
     });
 
@@ -192,9 +193,9 @@ export class UserManagementComponent implements OnInit  {
     this.searchOrgRequest();
 
     // Init Datatables Extension Plug-ins
-    // new DataTablePluginExt() 
+    // new DataTablePluginExt()
     // this.loadScript("../../../services/data-table-plugin-ext.js");
-    // console.log("UMM: ", 
+    // console.log("UMM: ",
     //   $('#example thead th')
     //   .each( function () {
     //     console.log("DODODO");
@@ -562,10 +563,10 @@ export class UserManagementComponent implements OnInit  {
 
     let title = "T";
 
-    let icon = 
+    let icon =
     '<i class="fa fa-search col-search" (click)="colSearch" aria-hidden="true"></i>';
-    let searchInputElem = 
-    '<input type="text" class="col-search-input display-none display-block" placeholder="Search '+title+'" />' 
+    let searchInputElem =
+    '<input type="text" class="col-search-input display-none display-block" placeholder="Search '+title+'" />'
 
     let icse = icon + "&nbsp;" + searchInputElem;
 
@@ -707,6 +708,7 @@ export class UserManagementComponent implements OnInit  {
           if (response) {
             this.showSpinner = false;
             this.error = { type : 'success' , message : response };
+            this.hideSubmit = true;
           }
           // modalComponent.hide();
         },
@@ -747,21 +749,18 @@ export class UserManagementComponent implements OnInit  {
 
   handleCloseModal(modalComponent: PopUpModalComponent) {
     this.error = '';
-    this.userModel.email = '';
-    this.userForm.patchValue({
-      email : ''
-    });
-    this.userModel.first = '';
-    this.userForm.patchValue({
-      first : ''
-    });
-    this.userModel.last = '';
-    this.userForm.patchValue({
-      last : ''
-    });
-    this.selectedSource = 'f7';
-    this.selectedVendor = '';
+    this.hideSubmit = false;
+    this.userForm.reset();
+    this.selectedSource = '';
+
+    if (this.vendorOptions && this.vendorOptions.length) {
+      this.selectedVendor = this.vendorOptions[0].id;
+      this.userForm.patchValue({
+        vendor: this.vendorOptions[0].id
+      });
+    }
     modalComponent.hide();
+    this.reLoad();
 
     // TODO: Temporarily deactivating these 2 lines,
     // since they may not be needed on modal close
@@ -772,6 +771,12 @@ export class UserManagementComponent implements OnInit  {
   handleShowModal(modalComponent: PopUpModalComponent) {
     this.getRoles();
     modalComponent.show();
+    if (this.orgArr.length) {
+      this.selectedOrg = this.orgArr[0].id;
+      this.userForm.patchValue({
+        org : this.orgArr[0].id
+      });
+    }
   }
 
   // Started

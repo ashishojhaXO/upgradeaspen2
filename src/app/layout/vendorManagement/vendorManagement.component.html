@@ -39,7 +39,7 @@
         <form [formGroup]="vendorForm" novalidate (keydown.enter)="$event.preventDefault()">
           <div class="form">
             <div class="form-group-fields" *ngIf="isRoot">
-              <label class="col-lg-4 col-md-4">Org : </label>
+              <label class="col-lg-4 col-md-4">Org <span class="mandatory">*</span> </label>
               <select formControlName="org" [(ngModel)]="vendorModel.org" class="col-lg-8 col-md-8 form-field">
                 <option *ngFor="let org of orgArr" [value]="org.id">
                   {{ org.text }}
@@ -52,7 +52,7 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">External Vendor ID : </label>
+              <label class="col-lg-4 col-md-4">External Vendor ID <span class="mandatory">*</span> </label>
               <input formControlName="external_vendor_id" [(ngModel)]="vendorModel.external_vendor_id" type="text" class="col-lg-8 col-md-8 form-field"
               />
             </div>
@@ -62,7 +62,7 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">First Name : </label>
+              <label class="col-lg-4 col-md-4">First Name <span class="mandatory">*</span> </label>
               <input formControlName="first_name" [(ngModel)]="vendorModel.first_name" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="vendorForm.controls['first_name'].invalid && (vendorForm.controls['first_name'].dirty || vendorForm.controls['first_name'].touched)" class="alert alert-danger">
@@ -71,7 +71,7 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Last Name : </label>
+              <label class="col-lg-4 col-md-4">Last Name <span class="mandatory">*</span> </label>
               <input formControlName="last_name" [(ngModel)]="vendorModel.last_name" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="vendorForm.controls['last_name'].invalid && (vendorForm.controls['last_name'].dirty || vendorForm.controls['last_name'].touched)" class="alert alert-danger">
@@ -80,7 +80,7 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Company Name : </label>
+              <label class="col-lg-4 col-md-4">Company Name <span class="mandatory">*</span> </label>
               <input formControlName="company_name" [(ngModel)]="vendorModel.company_name" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="vendorForm.controls['company_name'].invalid && (vendorForm.controls['company_name'].dirty || vendorForm.controls['company_name'].touched)" class="alert alert-danger">
@@ -89,7 +89,7 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Email : </label>
+              <label class="col-lg-4 col-md-4">Email <span class="mandatory">*</span> </label>
               <input formControlName="email" [(ngModel)]="vendorModel.email" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="vendorForm.controls['email'].invalid && (vendorForm.controls['email'].dirty || vendorForm.controls['email'].touched)" class="alert alert-danger">
@@ -97,16 +97,16 @@
                 Email is required.
               </div>
               <div *ngIf="vendorForm.controls['email'].errors.pattern">
-                Incorrect Email Format
+                Incorrect Email Format.
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Address 1 : </label>
+              <label class="col-lg-4 col-md-4">Address 1 <span class="mandatory">*</span> </label>
               <input formControlName="address_1" [(ngModel)]="vendorModel.address_1" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="vendorForm.controls['address_1'].invalid && (vendorForm.controls['address_1'].dirty || vendorForm.controls['address_1'].touched)" class="alert alert-danger">
               <div *ngIf="vendorForm.controls['address_1'].errors.required">
-                Address is required.
+                Address 1 is required.
               </div>
             </div>
             <div class="form-group-fields">
@@ -114,7 +114,7 @@
               <input formControlName="address_2" [(ngModel)]="vendorModel.address_2" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">City : </label>
+              <label class="col-lg-4 col-md-4">City <span class="mandatory">*</span> </label>
               <input formControlName="city" [(ngModel)]="vendorModel.city" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="vendorForm.controls['city'].invalid && (vendorForm.controls['city'].dirty || vendorForm.controls['city'].touched)" class="alert alert-danger">
@@ -123,7 +123,7 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">State : </label>
+              <label class="col-lg-4 col-md-4">State <span class="mandatory">*</span> </label>
               <input formControlName="state" [(ngModel)]="vendorModel.state" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="vendorForm.controls['state'].invalid && (vendorForm.controls['state'].dirty || vendorForm.controls['state'].touched)" class="alert alert-danger">
@@ -132,7 +132,7 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Zip : </label>
+              <label class="col-lg-4 col-md-4">Zip <span class="mandatory">*</span> </label>
               <input formControlName="zip" [(ngModel)]="vendorModel.zip" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="vendorForm.controls['zip'].invalid && (vendorForm.controls['zip'].dirty || vendorForm.controls['zip'].touched)" class="alert alert-danger">
@@ -141,7 +141,7 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Country : </label>
+              <label class="col-lg-4 col-md-4">Country <span class="mandatory">*</span> </label>
               <input formControlName="country" [(ngModel)]="vendorModel.country" type="text" class="col-lg-8 col-md-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="vendorForm.controls['country'].invalid && (vendorForm.controls['country'].dirty || vendorForm.controls['country'].touched)" class="alert alert-danger">
@@ -157,7 +157,7 @@
       </div>
     </div>
     <div class="app-modal-footer">
-      <button type="button" [disabled]="!vendorForm.valid" [style.cursor]="!vendorForm.valid ? 'not-allowed' : 'pointer'" [style.opacity]="!vendorForm.valid ? 0.7 : 1" class="btn btn-primary" (click)="OnSubmit(AddVendor)">
+      <button type="button" *ngIf="!hideSubmit" [disabled]="!vendorForm.valid" [style.cursor]="!vendorForm.valid ? 'not-allowed' : 'pointer'" [style.opacity]="!vendorForm.valid ? 0.7 : 1" class="btn btn-primary" (click)="OnSubmit(AddVendor)">
         {{ editID ? ' Update' : ' Add ' }}
       </button>
       <button type="button" class="btn btn-secondary" (click)="handleCloseModal(AddVendor)">

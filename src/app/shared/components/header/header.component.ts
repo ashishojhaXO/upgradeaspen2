@@ -202,13 +202,14 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
             });
           }
 
+
           let isRoot = false;
           let isAdmin = false;
           let removeMenuItems = true;
           if (groupArr.length) {
             groupArr.forEach(function (grp) {
-              if (grp === 'ADMIN' || grp === 'ROOT' || grp === 'SUPER_USER' || grp === 'ORG_ADMIN') {
-                if(grp === 'ADMIN' || grp === 'ORG_ADMIN') {
+              if (grp === 'ROOT' || grp === 'SUPER_USER' || grp === 'ORG_ADMIN') {
+                if(grp === 'ORG_ADMIN') {
                   isAdmin = true;
                 }
                 if (grp === 'ROOT' || grp === 'SUPER_USER') {
@@ -219,17 +220,18 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
             });
           }
 
-          this.mainmenu = response['admin'];
-
+         // this.mainmenu = response['admin'];
+          const menu = JSON.parse(JSON.stringify(response['admin']));
+          this.mainmenu = menu;
+          
           if (removeMenuItems) {
-            var reducedMenu = this.mainmenu.filter(function (res) {
+            var reducedMenu = menu.filter(function (res) {
               return res.id !== 'payments' && res.id !== 'admin' && res.id !== 'reports';
             });
             this.mainmenu = reducedMenu;
           }
 
           if (isAdmin && !isRoot) {
-            const menu = JSON.parse(JSON.stringify(response['admin']));
             this.mainmenu = menu.map(function (m){
               if (m.name === 'admin') {
                 m.submenu = m.submenu.filter(function (ele: any) {

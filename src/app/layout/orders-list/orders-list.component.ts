@@ -54,6 +54,7 @@ export class OrdersListComponent implements OnInit  {
   templateArr = [];
   editID = '';
   payID = '';
+  vendorID: string;
 
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
@@ -72,7 +73,8 @@ export class OrdersListComponent implements OnInit  {
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
     this.getTemplates();
-    this.searchDataRequest(this.templateValue);
+    this.vendorID = JSON.parse(localStorage.getItem("customerInfo") ).vendor.vendor_id;
+
   }
 
   cancelOrder() {
@@ -207,15 +209,38 @@ export class OrdersListComponent implements OnInit  {
   handleEdit(dataObj: any) {
     console.log('rowData >>>')
     console.log(dataObj.data);
-    this.editID = dataObj.data.id;
-    this.router.navigate(['/app/order/create', this.editID]);
+    // this.editID = dataObj.data.id;
+    this.editID = dataObj.data.order_id;
+    this.router.navigate(['/app/order/create', this.editID, this.vendorID]);
   }
 
+  loggedInVendor: any;
+
   handleRun(dataObj: any){
+    console.log('rowData >>>', dataObj)
+    console.log(dataObj.data);
+    // this.payID = dataObj.data.id;
+    this.payID = dataObj.data.order_id;
+    this.router.navigate(['/app/orderPayment/', this.payID, this.vendorID]);
+  }
+
+  handleDelete(dataObj: any) {
+    // if(dataObj.event) {
+    //   console.log("IFFFFFF")
+    //   dataObj.event.preventDefault();
+    // }
+
     console.log('rowData >>>')
     console.log(dataObj.data);
-    this.payID = dataObj.data.id;
-    this.router.navigate(['/app/orderPayment/', this.payID]);
+    // this.editID = dataObj.data.id;
+    this.editID = dataObj.data.order_id;
+    Swal({
+      title: 'To be Implemented',
+      html: "Functionality to be implemented.",
+      type: 'info'
+    });
+
+    // this.router.navigate(['/app/order/delete', this.editID]);
   }
 
   getOrganizations() {
@@ -236,6 +261,7 @@ export class OrdersListComponent implements OnInit  {
           }, this);
           console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>', this.templateArr);
           this.showSpinner = false;
+          this.searchDataRequest(this.templateArr.length === 1 ? this.templateArr[0].id : this.templateValue);
         }
       },
       err => {
