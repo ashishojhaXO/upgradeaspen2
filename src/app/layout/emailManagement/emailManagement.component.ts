@@ -182,11 +182,35 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
     console.log('this.selected >>!!!!')
     console.log(this.selected);
 
-    const obj = { 'email_ids' : this.selected.map(function (m) {
-        return m.id;
-      })};
+    // Success show if stayHere or to ReprtsPage
+    let popUpOptions = {
+      title: 'Unblock Email?',
+      html: "Are you sure you wish to unblock this email?",
+      type: 'info',
+      reverseButtons: true,
+      showCloseButton: true,
+      showCancelButton: true,
+      cancelButtonText: "Oops, clicked it by mistake!",
+      confirmButtonText: "I am Sure!"
+    };
+    this.popUp.showPopUp(popUpOptions).then(
+      (ok) => {
+        if(ok.value) {
 
-    this.performEmailDeletionRequest(obj);
+          const obj = { 'email_ids' : this.selected.map(function (m) {
+              return m.id;
+            })};
+
+          this.performEmailDeletionRequest(obj);
+
+        }
+      },
+      (rej) => {
+        // console.log("rej Value", rej)
+      }
+    );
+
+
   }
 
   handleDownload(rowObj: any, rowData: any) {
