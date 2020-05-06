@@ -215,6 +215,10 @@ export class OrdersComponent implements OnInit  {
   }
 
   apiMethod = (table, pageLength, csv?) => {
+    let searchVal = table.search();
+    if((searchVal.trim())!=""){
+      this.doDownloadOrderCsv(table);
+    }else{
     this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
 
     if(csv){
@@ -224,6 +228,46 @@ export class OrdersComponent implements OnInit  {
     else {
       this.searchDataRequest(null, table);
     }
+   }
+  }
+  doDownloadOrderCsv(table){
+    let tblData = table.rows( {page: 'current', filter : 'applied'} ).data();
+    var visible_columns = [];
+    table.columns().every( function () {
+      if(this.visible()){
+        visible_columns.push($(this.header()).text());
+      }
+   });       
+	  console.log('visible_columns', visible_columns);
+    let dtcolArr = table.columns().header().toArray().map(x => x.innerText); 
+    let dtrowObject = {};
+    let dtDataArr = [];
+    for (var i = 0; i < tblData.length; i++) {       
+      dtrowObject = {};
+      for (var x = 0; x < tblData[i].length; x++) { 
+        let colName= dtcolArr[x];
+        dtrowObject[colName] = tblData[i][x];
+      }
+      dtDataArr.push(dtrowObject);
+    }
+    console.log("dtDataArr",dtDataArr);
+
+    let rows = dtDataArr;
+    let arr: Array<String> = [];
+    if (rows && rows.length) {
+      rows.filter(res => delete res['ACTIONS']);
+      const filRows = rows.filter(res => delete res[""]);
+      arr.push(Object.keys(filRows[0]).join(",").replace(/_/g, ' ').toUpperCase());
+      let dataRows = filRows.map((k, v) => { return Object.values(k).join(", "); })
+      arr = arr.concat(dataRows);
+    }
+    let csvStr: String = "";
+    csvStr = arr.join("\n");
+    // var data = encode(csvStr);
+    let b64 = btoa(csvStr as string);
+    let a = "data:text/csv;base64," + b64;
+    $('<a href=' + a + ' download="data.csv">')[0].click();
+    return arr;
   }
 
   searchOrgRequest() {
