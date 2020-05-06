@@ -27,6 +27,7 @@ import {A2Edatetimepicker} from 'ng2-eonasdan-datetimepicker';
 import { TooltipModule } from './../shared/directives/tooltip.module';
 import { AppTag2Module } from './../shared/components/app-tag2/app-tag2.module';
 import { AppFileUploaderModule } from './../shared/components/app-file-uploader/app-file-uploader.module';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 //declarations
 import { DashboardsComponent } from './dashboards/dashboards.component';
@@ -101,7 +102,8 @@ import { ReconciliationProfilesComponent } from './reconciliation/reconciliation
         A2Edatetimepicker,
         TooltipModule,
         AppTag2Module,
-        AppFileUploaderModule
+        AppFileUploaderModule,
+        ColorPickerModule
     ],
     declarations: [
         LayoutComponent,
