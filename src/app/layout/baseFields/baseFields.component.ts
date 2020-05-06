@@ -22,7 +22,12 @@ export class BaseFieldsComponent implements OnInit {
   widget: any;
   isRoot: boolean;
   org: string;
-  orgArr: any;
+  orgArr = [];
+  clearSelectedFields = false;
+  select2Options = {
+    // placeholder: { id: '', text: 'Select organization' }
+  };
+  orgValue = '';
 
   constructor(private okta: OktaAuthService, private http: Http) { }
 
@@ -64,9 +69,9 @@ export class BaseFieldsComponent implements OnInit {
       this.attributes =  {
         "attributes": baseItems
       };
-      
-      if(this.org && this.isRoot) {
-        this.attributes.org_uuid = this.org
+
+      if (this.isRoot) {
+        this.attributes.org_uuid = this.orgValue ? this.orgValue : null;
       }
 
       console.log('template base Response>>>>>', this.attributes);
@@ -103,16 +108,13 @@ export class BaseFieldsComponent implements OnInit {
     return this.searchOrgData().subscribe(
         response => {
           if (response && response.data) {
-
-            const orgArr = [];
+            this.orgArr.push({ id: '', text: 'All'});
             response.data.forEach(function (item) {
-              orgArr.push({
+              this.orgArr.push({
                 id: item.org_uuid,
                 text: item.org_name
               });
-            });
-
-            this.orgArr = orgArr;
+            }, this);
           }
         },
         err => {
@@ -160,7 +162,14 @@ export class BaseFieldsComponent implements OnInit {
             title: 'Base fields generated',
             text: response.message,
             type: 'success'
-          })
+          }).then((result) => {
+            this.orgValue = '';
+            this.clearSelectedFields = true;
+            const __this = this;
+            setTimeout(function () {
+              __this.clearSelectedFields = false;
+            }, 1000);
+          });
         }
       },
       err => {
@@ -199,5 +208,11 @@ export class BaseFieldsComponent implements OnInit {
         .map(res => {
           return res.json();
         }).share();
+  }
+
+  OnOrgChange(e) {
+    if (e.value && e.value !== this.orgValue) {
+      this.orgValue = e.value;
+    }
   }
 }

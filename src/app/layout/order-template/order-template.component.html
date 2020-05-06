@@ -35,7 +35,6 @@
               <!--{{ org.text }}-->
             <!--</option>-->
           <!--</select>-->
-          {{valueReset}}
           <select2 width="100%" *ngIf="organizations.length"
                    class="col-lg-12 col-md-12"
                    style="padding: 0px;"
@@ -66,8 +65,8 @@
             (onShowSpinner)="onShowSpinner($event)"
             [org]="orgUUID"
             [clearSelectedFields]="clearSelectedFields"
-            [editTemplate]="editTemplate" 
-            [fieldData]="orderFieldsArr" 
+            [editTemplate]="editTemplate"
+            [fieldData]="orderFieldsArr"
             [builderFor]="'order'"></app-customformbuilder>
           </div>
         </div>
@@ -89,7 +88,7 @@
              [org]="orgUUID"
              [clearSelectedFields]="clearSelectedFields"
              [editTemplate]="editTemplate"
-             [fieldData]="lineFieldsArr" 
+             [fieldData]="lineFieldsArr"
              [builderFor]="'lineitem'"></app-customformbuilder>
           </div>
         </div>
