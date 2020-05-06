@@ -14,7 +14,7 @@
           <div class="field pointer shadow-bg" [dndDraggable]="item" [dndEffectAllowed]="'copy'"
                (dndEnd)="onDragEnd($event)">
             <i *ngIf="isBaseField" [ngClass]="item.icon" class="fa pull-left"></i>
-            <h5 style="text-transform: none" *ngIf="isBaseField" class="mb0 dragListItem"><span style="margin-right: 10px" *ngIf="!item.org_id"><i style="font-size: 16px; height: 20px; width: 10px" class="fa fa-globe"></i></span>{{item.name}}</h5>
+            <h5 style="text-transform: none" *ngIf="isBaseField" class="mb0 dragListItem">{{item.name}}</h5>
             <h5 style="text-transform: none" *ngIf="builderFor === 'order'" class="mb0 dragListItem"><span style="margin-right: 10px" *ngIf="!item.org_id"><i style="font-size: 16px; height: 20px; width: 10px" class="fa fa-globe"></i></span>{{item.name}}</h5>
             <h5 style="text-transform: none" *ngIf="builderFor === 'lineitem'" class="mb0 dragListItem"><span style="margin-right: 10px" *ngIf="!item.org_id"><i style="font-size: 16px; height: 20px; width: 10px" class="fa fa-globe"></i></span>{{item.name}}</h5>
           </div>
@@ -27,7 +27,7 @@
         <!--to allow dropping content that is not [dndDraggable] set dndAllowExternal to true-->
 
         <!-- dropdown section -->
-        <section dndDropzone (dndDragover)="onDragover($event)" (dndDrop)="onDrop($event,model.attributes)"
+        <section dndDropzone (dndDragover)="onDragover($event)" (dndDrop)="onDrop($event,model.attributes,isBaseField)"
                  class="dndDropArea empty" style="height: 500px; overflow-y: scroll">
           <h3 *ngIf="model.attributes.length == 0" class="dropHere">Drop Here</h3>
           <div class="field" *ngFor="let item of model.attributes;let i= index;" (dndStart)="onDragStart($event)"

@@ -341,9 +341,8 @@ export class CustomFormbuilderComponent implements OnInit {
     //console.log("dragover", JSON.stringify(event, null, 2));
   }
 
-  onDrop( event:DndDropEvent, list?:any[] ) {
+  onDrop( event:DndDropEvent, list?:any[], isBaseField: boolean = false ) {
     if( list && (event.dropEffect === "copy" || event.dropEffect === "move") ) {
-
       if(event.dropEffect === "copy")
       event.data.dropName = event.data.dropType+'-'+new Date().getTime();
       if(!this.isBaseField){
@@ -353,6 +352,20 @@ export class CustomFormbuilderComponent implements OnInit {
       if( typeof index === "undefined" ) {
         index = list.length;
       }
+
+      if(event.dropEffect === "copy" && !isBaseField) {
+        const checkDup = list.find(x => x.name === event.data.name);
+        if (checkDup) {
+          Swal({
+            title: 'Duplicate Field',
+            // html: item.request_mapped_property ? responseLookup[item.request_mapped_property] : JSON.stringify(responseLookup),
+            html: 'The field "' + event.data.name + '" already exists in the defined fields ',
+            type: 'error'
+          });
+          return;
+        }
+      }
+
       list.splice( index, 0, event.data );
     }
 

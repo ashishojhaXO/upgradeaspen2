@@ -28,8 +28,8 @@
         <form [formGroup]="orgForm" novalidate (keydown.enter)="$event.preventDefault()">
           <div class="form">
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Org Name <span class="mandatory">*</span> </label>
-              <input formControlName="org_name" [(ngModel)]="orgModel.org_name" type="text" class="col-lg-8 col-md-8 form-field"/>
+              <label class="col-lg-4 col-md-4 col-sm-4">Org Name <span class="mandatory">*</span> </label>
+              <input formControlName="org_name" [(ngModel)]="orgModel.org_name" type="text" class="col-lg-8 col-md-8 col-sm-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['org_name'].invalid && (orgForm.controls['org_name'].dirty || orgForm.controls['org_name'].touched)" class="alert alert-danger">
               <div *ngIf="orgForm.controls['org_name'].errors.required">
@@ -37,8 +37,8 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Contact First Name <span class="mandatory">*</span> </label>
-              <input formControlName="first_name" [(ngModel)]="orgModel.first_name" type="text" class="col-lg-8 col-md-8 form-field"/>
+              <label class="col-lg-4 col-md-4 col-sm-4">Contact First Name <span class="mandatory">*</span> </label>
+              <input formControlName="first_name" [(ngModel)]="orgModel.first_name" type="text" class="col-lg-8 col-md-8 col-sm-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['first_name'].invalid && (orgForm.controls['first_name'].dirty || orgForm.controls['first_name'].touched)" class="alert alert-danger">
               <div *ngIf="orgForm.controls['first_name'].errors.required">
@@ -46,8 +46,8 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Contact Last Name <span class="mandatory">*</span> </label>
-              <input formControlName="last_name" [(ngModel)]="orgModel.last_name" type="text" class="col-lg-8 col-md-8 form-field"/>
+              <label class="col-lg-4 col-md-4 col-sm-4">Contact Last Name <span class="mandatory">*</span> </label>
+              <input formControlName="last_name" [(ngModel)]="orgModel.last_name" type="text" class="col-lg-8 col-md-8 col-sm-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['last_name'].invalid && (orgForm.controls['last_name'].dirty || orgForm.controls['last_name'].touched)" class="alert alert-danger">
               <div *ngIf="orgForm.controls['last_name'].errors.required">
@@ -55,8 +55,8 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Contact Email <span class="mandatory">*</span> </label>
-              <input formControlName="email_id" [(ngModel)]="orgModel.email_id" type="text" class="col-lg-8 col-md-8 form-field"/>
+              <label class="col-lg-4 col-md-4 col-sm-4">Contact Email <span class="mandatory">*</span> </label>
+              <input formControlName="email_id" [(ngModel)]="orgModel.email_id" type="text" class="col-lg-8 col-md-8 col-sm-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['email_id'].invalid && (orgForm.controls['email_id'].dirty || orgForm.controls['email_id'].touched)" class="alert alert-danger">
               <div *ngIf="orgForm.controls['email_id'].errors.required">
@@ -67,24 +67,24 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Alternate Contact Email  </label>
+              <label class="col-lg-4 col-md-4 col-sm-4">Alternate Contact Email  </label>
               <input formControlName="alternate_email_id" [(ngModel)]="orgModel.alternate_email_id" type="text"
-                class="col-lg-8 col-md-8 form-field" />
+                     class="col-lg-8 col-md-8 col-sm-8 form-field" />
             </div>
             <div class="col-lg-12 col-md-12 form-field"
-              *ngIf="orgForm.controls['alternate_email_id'].invalid && (orgForm.controls['alternate_email_id'].dirty || orgForm.controls['alternate_email_id'].touched)"
-              class="alert alert-danger">
+                 *ngIf="orgForm.controls['alternate_email_id'].invalid && (orgForm.controls['alternate_email_id'].dirty || orgForm.controls['alternate_email_id'].touched)"
+                 class="alert alert-danger">
               <div *ngIf="orgForm.controls['alternate_email_id'].errors.pattern">
                 Incorrect Email Format
               </div>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.errors?.alternateEmailMatch && (orgForm.touched || orgForm.dirty)"
-              class="alert alert-danger">
+                 class="alert alert-danger">
               Contact Email and Alternate Contact Email should not be same!
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Address 1 <span class="mandatory">*</span> </label>
-              <input formControlName="address_1" [(ngModel)]="orgModel.address_1" type="text" class="col-lg-8 col-md-8 form-field"/>
+              <label class="col-lg-4 col-md-4 col-sm-4">Address 1 <span class="mandatory">*</span> </label>
+              <input formControlName="address_1" [(ngModel)]="orgModel.address_1" type="text" class="col-lg-8 col-md-8 col-sm-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['address_1'].invalid && (orgForm.controls['address_1'].dirty || orgForm.controls['address_1'].touched)" class="alert alert-danger">
               <div *ngIf="orgForm.controls['address_1'].errors.required">
@@ -92,12 +92,12 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Address 2 </label>
-              <input formControlName="address_2" [(ngModel)]="orgModel.address_2" type="text" class="col-lg-8 col-md-8 form-field"/>
+              <label class="col-lg-4 col-md-4 col-sm-4">Address 2 </label>
+              <input formControlName="address_2" [(ngModel)]="orgModel.address_2" type="text" class="col-lg-8 col-md-8 col-sm-8 form-field"/>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">City <span class="mandatory">*</span> </label>
-              <input formControlName="city" [(ngModel)]="orgModel.city" type="text" class="col-lg-8 col-md-8 form-field"/>
+              <label class="col-lg-4 col-md-4 col-sm-4">City <span class="mandatory">*</span> </label>
+              <input formControlName="city" [(ngModel)]="orgModel.city" type="text" class="col-lg-8 col-md-8 col-sm-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['city'].invalid && (orgForm.controls['city'].dirty || orgForm.controls['city'].touched)" class="alert alert-danger">
               <div *ngIf="orgForm.controls['city'].errors.required">
@@ -105,8 +105,8 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">State <span class="mandatory">*</span> </label>
-              <input formControlName="state" [(ngModel)]="orgModel.state" type="text" class="col-lg-8 col-md-8 form-field"/>
+              <label class="col-lg-4 col-md-4 col-sm-4">State <span class="mandatory">*</span> </label>
+              <input formControlName="state" [(ngModel)]="orgModel.state" type="text" class="col-lg-8 col-md-8 col-sm-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['state'].invalid && (orgForm.controls['state'].dirty || orgForm.controls['state'].touched)" class="alert alert-danger">
               <div *ngIf="orgForm.controls['state'].errors.required">
@@ -114,8 +114,8 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Zip <span class="mandatory">*</span> </label>
-              <input formControlName="zip" [(ngModel)]="orgModel.zip" type="text" class="col-lg-8 col-md-8 form-field"/>
+              <label class="col-lg-4 col-md-4 col-sm-4">Zip <span class="mandatory">*</span> </label>
+              <input formControlName="zip" [(ngModel)]="orgModel.zip" type="text" class="col-lg-8 col-md-8 col-sm-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['zip'].invalid && (orgForm.controls['zip'].dirty || orgForm.controls['zip'].touched)" class="alert alert-danger">
               <div *ngIf="orgForm.controls['zip'].errors.required">
@@ -123,13 +123,63 @@
               </div>
             </div>
             <div class="form-group-fields">
-              <label class="col-lg-4 col-md-4">Country <span class="mandatory">*</span> </label>
-              <input formControlName="country" [(ngModel)]="orgModel.country" type="text" class="col-lg-8 col-md-8 form-field"/>
+              <label class="col-lg-4 col-md-4 col-sm-4">Country <span class="mandatory">*</span> </label>
+              <input formControlName="country" [(ngModel)]="orgModel.country" type="text" class="col-lg-8 col-md-8 col-sm-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['country'].invalid && (orgForm.controls['country'].dirty || orgForm.controls['country'].touched)" class="alert alert-danger">
               <div *ngIf="orgForm.controls['country'].errors.required">
                 Country is required.
               </div>
+            </div>
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4 col-sm-4">Logo  </label>
+              <div class="col-lg-8 col-md-8 col-sm-8" style="padding-left: 0px; padding-right: 0px">
+                <!--<input type="radio" [(ngModel)]="orgModel.logo"  name="sex" value="male">Male<br>-->
+                <!--<input type="radio" [(ngModel)]="orgModel.logo"  name="sex" value="female">Female-->
+                <input type="radio" value="url" [checked]="orgModel.logoType === 'url' ? 'checked' : null" formControlName="logoType" style="border: 0px; width: 15px; height: 2em;" [(ngModel)]="orgModel.logoType" (click)="clearLogo('url')"/><span style="margin-right: 10px; margin-left: 10px; position: relative;top: -4px;font-size: 12px;">Url</span>
+                <input type="radio" value="file" [checked]="orgModel.logoType === 'file' ? 'checked' : null" formControlName="logoType" style="border: 0px; width: 15px; height: 2em;" [(ngModel)]="orgModel.logoType" (click)="clearLogo('file')"/><span style="margin-right: 10px; margin-left: 10px; position: relative;top: -4px;font-size: 12px;">File</span>
+                <div *ngIf="orgModel.logoType === 'file'; else fileUrl">
+                  <app-file-uploader [uploadedFile]="logoFile" [acceptType]="'.png,.jpg,.gif'" (processFile)="OnProcessFile($event)"></app-file-uploader>
+                  <p style="clear: both"></p>
+                </div>
+                <ng-template #fileUrl>
+                  <div class="col-lg-12 col-md-12 col-sm-12" style="padding-left: 0px; padding-right: 0px; margin-top: 10px">
+                    <input class="col-lg-6 col-md-6 col-sm-6 form-field" style="width: 100%" type="text" placeholder="Enter the file url" formControlName="logo" [(ngModel)]="orgModel.logo"/>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+            <p style="clear: both"></p>
+            <div class="form-group-fields org-create">
+              <label class="col-lg-4 col-md-4 col-sm-4">Theme Color  </label>
+              <input [value]="orgModel.themeColor"
+                     style="cursor: pointer"
+                     formControlName="themeColor"
+                     class="col-lg-6 col-md-6 col-sm-6 form-field"
+                     [cpPositionRelativeToArrow]="true"
+                     [cpPosition]="'top'"
+                     [cpOKButton]="true"
+                     [cpCancelButton]="true"
+                     [cpCancelButtonClass]= "'btn btn-secondary btn-xs'"
+                     [cpSaveClickOutside]="false"
+                     [cpOKButtonClass]= "'btn btn-primary btn-xs'"
+                     [(colorPicker)]="orgModel.themeColor"/>
+              <div class="col-lg-1 col-md-1 col-sm-1" [style.background]="orgModel.themeColor" style="height: 34px; border: 1px solid #ccc; margin-left: 5px; border-radius: 4px ">
+              </div>
+            </div>
+            <div class="form-group-fields" style="padding-bottom: 0px; margin-right: 40px">
+              <!--<label class="col-lg-4 col-md-4 col-sm-4"></label>-->
+              <div>
+                <a href="javascript:void(0)" style="float: right" *ngIf="orgModel.logo" (click)="toggleLogo()">{{showLogo ? 'Hide' : 'Show' }} Preview</a>
+              </div>
+              <br/>
+              <div *ngIf="showLogo" style="margin-bottom: 10px; padding: 20px" [style.background]="orgModel.themeColor">
+                <img [attr.src]="orgModel.logo" style="width: 192px; height: 34px"/>
+              </div>
+            </div>
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4 col-sm-4">Allow Create Order </label>
+              <input formControlName="allowCreate" style="margin: 0px; width: 20px; height: 20px" [(ngModel)]="orgModel.allowCreate" type="checkbox"/>
             </div>
             <div *ngIf="error && error.message" style="text-align: center">
               <span [class]="error.type === 'success' ? 'success' : 'fail'" [innerHTML]="error.message"></span>
@@ -148,3 +198,4 @@
     </div>
   </app-pop-up-modal>
 </div>
+
