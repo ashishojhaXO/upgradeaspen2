@@ -329,18 +329,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     columnButtonDefs += '<a class="fa fa-envelope fa-action-view emailLink" style="cursor: pointer"></a>';
                 }
 
-                // if (columnButtonDefs) {
-                //     console.log("CDEFFEFEF 1", columns, columnDefs, columnButtonDefs)
-                //     columns.push({
-                //         title: 'ACTIONS'
-                //     });
-                //     columnDefs.push(
-                //         {
-                //         targets: -1,
-                //         defaultContent: columnButtonDefs
-                //     });
-                // }
-
                 if (columnButtonDefs) {
                     let actionColPosition =
                         this.dataObject.gridData.options.isActionColPosition && this.dataObject.gridData.options.isActionColPosition != null ?
@@ -481,8 +469,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 pageLength = this.dataObject.gridData.options.isPageLengthNo;
             }
 
-            console.log("***: ", this.dataObject.gridData.options.isOrder )
-
             // TODO: HERE
             const dataTableOptions = {
                 scrollY: this.height ? this.height : 320,
@@ -498,10 +484,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     style: this.dataObject.gridData.options.isRowSelection && this.dataObject.gridData.options.isRowSelection.isMultiple ? 'multi' : 'os',
                 },
 
-                // ordering: this.dataObject.gridData.options.isOrdering ?
-                //     this.dataObject.gridData.options.isOrdering :
-                //     true,
-
                 order: this.dataObject.gridData.options.isOrder ?
                     this.dataObject.gridData.options.isOrder :
                     [[1, 'asc']],
@@ -512,22 +494,10 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     });
                 },
                 pageLength: pageLength,
-                // sort: true,
                 displayStart: this.dataObject.gridData.options.isDisplayStart || 0,
+                // rowCallback: function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                // },
 
-                rowCallback: function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                    // Get row ID
-                    // console.log('ROW SELECTED >>')
-                    // console.log('header column length : ' + $('#example thead tr').eq(0).find('th').length);
-                    // console.log('body column length : ' + $('#example tbody tr').eq(0).find('td').length);
-
-                    //  var rowId = aData[0];
-                    // // If row ID is in the list of selected row IDs
-                    // if($.inArray(rowId, rows_selected) !== -1){
-                    //   $(row).find('input[type="checkbox"]').prop('checked', true);
-                    //   $(row).addClass('selected');
-                    // }
-                },
                 createdRow: function (row, data, index, cells) {
                     if (__this.dataObject.gridData.columnsToColor) {
                         __this.dataObject.gridData.columnsToColor.forEach(function (column) {
@@ -702,9 +672,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             const table = $('#' + this.tableId).DataTable(dataTableOptions);
             this.table = table;
 
-            console.log('--- TABLE >>>, this');
-            console.log(table, this);
-
         // Attaching Column search to all tables
         let columnSearch = new DataTableColumnSearchPluginExt($, document, table);
 
@@ -870,10 +837,18 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             });
 
             // Handle table draw event ( like pagination, sorting )
-            table.on('draw', function () {
+            table.on('draw', function (ev) {
                 // Update state of "Select all" control
                 console.log('drawn....');
                 __this.adjustHeight(__this);
+
+                let elem = this
+
+                // Sending table after its drawn
+                __this.triggerActions.emit({
+                    action: 'handleDataTableInit',
+                    data: table
+                });
 
                 table.off('draw');
             });
@@ -924,11 +899,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                 $(document).off( 'keyup', 'input.input-sm');
                 $(document).on( 'keyup', 'input.input-sm', function (ev) {
-                    console.log(
-                        "aDT2: ", ev,
-                        " CurrPAG: ", currentPage,
-                        " table.page.info().page ", table.page.info().page
-                    )
                     // If currentPage exists, currentPage is not the same as table's page & also input value goes empty
                     if(currentPage && currentPage != table.page.info().page || ev.currentTarget.value.trim() == "" ){
                         table.page(currentPage).draw(false);
@@ -948,7 +918,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             // FIX *** FOR PROBLEM WHERE THE COLUMN WIDTH IS RENDERED INCORRECTLY
             setTimeout(function () {
-                console.log("SETTTT")
                 table.columns.adjust().draw(false);
             }, 0);
 
