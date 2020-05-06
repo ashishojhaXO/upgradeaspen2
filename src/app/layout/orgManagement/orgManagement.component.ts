@@ -106,8 +106,9 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
       state: '',
       zip: '',
       country: '',
-      themeColor: '#ffffff',
-      logo: '',
+      themeColor: '#252425',
+      logo: 'https://static.accelitas.io/accelitas_logo_trans.png',
+      originalLogo: 'https://static.accelitas.io/accelitas_logo_trans.png',
       allowCreate: true,
       logoType: 'url'
     };
@@ -210,8 +211,16 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     this.showLogo = !this.showLogo;
   }
 
-  clearLogo() {
-    this.orgModel.logo = '';
+  clearLogo(type) {
+    if (type === 'url') {
+      const logo = this.orgModel.originalLogo;
+      this.orgModel.logo = logo;
+      this.orgForm.patchValue({
+        logo : logo
+      });
+    } else {
+      this.orgModel.logo = '';
+    }
   }
 
   handleEdit(dataObj: any) {
@@ -267,6 +276,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     const meta = dataObj.data.ui_metadata ? JSON.parse(dataObj.data.ui_metadata.toString().replace(/'/g, '"')) : null;
     if (meta) {
       this.orgModel.logo = meta.logo;
+      this.orgModel.originalLogo = meta.logo;
       this.orgModel.themeColor = meta.themeColor;
       this.orgModel.allowCreate = meta.order_create_enabled;
     }
@@ -518,7 +528,11 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     this.hideSubmit = false;
     this.showLogo = false;
     this.orgForm.reset();
-    this.orgModel.logo = '';
+    this.orgModel.logo = 'https://static.accelitas.io/accelitas_logo_trans.png';
+    this.orgForm.patchValue({
+      logo : 'https://static.accelitas.io/accelitas_logo_trans.png'
+    });
+    this.orgModel.originalLogo = 'https://static.accelitas.io/accelitas_logo_trans.png';
     this.orgModel.logoType = 'url';
     this.orgForm.patchValue({
       logoType : 'url'
@@ -527,9 +541,9 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     this.orgForm.patchValue({
       allowCreate : true
     });
-    this.orgModel.themeColor = '#ffffff';
+    this.orgModel.themeColor = '#252425';
     this.orgForm.patchValue({
-      themeColor : '#ffffff'
+      themeColor : '#252425'
     });
     modalComponent.hide();
     this.reLoad();
