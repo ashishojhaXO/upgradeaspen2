@@ -8,11 +8,53 @@ import Swal from 'sweetalert2';
 })
 export class AppPopUpComponent implements OnInit {
 
+  popUpDict = {
+    emailUnblockDel: {
+      title: 'Unblock Email?',
+      html: "Are you sure you wish to unblock this email?",
+      type: 'info',
+      reverseButtons: true,
+      showCloseButton: true,
+      showCancelButton: true,
+      cancelButtonText: "Oops, clicked it by mistake!",
+      confirmButtonText: "I am Sure!"
+    },
+    unblockEmailErr: this.emailUnblockErr,
+    unblockEmailSuc: this.emailUnblockSuc
+  }
+
+
   constructor() { 
     // super()
   }
 
   ngOnInit() {
+  }
+
+  emailUnblockSuc(response) {
+    let popUpOptions = {
+      title: 'Success',
+      text: response.message,
+      type: 'success',
+      reverseButtons: true,
+      showCloseButton: true,
+      showCancelButton: true,
+      cancelButtonText: "Cancel"
+    };
+    return popUpOptions
+  }
+
+  emailUnblockErr(err) {
+    let popUpOptions = {
+      title: 'Error',
+      text: err.message,
+      type: 'error',
+      reverseButtons: true,
+      showCloseButton: true,
+      showCancelButton: true,
+      cancelButtonText: "Cancel"
+    };
+    return popUpOptions
   }
 
   // PopUpComponent

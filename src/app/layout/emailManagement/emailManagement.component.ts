@@ -186,14 +186,24 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
     // this.emailIdsToDelete.push(dataObj.data.emailid)
     // this.emailIdsToDelete.push(dataObj.data.id)
 
-    // const obj = { 'email_ids' : this.selected.map(function (m) {
-    //   return m.id;
-    // })};
-    
-    // const obj = {'email_ids': this.emailIdsToDelete}
-    const obj = {'id': dataObj.data.emailid}
+    // Success show if stayHere or to ReprtsPage
+    this.popUp.showPopUp(this.popUp.popUpDict.emailUnblockDel).then(
+      (ok) => {
+        if(ok.value) {
+          // const obj = { 'email_ids' : this.selected.map(function (m) {
+          //   return m.id;
+          // })};
+          // const obj = {'email_ids': this.emailIdsToDelete}
+          const obj = {'id': dataObj.data.emailid}
 
-    this.performEmailDeletionRequest(obj);
+          this.performEmailDeletionRequest(obj);
+        }
+      },
+      (rej) => {
+        // console.log("rej Value", rej)
+      }
+    );
+
   }
 
   handleDownload(rowObj: any, rowData: any) {
@@ -276,16 +286,7 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
             this.showSpinner = false;
             this.dataObject.isDataAvailable = false;
 
-            let popUpOptions = {
-              title: 'Success',
-              text: response.message,
-              type: 'success',
-              reverseButtons: true,
-              showCloseButton: true,
-              showCancelButton: true,
-              cancelButtonText: "Cancel"
-            };
-            this.popUp.showPopUp(popUpOptions);
+            this.popUp.showPopUp(this.popUp.popUpDict.unblockEmailSuc(response));
 
             this.searchDataRequest();
             // this.error = { type : response.status === 'success' ? 'success' : 'fail' , message : response.message };
@@ -304,16 +305,7 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
             this.showSpinner = false;
 
-            let popUpOptions = {
-              title: 'Error',
-              text: err.message,
-              type: 'error',
-              reverseButtons: true,
-              showCloseButton: true,
-              showCancelButton: true,
-              cancelButtonText: "Cancel"
-            };
-            this.popUp.showPopUp(popUpOptions);
+            this.popUp.showPopUp(this.popUp.popUpDict.unblockEmailErr(err));
           }
         }
     );
