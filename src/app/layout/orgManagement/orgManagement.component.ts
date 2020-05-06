@@ -272,6 +272,9 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     }
 
     this.orgModel.logoType = this.orgModel.logo && (this.orgModel.logo.indexOf('http') !== -1 || this.orgModel.logo.indexOf('https') !== -1) ? 'url' : 'file';
+    this.orgForm.patchValue({
+      logoType : this.orgModel.logoType
+    });
 
     this.addOrg.show();
   }
@@ -516,8 +519,18 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     this.showLogo = false;
     this.orgForm.reset();
     this.orgModel.logo = '';
+    this.orgModel.logoType = 'url';
+    this.orgForm.patchValue({
+      logoType : 'url'
+    });
     this.orgModel.allowCreate = true;
+    this.orgForm.patchValue({
+      allowCreate : true
+    });
     this.orgModel.themeColor = '#ffffff';
+    this.orgForm.patchValue({
+      themeColor : '#ffffff'
+    });
     modalComponent.hide();
     this.reLoad();
   }
