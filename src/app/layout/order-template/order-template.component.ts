@@ -5,6 +5,7 @@ import { OktaAuthService } from '../../../services/okta.service';
 import { Headers, RequestOptions, Http } from '@angular/http';
 import * as _ from 'lodash';
 import { ActivatedRoute, Router } from '@angular/router';
+import set = Reflect.set;
 
 
 @Component({
@@ -35,7 +36,12 @@ export class OrderTemplateComponent implements OnInit {
   orgArr = [];
   selectedOrg: any;
   orgValue = '';
+  orgUUID = '';
+  clearSelectedFields = false;
   isRoot: boolean;
+  select2Options = {
+     placeholder: { id: '', text: 'Select organization' }
+  };
 
   constructor(private okta: OktaAuthService, private http: Http,private route: ActivatedRoute, private router: Router) {
     const groups = localStorage.getItem('loggedInUserGroup') || '';
@@ -59,19 +65,22 @@ export class OrderTemplateComponent implements OnInit {
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
 
-    this.route.params.subscribe(params => {
-      if (params['id']) {
-        this.templateId = {
-          "template_id": +params['id']
-        };
-        this.editTemplate = true;
-        this.getTemplate(this.templateId);
-      } else {
-        this.getOrganizations();
-      }
-    });
-
     this.formOnInIt();
+    if (this.isRoot) {
+      this.getOrganizations();
+    } else {
+      this.route.params.subscribe(params => {
+        if (params['id']) {
+          this.templateId = {
+            "template_id": +params['id']
+          };
+          this.editTemplate = true;
+          this.getTemplate(this.templateId);
+        } else {
+          this.showSpinner = false;
+        }
+      });
+    }
   }
 
   formOnInIt() {
@@ -87,6 +96,7 @@ export class OrderTemplateComponent implements OnInit {
         console.log('getOrgani response >>')
         console.log(response);
         if (response && response.org_list) {
+          this.organizations.push({ id: '', text: 'Empty', org_uuid : ''});
           response.org_list.forEach(function (ele) {
             this.organizations.push({
               id: ele.id,
@@ -96,6 +106,19 @@ export class OrderTemplateComponent implements OnInit {
           }, this);
           console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>', this.organizations);
           this.showSpinner = false;
+          this.route.params.subscribe(params => {
+            if (params['id']) {
+              this.templateId = {
+                "template_id": +params['id']
+              };
+              this.editTemplate = true;
+              this.getTemplate(this.templateId);
+            } else {
+              this.orgValue = this.organizations[1].id;
+              this.orgUUID = this.organizations[1].org_uuid;
+              this.templateForm.controls['orgName'].setValue(this.organizations[1].id);
+            }
+          });
         }
       },
       err => {
@@ -151,21 +174,40 @@ export class OrderTemplateComponent implements OnInit {
         let orderFields = [];
         let lineItems = [];
         this.orderForm.model.attributes.forEach(element => {
-          orderFields.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation', 'request_type', 'request_url', 'request_payload', 'request_mapped_property', 'request_dependent_property' ]))
+          orderFields.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation', 'request_type', 'request_url', 'request_payload', 'request_mapped_property', 'request_dependent_property', 'calculated' ]))
         });
         this.lineItemForm.model.attributes.forEach(element => {
-          lineItems.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation', 'request_type', 'request_url', 'request_payload', 'request_mapped_property', 'request_dependent_property']))
+          lineItems.push(_.pick(element, ['id', 'name', 'label', 'type', 'attr_list', 'default_value', 'validation', 'request_type', 'request_url', 'request_payload', 'request_mapped_property', 'request_dependent_property', 'calculated']))
         });
 
         orderFields.forEach(function (order) {
-          if(order.request_dependent_property && order.request_dependent_property.length) {
-            order.request_dependent_property = order.request_dependent_property.join(',');
+
+          if (order.calculated === 1) {
+            order.default_value = '';
+            order.request_dependent_property = '';
+            order.request_mapped_property = '';
+            order.request_type = '';
+            order.request_url = '';
+            order.validation = [];
+          } else {
+            if (order.request_dependent_property && order.request_dependent_property.length) {
+              order.request_dependent_property = order.request_dependent_property.join(',');
+            }
           }
         });
 
         lineItems.forEach(function (line) {
-          if(line.request_dependent_property && line.request_dependent_property.length) {
-            line.request_dependent_property = line.request_dependent_property.join(',');
+          if (line.calculated === 1) {
+            line.default_value = '';
+            line.request_dependent_property = '';
+            line.request_mapped_property = '';
+            line.request_type = '';
+            line.request_url = '';
+            line.validation = [];
+          } else {
+            if (line.request_dependent_property && line.request_dependent_property.length) {
+              line.request_dependent_property = line.request_dependent_property.join(',');
+            }
           }
         });
 
@@ -306,9 +348,16 @@ export class OrderTemplateComponent implements OnInit {
             this.isPublished = false;
           }
           this.templateForm.controls['templateName'].setValue(this.templateField.template.template_name);
+
+          console.log('this.templateField.organizaion.org_id >>')
+            console.log(this.templateField.organizaion.org_id);
+
+          this.orgValue = this.templateField.organizaion.org_id;
+          if (this.organizations.find( x=> x.id == this.orgValue)) {
+            this.orgUUID = this.organizations.find( x=> x.id == this.orgValue).org_uuid;
+          }
           this.templateForm.controls['orgName'].setValue(this.templateField.organizaion.org_id);
           console.log('template edit fields array', this.templateField);
-          this.getOrganizations();
         }
         else{
           this.showSpinner = false;
@@ -362,10 +411,52 @@ export class OrderTemplateComponent implements OnInit {
         }).share();
   }
 
-  cloneForm(){
+  cloneForm() {
     this.isPublished = false;
     this.editTemplate = false;
     this.templateResponse.template_id = "";
     this.templateForm.controls['templateName'].setValue(this.templateField.template.template_name + '_clone');
   }
+
+    OnOrgChange(e) {
+      console.log('e >>>')
+        console.log(e);
+        if (e.value && e.value !== this.orgValue) {
+            if (this.orgValue) {
+                Swal({
+                    title: 'Change Organization ?',
+                    text: 'Changing the organization would replace fields list and remove selected fields',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes'
+                }).then( (result) => {
+                    if (result.value) {
+                        this.orgValue = e.value;
+                        this.templateForm.controls['orgName'].setValue(this.orgValue);
+                        this.orgUUID = this.organizations.find( x=> x.id == this.orgValue).org_uuid;
+                        this.orderFieldsArr = [];
+                        this.clearSelectedFields = true;
+                        const __this = this;
+                        setTimeout(function () {
+                          __this.clearSelectedFields = false;
+                        }, 500);
+                    } else {
+                        const oldValue = JSON.parse(JSON.stringify(this.orgValue));
+                        this.orgValue = '';
+                        const __this = this;
+                        setTimeout(function () {
+                            __this.orgValue = oldValue;
+                        }, 500);
+                    }
+                });
+            } else {
+                this.orgValue = e.value;
+                this.templateForm.controls['orgName'].setValue(this.orgValue);
+                this.orgUUID = this.organizations.find( x=> x.id == this.orgValue).org_uuid;
+                this.orderFieldsArr = [];
+            }
+        }
+    }
 }

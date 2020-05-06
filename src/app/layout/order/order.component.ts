@@ -99,18 +99,19 @@ export class OrderComponent implements OnInit  {
 
         this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
         this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
-        this.searchTemplates();
-
         this.route.params.subscribe(params => {
             if (params['id']) {
                 if (params['vendorId']) {
                     this.vendor_id = params['vendorId'];
                 }
+                this.searchTemplates(true);
                 this.searchDateRequest(params['id'], params['lineItemId']);
                 // if(this.templates.length) {
                 //   this.template = '41';
                 //   this.searchTemplateDetails(this.template);
                 // }
+            } else {
+                this.searchTemplates();
             }
         });
     }
@@ -174,7 +175,7 @@ export class OrderComponent implements OnInit  {
             }).share();
     }
 
-    searchTemplates() {
+    searchTemplates(existingOrder = false) {
         this.getTemplates().subscribe(
             response => {
                 this.showSpinner = false;
@@ -185,6 +186,14 @@ export class OrderComponent implements OnInit  {
                             text: ele.name
                         });
                     }, this);
+
+                    if (!existingOrder) {
+                        if (this.templates.length === 1) {
+                            this.template = this.templates[0].id;
+                            this.dataFieldConfiguration = [];
+                            this.searchTemplateDetails(this.template);
+                        }
+                    }
                 }
             },
             err => {
@@ -193,7 +202,7 @@ export class OrderComponent implements OnInit  {
                     this.widget.refreshElseSignout(
                         this,
                         err,
-                        self.searchTemplates.bind(self)
+                        self.searchTemplates.bind(self, existingOrder)
                     );
                 } else {
                     this.showSpinner = false;
@@ -222,6 +231,7 @@ export class OrderComponent implements OnInit  {
 
                         const obj: any = {
                             id: ele.id,
+                            calculated: ele.calculated,
                             label : ele.label,
                             name: ele.name,
                             type: ele.type,
@@ -280,6 +290,7 @@ export class OrderComponent implements OnInit  {
 
                             const obj: any = {
                                 id: ele.id,
+                                calculated: ele.calculated,
                                 default_value: ele.default_value,
                                 label : ele.label,
                                 name: ele.name,
@@ -829,16 +840,18 @@ export class OrderComponent implements OnInit  {
         const lineItemRows = [];
 
         lineItemDef.forEach(function (key) {
-            headers.push({
-                key: key.name,
-                title: key.label.replace(/_/g,' ').toUpperCase() + ( key.validation && key.validation.length && key.validation.indexOf('required') !== -1 ? ' * ' : '' ),
-                data: key.name,
-                isFilterRequired: true,
-                isCheckbox: false,
-                class: 'nocolvis',
-                editButton: false,
-                width: '150'
-            });
+            if (key.calculated !== 1) {
+                headers.push({
+                    key: key.name,
+                    title: key.label.replace(/_/g, ' ').toUpperCase() + (key.validation && key.validation.length && key.validation.indexOf('required') !== -1 ? ' * ' : ''),
+                    data: key.name,
+                    isFilterRequired: true,
+                    isCheckbox: false,
+                    class: 'nocolvis',
+                    editButton: false,
+                    width: '150'
+                });
+            }
         });
 
         if (existingOrderInfo && existingOrderInfo.lineItems && existingOrderInfo.lineItems.length) {
@@ -1024,8 +1037,14 @@ export class OrderComponent implements OnInit  {
                 }
             });
 
+            console.log('reqObj.orderDetail.lineItems[extendedLineItemIndex].lineItemFields >>>')
+            console.log(reqObj.orderDetail.lineItems[extendedLineItemIndex].lineItemFields);
+
             console.log('dataObj >>>')
             console.log(dataObj);
+
+            const displayLineItemObj = reqObj.orderDetail.lineItems[extendedLineItemIndex].lineItemFields.find(x=> x.name === 'line_item_id');
+            const displayLineItemId = displayLineItemObj ? displayLineItemObj.field_value : this.lineItemId;
 
             this.submitLineItemExtensionData(dataObj).subscribe(
                 response => {
@@ -1033,7 +1052,7 @@ export class OrderComponent implements OnInit  {
                         this.showSpinner = false;
                         Swal({
                             title: 'Line Item Extended',
-                            text: 'The Line Item ' + this.lineItemId + ' was successfully extended',
+                            text: 'The Line Item ' + displayLineItemId + ' was successfully extended',
                             type: 'success'
                         }).then(() => {
                             // this.router.navigate(['/app/targetAud/']);

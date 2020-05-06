@@ -16,6 +16,7 @@ import { FormControl, FormGroup, Validators} from '@angular/forms';
 import { OktaAuthService } from '../../../services/okta.service';
 import {DataTableAction } from '../../shared/components/app-data-table/data-table-action';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-vendormanagement',
@@ -73,6 +74,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   orgArr = [];
   isRoot: boolean;
   orgInfo: any;
+  hideSubmit: any;
 
   constructor(
       private okta: OktaAuthService,
@@ -93,7 +95,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     }, this);
 
     this.vendorForm = new FormGroup({
-      org: new FormControl('', Validators.required),
+      org: new FormControl('', this.isRoot ? Validators.required : null),
       external_vendor_id: new FormControl('', Validators.required),
       first_name: new FormControl('', Validators.required),
       last_name: new FormControl('', Validators.required),
@@ -227,7 +229,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     }
 
     const obj: any = {};
-    if (this.isRoot) {
+    if (this.isRoot && org) {
       obj['org_uuid'] = org;
     }
     const dataObj = JSON.stringify(obj);
@@ -283,7 +285,6 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     console.log('rowData >>>')
     console.log(dataObj.data);
     this.editID = dataObj.data.id;
-
     this.vendorModel.org = dataObj.data.org_uuid;
     this.vendorForm.patchValue({
       org : dataObj.data.org_uuid
@@ -333,7 +334,6 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.vendorForm.patchValue({
       country : dataObj.data.country
     });
-
     this.addVendor.show();
 
     //  this.router.navigate(['/app/reports/adHocReportBuilder', rowData.id]);
@@ -346,20 +346,38 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     // console.log('rowData >>>!!!!')
     // console.log(rowData);
 
-    console.log('dataObj >>')
-    console.log(dataObj);
+    Swal({
+      title: 'Are you sure you want to delete this vendor?',
+      text: "You won't be able to revert this!",
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+      if (result.value) {
+        if (dataObj.data.id) {
+          if (dataObj.data.id.no_of_orders > 0 && dataObj.data.id.no_of_users) {
 
-    if (dataObj.data.id) {
-      if (dataObj.data.id.no_of_orders > 0 && dataObj.data.id.no_of_users) {
-        if (!this.showError) {
-          this.showError = true;
-          this.toastr.error('ERROR!', 'Vendor cannot be deleted since it has existing order(s) or user(s) associated with it');
-          this.showError = false;
+            Swal({
+              title: 'Vendor Deletion Failed',
+              html: 'Vendor cannot be deleted since it has existing order(s) or user(s) associated with it',
+              type: 'error'
+            }).then( () => {
+              // this.router.navigate(['/app/admin/invoices']);
+            });
+
+            // if (!this.showError) {
+            //   this.showError = true;
+            //   this.toastr.error('ERROR!', 'Vendor cannot be deleted since it has existing order(s) or user(s) associated with it');
+            //   this.showError = false;
+            // }
+          } else {
+            this.performVendorDeletionRequest(dataObj.data.id);
+          }
         }
-      } else {
-        this.performVendorDeletionRequest(dataObj.data.id);
       }
-    }
+    });
   }
 
   handleDownload(rowObj: any, rowData: any) {
@@ -401,6 +419,9 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
           if (response) {
             this.showSpinner = false;
             this.error = { type : response.data ? 'success' : 'fail' , message : response.data ?  'Vendor successfully ' + ( this.editID ? 'updated' : 'created' ) : 'Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
+            if (response.data) {
+              this.hideSubmit = true;
+            }
           }
         },
         err => {
@@ -450,7 +471,14 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
         response => {
           if (response) {
             this.showSpinner = false;
-            this.searchDataRequest(this.isRoot ? this.orgValue : this.orgInfo.org_id);
+            Swal({
+              title: 'Vendor Deletion Successful',
+              html: 'Vendor ' + id + ' successfully deleted',
+              type: 'success'
+            }).then( () => {
+              this.reLoad();
+            });
+
             // this.error = { type : response.body ? 'success' : 'fail' , message : response.body ?  'Vendor successfully deleted ' : 'Vendor ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
             // this.editID = '';
           }
@@ -464,8 +492,19 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
               self.performVendorDeletionRequest.bind(self, id)
             );
           } else {
-            this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
-            this.showSpinner = false;
+
+            console.log('err >>')
+            console.log(err);
+
+            Swal({
+              title: 'Vendor Deletion Failed',
+              html: err._body ? JSON.parse(err._body).errorMessage : 'No error definition available',
+              type: 'error'
+            }).then( () => {
+              // this.router.navigate(['/app/admin/invoices']);
+            });
+            // this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
+             this.showSpinner = false;
           }
         }
     );
@@ -491,59 +530,10 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   handleCloseModal(modalComponent: PopUpModalComponent) {
     this.error = '';
     this.editID = '';
-
-    this.vendorModel.org = '';
-    this.vendorForm.patchValue({
-      org : ''
-    });
-    this.vendorModel.external_vendor_id = '';
-    this.vendorForm.patchValue({
-      external_vendor_id : ''
-    });
-    this.vendorModel.first_name = '';
-    this.vendorForm.patchValue({
-      first_name : ''
-    });
-    this.vendorModel.last_name = '';
-    this.vendorForm.patchValue({
-      last_name : ''
-    });
-    this.vendorModel.company_name = '';
-    this.vendorForm.patchValue({
-      company_name : ''
-    });
-    this.vendorModel.email = '';
-    this.vendorForm.patchValue({
-      email : ''
-    });
-    this.vendorModel.address_1 = '';
-    this.vendorForm.patchValue({
-      address_1 : ''
-    });
-    this.vendorModel.address_2 = '';
-    this.vendorForm.patchValue({
-      address_2 : ''
-    });
-    this.vendorModel.city = '';
-    this.vendorForm.patchValue({
-      city : ''
-    });
-    this.vendorModel.state = '';
-    this.vendorForm.patchValue({
-      state : ''
-    });
-    this.vendorModel.zip = '';
-    this.vendorForm.patchValue({
-      zip : ''
-    });
-    this.vendorModel.country = '';
-    this.vendorForm.patchValue({
-      country : ''
-    });
-
+    this.hideSubmit = false;
+    this.vendorForm.reset();
     modalComponent.hide();
-    this.dataObject.isDataAvailable = false;
-    this.searchDataRequest(this.isRoot ? this.orgValue : this.orgInfo.org_id);
+    this.reLoad();
   }
 
   handleShowModal(modalComponent: PopUpModalComponent) {

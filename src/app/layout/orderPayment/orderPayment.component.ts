@@ -31,6 +31,7 @@ export class OrderPaymentComponent {
   // domain: string;
   api_fs: any;
   vendorUuid:any;
+  displayId: any;
   widget: any;
 
   constructor(
@@ -57,7 +58,8 @@ export class OrderPaymentComponent {
       console.log('window[\'fs_widget_config\'] >>')
       console.log(window['fs_widget_config']);
       const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
-      this.vendorUuid=this.route.snapshot.paramMap.get('vendor_uuid');
+      this.vendorUuid = this.route.snapshot.paramMap.get('vendor_uuid');
+      this.displayId = this.route.snapshot.paramMap.get('displayId');
       this.initVendorUuid();
       window['fs_widget_config'].vendor_id = this.vendorId = this.vendorUuid;
       window['fs_widget_config'].api_key = customerInfo.org.x_api_key;
@@ -245,7 +247,7 @@ export class OrderPaymentComponent {
               this.showSpinner = false;
               Swal({
                 title: 'Payment Successfully Charged',
-                text: 'Your payment for the order ' + this.orderId + ' was successfully charged',
+                text: 'Your payment for the order ' + (this.displayId ? this.displayId : this.orderId) + ' was successfully charged',
                 type: 'success'
               }).then( () => {
                 this.router.navigate(['/app/order/orders']);
@@ -263,7 +265,7 @@ export class OrderPaymentComponent {
                 this.showSpinner = false;
                 Swal({
                   title: 'Payment Charge Failed',
-                  text: 'We are having trouble charging for the order ' + this.orderId + ' using the selected payment type. Please try again',
+                  text: 'We are having trouble charging for the order ' + (this.displayId ? this.displayId : this.orderId) + ' using the selected payment type. Please try again',
                   type: 'error'
                 });
               }

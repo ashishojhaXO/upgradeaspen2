@@ -293,6 +293,14 @@ const routes: Routes = [
                 },
             },
             {
+                path: 'orderPayment/:id/:vendor_uuid/:displayId',
+                component: OrderPaymentComponent,
+                data: {
+                    breadcrumbs: true,
+                    text: 'Modify Order Payment'
+                },
+            },
+            {
                 path: 'payment',
                 data: {
                     breadcrumbs: true,

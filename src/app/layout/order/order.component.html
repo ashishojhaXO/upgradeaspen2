@@ -16,35 +16,37 @@
     <div style="background: #fff; border-radius: 4px">
       <label style="padding: 0px; margin: 10px 0px 20px 15px; font-size: 16px"><span class="underline">ORDER</span></label>
       <div class="col-lg-12 col-md-12 col-sm-12" style="padding: 15px 0px 20px 0px; background: #fff">
-        <label class="col-lg-2 col-md-2 col-sm-12">Template</label>
-        <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -4px;">
-          <select2 *ngIf="templates.length" width="100%" placeholder="Select Template"
-                   class="col-lg-4 col-md-4"
-                   style="padding: 0px; line-height: 1.42857143; width: 300px"
-                   [value]="template"
-                   [disabled]="existingOrder ? 'disabled' : null"
-                   [style.cursor]="existingOrder ? 'not-allowed' : null"
-                   (valueChanged)="OnTemplateChange($event);"
-                   [data]="templates"></select2>
+        <div *ngIf="templates && templates.length > 1">
+          <label class="col-lg-2 col-md-2 col-sm-12">Template</label>
+          <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -4px;">
+            <select2 *ngIf="templates.length" width="100%" placeholder="Select Template"
+                     class="col-lg-4 col-md-4"
+                     style="padding: 0px; line-height: 1.42857143; width: 300px"
+                     [value]="template"
+                     [disabled]="existingOrder ? 'disabled' : null"
+                     [style.cursor]="existingOrder ? 'not-allowed' : null"
+                     (valueChanged)="OnTemplateChange($event);"
+                     [data]="templates"></select2>
+          </div>
         </div>
         <div *ngIf="data.controls && data.controls.length">
           <div style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12" *ngFor="let def of data.controls; let i = index;">
             <label class="col-lg-2 col-md-2 col-sm-12">{{def.label}} <span class="text-danger">{{def.validation && def.validation.indexOf('required') !== -1 ? '*' : ''}}</span></label>
-            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type ==='varchar' || def.type ==='string'">
+            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="(def.type ==='varchar' || def.type ==='string') && def.calculated !== 1">
               <input class="input-form-control"
                      [style.cursor]="((def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && def.validation && def.validation.indexOf('PostOrderChange') === -1)) && paymentReceived ? 'not-allowed' : null"
                      [attr.disabled]="((def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && def.validation && def.validation.indexOf('PostOrderChange') === -1)) && paymentReceived ? 'disabled' : null"
                      [style.background]="((def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && (!def.validation || ( def.validation && def.validation.indexOf('PostOrderChange') === -1)))) && paymentReceived ? '#EEEEEE' : null"
                      type="text" [formControl]="FormModel.attributes[def.name]"/>
             </div>
-            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'text'">
+            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'text' && def.calculated !== 1">
               <textarea class="input-form-control" rows="10" style="height: 100px"
                      [style.cursor]="((def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && def.validation && def.validation.indexOf('PostOrderChange') === -1)) && paymentReceived? 'not-allowed' : null"
                      [attr.disabled]="((def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && def.validation && def.validation.indexOf('PostOrderChange') === -1)) && paymentReceived  ? 'disabled' : null"
                      [style.background]="((def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && (!def.validation || ( def.validation && def.validation.indexOf('PostOrderChange') === -1)))) && paymentReceived ? '#EEEEEE' : null"
                      type="text" [formControl]="FormModel.attributes[def.name]"></textarea>
             </div>
-            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type ==='checkbox'">
+            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type ==='checkbox' && def.calculated !== 1">
               <div *ngFor="let option of def.options; let i= index">
                 <input class="" type="checkbox"
                        (change)="onCheckItem($event, def,option.id)"
@@ -55,7 +57,7 @@
                        /><span style="margin-left: 5px; position: relative; top: 2px">{{option.text}}</span>
               </div>
             </div>
-            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type ==='radio'">
+            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type ==='radio' && def.calculated !== 1">
               <div *ngFor="let option of def.options; let i= index">
                 <input class="" type="radio" [name]="def.name"
                        [value]="option.id"
@@ -65,7 +67,7 @@
                        [formControl]="FormModel.attributes[def.name]"/><span style="margin-left: 5px; position: relative; top: 1px">{{option.text}}</span>
               </div>
             </div>
-            <div class="col-lg-3 col-md-3 col-sm-12" style="position: relative; top: -4px" *ngIf="def.type === 'date'">
+            <div class="col-lg-3 col-md-3 col-sm-12" style="position: relative; top: -4px" *ngIf="def.type === 'date' && def.calculated !== 1">
               <div class="form-group">
                 <div class="input-group">
                   <input class="input-form-control"
@@ -82,14 +84,14 @@
                 </div>
               </div>
             </div>
-            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'decimal'">
+            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'decimal' && def.calculated !== 1">
               <input class="input-form-control"
                      [style.cursor]="((def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && (!def.validation || ( def.validation && def.validation.indexOf('PostOrderChange') === -1)))) && paymentReceived ? 'not-allowed' : null"
                      [attr.disabled]="((def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && (!def.validation || ( def.validation && def.validation.indexOf('PostOrderChange') === -1)))) && paymentReceived ? 'disabled' : null"
                      [style.background]="((def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && (!def.validation || ( def.validation && def.validation.indexOf('PostOrderChange') === -1)))) && paymentReceived ? '#EEEEEE' : null"
                      [formControl]="FormModel.attributes[def.name]"/>
             </div>
-            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'amount'">
+            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'amount' && def.calculated !== 1">
               <select style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>
               <input style="width: 118px"
                      class="input-form-control"
@@ -98,7 +100,7 @@
                      [style.background]="((def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && (!def.validation || ( def.validation && def.validation.indexOf('PostOrderChange') === -1)))) && paymentReceived ? '#EEEEEE' : null"
                      [formControl]="FormModel.attributes[def.name]"/>
             </div>
-            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'int'">
+            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'int' && def.calculated !== 1">
               <input class="input-form-control"
                      [style.cursor]="((def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && (!def.validation || ( def.validation && def.validation.indexOf('PostOrderChange') === -1)))) && paymentReceived ? 'not-allowed' : null"
                      [attr.disabled]="((def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && (!def.validation || ( def.validation && def.validation.indexOf('PostOrderChange') === -1)))) && paymentReceived ? 'disabled' : null"
@@ -106,7 +108,7 @@
                      type="number"
                      [formControl]="FormModel.attributes[def.name]"/>
             </div>
-            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'list'">
+            <div class="col-lg-3 col-md-3 col-sm-12"  style="position: relative; top: -4px" *ngIf="def.type === 'list' && def.calculated !== 1">
               <select2 *ngIf="def.options" width="100%"
                        class="col-lg-4 col-md-4"
                        [style.cursor]="((def.validation && def.validation.indexOf('disable') !== -1) || (existingOrder && (!def.validation || ( def.validation && def.validation.indexOf('PostOrderChange') === -1)))) && paymentReceived ? 'not-allowed' : null"

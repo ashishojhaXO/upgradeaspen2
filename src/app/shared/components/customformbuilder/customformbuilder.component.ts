@@ -16,7 +16,10 @@ export class CustomFormbuilderComponent implements OnInit {
   @Input() isBaseField: boolean;
   @Input('fieldData') fieldData;
   @Input('editTemplate') editTemplate;
+  @Input() clearSelectedFields: any;
   @Input('builderFor') builderFor;
+  @Input('parent') parent;
+  @Input() org: any;
   api_fs: any;
   externalAuth: any;
   showSpinner: boolean;
@@ -196,6 +199,15 @@ export class CustomFormbuilderComponent implements OnInit {
         }
       }
     }
+
+    if (changes['org'] || changes['clearSelectedFields']) {
+      if (this.org) {
+        this.getAttributes();
+      }
+      if (changes['clearSelectedFields']) {
+        this.model.attributes = [];
+      }
+    }
   }
 
   OnDependentOnChanged(e: any, item): void {
@@ -228,39 +240,18 @@ export class CustomFormbuilderComponent implements OnInit {
             }else if(element.type == 'list'){
               element.dropType = 'autocomplete';
               element.attr_list =  {
-                "options": [
-                  {
-                      "option": "value1"
-                  },
-                  {
-                      "option": "value2"
-                  }
-                ]
+                "options": []
               }
             }else if(element.type == 'radio'){
               element.dropType = 'radio';
               element.attr_list =  {
-                "options": [
-                  {
-                      "option": "value1"
-                  },
-                  {
-                      "option": "value2"
-                  }
-                ]
+                "options": []
               }
             }else if(element.type == 'checkbox'){
               element.dropType = 'checkbox';
               element.checkboxDefault = [];
               element.attr_list =  {
-                "options": [
-                  {
-                      "option": "value1"
-                  },
-                  {
-                      "option": "value2"
-                  }
-                ]
+                "options": []
               }
             }else {
               element.dropType = element.type;
@@ -296,9 +287,13 @@ export class CustomFormbuilderComponent implements OnInit {
       // token = AccessToken.accessToken;
       token = AccessToken;
     }
+
+    console.log('this.org >>>')
+    console.log(this.org);
+
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
-    var url = this.api_fs.api + '/api/orders/templates/attributes';
+    var url = this.api_fs.api + '/api/orders/templates/attributes' + ( this.org ? ('?org_uuid=' + this.org) : '');
     return this.http
         .get(url, options)
         .map(res => {
@@ -346,9 +341,8 @@ export class CustomFormbuilderComponent implements OnInit {
     //console.log("dragover", JSON.stringify(event, null, 2));
   }
 
-  onDrop( event:DndDropEvent, list?:any[] ) {
+  onDrop( event:DndDropEvent, list?:any[], isBaseField: boolean = false ) {
     if( list && (event.dropEffect === "copy" || event.dropEffect === "move") ) {
-
       if(event.dropEffect === "copy")
       event.data.dropName = event.data.dropType+'-'+new Date().getTime();
       if(!this.isBaseField){
@@ -358,6 +352,20 @@ export class CustomFormbuilderComponent implements OnInit {
       if( typeof index === "undefined" ) {
         index = list.length;
       }
+
+      if(event.dropEffect === "copy" && !isBaseField) {
+        const checkDup = list.find(x => x.name === event.data.name);
+        if (checkDup) {
+          Swal({
+            title: 'Duplicate Field',
+            // html: item.request_mapped_property ? responseLookup[item.request_mapped_property] : JSON.stringify(responseLookup),
+            html: 'The field "' + event.data.name + '" already exists in the defined fields ',
+            type: 'error'
+          });
+          return;
+        }
+      }
+
       list.splice( index, 0, event.data );
     }
 
@@ -400,6 +408,9 @@ export class CustomFormbuilderComponent implements OnInit {
   validationSet(field: string, value:boolean, item){
     if(value){
       item.validation.push(field)
+      if (field === 'apiLookup') {
+        item.request_mapped_property = 'data';
+      }
     }else{
       item.validation.splice(item.validation.indexOf(field), 1)
       if(field === 'apiLookup') {
@@ -410,6 +421,10 @@ export class CustomFormbuilderComponent implements OnInit {
         item.request_dependent_property = '';
       }
     }
+  }
+
+  onCalculatedClick(item) {
+    item.calculated = item.calculated === 0 ? 1 : 0;
   }
 
   onCheckboxClick(value, isChecked, item){
@@ -423,42 +438,72 @@ export class CustomFormbuilderComponent implements OnInit {
   }
 
   ValidateAPILookUp(item) {
+    this.parent.showSpinner = true;
+
     this.performApiLookUpForValue(item.request_type, item.request_url, item.request_payload).subscribe(
         responseLookup => {
-          if (item.request_mapped_property) {
-            if (item.dropType === 'autocomplete' || item.dropType === 'checkbox' || item.dropType === 'radio') {
-              if( Object.prototype.toString.call( responseLookup[item.request_mapped_property] ) === '[object Array]' ) {
-                item.default_value = responseLookup[item.request_mapped_property].length ? responseLookup[item.request_mapped_property][0] : '';
-                const options = [];
-                responseLookup[item.request_mapped_property].forEach(function (prop) {
-                  options.push({
-                    "option": prop
-                  });
-                });
-                item.attr_list.options = options;
-              } else {
-                item.default_value = responseLookup[item.request_mapped_property];
-                item.attr_list.options = [{
-                  "option" : responseLookup[item.request_mapped_property]
-                }];
-              }
-            } else {
-              item.default_value = responseLookup[item.request_mapped_property];
-            }
-          }
-          Swal({
-            title: 'Test Successful',
-            html: item.request_mapped_property ? responseLookup[item.request_mapped_property] : JSON.stringify(responseLookup),
-            type: 'success'
-          });
+          // if (item.request_mapped_property) {
+          //   if (item.dropType === 'autocomplete' || item.dropType === 'checkbox' || item.dropType === 'radio') {
+          //     if (Object.prototype.toString.call(responseLookup[item.request_mapped_property]) === '[object Array]') {
+          //       item.default_value = responseLookup[item.request_mapped_property].length ? responseLookup[item.request_mapped_property][0] : '';
+          //       const options = [];
+          //       responseLookup[item.request_mapped_property].forEach(function (prop) {
+          //         options.push({
+          //           "option": prop
+          //         });
+          //       });
+          //       item.attr_list.options = options;
+
+          //       console.log("ITEM: ", item, ", options: ", options)
+
+          //     } else {
+          //       item.default_value = responseLookup[item.request_mapped_property];
+          //       item.attr_list.options = [{
+          //         "option": responseLookup[item.request_mapped_property]
+          //       }];
+          //     }
+          //   } else {
+          //     item.default_value = responseLookup[item.request_mapped_property];
+          //   }
+          // }
+          // else {
+
+
+            // this.showSpinner = true;
+            this.parent.showSpinner = false;
+
+            Swal({
+              title: 'Validation Successful',
+              // html: item.request_mapped_property ? responseLookup[item.request_mapped_property] : JSON.stringify(responseLookup),
+              html: "Field validated successfully.",
+              type: 'success'
+            }).then((value)=>{
+              this.parent.showSpinner = false;
+            }, (err)=>{
+              this.parent.showSpinner = false;
+            });
+              // this.showSpinner = false;
+              this.parent.showSpinner = false;
+
+            let keys = Object.keys(responseLookup).filter((value, index)=> {
+              return value != "status";
+            })
+
+            item.request_mapped_property = keys[0];
+
+          // }
         },
         err => {
+            this.parent.showSpinner = false;
           Swal({
-            title: 'Test Failed',
+            title: 'Validation Failed',
             html: 'Response could not be validated',
             type: 'error'
           });
         });
+            this.parent.showSpinner = false;
+
+
   }
 
   performApiLookUpForValue(requestType, requestUrl, requestPayload) {
@@ -470,18 +515,19 @@ export class CustomFormbuilderComponent implements OnInit {
     }
 
     const data = requestPayload ? requestPayload : {};
+    const apiPath = this.api_fs.api;
 
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
     if(requestType === 'post') {
       return this.http
-          .post(this.api_fs.api + requestUrl, data, options)
+          .post(apiPath + requestUrl, data, options)
           .map(res => {
             return res.json();
           }).share();
-    } else if(requestType === 'get') {
+    } else if (requestType === 'get') {
       return this.http
-          .get(requestUrl, options)
+          .get(apiPath + requestUrl, options)
           .map(res => {
             return res.json();
           }).share();
