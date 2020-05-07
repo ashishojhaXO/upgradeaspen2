@@ -36,9 +36,12 @@ export class OrdersComponent implements OnInit  {
   isDataAvailable: boolean;
   height: any;
   isRoot: boolean;
-  orgArr: any;
+  orgArr = [];
   orgValue = '';
   isHistory: boolean;
+  select2Options = {
+    // placeholder: { id: '', text: 'Select organization' }
+  };
   options: Array<any> = [{
     isSearchColumn: true,
     isTableInfo: true,
@@ -164,6 +167,7 @@ export class OrdersComponent implements OnInit  {
   response: any;
   org: string;
   selectedVendorUuid:any;
+  currentTable: any;
 
   constructor(
       private okta: OktaAuthService,
@@ -208,13 +212,17 @@ export class OrdersComponent implements OnInit  {
     // }
     if (this.isRoot) {
       this.allowOrderFunctionality = 'true';
+      this.searchOrgRequest();
+    } else {
+      this.searchDataRequest();
     }
-
-    this.searchDataRequest();
-    this.searchOrgRequest();
   }
 
   apiMethod = (table, pageLength, csv?) => {
+    let searchVal = table.search();
+    if((searchVal.trim())!=""){
+      this.doDownloadOrderCsv(table);
+    }else{
     this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
 
     if(csv){
@@ -224,6 +232,46 @@ export class OrdersComponent implements OnInit  {
     else {
       this.searchDataRequest(null, table);
     }
+   }
+  }
+  doDownloadOrderCsv(table){
+    let tblData = table.rows( {page: 'current', filter : 'applied'} ).data();
+    var visible_columns = [];
+    table.columns().every( function () {
+      if(this.visible()){
+        visible_columns.push($(this.header()).text());
+      }
+   });
+	  console.log('visible_columns', visible_columns);
+    let dtcolArr = table.columns().header().toArray().map(x => x.innerText);
+    let dtrowObject = {};
+    let dtDataArr = [];
+    for (var i = 0; i < tblData.length; i++) {
+      dtrowObject = {};
+      for (var x = 0; x < tblData[i].length; x++) {
+        let colName= dtcolArr[x];
+        dtrowObject[colName] = tblData[i][x];
+      }
+      dtDataArr.push(dtrowObject);
+    }
+    console.log("dtDataArr",dtDataArr);
+
+    let rows = dtDataArr;
+    let arr: Array<String> = [];
+    if (rows && rows.length) {
+      rows.filter(res => delete res['ACTIONS']);
+      const filRows = rows.filter(res => delete res[""]);
+      arr.push(Object.keys(filRows[0]).join(",").replace(/_/g, ' ').toUpperCase());
+      let dataRows = filRows.map((k, v) => { return Object.values(k).join(", "); })
+      arr = arr.concat(dataRows);
+    }
+    let csvStr: String = "";
+    csvStr = arr.join("\n");
+    // var data = encode(csvStr);
+    let b64 = btoa(csvStr as string);
+    let a = "data:text/csv;base64," + b64;
+    $('<a href=' + a + ' download="data.csv">')[0].click();
+    return arr;
   }
 
   searchOrgRequest() {
@@ -231,15 +279,17 @@ export class OrdersComponent implements OnInit  {
         response => {
           if (response && response.data) {
 
-            const orgArr = [];
             response.data.forEach(function (item) {
-              orgArr.push({
+              this.orgArr.push({
                 id: item.org_uuid,
                 text: item.org_name
               });
-            });
+            }, this);
 
-            this.orgArr = orgArr;
+            if (this.orgArr.length) {
+             this.orgValue = this.orgArr[0].id;
+             this.searchDataRequest(this.orgValue, this.currentTable);
+            }
           }
         },
         err => {
@@ -356,7 +406,7 @@ export class OrdersComponent implements OnInit  {
     let data = {
       page: 1,
       limit: +localStorage.getItem("gridPageCount"),
-      org: this.org ? this.org : ''
+      org: org ? org : ''
     };
 
     if(table) {
@@ -364,7 +414,7 @@ export class OrdersComponent implements OnInit  {
       data = {
         page: tab.page + 1,
         limit: tab.length,
-        org: this.org ? this.org : ''
+        org: org ? org : ''
       };
     }
 
@@ -373,63 +423,63 @@ export class OrdersComponent implements OnInit  {
 
   calc(res, table) {
     let li = [];
-    let keyNames = {};
-    let keyNamesList = Object.keys(res.data.rows[0]);
-    for(let i = 0; i < keyNamesList.length; i++ ) {
-      keyNames[keyNamesList[i]] = null;
-    }
-
-    // Even when table is not there, still we need to run this,
-    // Since, data will be of the first page.
-    // If !table
-    // Data is in the start, It is the 1st page data, fill the array in the starting
-    if (!table || table.page.info().start == 0) {
-      li.push(...res.data.rows);
-      for(let i = res.data.rows.length; i < res.data.count; i++) {
-        // res.data.rows.push({i: i});
-        li.push( keyNames )
+    if (res.data.rows.length) {
+      let keyNames = {};
+      let keyNamesList = Object.keys(res.data.rows[0]);
+      for(let i = 0; i < keyNamesList.length; i++ ) {
+        keyNames[keyNamesList[i]] = null;
       }
 
-    }
-
-    if(table) {
-      let tab = table.page.info();
-      if(tab.start != 0 && tab.start + +tab.length != res.data.count) {
-
-        // Then fill the array in the middle
-        // Empty in start
-        for(let i = 0; i < tab.start; i++) {
-          li.push(keyNames )
-        }
-        // Data in Middle
+      // Even when table is not there, still we need to run this,
+      // Since, data will be of the first page.
+      // If !table
+      // Data is in the start, It is the 1st page data, fill the array in the starting
+      if (!table || table.page.info().start == 0) {
         li.push(...res.data.rows);
-        // Empty data in the end
-        for(let i = tab.start + res.data.rows.length; i < res.data.count; i++) {
+        for(let i = res.data.rows.length; i < res.data.count; i++) {
+          // res.data.rows.push({i: i});
           li.push( keyNames )
         }
+
       }
 
+      if(table) {
+        let tab = table.page.info();
+        if(tab.start != 0 && tab.start + +tab.length != res.data.count) {
 
-      // Fill Data at the end of the Array
-      if( tab.start != 0 && tab.start + +tab.length == res.data.count
+          // Then fill the array in the middle
+          // Empty in start
+          for(let i = 0; i < tab.start; i++) {
+            li.push(keyNames )
+          }
+          // Data in Middle
+          li.push(...res.data.rows);
+          // Empty data in the end
+          for(let i = tab.start + res.data.rows.length; i < res.data.count; i++) {
+            li.push( keyNames )
+          }
+        }
+
+
+        // Fill Data at the end of the Array
+        if( tab.start != 0 && tab.start + +tab.length == res.data.count
         // table.page.info().end == res.data.count
         ) {
-        let tab = table.page.info();
+          let tab = table.page.info();
 
-        for(let i = 0; i < tab.start; i++) {
-          // res.data.rows.push({i: i});
-          li.push(keyNames)
+          for(let i = 0; i < tab.start; i++) {
+            // res.data.rows.push({i: i});
+            li.push(keyNames)
+          }
+          li.push(...res.data.rows);
         }
-        li.push(...res.data.rows);
+
       }
-
     }
-
     return li;
   }
 
   searchDataRequestCB(res, table) {
-
     this.response = res.data.rows;
     let li = this.calc(res, table);
 
@@ -459,12 +509,13 @@ export class OrdersComponent implements OnInit  {
     .getOrdersLineItems(data, this.isRoot)
     .subscribe(
         response => {
-          if (response) {
-            if (response) {
-              this.showSpinner = false;
-              // this.populateDataTable(response, true);
-              this.searchDataRequestCB(response, table);
-            }
+          if (response && response.data.rows) {
+            this.showSpinner = false;
+            // this.populateDataTable(response, true);
+            this.searchDataRequestCB(response, table);
+          } else {
+            this.showSpinner = false;
+            console.log("No data to show")
           }
         },
         err => {
@@ -481,13 +532,6 @@ export class OrdersComponent implements OnInit  {
 
         }
     );
-  }
-
-
-  orgChange(value) {
-    this.dataObject.isDataAvailable = false;
-    this.org = value;
-    this.searchDataRequest(value);
   }
 
   populateDataTable(response, initialLoad) {
@@ -615,7 +659,7 @@ export class OrdersComponent implements OnInit  {
 
   handleCustom(dataObj: any) {
       this.selectedOrderID = dataObj.data.internal_order_id;
-      this.selectedLineItemID = dataObj.data.Line_Item_Id;
+      this.selectedLineItemID = dataObj.data.internal_line_item_id;
       this.selectedVendorUuid = dataObj.data.vendor_uuid;
       this.selectedDisplayOrderID = dataObj.data.Order_Id ? dataObj.data.Order_Id : dataObj.data.internal_order_id;
       this.hideTable = true;
@@ -683,7 +727,8 @@ export class OrdersComponent implements OnInit  {
   reLoad() {
     this.showSpinner = true;
     this.dataObject.isDataAvailable = false;
-    this.searchDataRequest();
+
+    this.searchDataRequest(this.orgValue, this.currentTable);
   }
 
   getOrders() {
@@ -829,6 +874,25 @@ export class OrdersComponent implements OnInit  {
         )
   }
 
+  handleDataTableInit(ev) {
+    this.currentTable = ev.data;
+  }
+
+  handleEvents(ev: any) {
+    const event = ev.event;
+    // $(ev.elem).data('action');
+
+    if(this[event]) {
+      this[event](ev);
+    } else {
+      // Some problem
+      // Function does not exists in this class, if data-action string is correct
+      // Else if all functions exists, then, data-action string coming from html is not correct
+      console.log(`Orders Error: Problem executing function: ${event}`)
+    }
+
+  }
+
   handleActions(ev: any) {
     const action = $(ev.elem).data('action');
 
@@ -846,5 +910,23 @@ export class OrdersComponent implements OnInit  {
     this.hideTable = false;
     this.selectedOrderID = null;
     this.selectedLineItemID = null;
+  }
+
+  OnOrgChange(e) {
+    if (e.value && e.value !== this.orgValue) {
+      this.dataObject.isDataAvailable = false;
+      this.orgValue = e.value;
+
+      // Seeting the DataTable page to 0, the first page
+      if (this.currentTable) {
+        // if(this.appDataTable2Component && this.appDataTable2Component.table) {
+        // this.currentTable.page(0)
+        this.options[0].isDisplayStart = this.currentTable && this.currentTable.page.info().start ? this.currentTable.page.info().start : 0;
+
+        // this.appDataTable2Component.table.page(0)
+      }
+
+      this.searchDataRequest(this.orgValue, this.currentTable);
+    }
   }
 }

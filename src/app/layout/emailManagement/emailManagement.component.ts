@@ -77,9 +77,10 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
 
   constructor(
       private okta: OktaAuthService,
-      private route: ActivatedRoute, private router: Router, private http: Http, 
-      private popUp: AppPopUpComponent ,
-      private toastr: ToastsManager) {
+      private route: ActivatedRoute, private router: Router, 
+      private http: Http, private toastr: ToastsManager,
+      protected popUp: AppPopUpComponent,
+      ) {
   }
 
   ngOnInit() {
@@ -203,7 +204,10 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
     // this.emailIdsToDelete.push(dataObj.data.emailid)
     // this.emailIdsToDelete.push(dataObj.data.id)
         }
-      }
+      },
+      // (rej) => {
+      //   // console.log("rej Value", rej)
+      // }
     );
 
   }
@@ -286,11 +290,24 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
   }
 
   performEmailDeletionRequest(obj) {
+
     return this.performEmailDeletion(obj).subscribe(
         response => {
           if (response) {
             this.showSpinner = false;
             this.dataObject.isDataAvailable = false;
+
+            let popUpOptions = {
+              title: 'Success',
+              text: response.message,
+              type: 'success',
+              reverseButtons: true,
+              showCloseButton: true,
+              showCancelButton: true,
+              cancelButtonText: "Cancel"
+            };
+            this.popUp.showPopUp(popUpOptions);
+
             this.searchDataRequest();
             // this.error = { type : response.status === 'success' ? 'success' : 'fail' , message : response.message };
             //  this.editID = '';
@@ -307,6 +324,17 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
           } else {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
             this.showSpinner = false;
+
+            let popUpOptions = {
+              title: 'Error',
+              text: err.message,
+              type: 'error',
+              reverseButtons: true,
+              showCloseButton: true,
+              showCancelButton: true,
+              cancelButtonText: "Cancel"
+            };
+            this.popUp.showPopUp(popUpOptions);
           }
         }
     );

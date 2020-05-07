@@ -33,8 +33,8 @@ export class OrderTemplateComponent implements OnInit {
   lineFieldsArr = [];
   isPublished:boolean = false;
   orgInfo: any;
-  orgArr = [];
-  selectedOrg: any;
+  // orgArr = [];
+  // selectedOrg: any;
   orgValue = '';
   orgUUID = '';
   clearSelectedFields = false;
@@ -459,4 +459,9 @@ export class OrderTemplateComponent implements OnInit {
             }
         }
     }
+
+  onShowSpinner(value) {
+    this.showSpinner = value;
+  }
+
 }

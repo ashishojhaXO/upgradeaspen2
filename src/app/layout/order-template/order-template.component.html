@@ -35,7 +35,6 @@
               <!--{{ org.text }}-->
             <!--</option>-->
           <!--</select>-->
-          {{valueReset}}
           <select2 width="100%" *ngIf="organizations.length"
                    class="col-lg-12 col-md-12"
                    style="padding: 0px;"
@@ -63,10 +62,12 @@
           <!--<p>All the core fields marked with asterix(*) symbol should be included in the template.</p>-->
           <div class="order-container">
             <app-customformbuilder #orderForm
+            (onShowSpinner)="onShowSpinner($event)"
             [org]="orgUUID"
             [clearSelectedFields]="clearSelectedFields"
-            [parent]="this"
-            [editTemplate]="editTemplate" [fieldData]="orderFieldsArr" [builderFor]="'order'"></app-customformbuilder>
+            [editTemplate]="editTemplate"
+            [fieldData]="orderFieldsArr"
+            [builderFor]="'order'"></app-customformbuilder>
           </div>
         </div>
         <div class="publishWrapper" *ngIf="isPublished"></div>
@@ -83,10 +84,12 @@
           <!--<p>All the core fields marked with double asterix(**) symbol should be included in the template.</p>-->
           <div class="lineitem-container">
             <app-customformbuilder #lineItemForm
+             (onShowSpinner)="onShowSpinner($event)"
              [org]="orgUUID"
              [clearSelectedFields]="clearSelectedFields"
              [editTemplate]="editTemplate"
-             [fieldData]="lineFieldsArr" [builderFor]="'lineitem'"></app-customformbuilder>
+             [fieldData]="lineFieldsArr"
+             [builderFor]="'lineitem'"></app-customformbuilder>
           </div>
         </div>
         <div class="publishWrapper" *ngIf="isPublished"></div>

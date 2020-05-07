@@ -278,7 +278,10 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
       this.orgModel.logo = meta.logo;
       this.orgModel.originalLogo = meta.logo;
       this.orgModel.themeColor = meta.themeColor;
-      this.orgModel.allowCreate = meta.order_create_enabled;
+      this.orgModel.allowCreate = typeof this.orgModel.allowCreate === 'string' ? (meta.order_create_enabled === 'true' ? true : false) : meta.order_create_enabled;
+      this.orgForm.patchValue({
+        allowCreate : typeof this.orgModel.allowCreate === 'string' ? (meta.order_create_enabled === 'true' ? true : false) : meta.order_create_enabled
+      });
     }
 
     this.orgModel.logoType = this.orgModel.logo && (this.orgModel.logo.indexOf('http') !== -1 || this.orgModel.logo.indexOf('https') !== -1) ? 'url' : 'file';
@@ -340,8 +343,9 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     const meta = {
       logo : this.orgModel.logo,
       themeColor: this.orgModel.themeColor,
-      order_create_enabled: this.orgModel.allowCreate
+      order_create_enabled: this.orgModel.allowCreate ? 'true' : 'false'
     };
+
     dataObj.ui_metadata = JSON.stringify(meta);
 
     console.log('dataObj >>')
