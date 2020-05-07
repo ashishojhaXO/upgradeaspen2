@@ -44,9 +44,11 @@ export default class DataTableColumnSearchPluginExt {
   attachElemsToColumnHeader($, document) {
 
     let self = this;
+    console.log("ARRRCH")
 
     $(document)
     .ready( function(){
+    console.log("ARRRCH REDDD")
       // $('#example thead th')
       // $('table:first thead th')
       $('table:first thead th.sorting, .sorting_asc, .sorting_desc')
