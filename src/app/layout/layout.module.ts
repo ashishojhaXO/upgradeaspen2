@@ -69,7 +69,7 @@ import { JobsComponent } from './jobs/jobs.component';
 import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
 import { ReconciliationLineItemsComponent } from './reconciliation/reconciliation-line-items/reconciliation-line-items.component';
 import { ReconciliationProfilesComponent } from './reconciliation/reconciliation-profiles/reconciliation-profiles.component';
-
+import { FocusDirective } from '../shared/directives/Focus.directive';
 
 @NgModule({
     imports: [
@@ -143,7 +143,8 @@ import { ReconciliationProfilesComponent } from './reconciliation/reconciliation
         OperationsDashboardComponent,
         UploadsComponent,
         ReconciliationLineItemsComponent,
-        ReconciliationProfilesComponent
+        ReconciliationProfilesComponent,
+        FocusDirective
     ],
     providers: [
         AuthGuard,

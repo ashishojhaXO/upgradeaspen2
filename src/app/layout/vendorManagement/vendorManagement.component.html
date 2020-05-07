@@ -40,7 +40,7 @@
           <div class="form">
             <div class="form-group-fields" *ngIf="isRoot">
               <label class="col-lg-4 col-md-4">Org <span class="mandatory">*</span> </label>
-              <select formControlName="org" [(ngModel)]="vendorModel.org" class="col-lg-8 col-md-8 form-field">
+              <select #orgName formControlName="org" [(ngModel)]="vendorModel.org" class="col-lg-8 col-md-8 form-field">
                 <option *ngFor="let org of orgArr" [value]="org.id">
                   {{ org.text }}
                 </option>

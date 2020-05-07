@@ -5,7 +5,7 @@
  * Date: 2019-02-27 14:54:37
  */
 
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
@@ -71,10 +71,12 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
   hideSubmit = false;
   logoFile: any;
   showLogo = false;
+  @ViewChild('org_name') org_nameEl:ElementRef;
 
   constructor(
       private okta: OktaAuthService,
-      private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager) {
+      private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager,
+      private element: ElementRef) {
 
     this.orgForm = new FormGroup({
       org_name: new FormControl('', Validators.required),
@@ -555,6 +557,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
 
   handleShowModal(modalComponent: PopUpModalComponent) {
     modalComponent.show();
+    setTimeout(() => this.org_nameEl.nativeElement.focus());
   }
 
   reLoad(){
