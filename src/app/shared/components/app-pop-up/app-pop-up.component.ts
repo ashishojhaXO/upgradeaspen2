@@ -9,6 +9,16 @@ import Swal from 'sweetalert2';
 export class AppPopUpComponent implements OnInit {
 
   popUpDict = {
+    noData: {
+      title: 'No data!',
+      html: "Looks like empty dataset",
+      type: 'info',
+      // reverseButtons: true,
+      showCloseButton: true,
+      // showCancelButton: true,
+      // cancelButtonText: "Oops, clicked it by mistake!",
+      confirmButtonText: "Ok"
+    },
     emailUnblockDel: {
       title: 'Unblock Email?',
       html: "Are you sure you wish to unblock this email?",

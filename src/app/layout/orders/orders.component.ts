@@ -504,9 +504,8 @@ export class OrdersComponent implements OnInit  {
             this.searchDataRequestCB(response, table);
           } else {
             this.showSpinner = false;
-            this.popUp.showPopUp(this.popUp.popUpDict.noData)
+            self.popUp.showPopUp(self.popUp.popUpDict.noData)
             // console.log("No data to show")
-
           }
         },
         err => {
@@ -869,23 +868,9 @@ export class OrdersComponent implements OnInit  {
     this.currentTable = ev.data;
   }
 
-  handleEvents(ev: any) {
-    const event = ev.event;
-    // $(ev.elem).data('action');
-
-    if(this[event]) {
-      this[event](ev);
-    } else {
-      // Some problem
-      // Function does not exists in this class, if data-action string is correct
-      // Else if all functions exists, then, data-action string coming from html is not correct
-      console.log(`Orders Error: Problem executing function: ${event}`)
-    }
-
-  }
-
   handleActions(ev: any) {
-    const action = $(ev.elem).data('action');
+    // const action = $(ev.elem).data('action');
+    const action = ev.event ? ev.event : $(ev.elem).data('action');
 
     if(this[action]) {
       this[action](ev);
@@ -893,7 +878,7 @@ export class OrdersComponent implements OnInit  {
       // Some problem
       // Function does not exists in this class, if data-action string is correct
       // Else if all functions exists, then, data-action string coming from html is not correct
-      console.log(`Orders Error: Problem executing function: ${action}`)
+      console.log(`Error: Function yet to be implemented: ${action}`)
     }
   }
 

@@ -846,7 +846,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                 // Sending table after its drawn
                 __this.triggerActions.emit({
-                    action: 'handleDataTableInit',
+                    action: 'handleActions',
+                    event: 'handleDataTableInit',
                     data: table
                 });
 
