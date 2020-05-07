@@ -29,7 +29,7 @@
           <div class="form">
             <div class="form-group-fields">
               <label class="col-lg-4 col-md-4 col-sm-4">Org Name <span class="mandatory">*</span> </label>
-              <input formControlName="org_name" [(ngModel)]="orgModel.org_name" type="text" class="col-lg-8 col-md-8 col-sm-8 form-field"/>
+              <input #org_name formControlName="org_name" [(ngModel)]="orgModel.org_name" type="text" class="col-lg-8 col-md-8 col-sm-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['org_name'].invalid && (orgForm.controls['org_name'].dirty || orgForm.controls['org_name'].touched)" class="alert alert-danger">
               <div *ngIf="orgForm.controls['org_name'].errors.required">

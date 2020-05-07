@@ -15,7 +15,7 @@
       <div class="form-group-fields row">
         <label for="templateName" class="col-xs-12 col-sm-2">Template Name</label>
         <div class="col-xs-12 col-sm-6">
-          <input type="text" placeholder="Template Name" class="form-control" aria-label="templateName" formControlName="templateName">
+          <input focus="true" type="text" placeholder="Template Name" class="form-control" aria-label="templateName" formControlName="templateName">
         </div>
         <div class="col-lg-8 col-md-8 form-field alert alert-danger" *ngIf="templateForm.get('templateName').invalid && (templateForm.get('templateName').dirty || templateForm.get('templateName').touched)">
           <div *ngIf="templateForm.get('templateName').errors['required']">
