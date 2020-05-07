@@ -227,7 +227,7 @@ export class OrdersComponent implements OnInit  {
 
     if(csv){
       // Later we need csv function here
-      this.searchDataRequestCsv(null, table, csv);
+      this.searchDataRequestCsv(this.orgValue, table, csv);
     }
     else {
       this.searchDataRequest(null, table);
