@@ -36,9 +36,12 @@ export class OrdersComponent implements OnInit  {
   isDataAvailable: boolean;
   height: any;
   isRoot: boolean;
-  orgArr: any;
+  orgArr = [];
   orgValue = '';
   isHistory: boolean;
+  select2Options = {
+    // placeholder: { id: '', text: 'Select organization' }
+  };
   options: Array<any> = [{
     isSearchColumn: true,
     isTableInfo: true,
@@ -209,10 +212,10 @@ export class OrdersComponent implements OnInit  {
     // }
     if (this.isRoot) {
       this.allowOrderFunctionality = 'true';
+      this.searchOrgRequest();
+    } else {
+      this.searchDataRequest();
     }
-
-    this.searchDataRequest();
-    this.searchOrgRequest();
   }
 
   apiMethod = (table, pageLength, csv?) => {
@@ -276,15 +279,17 @@ export class OrdersComponent implements OnInit  {
         response => {
           if (response && response.data) {
 
-            const orgArr = [];
             response.data.forEach(function (item) {
-              orgArr.push({
+              this.orgArr.push({
                 id: item.org_uuid,
                 text: item.org_name
               });
-            });
+            }, this);
 
-            this.orgArr = orgArr;
+            if (this.orgArr.length) {
+             this.orgValue = this.orgArr[0].id;
+             this.searchDataRequest(this.orgValue, this.currentTable);
+            }
           }
         },
         err => {
@@ -401,7 +406,7 @@ export class OrdersComponent implements OnInit  {
     let data = {
       page: 1,
       limit: +localStorage.getItem("gridPageCount"),
-      org: this.org ? this.org : ''
+      org: org ? org : ''
     };
 
     if(table) {
@@ -409,7 +414,7 @@ export class OrdersComponent implements OnInit  {
       data = {
         page: tab.page + 1,
         limit: tab.length,
-        org: this.org ? this.org : ''
+        org: org ? org : ''
       };
     }
 
@@ -527,24 +532,6 @@ export class OrdersComponent implements OnInit  {
 
         }
     );
-  }
-
-
-  orgChange(value) {
-    this.dataObject.isDataAvailable = false;
-    this.org = value;
-
-    // Seeting the DataTable page to 0, the first page
-    if(this.currentTable) {
-    // if(this.appDataTable2Component && this.appDataTable2Component.table) {
-      // this.currentTable.page(0)
-      this.options[0].isDisplayStart = this.currentTable && this.currentTable.page.info().start ? this.currentTable.page.info().start : 0;
-
-      // this.appDataTable2Component.table.page(0)
-    }
-
-    this.searchDataRequest(value, this.currentTable);
-    // this.searchDataRequest(value);
   }
 
   populateDataTable(response, initialLoad) {
@@ -672,7 +659,7 @@ export class OrdersComponent implements OnInit  {
 
   handleCustom(dataObj: any) {
       this.selectedOrderID = dataObj.data.internal_order_id;
-      this.selectedLineItemID = dataObj.data.Line_Item_Id;
+      this.selectedLineItemID = dataObj.data.internal_line_item_id;
       this.selectedVendorUuid = dataObj.data.vendor_uuid;
       this.selectedDisplayOrderID = dataObj.data.Order_Id ? dataObj.data.Order_Id : dataObj.data.internal_order_id;
       this.hideTable = true;
@@ -923,5 +910,23 @@ export class OrdersComponent implements OnInit  {
     this.hideTable = false;
     this.selectedOrderID = null;
     this.selectedLineItemID = null;
+  }
+
+  OnOrgChange(e) {
+    if (e.value && e.value !== this.orgValue) {
+      this.dataObject.isDataAvailable = false;
+      this.orgValue = e.value;
+
+      // Seeting the DataTable page to 0, the first page
+      if (this.currentTable) {
+        // if(this.appDataTable2Component && this.appDataTable2Component.table) {
+        // this.currentTable.page(0)
+        this.options[0].isDisplayStart = this.currentTable && this.currentTable.page.info().start ? this.currentTable.page.info().start : 0;
+
+        // this.appDataTable2Component.table.page(0)
+      }
+
+      this.searchDataRequest(this.orgValue, this.currentTable);
+    }
   }
 }
