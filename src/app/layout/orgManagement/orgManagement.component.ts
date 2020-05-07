@@ -5,7 +5,7 @@
  * Date: 2019-02-27 14:54:37
  */
 
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
@@ -71,10 +71,12 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
   hideSubmit = false;
   logoFile: any;
   showLogo = false;
+  @ViewChild('org_name') org_nameEl:ElementRef;
 
   constructor(
       private okta: OktaAuthService,
-      private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager) {
+      private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager,
+      private element: ElementRef) {
 
     this.orgForm = new FormGroup({
       org_name: new FormControl('', Validators.required),
@@ -278,7 +280,10 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
       this.orgModel.logo = meta.logo;
       this.orgModel.originalLogo = meta.logo;
       this.orgModel.themeColor = meta.themeColor;
-      this.orgModel.allowCreate = meta.order_create_enabled;
+      this.orgModel.allowCreate = typeof this.orgModel.allowCreate === 'string' ? (meta.order_create_enabled === 'true' ? true : false) : meta.order_create_enabled;
+      this.orgForm.patchValue({
+        allowCreate : typeof this.orgModel.allowCreate === 'string' ? (meta.order_create_enabled === 'true' ? true : false) : meta.order_create_enabled
+      });
     }
 
     this.orgModel.logoType = this.orgModel.logo && (this.orgModel.logo.indexOf('http') !== -1 || this.orgModel.logo.indexOf('https') !== -1) ? 'url' : 'file';
@@ -340,8 +345,9 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     const meta = {
       logo : this.orgModel.logo,
       themeColor: this.orgModel.themeColor,
-      order_create_enabled: this.orgModel.allowCreate
+      order_create_enabled: this.orgModel.allowCreate ? 'true' : 'false'
     };
+
     dataObj.ui_metadata = JSON.stringify(meta);
 
     console.log('dataObj >>')
@@ -551,6 +557,7 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
 
   handleShowModal(modalComponent: PopUpModalComponent) {
     modalComponent.show();
+    setTimeout(() => this.org_nameEl.nativeElement.focus());
   }
 
   reLoad(){

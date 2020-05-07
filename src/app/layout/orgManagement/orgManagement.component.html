@@ -29,7 +29,7 @@
           <div class="form">
             <div class="form-group-fields">
               <label class="col-lg-4 col-md-4 col-sm-4">Org Name <span class="mandatory">*</span> </label>
-              <input formControlName="org_name" [(ngModel)]="orgModel.org_name" type="text" class="col-lg-8 col-md-8 col-sm-8 form-field"/>
+              <input #org_name formControlName="org_name" [(ngModel)]="orgModel.org_name" type="text" class="col-lg-8 col-md-8 col-sm-8 form-field"/>
             </div>
             <div class="col-lg-12 col-md-12 form-field" *ngIf="orgForm.controls['org_name'].invalid && (orgForm.controls['org_name'].dirty || orgForm.controls['org_name'].touched)" class="alert alert-danger">
               <div *ngIf="orgForm.controls['org_name'].errors.required">
@@ -134,10 +134,8 @@
             <div class="form-group-fields">
               <label class="col-lg-4 col-md-4 col-sm-4">Logo  </label>
               <div class="col-lg-8 col-md-8 col-sm-8" style="padding-left: 0px; padding-right: 0px">
-                <!--<input type="radio" [(ngModel)]="orgModel.logo"  name="sex" value="male">Male<br>-->
-                <!--<input type="radio" [(ngModel)]="orgModel.logo"  name="sex" value="female">Female-->
-                <input type="radio" value="url" [checked]="orgModel.logoType === 'url' ? 'checked' : null" formControlName="logoType" style="border: 0px; width: 15px; height: 2em;" [(ngModel)]="orgModel.logoType" (click)="clearLogo('url')"/><span style="margin-right: 10px; margin-left: 10px; position: relative;top: -4px;font-size: 12px;">Url</span>
-                <input type="radio" value="file" [checked]="orgModel.logoType === 'file' ? 'checked' : null" formControlName="logoType" style="border: 0px; width: 15px; height: 2em;" [(ngModel)]="orgModel.logoType" (click)="clearLogo('file')"/><span style="margin-right: 10px; margin-left: 10px; position: relative;top: -4px;font-size: 12px;">File</span>
+                <!--<input type="radio" value="url" [checked]="orgModel.logoType === 'url' ? 'checked' : null" formControlName="logoType" style="border: 0px; width: 15px; height: 2em;" [(ngModel)]="orgModel.logoType" (click)="clearLogo('url')"/><span style="margin-right: 10px; margin-left: 10px; position: relative;top: -4px;font-size: 12px;">Url</span>-->
+                <!--<input type="radio" value="file" [checked]="orgModel.logoType === 'file' ? 'checked' : null" formControlName="logoType" style="border: 0px; width: 15px; height: 2em;" [(ngModel)]="orgModel.logoType" (click)="clearLogo('file')"/><span style="margin-right: 10px; margin-left: 10px; position: relative;top: -4px;font-size: 12px;">File</span>-->
                 <div *ngIf="orgModel.logoType === 'file'; else fileUrl">
                   <app-file-uploader [uploadedFile]="logoFile" [acceptType]="'.png,.jpg,.gif'" (processFile)="OnProcessFile($event)"></app-file-uploader>
                   <p style="clear: both"></p>

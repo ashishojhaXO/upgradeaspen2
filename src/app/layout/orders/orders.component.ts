@@ -36,9 +36,12 @@ export class OrdersComponent implements OnInit  {
   isDataAvailable: boolean;
   height: any;
   isRoot: boolean;
-  orgArr: any;
+  orgArr = [];
   orgValue = '';
   isHistory: boolean;
+  select2Options = {
+    // placeholder: { id: '', text: 'Select organization' }
+  };
   options: Array<any> = [{
     isSearchColumn: true,
     isTableInfo: true,
@@ -209,10 +212,10 @@ export class OrdersComponent implements OnInit  {
     // }
     if (this.isRoot) {
       this.allowOrderFunctionality = 'true';
+      this.searchOrgRequest();
+    } else {
+      this.searchDataRequest();
     }
-
-    this.searchDataRequest();
-    this.searchOrgRequest();
   }
 
   apiMethod = (table, pageLength, csv?) => {
@@ -238,14 +241,14 @@ export class OrdersComponent implements OnInit  {
       if(this.visible()){
         visible_columns.push($(this.header()).text());
       }
-   });       
+   });
 	  console.log('visible_columns', visible_columns);
-    let dtcolArr = table.columns().header().toArray().map(x => x.innerText); 
+    let dtcolArr = table.columns().header().toArray().map(x => x.innerText);
     let dtrowObject = {};
     let dtDataArr = [];
-    for (var i = 0; i < tblData.length; i++) {       
+    for (var i = 0; i < tblData.length; i++) {
       dtrowObject = {};
-      for (var x = 0; x < tblData[i].length; x++) { 
+      for (var x = 0; x < tblData[i].length; x++) {
         let colName= dtcolArr[x];
         dtrowObject[colName] = tblData[i][x];
       }
@@ -276,15 +279,17 @@ export class OrdersComponent implements OnInit  {
         response => {
           if (response && response.data) {
 
-            const orgArr = [];
             response.data.forEach(function (item) {
-              orgArr.push({
+              this.orgArr.push({
                 id: item.org_uuid,
                 text: item.org_name
               });
-            });
+            }, this);
 
-            this.orgArr = orgArr;
+            if (this.orgArr.length) {
+             this.orgValue = this.orgArr[0].id;
+             this.searchDataRequest(this.orgValue, this.currentTable);
+            }
           }
         },
         err => {
@@ -401,7 +406,7 @@ export class OrdersComponent implements OnInit  {
     let data = {
       page: 1,
       limit: +localStorage.getItem("gridPageCount"),
-      org: this.org ? this.org : ''
+      org: org ? org : ''
     };
 
     if(table) {
@@ -409,7 +414,7 @@ export class OrdersComponent implements OnInit  {
       data = {
         page: tab.page + 1,
         limit: tab.length,
-        org: this.org ? this.org : ''
+        org: org ? org : ''
       };
     }
 
@@ -418,58 +423,59 @@ export class OrdersComponent implements OnInit  {
 
   calc(res, table) {
     let li = [];
-    let keyNames = {};
-    let keyNamesList = Object.keys(res.data.rows[0]);
-    for(let i = 0; i < keyNamesList.length; i++ ) {
-      keyNames[keyNamesList[i]] = null;
-    }
-
-    // Even when table is not there, still we need to run this,
-    // Since, data will be of the first page.
-    // If !table
-    // Data is in the start, It is the 1st page data, fill the array in the starting
-    if (!table || table.page.info().start == 0) {
-      li.push(...res.data.rows);
-      for(let i = res.data.rows.length; i < res.data.count; i++) {
-        // res.data.rows.push({i: i});
-        li.push( keyNames )
+    if (res.data.rows.length) {
+      let keyNames = {};
+      let keyNamesList = Object.keys(res.data.rows[0]);
+      for(let i = 0; i < keyNamesList.length; i++ ) {
+        keyNames[keyNamesList[i]] = null;
       }
 
-    }
-
-    if(table) {
-      let tab = table.page.info();
-      if(tab.start != 0 && tab.start + +tab.length != res.data.count) {
-
-        // Then fill the array in the middle
-        // Empty in start
-        for(let i = 0; i < tab.start; i++) {
-          li.push(keyNames )
-        }
-        // Data in Middle
+      // Even when table is not there, still we need to run this,
+      // Since, data will be of the first page.
+      // If !table
+      // Data is in the start, It is the 1st page data, fill the array in the starting
+      if (!table || table.page.info().start == 0) {
         li.push(...res.data.rows);
-        // Empty data in the end
-        for(let i = tab.start + res.data.rows.length; i < res.data.count; i++) {
+        for(let i = res.data.rows.length; i < res.data.count; i++) {
+          // res.data.rows.push({i: i});
           li.push( keyNames )
         }
+
       }
 
+      if(table) {
+        let tab = table.page.info();
+        if(tab.start != 0 && tab.start + +tab.length != res.data.count) {
 
-      // Fill Data at the end of the Array
-      if( tab.start != 0 && tab.start + +tab.length == res.data.count
+          // Then fill the array in the middle
+          // Empty in start
+          for(let i = 0; i < tab.start; i++) {
+            li.push(keyNames )
+          }
+          // Data in Middle
+          li.push(...res.data.rows);
+          // Empty data in the end
+          for(let i = tab.start + res.data.rows.length; i < res.data.count; i++) {
+            li.push( keyNames )
+          }
+        }
+
+
+        // Fill Data at the end of the Array
+        if( tab.start != 0 && tab.start + +tab.length == res.data.count
         // table.page.info().end == res.data.count
         ) {
-        let tab = table.page.info();
+          let tab = table.page.info();
 
-        for(let i = 0; i < tab.start; i++) {
-          // res.data.rows.push({i: i});
-          li.push(keyNames)
+          for(let i = 0; i < tab.start; i++) {
+            // res.data.rows.push({i: i});
+            li.push(keyNames)
+          }
+          li.push(...res.data.rows);
         }
-        li.push(...res.data.rows);
+
       }
-
     }
-
     return li;
   }
 
@@ -526,24 +532,6 @@ export class OrdersComponent implements OnInit  {
 
         }
     );
-  }
-
-
-  orgChange(value) {
-    this.dataObject.isDataAvailable = false;
-    this.org = value;
-
-    // Seeting the DataTable page to 0, the first page
-    if(this.currentTable) {
-    // if(this.appDataTable2Component && this.appDataTable2Component.table) {
-      // this.currentTable.page(0)
-      this.options[0].isDisplayStart = this.currentTable && this.currentTable.page.info().start ? this.currentTable.page.info().start : 0;
-
-      // this.appDataTable2Component.table.page(0)
-    }
-
-    this.searchDataRequest(value, this.currentTable);
-    // this.searchDataRequest(value);
   }
 
   populateDataTable(response, initialLoad) {
@@ -671,7 +659,7 @@ export class OrdersComponent implements OnInit  {
 
   handleCustom(dataObj: any) {
       this.selectedOrderID = dataObj.data.internal_order_id;
-      this.selectedLineItemID = dataObj.data.Line_Item_Id;
+      this.selectedLineItemID = dataObj.data.internal_line_item_id;
       this.selectedVendorUuid = dataObj.data.vendor_uuid;
       this.selectedDisplayOrderID = dataObj.data.Order_Id ? dataObj.data.Order_Id : dataObj.data.internal_order_id;
       this.hideTable = true;
@@ -740,7 +728,7 @@ export class OrdersComponent implements OnInit  {
     this.showSpinner = true;
     this.dataObject.isDataAvailable = false;
 
-    this.searchDataRequest(this.org, this.currentTable);
+    this.searchDataRequest(this.orgValue, this.currentTable);
   }
 
   getOrders() {
@@ -922,5 +910,23 @@ export class OrdersComponent implements OnInit  {
     this.hideTable = false;
     this.selectedOrderID = null;
     this.selectedLineItemID = null;
+  }
+
+  OnOrgChange(e) {
+    if (e.value && e.value !== this.orgValue) {
+      this.dataObject.isDataAvailable = false;
+      this.orgValue = e.value;
+
+      // Seeting the DataTable page to 0, the first page
+      if (this.currentTable) {
+        // if(this.appDataTable2Component && this.appDataTable2Component.table) {
+        // this.currentTable.page(0)
+        this.options[0].isDisplayStart = this.currentTable && this.currentTable.page.info().start ? this.currentTable.page.info().start : 0;
+
+        // this.appDataTable2Component.table.page(0)
+      }
+
+      this.searchDataRequest(this.orgValue, this.currentTable);
+    }
   }
 }

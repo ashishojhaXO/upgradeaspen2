@@ -1,4 +1,4 @@
-import {Component, OnInit, Directive, DoCheck, ViewChild, ChangeDetectorRef, HostListener, Output, EventEmitter} from '@angular/core';
+import {Component, OnInit, Directive, DoCheck, ViewChild, ChangeDetectorRef, HostListener, Output, EventEmitter, ElementRef} from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
@@ -63,7 +63,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   isMenuOpened: boolean;
   resetForm: FormGroup;
   resetModel: any;
-
+  @ViewChild('oldPassword') oldPasswordEl:ElementRef;
   constructor(
       // private okta: OktaAuthService,
       private translate: TranslateService,
@@ -75,7 +75,8 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
       private toastr: ToastsManager,
       private organizationService: OrganizationService,
       private changeDetectorRef: ChangeDetectorRef,
-      private http: Http) {
+      private http: Http,
+      private element: ElementRef) {
 
     this.resetForm = new FormGroup({
       old: new FormControl('', Validators.required),
@@ -549,6 +550,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
 
   resetPassword() {
     this.modalReset.show();
+    setTimeout(() => this.oldPasswordEl.nativeElement.focus());
   }
 
   handleCloseModal(modalComponent: PopUpModalComponent) {

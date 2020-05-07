@@ -5,7 +5,7 @@
  * Date: 2019-02-27 14:54:37
  */
 
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
@@ -138,6 +138,7 @@ export class UserManagementComponent implements OnInit  {
   vendorOptions = [];
   roleOptions = [];
   widget: any;
+  @ViewChild('userEmail') userEmailEl:ElementRef;
 
   constructor(
     private okta: OktaAuthService,
@@ -145,7 +146,8 @@ export class UserManagementComponent implements OnInit  {
     private router: Router,
     private http: Http,
     private popUp: AppPopUpComponent,
-    private genericService: GenericService
+    private genericService: GenericService,
+    private element: ElementRef
   ) {
 
     this.userForm = new FormGroup({
@@ -776,7 +778,8 @@ export class UserManagementComponent implements OnInit  {
       this.userForm.patchValue({
         org : this.orgArr[0].id
       });
-    }
+    }    
+    setTimeout(() => this.userEmailEl.nativeElement.focus());
   }
 
   // Started
