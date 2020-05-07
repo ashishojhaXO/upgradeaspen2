@@ -33,7 +33,7 @@ export class OrderPaymentComponent {
   vendorUuid:any;
   displayId: any;
   widget: any;
-
+  isRoot: boolean;
   constructor(
       private route: ActivatedRoute,
       private genericService: GenericService,
@@ -69,6 +69,16 @@ export class OrderPaymentComponent {
       // window['fs_widget_config'].vendor_id = '592f94f3-e2b1-4621-b1c0-c795ee2a1814'
       // this.vendorId = '592f94f3-e2b1-4621-b1c0-c795ee2a1814';
     }
+    const groups = localStorage.getItem('loggedInUserGroup') || '';
+    const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
+    console.log('custInfo >>>')
+    console.log(custInfo);
+    const grp = JSON.parse(groups);
+    grp.forEach(function (item) {
+      if(item === 'ROOT' || item === 'SUPER_USER') {
+        this.isRoot = true;
+      }
+    }, this);
   }
 
   ngOnInit() {
