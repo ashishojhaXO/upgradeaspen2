@@ -728,7 +728,7 @@ export class OrdersComponent implements OnInit  {
     this.showSpinner = true;
     this.dataObject.isDataAvailable = false;
 
-    this.searchDataRequest(this.org, this.currentTable);
+    this.searchDataRequest(this.orgValue, this.currentTable);
   }
 
   getOrders() {
