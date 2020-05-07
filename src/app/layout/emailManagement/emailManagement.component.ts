@@ -57,9 +57,9 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
     // since default ordering assigned in dataTable is [[1, 'asc']]
     // isOrder: [[2, 'asc']],
     isHideColumns: [ 'id'],
-    isRowSelection: {
-      isMultiple : true
-    },
+    // isRowSelection: {
+    //   isMultiple : true
+    // },
     sendResponseOnCheckboxClick: true
   }];
   dashboard: any;
@@ -177,31 +177,37 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
 
   emailIdsToDelete: Array<String>;
   handleDelete(dataObj: any) {
-    // console.log('rowData >>>!!!!')
-    // console.log(rowData);
 
-    console.log('this.selected >>!!!!')
-    console.log(this.selected, dataObj);
+    // Success show if stayHere or to ReprtsPage
+    let popUpOptions = {
+      title: 'Unblock Email?',
+      html: `Are you sure you wish to unblock email <b>${dataObj.data.emailid}</b>?`,
+      type: 'info',
+      reverseButtons: true,
+      showCloseButton: true,
+      showCancelButton: true,
+      cancelButtonText: "Oops, clicked it by mistake!",
+      confirmButtonText: "I am Sure!"
+    };
+    this.popUp.showPopUp(popUpOptions).then(
+      (ok) => {
+        if(ok.value) {
+
+          const obj = {email_ids: [dataObj.data.id]}
+
+          //  const obj = { 'email_ids' : this.selected.map(function (m) {
+          //     return m.id;
+          //   })};
+
+          this.performEmailDeletionRequest(obj);
 
     // this.emailIdsToDelete.push(dataObj.data.emailid)
     // this.emailIdsToDelete.push(dataObj.data.id)
-
-    // Success show if stayHere or to ReprtsPage
-    this.popUp.showPopUp(this.popUp.popUpDict.emailUnblockDel).then(
-      (ok) => {
-        if(ok.value) {
-          // const obj = { 'email_ids' : this.selected.map(function (m) {
-          //   return m.id;
-          // })};
-          // const obj = {'email_ids': this.emailIdsToDelete}
-          const obj = {'id': dataObj.data.emailid}
-
-          this.performEmailDeletionRequest(obj);
         }
       },
-      (rej) => {
-        // console.log("rej Value", rej)
-      }
+      // (rej) => {
+      //   // console.log("rej Value", rej)
+      // }
     );
 
   }
@@ -212,9 +218,14 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
   handleEmail(rowObj: any, rowData: any) {
   }
 
-  handleRowSelection(rowObj: any, rowData: any) {
+  // handleRowSelection(rowObj: any, rowData: any) {
+  //   console.log("args",arguments)
 
-  }
+  //         //  const obj = { 'email_ids' : this.selected.map(function (m) {
+  //         //     return m.id;
+  //         //   })};
+
+  // }
 
   OnSubmit(modalComponent: PopUpModalComponent) {
     this.showSpinner = true;
@@ -354,56 +365,56 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
     this.searchDataRequest();
   }
 
-  handleCheckboxSelection(obj) {
+  // handleCheckboxSelection(obj) {
 
-    console.log('handleCheckboxSelection >>>')
-    if (this.dataObject.gridData.options.isRowSelection && !this.dataObject.gridData.options.isRowSelection.isMultiple) {
-      this.selected = [];
-    }
+  //   console.log('handleCheckboxSelection >>>')
+  //   if (this.dataObject.gridData.options.isRowSelection && !this.dataObject.gridData.options.isRowSelection.isMultiple) {
+  //     this.selected = [];
+  //   }
 
-    const selectedValue = {
-      id: obj.data[Object.keys(obj.data)[0]],
-      label: obj.data[Object.keys(obj.data)[0]]
-    }
+  //   const selectedValue = {
+  //     id: obj.data[Object.keys(obj.data)[0]],
+  //     label: obj.data[Object.keys(obj.data)[0]]
+  //   }
 
-    this.selected.push(selectedValue);
+  //   this.selected.push(selectedValue);
 
-    console.log('this.selected >>')
-    console.log(this.selected);
+  //   console.log('this.selected >>')
+  //   console.log(this.selected);
 
-  }
+  // }
 
-  handleUnCheckboxSelection(obj) {
-    console.log('handleUnCheckboxSelection >>>')
-    console.log('obj >>>')
-    console.log(obj);
-    console.log('this.selected >>')
-    console.log(JSON.parse(JSON.stringify(this.selected)));
-    const unSelectedItem = this.selected.find(x=> x.id === obj.data.id);
-    if(unSelectedItem) {
-      this.selected.splice(this.selected.indexOf(unSelectedItem), 1);
-    }
-    console.log('this.selected >>')
-    console.log(this.selected);
-  }
+  // handleUnCheckboxSelection(obj) {
+  //   console.log('handleUnCheckboxSelection >>>')
+  //   console.log('obj >>>')
+  //   console.log(obj);
+  //   console.log('this.selected >>')
+  //   console.log(JSON.parse(JSON.stringify(this.selected)));
+  //   const unSelectedItem = this.selected.find(x=> x.id === obj.data.id);
+  //   if(unSelectedItem) {
+  //     this.selected.splice(this.selected.indexOf(unSelectedItem), 1);
+  //   }
+  //   console.log('this.selected >>')
+  //   console.log(this.selected);
+  // }
 
-  handleHeaderCheckboxSelection(obj) {
-    console.log('handleHeaderCheckboxSelection >>>')
-    this.selected = [];
-    console.log('obj >>>')
-    console.log(obj);
-    if (obj.data.length) {
-      obj.data.forEach(function(dat) {
-        this.selected.push({
-          id: dat.id,
-          label: dat.id
-        });
-      }, this);
-    }
+  // handleHeaderCheckboxSelection(obj) {
+  //   console.log('handleHeaderCheckboxSelection >>>')
+  //   this.selected = [];
+  //   console.log('obj >>>')
+  //   console.log(obj);
+  //   if (obj.data.length) {
+  //     obj.data.forEach(function(dat) {
+  //       this.selected.push({
+  //         id: dat.id,
+  //         label: dat.id
+  //       });
+  //     }, this);
+  //   }
 
-    console.log('this.selected >>')
-    console.log(this.selected);
-  }
+  //   console.log('this.selected >>')
+  //   console.log(this.selected);
+  // }
 
   _updateDataModel(e) {
     this.emails = e.dataModel;
