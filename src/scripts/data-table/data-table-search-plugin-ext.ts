@@ -3,12 +3,30 @@ export default class DataTableColumnSearchPluginExt {
 
   constructor($, document, table) {
 
-    // this.attachSearchIcon($)
+    // // this.attachSearchIcon($)
+    // this.attachElemsToColumnHeader($, document);
+    // this.attachClickInputSearch($)
+    // // this.attachClickToSearch($)
+    // this.attachSearchToInput($, table);
+
     this.attachElemsToColumnHeader($, document);
     this.attachClickInputSearch($)
-    // this.attachClickToSearch($)
     this.attachSearchToInput($, table);
   }
+
+  // handleActions(ev: any) {
+  //   console.log("ACCCCTTTTORR")
+  //     const action = ev.event ? ev.event : $(ev.elem).data('action');
+
+  //     if(this[action]) {
+  //       this[action](ev);
+  //     } else {
+  //       // Some problem
+  //       // Function does not exists in this class, if data-action string is correct
+  //       // Else if all functions exists, then, data-action string coming from html is not correct
+  //       console.log(`Error: Function yet to be implemented: ${action}`)
+  //     }
+  // }
 
   searchIcon($){
     // If default way not available to attach icon in DataTables table headers,
@@ -44,19 +62,19 @@ export default class DataTableColumnSearchPluginExt {
   attachElemsToColumnHeader($, document) {
 
     let self = this;
-    console.log("ARRRCH")
 
     $(document)
     .ready( function(){
-    console.log("ARRRCH REDDD")
       // $('#example thead th')
       // $('table:first thead th')
-      $('table:first thead th.sorting, .sorting_asc, .sorting_desc')
+      // $('div.dataTables_scrollHead table:first thead th.sorting, .sorting_asc, .sorting_desc')
+      // $('div.dataTables_scrollHead table thead th tr').find(".sorting, .sorting_asc, .sorting_desc")
+      // $('div.dataTables_scrollHead table thead th.sorting, .sorting_asc, .sorting_desc')
+      $('div.dataTables_scrollHead table thead tr').find("th.sorting, th.sorting_asc, th.sorting_desc")
       .each( function () {
         // var title = $("#example thead th").text();
         var title = $(this).text();
         // $("#example thead th").html( '<input type="text" placeholder="Search '+title+'" />' );
-        // $("#example thead th").append( '<input type="text" placeholder="Search '+title+'" />' );
         $(this).append(
           self.getAllElems($, title)
         );
