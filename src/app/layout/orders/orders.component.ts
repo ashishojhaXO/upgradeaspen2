@@ -295,23 +295,12 @@ export class OrdersComponent implements OnInit  {
         err => {
 
           if(err.status === 401) {
-            if(localStorage.getItem('accessToken')) {
-              this.widget.tokenManager.refresh('accessToken')
-                  .then(function (newToken) {
-                    localStorage.setItem('accessToken', newToken);
-                    this.showSpinner = false;
-                    this.searchOrgRequest();
-                  })
-                  .catch(function (err1) {
-                    console.log('error >>')
-                    console.log(err1);
-                  });
-            } else {
-              this.widget.signOut(() => {
-                localStorage.removeItem('accessToken');
-                window.location.href = '/login';
-              });
-            }
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.searchOrgRequest.bind(self)
+            );
           } else {
             this.showSpinner = false;
           }
@@ -509,13 +498,14 @@ export class OrdersComponent implements OnInit  {
     .getOrdersLineItems(data, this.isRoot)
     .subscribe(
         response => {
-          if (response && response.data.rows) {
+          if (response && response.data.rows && typeof response.data.rows == "object" && response.data.rows.length ) {
             this.showSpinner = false;
             // this.populateDataTable(response, true);
             this.searchDataRequestCB(response, table);
           } else {
             this.showSpinner = false;
-            console.log("No data to show")
+            self.popUp.showPopUp(self.popUp.popUpDict.noData)
+            // console.log("No data to show")
           }
         },
         err => {
@@ -878,23 +868,9 @@ export class OrdersComponent implements OnInit  {
     this.currentTable = ev.data;
   }
 
-  handleEvents(ev: any) {
-    const event = ev.event;
-    // $(ev.elem).data('action');
-
-    if(this[event]) {
-      this[event](ev);
-    } else {
-      // Some problem
-      // Function does not exists in this class, if data-action string is correct
-      // Else if all functions exists, then, data-action string coming from html is not correct
-      console.log(`Orders Error: Problem executing function: ${event}`)
-    }
-
-  }
-
   handleActions(ev: any) {
-    const action = $(ev.elem).data('action');
+    // const action = $(ev.elem).data('action');
+    const action = ev.event ? ev.event : $(ev.elem).data('action');
 
     if(this[action]) {
       this[action](ev);
@@ -902,7 +878,7 @@ export class OrdersComponent implements OnInit  {
       // Some problem
       // Function does not exists in this class, if data-action string is correct
       // Else if all functions exists, then, data-action string coming from html is not correct
-      console.log(`Orders Error: Problem executing function: ${action}`)
+      console.log(`Error: Function yet to be implemented: ${action}`)
     }
   }
 

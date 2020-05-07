@@ -672,8 +672,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             const table = $('#' + this.tableId).DataTable(dataTableOptions);
             this.table = table;
 
-        // Attaching Column search to all tables
-        let columnSearch = new DataTableColumnSearchPluginExt($, document, table);
+            // Attaching Column search to all tables
+            // let columnSearch = new DataTableColumnSearchPluginExt($, document, table);
 
             // Set column display box location
             $('.dt-button.buttons-collection.buttons-colvis').on('click', function () {
@@ -846,9 +846,13 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                 // Sending table after its drawn
                 __this.triggerActions.emit({
-                    action: 'handleDataTableInit',
+                    action: 'handleActions',
+                    event: 'handleDataTableInit',
                     data: table
                 });
+
+                // Attaching Column search to all tables
+                let columnSearch = new DataTableColumnSearchPluginExt($, document, table);
 
                 table.off('draw');
             });

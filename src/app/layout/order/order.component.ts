@@ -944,6 +944,19 @@ export class OrderComponent implements OnInit  {
 
     }
 
+    handleActions(ev: any) {
+        const action = ev.event ? ev.event : $(ev.elem).data('action');
+
+        if(this[action]) {
+          this[action](ev);
+        } else {
+          // Some problem
+          // Function does not exists in this class, if data-action string is correct
+          // Else if all functions exists, then, data-action string coming from html is not correct
+          console.log(`Error: Function yet to be implemented: ${action}`)
+        }
+    }
+
     OnCancel() {
         Swal({
             title: 'Are you sure you want to cancel the changes?',
