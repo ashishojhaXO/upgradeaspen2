@@ -297,16 +297,7 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
             this.showSpinner = false;
             this.dataObject.isDataAvailable = false;
 
-            let popUpOptions = {
-              title: 'Success',
-              text: response.message,
-              type: 'success',
-              reverseButtons: true,
-              showCloseButton: true,
-              showCancelButton: true,
-              cancelButtonText: "Cancel"
-            };
-            this.popUp.showPopUp(popUpOptions);
+            this.popUp.showPopUp(this.popUp.popUpDict.unblockEmailSuc(response));
 
             this.searchDataRequest();
             // this.error = { type : response.status === 'success' ? 'success' : 'fail' , message : response.message };
@@ -325,16 +316,7 @@ export class EmailManagementComponent implements OnInit, DataTableAction  {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
             this.showSpinner = false;
 
-            let popUpOptions = {
-              title: 'Error',
-              text: err.message,
-              type: 'error',
-              reverseButtons: true,
-              showCloseButton: true,
-              showCancelButton: true,
-              cancelButtonText: "Cancel"
-            };
-            this.popUp.showPopUp(popUpOptions);
+            this.popUp.showPopUp(this.popUp.popUpDict.unblockEmailErr(err));
           }
         }
     );
