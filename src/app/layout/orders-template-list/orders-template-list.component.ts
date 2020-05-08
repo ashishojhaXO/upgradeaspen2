@@ -51,6 +51,10 @@ export class OrdersTemplateListComponent implements OnInit  {
   orgArr = [];
   selectedOrg: any;
   orgValue = '';
+  select2Options = {
+    // placeholder: { id: '', text: 'Select organization' }
+  };
+  isRoot: boolean;
 
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
@@ -66,7 +70,7 @@ export class OrdersTemplateListComponent implements OnInit  {
 
     const grp = JSON.parse(groups);
     grp.forEach(function (item) {
-      if(item === 'ROOT' || item === 'SUPER_USER') {
+      if (item === 'ROOT' || item === 'SUPER_USER') {
         this.isRoot = true;
       }
     }, this);
@@ -81,8 +85,11 @@ export class OrdersTemplateListComponent implements OnInit  {
 
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
-    this.searchOrgRequest();
-    this.searchDataRequest();
+    if (this.isRoot) {
+      this.searchOrgRequest();
+    } else {
+      this.searchDataRequest();
+    }
   }
 
   cancelOrder() {
@@ -137,7 +144,7 @@ export class OrdersTemplateListComponent implements OnInit  {
     if (AccessToken) {
       token = AccessToken;
     }
-    let org=this.orgValue;
+    let org =this.orgValue;
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/orders/templates'+( org ? ('?org_uuid=' + org) : '');
@@ -210,6 +217,11 @@ export class OrdersTemplateListComponent implements OnInit  {
                 text: ele.org_name
               });
             }, this);
+
+            if (this.orgArr.length) {
+              this.orgValue = this.orgArr[0].id;
+              this.searchDataRequest();
+            }
           }
         },
         err => {
@@ -244,10 +256,17 @@ export class OrdersTemplateListComponent implements OnInit  {
           return res.json();
         }).share();
   }
-  orgChange(value) {
-    this.showSpinner = true;
-    this.dataObject.isDataAvailable = false;
-    this.searchDataRequest();
-  }
+  // orgChange(value) {
+  //   this.showSpinner = true;
+  //   this.dataObject.isDataAvailable = false;
+  //   this.searchDataRequest();
+  // }
 
+  OnOrgChange(e) {
+    if (e.value && e.value !== this.orgValue) {
+      this.dataObject.isDataAvailable = false;
+      this.orgValue = e.value;
+      this.reLoad();
+    }
+  }
 }
