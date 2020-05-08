@@ -104,14 +104,14 @@ export class OrderDashboardComponent implements OnInit  {
             );
 
           } else {
-            // Swal({
-            //   title: 'No Invoices found',
-            //   text: 'We did not find any invoices associated with ID : ' + invoiceId,
-            //   type: 'error'
-            // }).then( () => {
-            //  // this.router.navigate(['/app/admin/invoices']);
-            // });
-            // this.showSpinner = false;
+            this.showSpinner = false;
+            Swal({
+              title: 'No Additional Details Available',
+              text: 'No additional details are available for OrderID : ' + orderID,
+              type: 'error'
+            }).then( () => {
+              this.router.navigate(['/app/order/orders']);
+            });
           }
         }
     );
