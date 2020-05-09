@@ -17,7 +17,7 @@ import {PopupDataAction} from '../../shared/components/app-popup-button/popup-da
 import { OktaAuthService } from '../../../services/okta.service';
 import Swal from 'sweetalert2';
 import {moment} from 'ngx-bootstrap/chronos/test/chain';
-import {ToasterModule, ToasterService, ToasterConfig} from 'angular2-toaster';
+import {ToasterService} from 'angular2-toaster';
 
 @Component({
   selector: 'app-dashboard',
@@ -105,12 +105,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     showClear: false
   };
   period: any= {};
-  private toasterService:ToasterService;
-  public toasterconfig : ToasterConfig = new ToasterConfig({
-    positionClass: 'toast-top-right',
-    showCloseButton: true,
-    timeout: 50000,
-  });
+  private toasterService: ToasterService;
 
   constructor(
       private okta: OktaAuthService,

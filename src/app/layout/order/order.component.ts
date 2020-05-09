@@ -14,9 +14,9 @@ import {DataTableOptions} from '../../../models/dataTableOptions';
 import {Http, Headers, RequestOptions} from '@angular/http';
 // import { OktaAuthService } from '../../../services/okta.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import Swal from 'sweetalert2';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import { OktaAuthService } from '../../../services/okta.service';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-order',
@@ -103,14 +103,13 @@ export class OrderComponent implements OnInit  {
                 if (params['vendorId']) {
                     this.vendor_id = params['vendorId'];
                 }
-                this.searchTemplates(true);
-                this.searchDateRequest(params['id'], params['lineItemId']);
+                this.searchTemplates(params['id'], params['lineItemId'], true);
                 // if(this.templates.length) {
                 //   this.template = '41';
                 //   this.searchTemplateDetails(this.template);
                 // }
             } else {
-                this.searchTemplates();
+                this.searchTemplates(null, null , false);
             }
         });
     }
@@ -174,24 +173,35 @@ export class OrderComponent implements OnInit  {
             }).share();
     }
 
-    searchTemplates(existingOrder = false) {
+    searchTemplates(id, lineItemId, existingOrder = false) {
         this.getTemplates().subscribe(
             response => {
                 this.showSpinner = false;
                 if (response && response.orgTemplates && response.orgTemplates.templates && response.orgTemplates.templates.length) {
+
+                    const templates = [];
                     response.orgTemplates.templates.forEach(function (ele) {
-                        this.templates.push({
+                        templates.push({
                             id: ele.id,
-                            text: ele.name
+                            text: ele.name,
+                            isPublish: ele.is_publish === 'True' ? true : false
                         });
                     }, this);
 
                     if (!existingOrder) {
+
+                        this.templates = templates.filter(function (x) {
+                            return x.isPublish;
+                        });
+
                         if (this.templates.length === 1) {
                             this.template = this.templates[0].id;
                             this.dataFieldConfiguration = [];
                             this.searchTemplateDetails(this.template);
                         }
+                    } else {
+                        this.templates = templates;
+                        this.searchDateRequest(id, lineItemId);
                     }
                 }
             },
@@ -948,12 +958,12 @@ export class OrderComponent implements OnInit  {
         const action = ev.event ? ev.event : $(ev.elem).data('action');
 
         if(this[action]) {
-          this[action](ev);
+            this[action](ev);
         } else {
-          // Some problem
-          // Function does not exists in this class, if data-action string is correct
-          // Else if all functions exists, then, data-action string coming from html is not correct
-          console.log(`Error: Function yet to be implemented: ${action}`)
+            // Some problem
+            // Function does not exists in this class, if data-action string is correct
+            // Else if all functions exists, then, data-action string coming from html is not correct
+            console.log(`Error: Function yet to be implemented: ${action}`)
         }
     }
 
@@ -1220,3 +1230,4 @@ export class OrderComponent implements OnInit  {
         return (this.existingOrder && !this.originalResponseObj.orderTemplateData.orderFields.find(x=> x.name === def.name).valueExtracted ? this.FormModel.attributes[def.name].value : def.value);
     }
 }
+
