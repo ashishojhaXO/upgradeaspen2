@@ -20,7 +20,8 @@ import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up
 import { PopUpModalComponent } from '../../shared/components/pop-up-modal/pop-up-modal.component';
 import { modalConfigDefaults } from 'ngx-bootstrap/modal/modal-options.class';
 
-import { CsvService } from '../../../services/csv'
+import { CsvService } from '../../../services/csv';
+import {ToasterService} from 'angular2-toaster';
 import DataTableColumnSearchPluginExt from '../../../scripts/data-table/data-table-search-plugin-ext';
 
 @Component({
@@ -168,6 +169,8 @@ export class OrdersComponent implements OnInit  {
   org: string;
   selectedVendorUuid:any;
   currentTable: any;
+  hasTemplates = false;
+  private toaster: any;
 
   constructor(
       private okta: OktaAuthService,
@@ -175,9 +178,10 @@ export class OrdersComponent implements OnInit  {
       private router: Router,
       protected genericService: GenericService,
       protected popUp: AppPopUpComponent,
-      private http: Http) {
+      private http: Http,
+      toasterService: ToasterService) {
+    this.toaster = toasterService;
   }
-
 
   ngOnInit() {
 
@@ -210,6 +214,7 @@ export class OrdersComponent implements OnInit  {
     // if (isUser) {
     //   this.allowOrderFunctionality = 'false';
     // }
+    this.searchTemplates();
     if (this.isRoot) {
       this.allowOrderFunctionality = 'true';
       this.searchOrgRequest();
@@ -223,16 +228,16 @@ export class OrdersComponent implements OnInit  {
     if((searchVal.trim())!=""){
       this.doDownloadOrderCsv(table);
     }else{
-    this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
+      this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
 
-    if(csv){
-      // Later we need csv function here
-      this.searchDataRequestCsv(this.orgValue, table, csv);
+      if(csv){
+        // Later we need csv function here
+        this.searchDataRequestCsv(this.orgValue, table, csv);
+      }
+      else {
+        this.searchDataRequest(null, table);
+      }
     }
-    else {
-      this.searchDataRequest(null, table);
-    }
-   }
   }
   doDownloadOrderCsv(table){
     let tblData = table.rows( {page: 'current', filter : 'applied'} ).data();
@@ -241,8 +246,8 @@ export class OrdersComponent implements OnInit  {
       if(this.visible()){
         visible_columns.push($(this.header()).text());
       }
-   });
-	  console.log('visible_columns', visible_columns);
+    });
+    console.log('visible_columns', visible_columns);
     let dtcolArr = table.columns().header().toArray().map(x => x.innerText);
     let dtrowObject = {};
     let dtDataArr = [];
@@ -287,8 +292,8 @@ export class OrdersComponent implements OnInit  {
             }, this);
 
             if (this.orgArr.length) {
-             this.orgValue = this.orgArr[0].id;
-             this.searchDataRequest(this.orgValue, this.currentTable);
+              this.orgValue = this.orgArr[0].id;
+              this.searchDataRequest(this.orgValue, this.currentTable);
             }
           }
         },
@@ -297,15 +302,69 @@ export class OrdersComponent implements OnInit  {
           if(err.status === 401) {
             let self = this;
             this.widget.refreshElseSignout(
-              this,
-              err,
-              self.searchOrgRequest.bind(self)
+                this,
+                err,
+                self.searchOrgRequest.bind(self)
             );
           } else {
             this.showSpinner = false;
           }
         }
     );
+  }
+
+  searchTemplates() {
+    this.getTemplates().subscribe(
+        response => {
+          this.showSpinner = false;
+          if (response && response.orgTemplates && response.orgTemplates.templates && response.orgTemplates.templates.length) {
+            const publishedTemplates = response.orgTemplates.templates.filter(function (ele) {
+              return ele.is_publish === 'True';
+            }, this);
+            this.hasTemplates = publishedTemplates.length ? true : false;
+          } else {
+            this.hasTemplates = false;
+          }
+
+          if (!this.hasTemplates) {
+             this.toaster.pop('success', 'No Order Templates Available', 'No order template has been setup for your organization. Please contact your Administrator');
+          }
+        },
+        err => {
+          if(err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+                this,
+                err,
+                self.searchTemplates.bind(self)
+            );
+          } else {
+            this.showSpinner = false;
+            Swal({
+              title: 'An error occurred',
+              html: err._body ? JSON.parse(err._body).message : 'No error definition available',
+              type: 'error'
+            });
+          }
+        }
+    );
+  }
+
+  getTemplates() {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/orders/templates';
+    return this.http
+        .get(url, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
 
@@ -323,29 +382,29 @@ export class OrdersComponent implements OnInit  {
     this.showSpinner = true;
 
     return this.genericService.getOrdersLineItemsCsv(data, this.isRoot)
-    .subscribe(
-      (res) => {
-        // this.hasData = true;
-        this.showSpinner = false;
-        let csv = new CsvService()
-        csv.successCBCsv(res, table)
-      },
-      (err) => {
-        this.showSpinner = false;
-        this.errorCB(err)
+        .subscribe(
+            (res) => {
+              // this.hasData = true;
+              this.showSpinner = false;
+              let csv = new CsvService()
+              csv.successCBCsv(res, table)
+            },
+            (err) => {
+              this.showSpinner = false;
+              this.errorCB(err)
 
-        if(err.status === 401) {
-          let self = this;
-          this.widget.refreshElseSignout(
-            this,
-            err,
-            self.searchDataRequestCsv.bind(self, org, table)
-          );
-        } else {
-          this.showSpinner = false;
-        }
-      }
-    );
+              if(err.status === 401) {
+                let self = this;
+                this.widget.refreshElseSignout(
+                    this,
+                    err,
+                    self.searchDataRequestCsv.bind(self, org, table)
+                );
+              } else {
+                this.showSpinner = false;
+              }
+            }
+        );
 
   }
 
@@ -495,33 +554,33 @@ export class OrdersComponent implements OnInit  {
     // return this.searchData(org)
     return this.genericService
     // .successMockCall(data)
-    .getOrdersLineItems(data, this.isRoot)
-    .subscribe(
-        response => {
-          if (response && response.data.rows && typeof response.data.rows == "object" && response.data.rows.length ) {
-            this.showSpinner = false;
-            // this.populateDataTable(response, true);
-            this.searchDataRequestCB(response, table);
-          } else {
-            this.showSpinner = false;
-            self.popUp.showPopUp(self.popUp.popUpDict.noData)
-            // console.log("No data to show")
-          }
-        },
-        err => {
-          if(err.status === 401) {
-            this.widget.refreshElseSignout(
-                this,
-                err,
-                self.searchDataRequest.bind(self, org, table),
-                self.errorCallback.bind(self)
-            );
-          } else {
-            this.showSpinner = false;
-          }
+        .getOrdersLineItems(data, this.isRoot)
+        .subscribe(
+            response => {
+              if (response && response.data.rows && typeof response.data.rows == "object" && response.data.rows.length ) {
+                this.showSpinner = false;
+                // this.populateDataTable(response, true);
+                this.searchDataRequestCB(response, table);
+              } else {
+                this.showSpinner = false;
+                self.popUp.showPopUp(self.popUp.popUpDict.noData)
+                // console.log("No data to show")
+              }
+            },
+            err => {
+              if(err.status === 401) {
+                this.widget.refreshElseSignout(
+                    this,
+                    err,
+                    self.searchDataRequest.bind(self, org, table),
+                    self.errorCallback.bind(self)
+                );
+              } else {
+                this.showSpinner = false;
+              }
 
-        }
-    );
+            }
+        );
   }
 
   populateDataTable(response, initialLoad) {
@@ -648,12 +707,12 @@ export class OrdersComponent implements OnInit  {
   }
 
   handleCustom(dataObj: any) {
-      this.selectedOrderID = dataObj.data.internal_order_id;
-      this.selectedLineItemID = dataObj.data.internal_line_item_id;
-      this.selectedVendorUuid = dataObj.data.vendor_uuid;
-      this.selectedDisplayOrderID = dataObj.data.Order_Id ? dataObj.data.Order_Id : dataObj.data.internal_order_id;
-      this.hideTable = true;
-      this.isHistory = true;
+    this.selectedOrderID = dataObj.data.internal_order_id;
+    this.selectedLineItemID = dataObj.data.internal_line_item_id;
+    this.selectedVendorUuid = dataObj.data.vendor_uuid;
+    this.selectedDisplayOrderID = dataObj.data.Order_Id ? dataObj.data.Order_Id : dataObj.data.internal_order_id;
+    this.hideTable = true;
+    this.isHistory = true;
   }
 
   searchDownloadLink(downloadId, orderId) {
@@ -905,4 +964,11 @@ export class OrdersComponent implements OnInit  {
       this.searchDataRequest(this.orgValue, this.currentTable);
     }
   }
+
+  navigate() {
+    if (this.hasTemplates) {
+      this.router.navigate(['/app/order/create']);
+    }
+  }
 }
+

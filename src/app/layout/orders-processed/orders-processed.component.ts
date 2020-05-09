@@ -8,6 +8,7 @@ import { OktaAuthService } from '../../../services/okta.service';
 import { OrdersComponent } from '../orders/orders.component';
 import { GenericService } from '../../../services/generic.service';
 import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up.component';
+import {ToasterService} from 'angular2-toaster';
 
 @Component({
   selector: 'app-orders-processed',
@@ -30,14 +31,16 @@ export class OrdersProcessedComponent extends OrdersComponent {
   ];
 
   constructor(
-    okta: OktaAuthService, 
-    route: ActivatedRoute, 
-    router: Router, 
+    okta: OktaAuthService,
+    route: ActivatedRoute,
+    router: Router,
     genericService: GenericService,
     popUp: AppPopUpComponent,
-    http: Http
-  ) { 
-    super(okta, route, router, genericService, popUp, http)
+    http: Http,
+    toasterService: ToasterService
+
+  ) {
+    super(okta, route, router, genericService, popUp, http, toasterService)
 
     // Initializing some data
     this.init();
@@ -75,7 +78,7 @@ export class OrdersProcessedComponent extends OrdersComponent {
 
     if (tableData.length) {
       const keys = Object.keys(tableData[0]);
-      
+
       console.log("IF TAB len keys", keys)
 
       for (let i = 0; i < keys.length; i++) {
@@ -93,7 +96,7 @@ export class OrdersProcessedComponent extends OrdersComponent {
         }
 
       }
-      
+
       console.log("IF TAB len header", headers)
 
     }
@@ -126,7 +129,7 @@ export class OrdersProcessedComponent extends OrdersComponent {
   random() {
 
   }
-  
+
   beforeRunReport() {
     // const reportId = dataObj.data.id;
     // this.runReport(reportId).subscribe(response => {
@@ -186,7 +189,7 @@ export class OrdersProcessedComponent extends OrdersComponent {
   handleRun(dataObj: any) {
     console.log("Trigger Execute/Run API", dataObj)
     this.showSpinner = true;
-    
+
     const options = this.compileHeaderData();
     const data = {
       "job_id": dataObj.data.job_id || dataObj.data.Order_Id,
@@ -205,7 +208,7 @@ export class OrdersProcessedComponent extends OrdersComponent {
       }
     )
   }
-  
+
   onHandleDownloadError(rej) {
     const swalOptions = {
       title: "Download failed!",
