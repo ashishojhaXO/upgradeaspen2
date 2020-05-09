@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {Router, ActivatedRoute} from '@angular/router';
 import { Common } from '../../shared/util/common';
@@ -30,7 +30,7 @@ export class LoginNewComponent implements OnInit {
   showSpinner: boolean;
   version: any;
   widget: any;
-
+  @ViewChild('username') usernameEl:ElementRef;
   constructor(
       private okta: OktaAuthService,
       private common:Common,
@@ -73,6 +73,7 @@ export class LoginNewComponent implements OnInit {
         }
       });
     };
+    setTimeout(() => this.usernameEl.nativeElement.focus());
   }
 
   loginService(body: Object) {
