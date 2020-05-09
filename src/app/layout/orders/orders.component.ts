@@ -89,7 +89,7 @@ export class OrdersComponent implements OnInit  {
     // isOrder: [[3, 'desc']],
     // isOrder: [[3, 'name-string-not-nullund-desc']],
     isOrder: [],
-    isHideColumns: [ "Vendor_Receipt_Id","internal_line_item_id","internal_order_id"],
+    isHideColumns: [ "Vendor_Receipt_Id","internal_line_item_id","internal_order_id","vendor_uuid"],
 
     // TODO: How is this 'blah' thing even happening!!!
     isColumnDefs: [
