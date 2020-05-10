@@ -3,32 +3,23 @@
     <p class="pull-left page-title">{{existingOrder ? 'MODIFY ' : 'CREATE '}} ORDER</p>
   </div>
   <p style="clear: both"></p>
-  <!--<div class="col-lg-2 col-md-2 col-sm-12" style="border: 1px solid #fff; background: #fff; border-radius: 4px">-->
-  <!--<ul style="list-style: none">-->
-  <!--<li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:3px; left: -26px" class="fa fa-arrow-right"></i><a style="font-size: 12px" href="javascript:void(0)">Create Order</a></li>-->
-  <!--&lt;!&ndash;<li style="margin-top: 20px"><span>Configure AD</span></li>&ndash;&gt;-->
-  <!--&lt;!&ndash;<li style="margin-top: 20px"><span style="font-size: 12px">Target Audience</span></li>&ndash;&gt;-->
-  <!--&lt;!&ndash;<li style="margin-top: 20px"><span style="font-size: 12px">Summary</span></li>&ndash;&gt;-->
-  <!--<li style="margin-top: 20px"><span style="font-size: 12px">Payment</span></li>-->
-  <!--</ul>-->
-  <!--</div>-->
   <div class="col-lg-12 col-md-12 col-sm-12">
     <div style="background: #fff; border-radius: 4px">
       <label style="padding: 0px; margin: 10px 0px 20px 15px; font-size: 16px"><span class="underline">ORDER</span></label>
       <div class="col-lg-12 col-md-12 col-sm-12" style="padding: 15px 0px 20px 0px; background: #fff">
-        <div *ngIf="templates && templates.length > 1 && !existingOrder">
-          <label class="col-lg-2 col-md-2 col-sm-12">Template</label>
-          <div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -4px;">
-            <select2 *ngIf="templates.length" width="100%" placeholder="Select Template"
-                     class="col-lg-4 col-md-4"
-                     style="padding: 0px; line-height: 1.42857143; width: 300px"
-                     [value]="template"
-                     [disabled]="existingOrder ? 'disabled' : null"
-                     [style.cursor]="existingOrder ? 'not-allowed' : null"
-                     (valueChanged)="OnTemplateChange($event);"
-                     [data]="templates"></select2>
-          </div>
-        </div>
+        <!--<div *ngIf="templates && templates.length > 1 && !existingOrder">-->
+          <!--<label class="col-lg-2 col-md-2 col-sm-12">Template</label>-->
+          <!--<div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -4px;">-->
+            <!--<select2 *ngIf="templates.length" width="100%" placeholder="Select Template"-->
+                     <!--class="col-lg-4 col-md-4"-->
+                     <!--style="padding: 0px; line-height: 1.42857143; width: 300px"-->
+                     <!--[value]="template"-->
+                     <!--[disabled]="existingOrder ? 'disabled' : null"-->
+                     <!--[style.cursor]="existingOrder ? 'not-allowed' : null"-->
+                     <!--(valueChanged)="OnTemplateChange($event);"-->
+                     <!--[data]="templates"></select2>-->
+          <!--</div>-->
+        <!--</div>-->
         <div *ngIf="data.controls && data.controls.length">
           <div  *ngFor="let def of data.controls; let i = index;">
             <div *ngIf="def.calculated !== 1" style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
