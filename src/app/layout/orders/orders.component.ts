@@ -155,6 +155,7 @@ export class OrdersComponent implements OnInit  {
   selectedOrderID: any;
   selectedDisplayOrderID: any;
   selectedLineItemID: any;
+  selectedDisplayLineItemID: any;
   hideTable: any;
   allowOrderFunctionality: any;
   orderPayment: number;
@@ -709,6 +710,7 @@ export class OrdersComponent implements OnInit  {
   handleCustom(dataObj: any) {
     this.selectedOrderID = dataObj.data.internal_order_id;
     this.selectedLineItemID = dataObj.data.internal_line_item_id;
+    this.selectedDisplayLineItemID = dataObj.data.Line_Item_Id;
     this.selectedVendorUuid = dataObj.data.vendor_uuid;
     this.selectedDisplayOrderID = dataObj.data.Order_Id ? dataObj.data.Order_Id : dataObj.data.internal_order_id;
     this.hideTable = true;
