@@ -29,6 +29,7 @@ export class LineItemHistoryComponent implements OnInit  {
   gridData: any;
   dataObject: any = {};
   @Input() lineItemID: any;
+  @Input() displayLineItemID: any;
   lineItemDetails = [];
   options: Array<any> = [{
     isSearchColumn: true,
