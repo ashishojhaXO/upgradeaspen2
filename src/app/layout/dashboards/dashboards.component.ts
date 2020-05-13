@@ -342,12 +342,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }
 
   OnPeriodChange(e, filter) {
-    if (e) {
-      this.period.display = moment(e._d, 'DD/MM/YYYY').format('MMM YYYY');
-      this.period.value = moment(e._d, 'DD/MM/YYYY').format('YYYY-MM-DD');
-    } else {
-      this.period.display = filter.values && filter.values.length ? filter.values[0].itemName : '';
-      this.period.value = filter.values && filter.values.length ? filter.values[0].id : '';
+    if (e && e._d) {
+      this.period.display = moment(e._d).format('MMM YYYY');
+      this.period.value = moment(e._d).format('YYYY-MM-01');
     }
 
     this.dashboardConfig.filterProps.map(function (x) {
@@ -564,12 +561,14 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
       const periodFilter = this.dashboardConfig.filterProps.find( x=> x.f7Name === 'period');
       if (periodFilter && seedResponse['period'] && seedResponse['period'].values && seedResponse['period'].values.startDate) {
+
         periodFilter.values = [{
           id: seedResponse['period'].values.startDate,
           itemName: this.getMonthName(seedResponse['period'].values.startDate.split('-')[1].replace('0','')) + ' ' + seedResponse['period'].values.startDate.split('-')[0]
         }];
-        this.period.display = periodFilter.values[0].itemName;
-        this.period.value =  periodFilter.values[0].id;
+
+        this.period.display = moment(periodFilter.values[0].id).format('MMM YYYY');
+        this.period.value =  moment(periodFilter.values[0].id).format('MMM YYYY');
       }
     }
   }
