@@ -564,7 +564,7 @@ export class OrdersComponent implements OnInit  {
                 this.searchDataRequestCB(response, table);
               } else {
                 this.showSpinner = false;
-                self.popUp.showPopUp(self.popUp.popUpDict.noData)
+                // self.popUp.showPopUp(self.popUp.popUpDict.noData)
                 // console.log("No data to show")
               }
             },

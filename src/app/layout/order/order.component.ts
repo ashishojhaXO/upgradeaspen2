@@ -687,13 +687,13 @@ export class OrderComponent implements OnInit  {
         // setTimeout(function () {
 
         const dataObj = {};
-        __this.dataFieldConfiguration.forEach(function (conf) {
+        this.dataFieldConfiguration.forEach(function (conf) {
 
             console.log('conf >>')
             console.log(conf);
 
             dataObj[conf.name] = conf.default_value ? conf.default_value : '';
-        });
+        }, this);
 
 
         console.log('dataObj >>')
