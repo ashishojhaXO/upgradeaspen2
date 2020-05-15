@@ -44,6 +44,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     api_fs: any;
     tableId = 'example';
     @Input() dataFieldsConfiguration: any;
+    @Input() lineItemForm: any;
     table: any;
     @Input() dataRowUpdated: boolean;
     @Input() dataRowUpdatedLen: number;
@@ -251,7 +252,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     : 
                     '<select class="grid-select" style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>') 
                     + 
-                    '<input placeholder="Select ' + field.label + '"  class="inlineEditor ' + 
+                    `<input [formControlName]="${field.name}" placeholder="Select ` + field.label + '"  class="inlineEditor ' + 
                     (((
                         (
                             field.validation && 
@@ -280,18 +281,26 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     ) 
                     + '" type="text" style="width:' 
                     + 
-                    (((
-                        field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && 
-                        field.validation.indexOf('required') !== -1 ? 
-                        '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''
+                    (((field.size ? field.size : 20) * 7.5) + 10)  
+                    + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + 
+                    ( field.validation && field.validation.length && 
+                        field.validation.indexOf('required') !== -1 
+                        ? 
+                        `<div *ngIf="${ __this.lineItemForm.controls[field.name].invalid && __this.lineItemForm.controls[field.name].dirty === true}" 
+                        class="col-lg-12 col-md-12 form-field alert alert-danger"
+                        style="display: ${ __this.lineItemForm.controls[field.name].invalid && __this.lineItemForm.controls[field.name].dirty === true ? 'inline-block':'none'}"
+                        ><div>`
+                          + field.label  + 
+                          ' is required</div></div>' 
+                        : ''
                     )
         }
+        
 
         return htmlField;
     }
 
     initializeTable() {
-        console.log("--initializeTable--")
         const __this = this;
 
         if (this.dataObject) {
@@ -553,7 +562,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // },
 
                 createdRow: function (row, data, index, cells) {
-                    console.log("CREEEEAA")
                     if (__this.dataObject.gridData.columnsToColor) {
                         __this.dataObject.gridData.columnsToColor.forEach(function (column) {
                             $('td', row).eq(column.index).css('background-color', column.color);
@@ -622,7 +630,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.label + '" class="inlineEditor ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' )  + '" type="number" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
                                 } else if (field.type === 'amount') {
                                     $('td', row).eq(columnIndex).html(
-                                        this.showHtmlField('amount', __this, field, row, index, columnIndex, extendedRow)
+                                        __this.showHtmlField('amount', __this, field, row, index, columnIndex, extendedRow)
                                     );
                                 } else if (field.type === 'date') {
                                     const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div class="input-group date datepicker"><input placeholder="Select ' + field.label + '" type="text" class="form-control inlineEditor ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' ) + '" style="border-radius: 4px; font-size: 12px" value="' + $('td', row).eq(columnIndex).text()  + '" /> <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span></div></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
