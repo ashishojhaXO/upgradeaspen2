@@ -132,13 +132,13 @@ export class OrdersComponent implements OnInit  {
       htmlFunction: (row) => {
 
         let ngHtmlContent = '<div>' +
-            '<button class="btn action-btn api-action" data-action="retryCharge" '+ ( row.Status.trim() == "ERROR_PROCESSING_PAYMENT" ? "" : "disabled" ) + ' data-order-id="'+row.internal_order_id + '" data-line-item-id="'+row.internal_line_item_id + '" data-vendor-uuid="'+ row.vendor_uuid +'" data-display-id="'+ row.Order_Id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+            '<button class="btn action-btn api-action" data-action="retryCharge" '+ ( row.Status.trim() == "ERROR_PROCESSING_PAYMENT" ? "" : "disabled" ) + ' data-order-id="'+row.internal_order_id + '" data-line-item-id="'+row.internal_line_item_id + '" data-vendor-uuid="'+ row.vendor_uuid +'" data-display-id="'+ row.order_id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
             '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-credit-card" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span> Retry Charge</button>' +
-            '<button class="btn action-btn api-action" data-action="regenerateReceipt" data-order-id="'+row.internal_order_id+ '" data-line-item-id= "'+ row.internal_line_item_id +'" data-display-id="'+ row.Order_Id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+            '<button class="btn action-btn api-action" data-action="regenerateReceipt" data-order-id="'+row.internal_order_id+ '" data-line-item-id= "'+ row.internal_line_item_id +'" data-display-id="'+ row.order_id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
             '><span style="margin-right: 5px; position: relative;"> <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-newspaper-o" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Regenerate Receipt</button>' +
             // '<button class="btn action-btn api-action" data-action="reprocess" data-order-id="row.Order_Id " style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
             // '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-cogs" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Reprocess</button>' +
-            '<button class="btn action-btn api-action" data-action="recalculate" data-order-id="'+ row.internal_order_id + '" data-display-id="'+ row.Order_Id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+            '<button class="btn action-btn api-action" data-action="recalculate" data-order-id="'+ row.internal_order_id + '" data-display-id="'+ row.order_id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
             '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-calculator" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Recalculate</button>' +
             '</div>';
 
@@ -328,7 +328,7 @@ export class OrdersComponent implements OnInit  {
           }
 
           if (!this.hasTemplates) {
-             this.toaster.pop('success', 'No Order Templates Available', 'No order template has been setup for your organization. Please contact your Administrator');
+            this.toaster.pop('success', 'No Order Templates Available', 'No order template has been setup for your organization. Please contact your Administrator');
           }
         },
         err => {
@@ -653,7 +653,7 @@ export class OrdersComponent implements OnInit  {
     // Call all receipts & then call this.handleDownloadLink or this.searchDownloadLink
 
     let data = {
-      "line_item_id": dataObj.data.Line_Item_Id
+      "line_item_id": dataObj.data.line_item_id
     }
     this.showSpinner = true;
 
@@ -697,12 +697,12 @@ export class OrdersComponent implements OnInit  {
 
   handleRun(dataObj: any) {
     console.log('dataObj.data >>')
-    console.log(dataObj.data.Order_Id);
+    console.log(dataObj.data.order_id);
 
     this.selectedOrderID = dataObj.data.internal_order_id;
     this.selectedLineItemID = dataObj.data.internal_line_item_id;
     this.selectedVendorUuid = dataObj.data.vendor_uuid;
-    this.selectedDisplayOrderID = dataObj.data.Order_Id ? dataObj.data.Order_Id : dataObj.data.internal_order_id;
+    this.selectedDisplayOrderID = dataObj.data.order_id ? dataObj.data.order_id : dataObj.data.internal_order_id;
     this.hideTable = true;
     this.isHistory = false;
   }
@@ -710,9 +710,9 @@ export class OrdersComponent implements OnInit  {
   handleCustom(dataObj: any) {
     this.selectedOrderID = dataObj.data.internal_order_id;
     this.selectedLineItemID = dataObj.data.internal_line_item_id;
-    this.selectedDisplayLineItemID = dataObj.data.Line_Item_Id;
+    this.selectedDisplayLineItemID = dataObj.data.line_item_id;
     this.selectedVendorUuid = dataObj.data.vendor_uuid;
-    this.selectedDisplayOrderID = dataObj.data.Order_Id ? dataObj.data.Order_Id : dataObj.data.internal_order_id;
+    this.selectedDisplayOrderID = dataObj.data.order_id ? dataObj.data.order_id : dataObj.data.internal_order_id;
     this.hideTable = true;
     this.isHistory = true;
   }
@@ -973,4 +973,5 @@ export class OrdersComponent implements OnInit  {
     }
   }
 }
+
 
