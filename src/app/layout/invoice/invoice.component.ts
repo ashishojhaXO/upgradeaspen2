@@ -34,7 +34,11 @@ export class InvoiceComponent implements OnInit  {
   @ViewChild('AddPayment') addPayment: PopUpModalComponent;
   @Input() invoiceId: any;
   @Input() invoiceNumber: any;
-  @Input() orgId: any;  
+  @Input() orgId: any;
+  isRoot: boolean;
+  tempLineItemID: string;
+  tempMemo: string;
+  tempProfile: string;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
   }
@@ -45,6 +49,18 @@ export class InvoiceComponent implements OnInit  {
     this.widget = this.okta.getWidget();
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
+
+    const groups = localStorage.getItem('loggedInUserGroup') || '';
+    const grp = JSON.parse(groups);
+
+    console.log('grp >>>')
+    console.log(grp);
+
+    grp.forEach(function (item) {
+     if(item === 'ROOT' || item === 'SUPER_USER') {
+        this.isRoot = true;
+      }
+    }, this);
 
     this.searchDataRequest(this.invoiceId);
 
@@ -67,6 +83,227 @@ export class InvoiceComponent implements OnInit  {
     // });
   }
 
+  toggleField(invoice, item, field, prop, update) {
+    invoice.invoiceItems.forEach(function (invoice1) {
+      if (invoice1 !== item) {
+        invoice1.is_memo_append = false;
+        invoice1.is_line_item_id_append = false;
+      }
+    }, this);
+
+    if (prop === 'line_item_id') {
+        item.is_memo_append = false;
+    } else if (prop === 'memo') {
+        item.is_line_item_id_append = false;
+    }
+
+    item[field] = !item[field];
+    if (!update) {
+      this.tempLineItemID = '';
+      this.tempMemo = '';
+    } else {
+      if (prop === 'line_item_id') {
+        this.tempLineItemID = item[prop];
+      } else if (prop === 'memo') {
+        this.tempMemo = item[prop];
+      }
+    }
+  }
+
+  toogleInvoiceField(invoices, invoice, field , prop, update, alias = null) {
+
+    console.log('invoice >>>')
+    console.log(invoice)
+
+    invoices.forEach(function (invoice1) {
+      if (invoice1.id !== invoice.id) {
+        invoice1.is_memo_append = false;
+        invoice1.is_profile_append = false;
+      }
+    }, this);
+
+    if (prop === 'profile_name') {
+      invoice.is_memo_append = false;
+    } else if (prop === 'memo') {
+      invoice.is_profile_append = false;
+    }
+
+    invoice[field] = !invoice[field];
+
+    console.log('field >>')
+    console.log(field);
+    console.log('invoice[field] >>')
+    console.log(invoice[field])
+
+    if (!update) {
+      this.tempProfile = '';
+      this.tempMemo = '';
+    } else {
+      if (prop === 'profile_name') {
+        this.tempProfile = alias ? invoice[alias] : invoice[prop];
+      } else if (prop === 'memo') {
+        this.tempMemo = invoice[prop];
+      }
+    }
+  }
+
+  updateField(invoice, item, field, prop) {
+    console.log('tempLineItemID >>')
+    console.log(this.tempLineItemID);
+
+    console.log('prop >>')
+    console.log(prop);
+
+    let targetField = '';
+    if (prop === 'line_item_id') {
+      targetField = this.tempLineItemID;
+    } else if (prop === 'memo') {
+      targetField = this.tempMemo;
+    }
+    this.showSpinner = true;
+    this.updateValue(item, prop, targetField).subscribe(
+        response => {
+          this.showSpinner = false;
+          item[prop] = targetField;
+          this.toggleField(invoice, item, field, prop, false);
+          Swal({
+            title: 'Updated',
+            text: prop + ' has been successfully updated',
+            type: 'success'
+          }).then( () => {
+
+          });
+        },
+        err => {
+          this.showSpinner = false;
+          if(err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+                this,
+                err,
+                self.updateField.bind(self, invoice, item, field, prop)
+            );
+          } else {
+            Swal({
+              title: 'Error',
+              text: 'An error occured while updating ' + prop,
+              type: 'error'
+            }).then( () => {
+
+            });
+          }
+        }
+    );
+  }
+
+  updateValue(item, prop, targetField) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    let dataObj = {};
+    if (prop === 'line_item_id') {
+      dataObj = JSON.stringify({
+        'line_item_id' : targetField
+      });
+    } else if (prop === 'memo') {
+      dataObj = JSON.stringify({
+        'memo' : targetField
+      });
+    }
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/payments/invoices/line-items/' + item.id;
+    return this.http
+        .put(url, dataObj, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
+  updateInvoiceField(invoices, invoice, field, prop, alias = null) {
+    console.log('prop >>')
+    console.log(prop);
+
+    console.log('invoice >>')
+    console.log(invoice);
+
+    let targetField = '';
+    if (prop === 'profile_name') {
+      targetField = this.tempProfile;
+    } else if (prop === 'memo') {
+      targetField = this.tempMemo;
+    }
+
+    console.log('targetField >>')
+    console.log(targetField);
+
+    this.showSpinner = true;
+    this.updateInvoiceValue(invoice, prop, targetField).subscribe(
+        response => {
+          this.showSpinner = false;
+          if (alias) {
+            invoice[alias] = targetField;
+          } else {
+            invoice[prop] = targetField;
+          }
+          this.toogleInvoiceField(invoices, invoice, field, prop, false, alias);
+        },
+        err => {
+          this.showSpinner = false;
+          if(err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+                this,
+                err,
+                self.updateInvoiceField.bind(self, invoices, invoice, field, prop, alias)
+            );
+          } else {
+            Swal({
+              title: 'Error',
+              text: 'Error occured',
+              type: 'error'
+            }).then( () => {
+
+            });
+          }
+        }
+    );
+  }
+
+  updateInvoiceValue(invoice, prop, targetField) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    let dataObj = {};
+    if (prop === 'profile_name') {
+      dataObj = JSON.stringify({
+        'profile_name' : targetField
+      });
+    } else if (prop === 'memo') {
+      dataObj = JSON.stringify({
+        'memo' : targetField
+      });
+    }
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/payments/invoices/line-items/' + invoice.id;
+    return this.http
+        .put(url, dataObj, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
   onTabClick(invoice) {
     if(invoice.show) {
       invoice.show = false;
@@ -86,7 +323,7 @@ export class InvoiceComponent implements OnInit  {
     this.searchData(invoiceId).subscribe(
         response => {
           if (response && response.data) {
-            const kenshoo_data = response.data.find(x=> x.site_name.toLowerCase() === 'kenshoo');
+            const kenshoo_data = response.data.find(x=> x.site_name && x.site_name.toLowerCase() === 'kenshoo');
             if (!kenshoo_data) {
               const invoiceItems = response.data;
               // invoiceItems.forEach(function (item) {
@@ -108,6 +345,8 @@ export class InvoiceComponent implements OnInit  {
                 this.invoices.push({
                   isKenshoo: true,
                   profileName: d.profile_name,
+                  id: d.id,
+                  memo: d.memo,
                   invoiceNumber: d.invoice_number,
                   billingPeriod: d.billing_period,
                   supplier: d.supplier,
@@ -185,7 +424,7 @@ export class InvoiceComponent implements OnInit  {
       // token = AccessToken.accessToken;
       token = AccessToken;
     }
-    let org=this.orgId; 
+    let org=this.orgId;
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/payments/invoices/line-items?profile_name=' + profileName + '&invoice_header_id=' + InvoiceHeaderID
@@ -204,7 +443,7 @@ export class InvoiceComponent implements OnInit  {
       // token = AccessToken.accessToken;
       token = AccessToken;
     }
-    let org=this.orgId; 
+    let org=this.orgId;
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/payments/invoices/' + invoiceId+( org ? ('?org_uuid=' + org) : '');
