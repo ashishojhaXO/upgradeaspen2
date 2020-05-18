@@ -11,14 +11,16 @@ export class RouteGuard implements CanLoad {
 
     canLoad(route: Route): boolean {
         const AccessToken: any = localStorage.getItem('accessToken');
+        console.log("rGUARD");
         if (!AccessToken) {
-            this.router.navigate(['/login']).then(res => {
+        console.log("NOAT");
+            this.router.navigate(['/login'], {queryParamsHandling: 'preserve'} ).then(res => {
                 this.showSpinner = false;
             });
         }
         if ((window.location.pathname === "/" || window.location.pathname === "/login"
             || window.location.pathname === "/login/") && AccessToken) {          
-            this.router.navigate(['/app/dashboards/']).then(res => {
+            this.router.navigate(['/app/dashboards/'] ).then(res => {
                 this.showSpinner = false;
             });
         }
