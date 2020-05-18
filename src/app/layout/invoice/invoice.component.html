@@ -7,7 +7,12 @@
             <div *ngIf="invoice.isKenshoo" style="background: beige; padding-left: 5px; cursor: pointer;" (click)="onTabClick(invoice)">
                  <i class="fa fa-minus" [hidden]="!invoice.show"></i>
                     <i class="fa fa-plus" [hidden]="invoice.show"></i>
-                    <h5 style="display: inline-block; margin-left: 10px">{{invoice.profileName ? invoice.profileName : '-' }}</h5>
+                    <h5 style="display: inline-block; margin-left: 10px">{{invoice.profileName ? invoice.profileName : '-' }}
+                    </h5>
+                    <i *ngIf="isRoot && !invoice.is_profile_append" class="fa fa-pencil" style="margin-left: 10px; cursor: pointer" (click)="toogleInvoiceField(invoices, invoice,'is_profile_append','profile_name', true, 'profileName')"></i>
+                    <div *ngIf="invoice.is_profile_append">
+                        <input [(ngModel)]="tempProfile" [value]="invoice.profileName ? invoice.profileName : ''" style="width: 100%"/><i style="margin-left: 5px; cursor: pointer" class="fa fa-check" (click)="updateInvoiceField(invoices, invoice,'is_profile_append','profile_name','profileName')"></i><i style="margin-left: 5px; cursor: pointer" class="fa fa-times" (click)="toogleInvoiceField(invoices, invoice,'is_profile_append','profile_name', false, 'profileName')"></i>
+                    </div>
             </div>
             <div [hidden]="!invoice.show">
                 <p style="clear: both"></p>
@@ -42,48 +47,77 @@
                             <div class="col-sm-4"><label>Discrepancy Amount : {{invoice.discrepancyAmount ? invoice.discrepancyAmount : 0 }}</label></div>
                         </div>
                     </div>
+                    <div *ngIf="invoice.isKenshoo">
+                        <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px">
+                            <div class="col-sm-4">
+                                <label>Memo : {{invoice.memo ? invoice.memo : ''}}</label>
+                                <i *ngIf="isRoot && !invoice.is_memo_append" class="fa fa-pencil" style="margin-left: 10px; cursor: pointer" (click)="toogleInvoiceField(invoices, invoice,'is_memo_append','memo', true)"></i>
+                                <div *ngIf="invoice.is_memo_append">
+                                    <input [(ngModel)]="tempMemo" [value]="invoice.memo ? invoice.memo : ''" style="width: 100%"/><i style="margin-left: 5px; cursor: pointer" class="fa fa-check" (click)="updateInvoiceField(invoices, invoice,'is_memo_append','memo')"></i><i style="margin-left: 5px; cursor: pointer" class="fa fa-times" (click)="toogleInvoiceField(invoices, invoice ,'is_memo_append','memo', false)"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
                 <div style="margin-left: 15px;">
                     <div class="row margin0" style="margin-top: 10px; margin-bottom: 10px; border-bottom: 1px solid;">
                         <div class="col-sm-1"><label>Line Item ID</label></div>
                         <div class="col-sm-1"><label>Order ID</label></div>
-                        <div class="col-sm-1"><label>Site Name</label></div>
+                        <div [style.display]="!invoice.isKenshoo ? 'none' : 'inline-block'" class="col-sm-1"><label>Site Name</label></div>
                         <div class="col-sm-1"><label>Vendor ID</label></div>
                         <div class="col-sm-1"><label>Vendor Name</label></div>
+                        <div class="col-sm-1"><label>Campaign Name</label></div>
                         <div [style.display]="invoice.isKenshoo ? 'none' : 'inline-block'" class="col-sm-1"><label style="text-align: right">Billed Amount</label></div>
                         <div class="col-sm-1"><label style="text-align: right">Calculated Amount</label></div>
                         <div [style.display]="invoice.isKenshoo ? 'none' : 'inline-block'" class="col-sm-1"><label style="text-align: right">Discrepancy Amount</label></div>
                         <div class="col-sm-1"><label style="text-align: right">Paid Amount</label></div>
+                        <div *ngIf="!invoice.isKenshoo" class="col-sm-1"><label style="text-align: right">Memo</label></div>
                         <div class="col-sm-1"><label>Pay Remaining <input type="checkbox" style="text-align: right" (change)="OnHeaderChecked($event, invoice)"/></label></div>
-                        <div class="col-sm-2" style="text-align: center"><label>Pay Amount</label></div>
+                        <div class="col-sm-1" style="text-align: center"><label>Pay Amount</label></div>
                     </div>
                     <div *ngIf="invoice.invoiceItems && invoice.invoiceItems.length">
                         <div style="max-height: 500px; overflow-y: scroll; overflow-x: hidden">
-                            <div class="row" style="margin-bottom: 10px" *ngFor="let item of invoice.invoiceItems; let i= index" [style.background]="i % 2 === 0 ? '#f9f9f9' : '#fff'">
-                                <div class="col-sm-1"><span class="paymentText">{{item.line_item_id}}</span></div>
+                            <div class="row" style="margin-bottom: 10px" *ngFor="let item of invoice.invoiceItems; let i= index" [style.background]="i % 2 === 0 ? '#f9f9f9' : '#fff'" [style.color]="item.line_item_id ? '#44505B' : 'red' ">
+                                <div class="col-sm-1">
+                                    <span *ngIf="!item.is_line_item_id_append" class="paymentText">{{item.line_item_id}}
+                                       <i *ngIf="isRoot" class="fa fa-pencil" style="margin-left: 10px; cursor: pointer" (click)="toggleField(invoice, item,'is_line_item_id_append', 'line_item_id', true)"></i>
+                                    </span>
+                                    <div *ngIf="item.is_line_item_id_append">
+                                        <input [(ngModel)]="tempLineItemID" [value]="item.line_item_id ? item.line_item_id : ''" style="width: 40px"/><i style="margin-left: 5px; cursor: pointer" class="fa fa-check" (click)="updateField(invoice, item,'is_line_item_id_append','line_item_id')"></i><i style="margin-left: 5px; cursor: pointer" class="fa fa-times" (click)="toggleField(invoice, item,'is_line_item_id_append','line_item_id', false)"></i>
+                                    </div>
+                                </div>
                                 <div class="col-sm-1"><span class="paymentText">{{item.order_id}}</span></div>
-                                <div class="col-sm-1"><span class="paymentText">{{item.site_name}}</span></div>
+                                <div [style.display]="!invoice.isKenshoo ? 'none' : 'inline-block'" class="col-sm-1"><span class="paymentText">{{item.site_name}}</span></div>
                                 <div class="col-sm-1"><span class="paymentText">{{item.client_id}}</span></div>
                                 <div class="col-sm-1"><span class="paymentText">{{item.company_name}}</span></div>
+                                <div class="col-sm-1"><span class="paymentText" style="white-space: pre-wrap; word-break: break-all">{{item.campaign_name}}</span></div>
                                 <div [style.display]="invoice.isKenshoo ? 'none' : 'inline-block'"  class="col-sm-1" style="text-align: right" ><span
                                         class="paymentText">{{item.billed_amount | currency:"USD":true:'1.2-2'}}</span></div>
                                 <div class="col-sm-1" style="text-align: right"><span
                                         class="paymentText">{{ invoice.isKenshoo ? (item.total_spend | currency:"USD":true:'1.2-2') : (item.calculated_amount | currency:"USD":true:'1.2-2')}}</span></div>
                                 <div [style.display]="invoice.isKenshoo ? 'none' : 'inline-block'" class="col-sm-1" style="text-align: right"><span
                                         class="paymentText">{{item.discrepancy_amount | currency:"USD":true:'1.2-2'}}</span></div>
-                                <div  class="col-sm-1" style="text-align: right" ><span
+                                <div class="col-sm-1" style="text-align: right" ><span
                                         class="paymentText">{{item.paid_amount ? (item.paid_amount  | currency:"USD":true:'1.2-2') : 0}}</span></div>
+                                <div *ngIf="!invoice.isKenshoo" class="col-sm-1">
+                                    <span *ngIf="!item.is_memo_append" class="paymentText" style="word-break: break-word">{{item.memo}}
+                                        <i *ngIf="isRoot" class="fa fa-pencil" style="margin-left: 10px; cursor: pointer" (click)="toggleField(invoice, item,'is_memo_append','memo', true)"></i>
+                                    </span>
+                                    <div *ngIf="item.is_memo_append">
+                                        <textarea rows="8" [(ngModel)]="tempMemo" [value]="item.memo ? item.memo : ''" style="width: 100px"></textarea><i style="margin-left: 5px; cursor: pointer" class="fa fa-check" (click)="updateField(invoice, item,'is_memo_append','memo')"></i><i style="margin-left: 5px; cursor: pointer" class="fa fa-times" (click)="toggleField(invoice ,item,'is_memo_append','memo', false)"></i>
+                                    </div>
+                                </div>
                                 <div class="col-sm-1" style="left: 6px">
                                     <span class="paymentText">
                                       <input [disabled]="(invoice.isKenshoo ? ( invoice.discrepancyAmount !== 0 ? 'disabled' : null) : (item.discrepancy_amount !== 0 ? 'disabled' : null))" type="checkbox" (change)="OnCheckChecked($event, invoice, item)" [(ngModel)]="item.checked"/>
                                     </span>
                                 </div>
-                                <div class="col-sm-2">
+                                <div class="col-sm-1" style="padding-left: 0px">
                                     <div class="input-group col-sm-12">
-                                        <span class="input-group-addon">$</span>
+                                        <!--<span class="input-group-addon">$</span>-->
                                         <input type="text" numeric numericType="decimal" class="form-control"
-                                               style="border-radius: 0 4px 4px 0; text-align: right" [(ngModel)]="item.pay" (keyup)="updateTotal(invoice)">
+                                               style="border-radius: 4px; text-align: right" [(ngModel)]="item.pay" (keyup)="updateTotal(invoice)">
                                     </div>
                                     <!--<div class="alert alert-danger" *ngIf="control.invalid">-->
                                     <!--<i class="fa fa-exclamation-circle" aria-hidden="true"></i>-->
