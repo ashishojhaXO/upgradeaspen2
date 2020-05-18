@@ -57,7 +57,7 @@
 </div>
 
 <div style="width:100%">
-  <app-pop-up-modal #AddUser>
+  <app-pop-up-modal #ReceiptsList>
     <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
       List of Receipts to download
     </div>
@@ -85,8 +85,35 @@
       </div>
     </div>
     <div class="app-modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="addUser.hide()">
+      <button type="button" class="btn btn-secondary" (click)="receiptsList.hide()">
         Close
+      </button>
+    </div>
+  </app-pop-up-modal>
+</div>
+
+<div style="width:100%">
+  <app-pop-up-modal #PayoutDate>
+    <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
+       Line Item : {{selectedDisplayLineItemID ? selectedDisplayLineItemID : selectedLineItemID}}
+    </div>
+    <div class="app-modal-body">
+      <div class="content">
+        <label>Payout Date</label>
+        <div>
+          <input class="input-form-control"
+                 a2e-datetimepicker
+                 [(ngModel)]="selectedPayoutDate"
+                 [options]="dateOptions"/>
+        </div>
+      </div>
+    </div>
+    <div class="app-modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="handleSubmitPayoutDate()">
+        Submit
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="handleClosePayoutDate()">
+        Cancel
       </button>
     </div>
   </app-pop-up-modal>

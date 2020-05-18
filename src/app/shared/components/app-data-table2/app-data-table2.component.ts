@@ -282,7 +282,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         this.dataObject.gridData.options.isPlayOption ||
                         this.dataObject.gridData.options.isDownloadOption ||
                         this.dataObject.gridData.options.isDeleteOption ||
-                        this.dataObject.gridData.options.isCustomOption
+                        this.dataObject.gridData.options.isCustomOption ||
+                        this.dataObject.gridData.options.isCustomOption2
                     ) {
                         rowData.splice(
                             this.dataObject.gridData.options.isActionColPosition || 0,
@@ -323,6 +324,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 if (this.dataObject.gridData.options.isCustomOption && this.dataObject.gridData.options.isCustomOption.value) {
                     const iconClass = this.dataObject.gridData.options.isCustomOption.icon ? this.dataObject.gridData.options.isCustomOption.icon : 'fa-play';
                     columnButtonDefs += '<a class="fa ' + iconClass  + ' fa-action-view customLink" title="' + (this.dataObject.gridData.options.isCustomOption.tooltip ? this.dataObject.gridData.options.isCustomOption.tooltip : 'Click' ) + '" style="margin-right: 15px;cursor: pointer">';
+                }
+
+                if (this.dataObject.gridData.options.isCustomOption2 && this.dataObject.gridData.options.isCustomOption2.value) {
+                    const iconClass = this.dataObject.gridData.options.isCustomOption2.icon ? this.dataObject.gridData.options.isCustomOption2.icon : 'fa-play';
+                    columnButtonDefs += '<a class="fa ' + iconClass  + ' fa-action-view customLink2" title="' + (this.dataObject.gridData.options.isCustomOption2.tooltip ? this.dataObject.gridData.options.isCustomOption2.tooltip : 'Click' ) + '" style="margin-right: 15px;cursor: pointer">';
                 }
 
                 if (this.dataObject.gridData.options.isEmailOption) {
@@ -782,6 +788,15 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             $('#' + this.tableId + ' tbody').on('click', '.customLink', function () {
                 __this.triggerActions.emit({
                     action: 'handleCustom',
+                    data: __this.dataObject.gridData.result[table.row($(this).parents('tr')).index()],
+                    rowIndex: table.row($(this).parents('tr')).index()
+                });
+            });
+
+            // Custom Icon Click
+            $('#' + this.tableId + ' tbody').on('click', '.customLink2', function () {
+                __this.triggerActions.emit({
+                    action: 'handleCustom2',
                     data: __this.dataObject.gridData.result[table.row($(this).parents('tr')).index()],
                     rowIndex: table.row($(this).parents('tr')).index()
                 });
