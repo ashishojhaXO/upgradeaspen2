@@ -33,7 +33,7 @@
         </div>
         <div class="col-xs-12 col-sm-10">
           <p>Create base field(s) by drag and drop below fields in the 'Drop Here' area.</p>
-          <p>Fields with org as 'All' would be created as global fields. In order to create org specific, select the appropriate org from the dropdown.</p>
+          <p *ngIf="isRoot">Fields with org as 'All' would be created as global fields. In order to create org specific, select the appropriate org from the dropdown.</p>
           <div class="order-container">
             <app-customformbuilder [isBaseField]="true" [editTemplate]="editTemplate" #baseForm [clearSelectedFields]="clearSelectedFields"></app-customformbuilder>
           </div>
