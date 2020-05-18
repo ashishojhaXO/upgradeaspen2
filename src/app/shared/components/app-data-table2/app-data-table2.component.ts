@@ -380,9 +380,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     ( field.validation && field.validation.length && 
                         field.validation.indexOf('required') !== -1 
                         ? 
-                        `<div *ngIf="${ __this.lineItemForm.controls[field.name].invalid && __this.lineItemForm.controls[field.name].dirty === true}" 
+                        `<div *ngIf="${ __this.lineItemForm.controls[field.name].invalid && !__this.lineItemForm.controls[field.name].pristine }" 
                         class="col-lg-12 col-md-12 form-field alert alert-danger"
-                        style="display: ${ __this.lineItemForm.controls[field.name].invalid && __this.lineItemForm.controls[field.name].dirty === true ? 'inline-block':'none'}"
+                        style="display: ${ __this.lineItemForm.controls[field.name].invalid && !__this.lineItemForm.controls[field.name].pristine  ? 'inline-block':'none'}"
                         ><div>`
                           + field.label  + 
                           ' is required</div></div>' 
