@@ -248,7 +248,30 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             '" columnIndex="' + 
             columnIndex + 
             '"><input placeholder="Select ' + field.label + '" class="inlineEditor ' + 
-            ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' )  + '" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '')
+            (
+                (
+                    (
+                        (field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))
+                    ) 
+                    && __this.dataObject.paymentReceived
+                ) 
+                && !extendedRow 
+                || 
+                (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') 
+                ? 'disabled' 
+                : '' 
+            )  + '" type="text" style="width:' + 
+            (((field.size ? field.size : 20) * 7.5) + 10)  
+            + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' 
+            + $('td', row).eq(columnIndex).text() +  '"/></div>' 
+            + 
+            ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 
+            ? `<div *ngIf="${ __this.lineItemForm.controls[field.name].invalid && __this.lineItemForm.controls[field.name].dirty === true}"
+            class="col-lg-12 col-md-12 form-field alert alert-danger" 
+            style="display: ${ __this.lineItemForm.controls[field.name].invalid && __this.lineItemForm.controls[field.name].dirty === true ? 'inline-block':'none'}"
+            ><div>` 
+            + field.label  + ' is required</div></div>' 
+            : '')
         }
         else if(fieldType === 'text') {
             htmlField = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><textarea placeholder="Select ' + field.label + '" class="inlineEditor ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' )  + '" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"></textarea></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '')
@@ -281,9 +304,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             +  '"/></div>' + 
             ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 
             ? `<div *ngIf="${ __this.lineItemForm.controls[field.name].invalid && __this.lineItemForm.controls[field.name].dirty === true}"
-            class="col-lg-12 col-md-12 form-field alert alert-danger" 
-            style="display: ${ __this.lineItemForm.controls[field.name].invalid && __this.lineItemForm.controls[field.name].dirty === true ? 'inline-block':'none'}"
-            ><div>` + field.label  + ' is required</div></div>' 
+                class="col-lg-12 col-md-12 form-field alert alert-danger" 
+                style="display: ${ __this.lineItemForm.controls[field.name].invalid && __this.lineItemForm.controls[field.name].dirty === true ? 'inline-block':'none'}"
+                ><div>` + field.label  + ' is required</div></div>' 
             : ''
             )
         }
