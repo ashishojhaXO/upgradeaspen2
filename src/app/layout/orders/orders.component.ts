@@ -23,6 +23,7 @@ import { modalConfigDefaults } from 'ngx-bootstrap/modal/modal-options.class';
 import { CsvService } from '../../../services/csv';
 import {ToasterService} from 'angular2-toaster';
 import DataTableColumnSearchPluginExt from '../../../scripts/data-table/data-table-search-plugin-ext';
+import {moment} from 'ngx-bootstrap/chronos/test/chain';
 
 @Component({
   selector: 'app-orders',
@@ -75,6 +76,11 @@ export class OrdersComponent implements OnInit  {
       value : true,
       icon : 'fa-history',
       tooltip: 'View History'
+    },
+    isCustomOption2: {
+      value : true,
+      icon : 'fa-calendar',
+      tooltip: 'Add/Edit Payout Date'
     },
     // Commenting out fixedColumn, as we need subRow isTree children child row, to show action buttons
     // fixedColumn: 1,
@@ -159,12 +165,18 @@ export class OrdersComponent implements OnInit  {
   hideTable: any;
   allowOrderFunctionality: any;
   orderPayment: number;
+  selectedPayoutDate: any;
+  dateOptions = {
+    format: "YYYY-MM-DD",
+    showClear: true
+  };
   // retryChargeState: boolean = true;
 
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
   selectedRow: any;
-  @ViewChild('AddUser') addUser: PopUpModalComponent;
+  @ViewChild('ReceiptsList') receiptsList: PopUpModalComponent;
+  @ViewChild('PayoutDate') payoutDate: PopUpModalComponent;
 
   response: any;
   org: string;
@@ -611,6 +623,8 @@ export class OrdersComponent implements OnInit  {
 
     this.options[0].isPlayOption.value = this.allowOrderFunctionality === 'true' ? true : false;
 
+    this.options[0].isCustomOption2.value = this.isRoot ? true : false;
+
     // const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
     // if (customerInfo && customerInfo.org && customerInfo.org.org_name === 'Home Depot') {
     //   this.options[0].isPlayOption.icon = 'fa-history';
@@ -664,7 +678,7 @@ export class OrdersComponent implements OnInit  {
               this.receiptList = res.data;
 
               // Show modal popUp, from there run this.handleDownloadLink(receiptId)
-              this.addUser.show();
+              this.receiptsList.show();
             },
             (rej) => {
               this.showSpinner = false;
@@ -715,6 +729,15 @@ export class OrdersComponent implements OnInit  {
     this.selectedDisplayOrderID = dataObj.data.order_id ? dataObj.data.order_id : dataObj.data.internal_order_id;
     this.hideTable = true;
     this.isHistory = true;
+  }
+
+  handleCustom2(dataObj: any) {
+    this.selectedLineItemID = dataObj.data.internal_line_item_id;
+    this.selectedPayoutDate = dataObj.data.payout_date;
+    this.selectedDisplayLineItemID = dataObj.data.line_item_id;
+    this.payoutDate.show();
+    console.log('dataObj >>>')
+    console.log(dataObj);
   }
 
   searchDownloadLink(downloadId, orderId) {
@@ -778,7 +801,6 @@ export class OrdersComponent implements OnInit  {
   reLoad() {
     this.showSpinner = true;
     this.dataObject.isDataAvailable = false;
-
     this.searchDataRequest(this.orgValue, this.currentTable);
   }
 
@@ -971,6 +993,77 @@ export class OrdersComponent implements OnInit  {
     if (this.hasTemplates) {
       this.router.navigate(['/app/order/create']);
     }
+  }
+
+  handleSubmitPayoutDate() {
+    if (!this.selectedPayoutDate) {
+      Swal({
+        title: 'No date selection',
+        html: 'Please choose a date',
+        type: 'error'
+      });
+      return;
+    }
+    const selectedPayoutDate = moment(this.selectedPayoutDate._d).format('YYYY-MM-DD');
+    this.submitPayoutDate(selectedPayoutDate).subscribe(
+        response => {
+          this.handleClosePayoutDate();
+          Swal({
+            title: 'Success',
+            html: response.message ? response.message : 'Payout date successfully updated',
+            type: 'success'
+          }).then( () => {
+            this.reLoad();
+          });
+        },
+        err => {
+          if(err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+                this,
+                err,
+                self.submitPayoutDate.bind(self, selectedPayoutDate)
+            );
+          } else {
+            this.showSpinner = false;
+            Swal({
+              title: 'An error occurred',
+              html: err._body ? JSON.parse(err._body).message : 'No error definition available',
+              type: 'error'
+            });
+          }
+        });
+  }
+
+  submitPayoutDate(selectedPayoutDate) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    const data = JSON.stringify({
+      internal_line_item_id : this.selectedLineItemID,
+      payout_date : selectedPayoutDate
+    });
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/orders/payoutdate';
+    return this.http
+        .put(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
+
+  handleClosePayoutDate() {
+    this.payoutDate.hide();
+    this.selectedLineItemID = null;
+    this.selectedPayoutDate = null;
+    this.selectedDisplayLineItemID = null;
   }
 }
 
