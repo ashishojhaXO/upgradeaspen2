@@ -405,6 +405,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 if (this.dataObject.gridData.options.isDownloadAsCsv) {
                     let dict = {
                         extend: 'csv',
+                        bom: true,
+                        charset: 'UTF-8',
                         text: '<span><i class="fa fa-download fa-Idown" aria-hidden="true"></i></span>',
                         exportOptions: {
                             columns: ":visible"

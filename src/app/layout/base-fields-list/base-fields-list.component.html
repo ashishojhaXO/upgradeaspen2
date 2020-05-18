@@ -1,0 +1,37 @@
+<div>
+  <div class="col-lg-12 col-md-12">
+    <p class="pull-left page-title">BASE FIELDS</p>
+    <div class="pull-right">
+      <a class="btn btn-primary" href="javascript:void(0)" routerLink="/app/admin/baseFields">CREATE NEW BASE FIELDS</a>
+      <a (click)="reLoad()" class="button btn btn-secondary"><i class="fa fa-fw fa-refresh" aria-hidden="true"></i>Reload</a>
+    </div>
+  </div>
+  <div *ngIf="isRoot">
+    <label class="col-xs-12 col-sm-2">Select Org: </label>
+    <div class="col-xs-12 col-sm-6">
+      <select2 width="100%" *ngIf="orgArr.length"
+               class="col-lg-12 col-md-12"
+               style="padding: 0px;"
+               [value]="orgValue"
+               [options]="select2Options"
+               (valueChanged)="OnOrgChange($event);"
+               [data]="orgArr"></select2>
+    </div>
+  </div>
+  <div class="">
+    <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject.isDataAvailable">
+      <app-data-table2 identity="orders"
+      height="48vh"
+      [dataObject]="dataObject"
+      [sendResponseOnCheckboxClick]=true
+      (triggerActions)="handleRow($event)">
+    </app-data-table2>
+    </div>
+    <div class="clearfix"></div>
+    <div class="page-header" *ngIf="!dataObject.isDataAvailable">
+      <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
+      <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to display.</div>
+    </div>
+  </div>
+</div>
+<app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>

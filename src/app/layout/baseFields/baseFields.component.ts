@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { OktaAuthService } from '../../../services/okta.service';
 import { Headers, RequestOptions, Http } from '@angular/http';
 import * as _ from 'lodash';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -29,7 +30,7 @@ export class BaseFieldsComponent implements OnInit {
   };
   orgValue = '';
 
-  constructor(private okta: OktaAuthService, private http: Http) { }
+  constructor(private okta: OktaAuthService, private http: Http, private route: ActivatedRoute, private router: Router, ) { }
 
   ngOnInit() {
     this.widget = this.okta.getWidget();
@@ -168,6 +169,7 @@ export class BaseFieldsComponent implements OnInit {
             const __this = this;
             setTimeout(function () {
               __this.clearSelectedFields = false;
+              __this.router.navigate(['/app/admin/basefieldslist']);
             }, 1000);
           });
         }

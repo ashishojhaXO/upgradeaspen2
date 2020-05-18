@@ -32,6 +32,7 @@ import { OrdersProcessedComponent } from './orders-processed/orders-processed.co
 import { JobsComponent } from './jobs/jobs.component';
 import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
 import {UploadsComponent} from './../layout/uploads/uploads.component';
+import { BaseFieldsListComponent } from './base-fields-list/base-fields-list.component';
 
 const routes: Routes = [
     {
@@ -408,11 +409,19 @@ const routes: Routes = [
                         }
                     },
                     {
+                        path: 'basefieldslist',
+                        component: BaseFieldsListComponent,
+                        data: {
+                            breadcrumbs: true,
+                            text: 'Base Fields'
+                        },
+                    },
+                    {
                         path: 'baseFields',
                         component: BaseFieldsComponent,
                         data: {
                             breadcrumbs: true,
-                            text: 'Base Fields'
+                            text: 'Create Base Fields'
                         },
                     },
                     {
