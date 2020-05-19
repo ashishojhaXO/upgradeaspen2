@@ -13,7 +13,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {DataTableOptions} from '../../../models/dataTableOptions';
 import {Http, Headers, RequestOptions} from '@angular/http';
 // import { OktaAuthService } from '../../../services/okta.service';
-import {FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, FormArray, Validators, ReactiveFormsModule} from '@angular/forms';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import { OktaAuthService } from '../../../services/okta.service';
 import Swal from 'sweetalert2';
@@ -680,18 +680,15 @@ export class OrderComponent implements OnInit  {
         }
     }
 
+    lineItemFormArray = new FormArray([]);
+
     addLineItem() {
 
         // this.dataRowUpdated = false;
-
-        const __this = this;
-
         // setTimeout(function () {
 
         let formControl = {};
         const dataObj = {};
-
-        console.log("dFC: ", this.dataFieldConfiguration)
 
         this.dataFieldConfiguration.forEach(function (conf) {
             // console.log('conf >>')
@@ -717,6 +714,8 @@ export class OrderComponent implements OnInit  {
 
         // this.lineItemForm =  new FormGroup(formControl)
         dataObj['form'] = new FormGroup(formControl)
+        this.lineItemFormArray.push(dataObj['form'])
+
 
         console.log('dataObj >>')
         console.log(dataObj);
