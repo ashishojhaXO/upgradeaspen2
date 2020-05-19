@@ -127,13 +127,18 @@
         <button class="btn btn-primary" *ngIf="!paymentReceived" (click)="addLineItem()">ADD</button>
         <button class="btn btn-primary" *ngIf="!paymentReceived" (click)="removeLineItem()">REMOVE</button>
         <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject && dataFieldConfiguration.length && paymentReceived !== null">
-          <app-data-table2
-                  [existingIdentity]="!!existingOrder"
-                  [dataObject]="dataObject"
-                  (triggerActions)="this[$event.action]($event)"
-                  [dataFieldsConfiguration]="dataFieldConfiguration"
-                  [dataRowUpdatedLen] = "dataRowUpdatedLen"
-          ></app-data-table2>
+
+          <form >
+            <app-data-table2
+                    [existingIdentity]="!!existingOrder"
+                    [dataObject]="dataObject"
+                    (triggerActions)="this[$event.action]($event)"
+                    [dataFieldsConfiguration]="dataFieldConfiguration"
+                    [dataRowUpdatedLen] = "dataRowUpdatedLen"
+                    [lineItemFormArray]="lineItemFormArray"
+            ></app-data-table2>
+          </form>
+
           <!--<app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height"></app-data-table1>-->
         </div>
         <div class="clearfix"></div>

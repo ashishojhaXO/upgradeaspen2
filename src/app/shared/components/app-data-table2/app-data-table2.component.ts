@@ -23,6 +23,7 @@ import { DatePipe } from '@angular/common';
 import set = Reflect.set;
 
 import DataTableColumnSearchPluginExt from '../../../../scripts/data-table/data-table-search-plugin-ext';
+import { field } from '../customformbuilder/customformbuilder.model';
 
 declare var $: any;
 
@@ -43,6 +44,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     api_fs: any;
     tableId = 'example';
     @Input() dataFieldsConfiguration: any;
+    @Input() lineItemForm: any;
+    @Input() lineItemFormArray: any;
     table: any;
     @Input() dataRowUpdated: boolean;
     @Input() dataRowUpdatedLen: number;
@@ -50,6 +53,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     @Input() height: any;
     @Input() existingIdentity: boolean;
     fixedColumnFlag: boolean;
+
+    rowEle: any;
 
     constructor(
         public toastr: ToastsManager,
@@ -235,6 +240,180 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             $(this).closest('div.form-group-fields').find('div.invoiceFooter').find('span.totalInvoice').text(totalAmount.toLocaleString());
 
         });
+    }
+
+    showHtmlField(fieldType, __this, field, row, index, columnIndex, extendedRow, rowEle) {
+        let htmlField = "";
+
+        if(fieldType === 'decimal' || fieldType === 'varchar' || fieldType === 'string' ) {
+            htmlField = '<div class="form-group" rowIndex="' + 
+            index + 
+            '" columnIndex="' + 
+            columnIndex + 
+            '"><input placeholder="Select ' + field.label + '" class="inlineEditor ' + 
+            (
+                (
+                    (
+                        (field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))
+                    ) 
+                    && __this.dataObject.paymentReceived
+                ) 
+                && !extendedRow 
+                || 
+                (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') 
+                ? 'disabled' 
+                : '' 
+            )  + '" type="text" style="width:' + 
+            (((field.size ? field.size : 20) * 7.5) + 10)  
+            + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' 
+            + $('td', row).eq(columnIndex).text() +  '"/></div>' 
+            + 
+            ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 
+            ? `<div *ngIf="${ rowEle.form.controls[field.name].invalid && rowEle.form.controls[field.name].dirty === true}"
+            class="col-lg-12 col-md-12 form-field alert alert-danger" 
+            style="display: ${ rowEle.form.controls[field.name].invalid && rowEle.form.controls[field.name].dirty === true ? 'inline-block':'none'}"
+            ><div>` 
+            + field.label  + ' is required</div></div>' 
+            : '')
+        }
+        else if(fieldType === 'text') {
+            htmlField = '<div class="form-group" rowIndex="' + 
+            index + '" columnIndex="' + 
+            columnIndex + 
+            '"><textarea placeholder="Select ' + field.label + '" class="inlineEditor ' 
+            + 
+            (
+                (
+                    (
+                    (field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))
+                    ) 
+                && __this.dataObject.paymentReceived
+                ) 
+                && !extendedRow 
+                || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') 
+                ? 'disabled' : '' 
+            )  + '" style="width:' + 
+            (((field.size ? field.size : 20) * 7.5) + 10)  
+            + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' 
+            + $('td', row).eq(columnIndex).text() +  '"></textarea></div>' 
+            + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 
+            ? `<div *ngIf="${ rowEle.form.controls[field.name].invalid && rowEle.form.controls[field.name].dirty === true}"
+            class="col-lg-12 col-md-12 form-field alert alert-danger" 
+            style="display: ${ rowEle.form.controls[field.name].invalid && rowEle.form.controls[field.name].dirty === true ? 'inline-block':'none'}"
+            ><div>`
+            + field.label  + ' is required</div></div>' : '')
+        }
+        else if( fieldType === 'int') {
+           htmlField = '<div class="form-group" rowIndex="' + 
+           index + 
+           '" columnIndex="' + 
+           columnIndex + 
+           '"><input placeholder="Select ' + field.label + '" class="inlineEditor ' + 
+           (
+               (
+                (
+                    (field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) 
+                    || 
+                    ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))
+                ) 
+               && __this.dataObject.paymentReceived
+               ) 
+               && !extendedRow 
+               || 
+               (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') 
+               ? 'disabled' : '' 
+            )  
+            + '" type="number" style="width:' 
+            + 
+            (((field.size ? field.size : 20) * 7.5) + 10)  
+            + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' 
+            + $('td', row).eq(columnIndex).text() 
+            +  '"/></div>' + 
+            ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 
+            ? `<div *ngIf="${ rowEle.form.controls[field.name].invalid && rowEle.form.controls[field.name].dirty === true}"
+                class="col-lg-12 col-md-12 form-field alert alert-danger" 
+                style="display: ${ rowEle.form.controls[field.name].invalid && rowEle.form.controls[field.name].dirty === true ? 'inline-block':'none'}"
+                ><div>` + field.label  + ' is required</div></div>' 
+            : ''
+            )
+        }
+        else if(fieldType === 'amount') {
+
+            htmlField = `<div class="form-group" rowIndex="`
+                + 
+                index + 
+                '" columnIndex="' + 
+                columnIndex + '">' + 
+                (field.includeCurrency 
+                    ? 
+                    '<select class="grid-select" style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>' 
+                    : 
+                    '<select class="grid-select" style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>') 
+                    + 
+                    `<input [formControlName]="${field.name}" placeholder="Select ` + field.label + '"  class="inlineEditor ' + 
+                    (((
+                        (
+                            field.validation && 
+                            field.validation.length && 
+                            field.validation.indexOf('disabled') !== -1
+                        ) || 
+                        ( __this.existingIdentity && 
+                            (!field.validation || 
+                                (
+                                field.validation && 
+                                field.validation.indexOf('PostOrderChange') === -1
+                                )
+                            )
+                        )
+                    ) && 
+                        __this.dataObject.paymentReceived
+                    ) &&
+                        !extendedRow || 
+                        (
+                            extendedRow && 
+                            field.name !== 'end_date' && 
+                            field.name !== 'additional_budget'
+                        ) ? 
+                        'disabled' : 
+                        '' 
+                    ) 
+                    + '" type="text" style="width:' 
+                    + 
+                    (((field.size ? field.size : 20) * 7.5) + 10)  
+                    + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + 
+                    ( field.validation && field.validation.length && 
+                        field.validation.indexOf('required') !== -1 
+                        ? 
+                        `
+                        <div *ngIf="
+                        ${ 
+                           rowEle.form.controls[field.name].invalid 
+                            && 
+                            ( 
+                                rowEle.form.controls[field.name].dirty ||
+                                rowEle.form.controls[field.name].touched
+                            )
+                        }" 
+                        class="col-lg-12 col-md-12 form-field alert alert-danger"
+                        style="display: 
+                        ${ 
+                            rowEle.form.controls[field.name].invalid 
+                            && 
+                            ( 
+                                rowEle.form.controls[field.name].dirty ||
+                                rowEle.form.controls[field.name].touched
+                            )
+                            ? 'inline-block'
+                            : 'none'
+                        }"
+                        ><div>`
+                          + field.label  + 
+                          ' is required</div></div>' 
+                        : ''
+                    )
+        } 
+        
+        return htmlField;
     }
 
     initializeTable() {
@@ -549,6 +728,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     // Initialize inline-edit fields
                     if (__this.dataFieldsConfiguration) {
 
+                        const rowEle = __this.dataObject.gridData.result[index];
+
                         __this.dataFieldsConfiguration.forEach(function (field) {
                             const headerColumnField = __this.dataObject.gridData.headers.find(x=> x.key === field.name);
 
@@ -558,8 +739,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     columnIndex++;
                                 }
 
-                                const rowEle = __this.dataObject.gridData.result[index];
                                 const extendedRow = rowEle.id && rowEle.id == rowEle.suppliedId;
+
 
                                 field.value = __this.dataObject.gridData.result[index][field.name];
 
@@ -567,17 +748,27 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     field.value = [field.value];
                                 }
 
+                                let html = ""
+
                                 if (field.type === 'decimal' || field.type === 'varchar' || field.type === 'string') {
-                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.label + '" class="inlineEditor ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' )  + '" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
+                                    // $('td', row).eq(columnIndex).html(
+                                        html = __this.showHtmlField(field.type, __this, field, row, index, columnIndex, extendedRow, rowEle)
+                                    // );
                                 } else if(field.type === 'text') {
-                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><textarea placeholder="Select ' + field.label + '" class="inlineEditor ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' )  + '" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"></textarea></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
+                                    // $('td', row).eq(columnIndex).html(
+                                        html = __this.showHtmlField('text', __this, field, row, index, columnIndex, extendedRow, rowEle)
+                                    // );
                                 } else if (field.type === 'int') {
-                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><input placeholder="Select ' + field.label + '" class="inlineEditor ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' )  + '" type="number" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
+                                    // $('td', row).eq(columnIndex).html(
+                                        html = __this.showHtmlField('int', __this, field, row, index, columnIndex, extendedRow, rowEle)
+                                    // );
                                 } else if (field.type === 'amount') {
-                                    $('td', row).eq(columnIndex).html('<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '">' + (field.includeCurrency ? '<select class="grid-select" style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>' : '<select class="grid-select" style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>') + '<input placeholder="Select ' + field.label + '"  class="inlineEditor ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' ) + '" type="text" style="width:' + (((field.size ? field.size : 20) * 7.5) + 10)  + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : ''));
+                                    // $('td', row).eq(columnIndex).html(
+                                        html = __this.showHtmlField('amount', __this, field, row, index, columnIndex, extendedRow, rowEle)
+                                    // );
                                 } else if (field.type === 'date') {
-                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div class="input-group date datepicker"><input placeholder="Select ' + field.label + '" type="text" class="form-control inlineEditor ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' ) + '" style="border-radius: 4px; font-size: 12px" value="' + $('td', row).eq(columnIndex).text()  + '" /> <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span></div></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
-                                    $('td', row).eq(columnIndex).html(html);
+                                    html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div class="input-group date datepicker"><input placeholder="Select ' + field.label + '" type="text" class="form-control inlineEditor ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' ) + '" style="border-radius: 4px; font-size: 12px" value="' + $('td', row).eq(columnIndex).text()  + '" /> <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span></div></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
+                                    // $('td', row).eq(columnIndex).html(html);
                                 } else if (field.type === 'list') {
 
                                     let options = '<option value="">--Select--</option>';
@@ -588,8 +779,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                         }
                                         options += '>' + option.text + '</option>';
                                     });
-                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class="form-control inlineEditor select-control grid-select ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
-                                    $('td', row).eq(columnIndex).html(html);
+                                    html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class="form-control inlineEditor select-control grid-select ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
+                                    // $('td', row).eq(columnIndex).html(html);
 
                                     // if (field.name === 'ad_copy') {
                                     //
@@ -637,8 +828,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                         // }
                                         // options += '>' + option.text + '</option>';
                                     });
-                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class=" ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</div></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
-                                    $('td', row).eq(columnIndex).html(html);
+                                    html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class=" ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</div></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
+                                    // $('td', row).eq(columnIndex).html(html);
                                 } else if (field.type === 'radio') {
                                     let options = '';
                                     field.options.forEach(function (option, index1) {
@@ -659,11 +850,14 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                         // }
                                         // options += '>' + option.text + '</option>';
                                     });
-                                    const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class=" ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</div></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
-                                    $('td', row).eq(columnIndex).html(html);
+                                    
+                                    html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class=" ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</div></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
+                                    // $('td', row).eq(columnIndex).html(html);
                                 }
-                            }
 
+                                let prependHtml = `<div [formGroupName]="${index}">${html}</div>`;
+                                $('td', row).eq(columnIndex).html(prependHtml);
+                            }
                         });
                     }
                 }
@@ -715,10 +909,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 }
             });
 
+            // NOT TODO
             // Handle sort column event
-            $('#' + this.tableId).on('order.dt', function () {
+            // $('#' + this.tableId).on('order.dt', function (ev) {
                 // Remove sorting_1 class if a row is selected
-            });
+            // });
 
             // Add header checkbox
             if (this.dataObject.gridData.options.isRowSelection && this.dataObject.gridData.options.isRowSelection.isMultiple) {
@@ -939,6 +1134,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             // FIX *** FOR PROBLEM WHERE THE COLUMN WIDTH IS RENDERED INCORRECTLY
             setTimeout(function () {
+                console.log("STO ADJ")
                 table.columns.adjust().draw(false);
             }, 0);
 
@@ -1506,8 +1702,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             });
 
             // Register change event on inline edit fields
-            $(document).off('change', '.inlineEditor');
-            $('.inlineEditor').on('change', function () {
+            $(document).off('change blur', '.inlineEditor');
+            $('.inlineEditor').on('change blur', function () {
                 const rowIndex = $(this).closest('.form-group').attr('rowIndex');
                 let columnIndex = $(this).closest('.form-group').attr('columnIndex');
                 console.log($(this).closest('.form-group').attr('rowIndex'));
