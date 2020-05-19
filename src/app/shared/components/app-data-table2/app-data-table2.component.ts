@@ -53,6 +53,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     @Input() existingIdentity: boolean;
     fixedColumnFlag: boolean;
 
+    rowEle: any;
+
     constructor(
         public toastr: ToastsManager,
         private formBuilder: FormBuilder,
@@ -239,8 +241,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         });
     }
 
-    showHtmlField(fieldType, __this, field, row, index, columnIndex, extendedRow) {
+    showHtmlField(fieldType, __this, field, row, index, columnIndex, extendedRow, rowEle) {
         let htmlField = "";
+        console.log("sHF rowEle: ", rowEle)
 
         if(fieldType === 'decimal' || fieldType === 'varchar' || fieldType === 'string' ) {
             htmlField = '<div class="form-group" rowIndex="' + 
@@ -266,9 +269,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             + $('td', row).eq(columnIndex).text() +  '"/></div>' 
             + 
             ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 
-            ? `<div *ngIf="${ __this.lineItemForm.controls[field.name].invalid && __this.lineItemForm.controls[field.name].dirty === true}"
+            ? `<div *ngIf="${ rowEle.form.controls[field.name].invalid && rowEle.form.controls[field.name].dirty === true}"
             class="col-lg-12 col-md-12 form-field alert alert-danger" 
-            style="display: ${ __this.lineItemForm.controls[field.name].invalid && __this.lineItemForm.controls[field.name].dirty === true ? 'inline-block':'none'}"
+            style="display: ${ rowEle.form.controls[field.name].invalid && rowEle.form.controls[field.name].dirty === true ? 'inline-block':'none'}"
             ><div>` 
             + field.label  + ' is required</div></div>' 
             : '')
@@ -294,9 +297,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' 
             + $('td', row).eq(columnIndex).text() +  '"></textarea></div>' 
             + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 
-            ? `<div *ngIf="${ __this.lineItemForm.controls[field.name].invalid && __this.lineItemForm.controls[field.name].dirty === true}"
+            ? `<div *ngIf="${ rowEle.form.controls[field.name].invalid && rowEle.form.controls[field.name].dirty === true}"
             class="col-lg-12 col-md-12 form-field alert alert-danger" 
-            style="display: ${ __this.lineItemForm.controls[field.name].invalid && __this.lineItemForm.controls[field.name].dirty === true ? 'inline-block':'none'}"
+            style="display: ${ rowEle.form.controls[field.name].invalid && rowEle.form.controls[field.name].dirty === true ? 'inline-block':'none'}"
             ><div>`
             + field.label  + ' is required</div></div>' : '')
         }
@@ -327,16 +330,16 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             + $('td', row).eq(columnIndex).text() 
             +  '"/></div>' + 
             ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 
-            ? `<div *ngIf="${ __this.lineItemForm.controls[field.name].invalid && __this.lineItemForm.controls[field.name].dirty === true}"
+            ? `<div *ngIf="${ rowEle.form.controls[field.name].invalid && rowEle.form.controls[field.name].dirty === true}"
                 class="col-lg-12 col-md-12 form-field alert alert-danger" 
-                style="display: ${ __this.lineItemForm.controls[field.name].invalid && __this.lineItemForm.controls[field.name].dirty === true ? 'inline-block':'none'}"
+                style="display: ${ rowEle.form.controls[field.name].invalid && rowEle.form.controls[field.name].dirty === true ? 'inline-block':'none'}"
                 ><div>` + field.label  + ' is required</div></div>' 
             : ''
             )
         }
         else if(fieldType === 'amount') {
 
-            htmlField = '<div> INV '+ __this.lineItemForm.controls[field.name].invalid +" dir "+ __this.lineItemForm.controls[field.name].dirty +" TOUC " +  __this.lineItemForm.controls[field.name].touched+'</div><div class="form-group" rowIndex="' 
+            htmlField = '<div class="form-group" rowIndex="' 
                 + 
                 index + 
                 '" columnIndex="' + 
@@ -347,7 +350,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     : 
                     '<select class="grid-select" style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>') 
                     + 
-                    `<input [formControlName]="${field.name}" placeholder="Select ` + field.label + '"  class="inlineEditor ' + 
+                    `<input [formControlName]="${rowEle.form.controls[field.name]}" placeholder="Select ` + field.label + '"  class="inlineEditor ' + 
                     (((
                         (
                             field.validation && 
@@ -381,18 +384,25 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     ( field.validation && field.validation.length && 
                         field.validation.indexOf('required') !== -1 
                         ? 
-                        `<div *ngIf="
+                        `
+                        <div *ngIf="
                         ${ 
-                            __this.lineItemForm.controls[field.name].invalid 
+                           rowEle.form.controls[field.name].invalid 
                             && 
-                            ( __this.lineItemForm.controls[field.name].dirty || __this.lineItemForm.controls[field.name].touched)
+                            ( 
+                                rowEle.form.controls[field.name].dirty ||
+                                rowEle.form.controls[field.name].touched
+                            )
                         }" 
                         class="col-lg-12 col-md-12 form-field alert alert-danger"
                         style="display: 
                         ${ 
-                            __this.lineItemForm.controls[field.name].invalid 
+                            rowEle.form.controls[field.name].invalid 
                             && 
-                            ( __this.lineItemForm.controls[field.name].dirty || __this.lineItemForm.controls[field.name].touched)
+                            ( 
+                                rowEle.form.controls[field.name].dirty ||
+                                rowEle.form.controls[field.name].touched
+                            )
                         ? 'inline-block':'none'}"
                         ><div>`
                           + field.label  + 
@@ -401,6 +411,10 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     )
         } 
         
+                        // <div style="display:${rowEle.form.controls[field.name].touched == 'true' ? 'inline':'none'}">TICH</div>
+                        // <div *ngIf="${rowEle.form.controls[field.name].dirty}">DIRT</div>
+                        // <div *ngIf="${rowEle.form.controls[field.name].pristine}">PRIST</div>
+                        // <div *ngIf="${rowEle.form.controls[field.name].invalid == 'true'}">INVAL</div>
 
         return htmlField;
     }
@@ -710,7 +724,10 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     if (__this.dataFieldsConfiguration) {
 
                         const rowEle = __this.dataObject.gridData.result[index];
-                                console.log("rowELE: ", rowEle);
+
+                        console.log("rowELE: ", rowEle);
+                        // __this.rowEle = rowEle
+
 
                         __this.dataFieldsConfiguration.forEach(function (field) {
                             const headerColumnField = __this.dataObject.gridData.headers.find(x=> x.key === field.name);
@@ -732,19 +749,19 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                                 if (field.type === 'decimal' || field.type === 'varchar' || field.type === 'string') {
                                     $('td', row).eq(columnIndex).html(
-                                        __this.showHtmlField(field.type, __this, field, row, index, columnIndex, extendedRow)
+                                        __this.showHtmlField(field.type, __this, field, row, index, columnIndex, extendedRow, rowEle)
                                     );
                                 } else if(field.type === 'text') {
                                     $('td', row).eq(columnIndex).html(
-                                        __this.showHtmlField('text', __this, field, row, index, columnIndex, extendedRow)
+                                        __this.showHtmlField('text', __this, field, row, index, columnIndex, extendedRow, rowEle)
                                     );
                                 } else if (field.type === 'int') {
                                     $('td', row).eq(columnIndex).html(
-                                        __this.showHtmlField('int', __this, field, row, index, columnIndex, extendedRow)
+                                        __this.showHtmlField('int', __this, field, row, index, columnIndex, extendedRow, rowEle)
                                     );
                                 } else if (field.type === 'amount') {
                                     $('td', row).eq(columnIndex).html(
-                                        __this.showHtmlField('amount', __this, field, row, index, columnIndex, extendedRow)
+                                        __this.showHtmlField('amount', __this, field, row, index, columnIndex, extendedRow, rowEle)
                                     );
                                 } else if (field.type === 'date') {
                                     const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div class="input-group date datepicker"><input placeholder="Select ' + field.label + '" type="text" class="form-control inlineEditor ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' ) + '" style="border-radius: 4px; font-size: 12px" value="' + $('td', row).eq(columnIndex).text()  + '" /> <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span></div></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
@@ -834,6 +851,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     $('td', row).eq(columnIndex).html(html);
                                 }
                             }
+
 
                         });
                     }

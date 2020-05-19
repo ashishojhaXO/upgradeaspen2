@@ -128,13 +128,12 @@
         <button class="btn btn-primary" *ngIf="!paymentReceived" (click)="removeLineItem()">REMOVE</button>
         <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject && dataFieldConfiguration.length && paymentReceived !== null">
 
-          <form [formGroup]="lineItemForm">
+          <form >
             <app-data-table2
                     [existingIdentity]="!!existingOrder"
                     [dataObject]="dataObject"
                     (triggerActions)="this[$event.action]($event)"
                     [dataFieldsConfiguration]="dataFieldConfiguration"
-                    [lineItemForm]="lineItemForm"
                     [dataRowUpdatedLen] = "dataRowUpdatedLen"
             ></app-data-table2>
           </form>
