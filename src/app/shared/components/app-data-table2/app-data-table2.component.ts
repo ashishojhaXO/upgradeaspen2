@@ -244,7 +244,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
     showHtmlField(fieldType, __this, field, row, index, columnIndex, extendedRow, rowEle) {
         let htmlField = "";
-        console.log("sHF rowEle: ", rowEle)
 
         if(fieldType === 'decimal' || fieldType === 'varchar' || fieldType === 'string' ) {
             htmlField = '<div class="form-group" rowIndex="' + 
@@ -388,33 +387,21 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         `
                         <div *ngIf="
                         ${ 
-                        //    rowEle.form.controls[field.name].invalid 
-                        //     && 
-                        //     ( 
-                        //         rowEle.form.controls[field.name].dirty ||
-                        //         rowEle.form.controls[field.name].touched
-                        //     )
-                           rowEle.form.invalid 
+                           rowEle.form.controls[field.name].invalid 
                             && 
                             ( 
-                                rowEle.form.dirty ||
-                                rowEle.form.touched
+                                rowEle.form.controls[field.name].dirty ||
+                                rowEle.form.controls[field.name].touched
                             )
                         }" 
                         class="col-lg-12 col-md-12 form-field alert alert-danger"
                         style="display: 
                         ${ 
-                            // rowEle.form.controls[field.name].invalid 
-                            // && 
-                            // ( 
-                            //     rowEle.form.controls[field.name].dirty ||
-                            //     rowEle.form.controls[field.name].touched
-                            // )
-                           rowEle.form.invalid 
+                            rowEle.form.controls[field.name].invalid 
                             && 
                             ( 
-                                rowEle.form.dirty ||
-                                rowEle.form.touched
+                                rowEle.form.controls[field.name].dirty ||
+                                rowEle.form.controls[field.name].touched
                             )
                             ? 'inline-block'
                             : 'none'
@@ -426,11 +413,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     )
         } 
         
-                    // <div style="display:${rowEle.form.controls[field.name].touched == 'true' ? 'inline':'none'}">TICH</div>
-                    // <div *ngIf="${rowEle.form.controls[field.name].dirty}">DIRT</div>
-                    // <div *ngIf="${rowEle.form.controls[field.name].pristine}">PRIST</div>
-                    // <div *ngIf="${rowEle.form.controls[field.name].invalid == 'true'}">INVAL</div>
-
         return htmlField;
     }
 
