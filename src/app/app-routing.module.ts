@@ -13,7 +13,7 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: './login/login.module#LoginModule',
-    canLoad: [RouteGuard]
+    // canLoad: [RouteGuard]
   },
 
   {
@@ -41,11 +41,5 @@ const routes: Routes = [
 export class AppRoutingModule { 
   constructor(
     private activatedRoute: ActivatedRoute
-  ){
-
-    this.activatedRoute.queryParams.subscribe(params => {
-      //  this.id = +params['id']; // (+) converts string 'id' to a number
-       console.log("APPRTTT: ", params)
-    })
-  }
+  ){}
 }

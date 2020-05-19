@@ -39,14 +39,6 @@ export class AppComponent {
     translate.setDefaultLang('en');
     this.toastr.setRootViewContainerRef(vRef);
 
-    console.log("APPPCOMPO: ")
-    
-    // this.sub = 
-    this.activatedRoute.queryParams.subscribe(params => {
-      //  this.id = +params['id']; // (+) converts string 'id' to a number
-       console.log("ACCT: ", params)
-    })
-
     // var apis_fs = {
     //   api: "https://plazo-dev.fusionseven.net",
     //   redirectUrl: "http://localhost:4300",
