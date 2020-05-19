@@ -177,6 +177,7 @@ export class OrderComponent implements OnInit  {
     searchTemplates(id, lineItemId, existingOrder = false) {
         this.getTemplates().subscribe(
             response => {
+                console.log("RESP", response)
                 this.showSpinner = false;
                 if (response && response.orgTemplates && response.orgTemplates.templates && response.orgTemplates.templates.length) {
 
@@ -690,24 +691,32 @@ export class OrderComponent implements OnInit  {
         let formControl = {};
         const dataObj = {};
 
+        console.log("dFC: ", this.dataFieldConfiguration)
+
         this.dataFieldConfiguration.forEach(function (conf) {
             // console.log('conf >>')
             // console.log(conf);
             dataObj[conf.name] = conf.default_value ? conf.default_value : '';
 
-            let valiFn = []; let asyncValiFn = [];
+           let valiFn = []; let asyncValiFn = [];
+            let dict = {};
 
             if( conf.validation && Validators[ conf.validation[0] ]  ) {
                 valiFn = [ Validators[ conf.validation[0] ] ] 
                 asyncValiFn.push({updateOn: 'blur'});
+
+                // dict['validators'] = [ Validators[ conf.validation[0] ] ];
+                // dict['updateOn'] = 'blur';
             }
 
 
             formControl[conf.name] = new FormControl('', valiFn, asyncValiFn)
+            // formControl[conf.name] = new FormControl('', dict)
 
         }, this);
 
         this.lineItemForm =  new FormGroup(formControl)
+        dataObj['form'] = new FormGroup(formControl)
 
         console.log('dataObj >>')
         console.log(dataObj);
