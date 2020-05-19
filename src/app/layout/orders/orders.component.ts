@@ -675,8 +675,13 @@ export class OrdersComponent implements OnInit  {
         .subscribe(
             (res) => {
               this.showSpinner = false;
-              this.receiptList = res.data;
-
+              if(res.data.length){  
+                res.data.forEach( function (obj) {
+                  obj.order_id = dataObj.data.order_id;
+                  obj.line_item_id = dataObj.data.line_item_id;
+                 });
+                this.receiptList = res.data;
+              }
               // Show modal popUp, from there run this.handleDownloadLink(receiptId)
               this.receiptsList.show();
             },
