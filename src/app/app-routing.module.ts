@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthGuard } from './shared';
 import { RouteGuard } from './shared/guard/route.guard';
 
@@ -9,11 +9,13 @@ const routes: Routes = [
     loadChildren: './layout/layout.module#LayoutModule',
     canLoad: [RouteGuard]
   },
+
   {
     path: '',
     loadChildren: './login/login.module#LoginModule',
     canLoad: [RouteGuard]
   },
+
   {
     path: 'login',
     loadChildren: './login/login.module#LoginModule',
@@ -36,4 +38,14 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule { 
+  constructor(
+    private activatedRoute: ActivatedRoute
+  ){
+
+    this.activatedRoute.queryParams.subscribe(params => {
+      //  this.id = +params['id']; // (+) converts string 'id' to a number
+       console.log("APPRTTT: ", params)
+    })
+  }
+}
