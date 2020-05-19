@@ -17,6 +17,7 @@ import { OktaAuthService } from '../../../services/okta.service';
 import {DataTableAction } from '../../shared/components/app-data-table/data-table-action';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import Swal from 'sweetalert2';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-vendormanagement',
@@ -76,7 +77,8 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   orgInfo: any;
   hideSubmit: any;
   @ViewChild('orgName') orgNameEl:ElementRef;
-  
+  @ViewChild('searchCompanyField') searchField: ElementRef;
+  searchcontent: any
   constructor(
       private okta: OktaAuthService,
       private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager,
@@ -139,6 +141,17 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.resultStatus = 'Fetching results';
     this.searchDataRequest(this.isRoot ? '' : this.orgInfo.org_id);
     this.searchOrgRequest();
+    Observable.fromEvent(this.searchField.nativeElement, 'keyup').debounceTime(500).subscribe(value => {  
+      this.searchcontent=this.vendorModel.company_name;
+      this.validateCompany(this.searchcontent).subscribe(
+          response => {
+            
+          },
+          err => {
+
+          }
+      );
+  });
   }
 
   searchOrgRequest() {
@@ -549,5 +562,23 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.dataObject.isDataAvailable = false;
     this.searchDataRequest(this.isRoot ? this.orgValue : this.orgInfo.org_id);
   }
+  validateCompany(company_name){
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+        token = AccessToken;
+    }
+    const obj: any = {};
+    obj['company_name'] = company_name;
+    const dataObj = JSON.stringify(obj);
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/vendors/valid';
+    return this.http
+        .post(url, dataObj, options)
+        .map(res => {
+            return res.json();
+        }).share();
+ }
 
 }
