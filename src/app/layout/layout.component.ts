@@ -28,6 +28,7 @@ export class LayoutComponent implements DoCheck, OnInit {
 
   ngOnInit() {
 
+    console.log("LAYYO: ")
   }
 
   _hasSubMenus(e) {
