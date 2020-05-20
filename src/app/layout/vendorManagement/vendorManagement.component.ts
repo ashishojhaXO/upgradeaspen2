@@ -12,12 +12,14 @@ import 'bootstrap';
 import {Router, ActivatedRoute} from '@angular/router';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-modal.component';
-import { FormControl, FormGroup, Validators} from '@angular/forms';
+import { FormControl, FormGroup, Validators, AbstractControl, ValidationErrors} from '@angular/forms';
 import { OktaAuthService } from '../../../services/okta.service';
 import {DataTableAction } from '../../shared/components/app-data-table/data-table-action';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import Swal from 'sweetalert2';
 import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
+import { take, switchMapTo, tap, map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-vendormanagement',
@@ -76,9 +78,8 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   isRoot: boolean;
   orgInfo: any;
   hideSubmit: any;
+  companyName='';
   @ViewChild('orgName') orgNameEl:ElementRef;
-  @ViewChild('searchCompanyField') searchField: ElementRef;
-  searchcontent: any
   constructor(
       private okta: OktaAuthService,
       private route: ActivatedRoute, private router: Router, private http: Http, private toastr: ToastsManager,
@@ -104,7 +105,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
       external_vendor_id: new FormControl('', Validators.required),
       first_name: new FormControl('', Validators.required),
       last_name: new FormControl('', Validators.required),
-      company_name: new FormControl('', Validators.required),
+      company_name: new FormControl('', Validators.required,this.companyValidator()),
       email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       address_1: new FormControl('', Validators.required),
       address_2: new FormControl(''),
@@ -141,17 +142,6 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.resultStatus = 'Fetching results';
     this.searchDataRequest(this.isRoot ? '' : this.orgInfo.org_id);
     this.searchOrgRequest();
-    Observable.fromEvent(this.searchField.nativeElement, 'keyup').debounceTime(500).subscribe(value => {  
-      this.searchcontent=this.vendorModel.company_name;
-      this.validateCompany(this.searchcontent).subscribe(
-          response => {
-            
-          },
-          err => {
-
-          }
-      );
-  });
   }
 
   searchOrgRequest() {
@@ -319,6 +309,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
       last_name : dataObj.data.last_name
     });
     this.vendorModel.company_name = dataObj.data.company_name;
+    this.companyName = dataObj.data.company_name;
     this.vendorForm.patchValue({
       company_name : dataObj.data.company_name
     });
@@ -562,6 +553,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.dataObject.isDataAvailable = false;
     this.searchDataRequest(this.isRoot ? this.orgValue : this.orgInfo.org_id);
   }
+
   validateCompany(company_name){
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
@@ -578,7 +570,38 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
         .post(url, dataObj, options)
         .map(res => {
             return res.json();
-        }).share();
- }
+        }) .catch((error: any) => {
+          if (error.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              error,
+              this.validateCompany.bind(self, company_name)
+            );
+          }   
+          return Observable.throw(error.status);
+      }).share();
+   }
 
+   companyValidator(){
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      if (!control.valueChanges || control.pristine) {
+        return of(null);
+      } else {
+        if(this.companyName == control.value){
+          return of(null);
+        }else{
+        return control.valueChanges.pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+          take(1),
+          switchMapTo(this.validateCompany(control.value)),
+          tap(() => control.markAsTouched()),
+          tap((data)=>console.log("validatorDT",data)),
+          map((response: any) => response.validCompanyName==true ? { companyValid: true } : null)
+        );
+       }
+      }
+    };
+   }
 }
