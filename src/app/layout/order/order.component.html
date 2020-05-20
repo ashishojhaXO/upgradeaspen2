@@ -21,6 +21,7 @@
           <!--</div>-->
         <!--</div>-->
         <div *ngIf="data.controls && data.controls.length">
+
           <div  *ngFor="let def of data.controls; let i = index;">
             <div *ngIf="def.calculated !== 1" style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
               <label class="col-lg-2 col-md-2 col-sm-12">{{def.label}} <span class="text-danger">{{def.validation && def.validation.indexOf('required') !== -1 ? '*' : ''}}</span></label>
@@ -120,6 +121,7 @@
               </div>
             </div>
           </div>
+
         </div>
       </div>
       <div style="padding-left: 15px" *ngIf="template">
