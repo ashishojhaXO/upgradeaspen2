@@ -39,7 +39,22 @@ export class LoginNewComponent implements OnInit {
       private router: Router
   ) { }
 
+  error: string;
+  registerSuccess : string;
+
   ngOnInit() {
+
+    this.route.queryParams.subscribe(params => {
+      if (params) {
+        if(params.error == 401 ) {
+          this.error = 'You are not authorized to access this application';
+        } else if (params['Welcome']) {
+          this.registerSuccess = 'Your account has been activated. You may login now with your credentials';
+          // ['primaryauth.title'] = 
+        }
+      }
+    });
+
     this.formOnInit();
     this.initVars();
   }

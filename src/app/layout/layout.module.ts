@@ -70,6 +70,7 @@ import { OperationsDashboardComponent } from './operations-dashboard/operations-
 import { ReconciliationLineItemsComponent } from './reconciliation/reconciliation-line-items/reconciliation-line-items.component';
 import { ReconciliationProfilesComponent } from './reconciliation/reconciliation-profiles/reconciliation-profiles.component';
 import { FocusDirective } from '../shared/directives/Focus.directive';
+import { BaseFieldsListComponent } from './base-fields-list/base-fields-list.component';
 
 @NgModule({
     imports: [
@@ -144,7 +145,8 @@ import { FocusDirective } from '../shared/directives/Focus.directive';
         UploadsComponent,
         ReconciliationLineItemsComponent,
         ReconciliationProfilesComponent,
-        FocusDirective
+        FocusDirective,
+        BaseFieldsListComponent
     ],
     providers: [
         AuthGuard,

@@ -21,6 +21,7 @@
           <!--</div>-->
         <!--</div>-->
         <div *ngIf="data.controls && data.controls.length">
+
           <div  *ngFor="let def of data.controls; let i = index;">
             <div *ngIf="def.calculated !== 1" style="padding: 0px;margin: 10px 0px 0px 0px" class="col-lg-12 col-md-12 col-sm-12">
               <label class="col-lg-2 col-md-2 col-sm-12">{{def.label}} <span class="text-danger">{{def.validation && def.validation.indexOf('required') !== -1 ? '*' : ''}}</span></label>
@@ -120,6 +121,7 @@
               </div>
             </div>
           </div>
+
         </div>
       </div>
       <div style="padding-left: 15px" *ngIf="template">
@@ -127,13 +129,18 @@
         <button class="btn btn-primary" *ngIf="!paymentReceived" (click)="addLineItem()">ADD</button>
         <button class="btn btn-primary" *ngIf="!paymentReceived" (click)="removeLineItem()">REMOVE</button>
         <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject && dataFieldConfiguration.length && paymentReceived !== null">
-          <app-data-table2
-                  [existingIdentity]="!!existingOrder"
-                  [dataObject]="dataObject"
-                  (triggerActions)="this[$event.action]($event)"
-                  [dataFieldsConfiguration]="dataFieldConfiguration"
-                  [dataRowUpdatedLen] = "dataRowUpdatedLen"
-          ></app-data-table2>
+
+          <form >
+            <app-data-table2
+                    [existingIdentity]="!!existingOrder"
+                    [dataObject]="dataObject"
+                    (triggerActions)="this[$event.action]($event)"
+                    [dataFieldsConfiguration]="dataFieldConfiguration"
+                    [dataRowUpdatedLen] = "dataRowUpdatedLen"
+                    [lineItemFormArray]="lineItemFormArray"
+            ></app-data-table2>
+          </form>
+
           <!--<app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height"></app-data-table1>-->
         </div>
         <div class="clearfix"></div>

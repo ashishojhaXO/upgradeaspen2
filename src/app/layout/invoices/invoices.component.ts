@@ -16,6 +16,7 @@ import { OktaAuthService } from '../../../services/okta.service';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import Swal from 'sweetalert2';
 import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-modal.component';
+import {moment} from 'ngx-bootstrap/chronos/test/chain';
 
 @Component({
   selector: 'app-invoices',
@@ -56,6 +57,21 @@ export class InvoicesComponent implements OnInit  {
       icon: '',
       tooltip: 'Delete Invoice'
     },
+    isCustomOption2: {
+      value: true,
+      icon: 'fa-calendar',
+      tooltip: 'Add/Edit Invoice Date'
+    },
+    isCustomOption3: {
+      value: true,
+      icon: 'fa-calendar',
+      tooltip: 'Add/Edit Invoice Payout Date'
+    },
+    isCustomOption4: {
+      value: true,
+      icon: 'fa-book',
+      tooltip: 'Add/Edit Memo'
+    },
     isPageLength: true,
     isPagination: true,
     sendResponseOnCheckboxClick: true,
@@ -76,6 +92,7 @@ export class InvoicesComponent implements OnInit  {
   selectedInvoiceDetails: any;
   memo: string;
   @ViewChild('AddPayment') addPayment: PopUpModalComponent;
+  @ViewChild('Info') info: PopUpModalComponent;
   hideTable: boolean;
   selectedInvoice: any;
   selectedInvoiceNumber: any;
@@ -84,6 +101,12 @@ export class InvoicesComponent implements OnInit  {
   orgArr = [];
   selectedOrg: any;
   orgValue = '';
+  editType: any = {};
+  selectedInvoiceHeaderId: any;
+  dateOptions = {
+    format: "YYYY-MM-DD",
+    showClear: true
+  };
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
     const groups = localStorage.getItem('loggedInUserGroup') || '';
@@ -184,6 +207,11 @@ export class InvoicesComponent implements OnInit  {
     this.gridData['options'] = this.options[0];
     this.dashboard = 'paymentGrid';
     this.dataObject.gridData = this.gridData;
+
+    this.options[0].isCustomOption2.value = this.isRoot ? true : false;
+    this.options[0].isCustomOption3.value = this.isRoot ? true : false;
+    this.options[0].isCustomOption4.value = this.isRoot ? true : false;
+
     console.log(this.gridData);
     this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
     // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
@@ -315,6 +343,117 @@ export class InvoicesComponent implements OnInit  {
         this.reconcileInvoice(dataObj.data.invoice_number);
       }
     });
+  }
+
+  handleCustom2(dataObj: any) {
+    console.log('dataObj >>>')
+    console.log(dataObj);
+    this.selectedInvoiceHeaderId = dataObj.data.id;
+    this.selectedInvoiceNumber = dataObj.data.invoice_number;
+    this.editType = {
+      action : 'invoice_date',
+      text: 'Invoice Date',
+      value : dataObj.data.invoice_date
+    };
+    this.info.show();
+  }
+
+  handleCustom3(dataObj: any) {
+    this.selectedInvoiceHeaderId = dataObj.data.id;
+    this.selectedInvoiceNumber = dataObj.data.invoice_number;
+    this.editType = {
+      action : 'invoice_payout_date',
+      text: 'Invoice Payout Date',
+      value : dataObj.data.invoice_payout_date
+    };
+    this.info.show();
+  }
+
+  handleCustom4(dataObj: any) {
+    this.selectedInvoiceHeaderId = dataObj.data.id;
+    this.selectedInvoiceNumber = dataObj.data.invoice_number;
+    this.editType = {
+      action : 'memo',
+      text: 'Memo',
+      value : dataObj.data.memo
+    };
+    this.info.show();
+  }
+
+
+  handleCloseInfo() {
+    this.info.hide();
+    this.selectedInvoiceHeaderId = null;
+    this.selectedInvoiceNumber = null;
+    this.editType = {};
+  }
+
+  handleInfoUpdate() {
+    if (this.editType.action !== 'memo' && !this.editType.value) {
+      Swal({
+        title: 'No date selection',
+        html: 'Please choose a date',
+        type: 'error'
+      });
+      return;
+    }
+    const selectedValue = this.editType.action !== 'memo' ? moment(this.editType.value._d).format('YYYY-MM-DD') : this.editType.value;
+    const obj = {
+      invoice_header_id: this.selectedInvoiceHeaderId,
+    };
+    obj[this.editType['action']] = selectedValue;
+
+    console.log('obj >>')
+    console.log(obj);
+
+    this.submitInfoUpdate(obj).subscribe(
+        response => {
+          this.handleCloseInfo();
+          Swal({
+            title: 'Success',
+            html: response.message ? response.message : 'Payout date successfully updated',
+            type: 'success'
+          }).then( () => {
+            this.reLoad();
+          });
+        },
+        err => {
+          if(err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+                this,
+                err,
+                self.submitInfoUpdate.bind(self, obj)
+            );
+          } else {
+            this.showSpinner = false;
+            Swal({
+              title: 'An error occurred',
+              html: err._body ? JSON.parse(err._body).message : 'No error definition available',
+              type: 'error'
+            });
+          }
+        });
+  }
+
+  submitInfoUpdate(obj) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    const data = JSON.stringify(obj);
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/payments/invoices/update';
+    return this.http
+        .put(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   reconcileInvoice(invoiceNum){
@@ -568,10 +707,10 @@ export class InvoicesComponent implements OnInit  {
           return res.json();
         }).share();
   }
+
   orgChange(value) {
     this.showSpinner = true;
     this.dataObject.isDataAvailable = false;
     this.searchDataRequest();
   }
-
 }

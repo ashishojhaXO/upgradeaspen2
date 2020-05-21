@@ -175,7 +175,7 @@
           "name": "baseFields",
           "title": "Configure Base Fields",
           "id": "baseFields",
-          "url": "app/admin/baseFields"
+          "url": "app/admin/basefieldslist"
         },
         {
           "index": 8,

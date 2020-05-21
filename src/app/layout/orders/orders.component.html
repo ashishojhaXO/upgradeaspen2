@@ -57,21 +57,25 @@
 </div>
 
 <div style="width:100%">
-  <app-pop-up-modal #AddUser>
+  <app-pop-up-modal #ReceiptsList>
     <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
       List of Receipts to download
     </div>
     <div class="app-modal-body">
       <div class="content">
-        <div class="row">
-          <div class="col-md-2 font-weight-bold font-size-med">Start Date</div>
-          <div class="col-md-2 font-weight-bold font-size-med">End Date</div>
-          <div class="col-md-8 font-weight-bold font-size-med">Download Link</div>
+        <div class="row text-center" style="font-size:13px;">
+          <div class="col-md-2 font-weight-bold">Order ID</div>
+          <div class="col-md-2 font-weight-bold">Lind Item ID</div>
+          <div class="col-md-2 font-weight-bold">Start Date</div>
+          <div class="col-md-2 font-weight-bold">End Date</div>
+          <div class="col-md-2 font-weight-bold">Download Link</div>
         </div>
-        <div class="row" *ngFor="let rec of receiptList">
+        <div class="row text-center" *ngFor="let rec of receiptList" style="margin-top:15px;">
+          <div class="col-md-2 font-size-larger">{{rec.order_id}}</div>
+          <div class="col-md-2 font-size-larger">{{rec.line_item_id}}</div>
           <div class="col-md-2 font-size-larger">{{rec.start_date}}</div>
           <div class="col-md-2 font-size-larger">{{rec.end_date}}</div>
-          <div class="col-md-8 font-size-larger">
+          <div class="col-md-2 font-size-larger">
             <a
                     class="fa fa-download fa-action-view downloadLink"
                     (click)="handleDownloadLink(rec)"
@@ -85,8 +89,35 @@
       </div>
     </div>
     <div class="app-modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="addUser.hide()">
+      <button type="button" class="btn btn-secondary" (click)="receiptsList.hide()">
         Close
+      </button>
+    </div>
+  </app-pop-up-modal>
+</div>
+
+<div style="width:100%">
+  <app-pop-up-modal #PayoutDate>
+    <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
+       Line Item : {{selectedDisplayLineItemID ? selectedDisplayLineItemID : selectedLineItemID}}
+    </div>
+    <div class="app-modal-body">
+      <div class="content">
+        <label>Payout Date</label>
+        <div>
+          <input class="input-form-control"
+                 a2e-datetimepicker
+                 [(ngModel)]="selectedPayoutDate"
+                 [options]="dateOptions"/>
+        </div>
+      </div>
+    </div>
+    <div class="app-modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="handleSubmitPayoutDate()">
+        Submit
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="handleClosePayoutDate()">
+        Cancel
       </button>
     </div>
   </app-pop-up-modal>

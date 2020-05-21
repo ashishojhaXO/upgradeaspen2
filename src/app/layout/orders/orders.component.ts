@@ -23,6 +23,7 @@ import { modalConfigDefaults } from 'ngx-bootstrap/modal/modal-options.class';
 import { CsvService } from '../../../services/csv';
 import {ToasterService} from 'angular2-toaster';
 import DataTableColumnSearchPluginExt from '../../../scripts/data-table/data-table-search-plugin-ext';
+import {moment} from 'ngx-bootstrap/chronos/test/chain';
 
 @Component({
   selector: 'app-orders',
@@ -62,7 +63,7 @@ export class OrdersComponent implements OnInit  {
     isDownloadOption: {
       value: true,
       icon: '',
-      dependency: ['Vendor_Receipt_Id'],
+      dependency: ['vendor_receipt_id'],
       tooltip: 'Download Vendor Receipt',
       dependencyToolTip:'Vendor receipt generation is pending'
     },
@@ -75,6 +76,11 @@ export class OrdersComponent implements OnInit  {
       value : true,
       icon : 'fa-history',
       tooltip: 'View History'
+    },
+    isCustomOption2: {
+      value : true,
+      icon : 'fa-calendar',
+      tooltip: 'Add/Edit Payout Date'
     },
     // Commenting out fixedColumn, as we need subRow isTree children child row, to show action buttons
     // fixedColumn: 1,
@@ -132,13 +138,13 @@ export class OrdersComponent implements OnInit  {
       htmlFunction: (row) => {
 
         let ngHtmlContent = '<div>' +
-            '<button class="btn action-btn api-action" data-action="retryCharge" '+ ( row.Status.trim() == "ERROR_PROCESSING_PAYMENT" ? "" : "disabled" ) + ' data-order-id="'+row.internal_order_id + '" data-line-item-id="'+row.internal_line_item_id + '" data-vendor-uuid="'+ row.vendor_uuid +'" data-display-id="'+ row.Order_Id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+            '<button class="btn action-btn api-action" data-action="retryCharge" '+ ( row.Status.trim() == "ERROR_PROCESSING_PAYMENT" ? "" : "disabled" ) + ' data-order-id="'+row.internal_order_id + '" data-line-item-id="'+row.internal_line_item_id + '" data-vendor-uuid="'+ row.vendor_uuid +'" data-display-id="'+ row.order_id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
             '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-credit-card" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span> Retry Charge</button>' +
-            '<button class="btn action-btn api-action" data-action="regenerateReceipt" data-order-id="'+row.internal_order_id+ '" data-line-item-id= "'+ row.internal_line_item_id +'" data-display-id="'+ row.Order_Id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+            '<button class="btn action-btn api-action" data-action="regenerateReceipt" data-order-id="'+row.order_id+ '" data-line-item-id= "'+ row.line_item_id +'" data-display-id="'+ row.order_id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
             '><span style="margin-right: 5px; position: relative;"> <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-newspaper-o" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Regenerate Receipt</button>' +
             // '<button class="btn action-btn api-action" data-action="reprocess" data-order-id="row.Order_Id " style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
             // '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-cogs" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Reprocess</button>' +
-            '<button class="btn action-btn api-action" data-action="recalculate" data-order-id="'+ row.internal_order_id + '" data-display-id="'+ row.Order_Id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+            '<button class="btn action-btn api-action" data-action="recalculate" data-order-id="'+ row.internal_order_id + '" data-display-id="'+ row.order_id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
             '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-calculator" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Recalculate</button>' +
             '</div>';
 
@@ -159,12 +165,18 @@ export class OrdersComponent implements OnInit  {
   hideTable: any;
   allowOrderFunctionality: any;
   orderPayment: number;
+  selectedPayoutDate: any;
+  dateOptions = {
+    format: "YYYY-MM-DD",
+    showClear: true
+  };
   // retryChargeState: boolean = true;
 
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
   selectedRow: any;
-  @ViewChild('AddUser') addUser: PopUpModalComponent;
+  @ViewChild('ReceiptsList') receiptsList: PopUpModalComponent;
+  @ViewChild('PayoutDate') payoutDate: PopUpModalComponent;
 
   response: any;
   org: string;
@@ -328,7 +340,7 @@ export class OrdersComponent implements OnInit  {
           }
 
           if (!this.hasTemplates) {
-             this.toaster.pop('success', 'No Order Templates Available', 'No order template has been setup for your organization. Please contact your Administrator');
+            this.toaster.pop('success', 'No Order Templates Available', 'No order template has been setup for your organization. Please contact your Administrator');
           }
         },
         err => {
@@ -564,7 +576,7 @@ export class OrdersComponent implements OnInit  {
                 this.searchDataRequestCB(response, table);
               } else {
                 this.showSpinner = false;
-                self.popUp.showPopUp(self.popUp.popUpDict.noData)
+                // self.popUp.showPopUp(self.popUp.popUpDict.noData)
                 // console.log("No data to show")
               }
             },
@@ -611,6 +623,8 @@ export class OrdersComponent implements OnInit  {
 
     this.options[0].isPlayOption.value = this.allowOrderFunctionality === 'true' ? true : false;
 
+    this.options[0].isCustomOption2.value = this.isRoot ? true : false;
+
     // const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
     // if (customerInfo && customerInfo.org && customerInfo.org.org_name === 'Home Depot') {
     //   this.options[0].isPlayOption.icon = 'fa-history';
@@ -653,7 +667,7 @@ export class OrdersComponent implements OnInit  {
     // Call all receipts & then call this.handleDownloadLink or this.searchDownloadLink
 
     let data = {
-      "line_item_id": dataObj.data.Line_Item_Id
+      "line_item_id": dataObj.data.line_item_id
     }
     this.showSpinner = true;
 
@@ -661,10 +675,15 @@ export class OrdersComponent implements OnInit  {
         .subscribe(
             (res) => {
               this.showSpinner = false;
-              this.receiptList = res.data;
-
+              if(res.data.length){  
+                res.data.forEach( function (obj) {
+                  obj.order_id = dataObj.data.order_id;
+                  obj.line_item_id = dataObj.data.line_item_id;
+                 });
+                this.receiptList = res.data;
+              }
               // Show modal popUp, from there run this.handleDownloadLink(receiptId)
-              this.addUser.show();
+              this.receiptsList.show();
             },
             (rej) => {
               this.showSpinner = false;
@@ -697,12 +716,12 @@ export class OrdersComponent implements OnInit  {
 
   handleRun(dataObj: any) {
     console.log('dataObj.data >>')
-    console.log(dataObj.data.Order_Id);
+    console.log(dataObj.data.order_id);
 
     this.selectedOrderID = dataObj.data.internal_order_id;
     this.selectedLineItemID = dataObj.data.internal_line_item_id;
     this.selectedVendorUuid = dataObj.data.vendor_uuid;
-    this.selectedDisplayOrderID = dataObj.data.Order_Id ? dataObj.data.Order_Id : dataObj.data.internal_order_id;
+    this.selectedDisplayOrderID = dataObj.data.order_id ? dataObj.data.order_id : dataObj.data.internal_order_id;
     this.hideTable = true;
     this.isHistory = false;
   }
@@ -710,11 +729,20 @@ export class OrdersComponent implements OnInit  {
   handleCustom(dataObj: any) {
     this.selectedOrderID = dataObj.data.internal_order_id;
     this.selectedLineItemID = dataObj.data.internal_line_item_id;
-    this.selectedDisplayLineItemID = dataObj.data.Line_Item_Id;
+    this.selectedDisplayLineItemID = dataObj.data.line_item_id;
     this.selectedVendorUuid = dataObj.data.vendor_uuid;
-    this.selectedDisplayOrderID = dataObj.data.Order_Id ? dataObj.data.Order_Id : dataObj.data.internal_order_id;
+    this.selectedDisplayOrderID = dataObj.data.order_id ? dataObj.data.order_id : dataObj.data.internal_order_id;
     this.hideTable = true;
     this.isHistory = true;
+  }
+
+  handleCustom2(dataObj: any) {
+    this.selectedLineItemID = dataObj.data.internal_line_item_id;
+    this.selectedPayoutDate = dataObj.data.payout_date;
+    this.selectedDisplayLineItemID = dataObj.data.line_item_id;
+    this.payoutDate.show();
+    console.log('dataObj >>>')
+    console.log(dataObj);
   }
 
   searchDownloadLink(downloadId, orderId) {
@@ -778,7 +806,6 @@ export class OrdersComponent implements OnInit  {
   reLoad() {
     this.showSpinner = true;
     this.dataObject.isDataAvailable = false;
-
     this.searchDataRequest(this.orgValue, this.currentTable);
   }
 
@@ -972,5 +999,77 @@ export class OrdersComponent implements OnInit  {
       this.router.navigate(['/app/order/create']);
     }
   }
+
+  handleSubmitPayoutDate() {
+    if (!this.selectedPayoutDate) {
+      Swal({
+        title: 'No date selection',
+        html: 'Please choose a date',
+        type: 'error'
+      });
+      return;
+    }
+    const selectedPayoutDate = moment(this.selectedPayoutDate._d).format('YYYY-MM-DD');
+    this.submitPayoutDate(selectedPayoutDate).subscribe(
+        response => {
+          this.handleClosePayoutDate();
+          Swal({
+            title: 'Success',
+            html: response.message ? response.message : 'Payout date successfully updated',
+            type: 'success'
+          }).then( () => {
+            this.reLoad();
+          });
+        },
+        err => {
+          if(err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+                this,
+                err,
+                self.submitPayoutDate.bind(self, selectedPayoutDate)
+            );
+          } else {
+            this.showSpinner = false;
+            Swal({
+              title: 'An error occurred',
+              html: err._body ? JSON.parse(err._body).message : 'No error definition available',
+              type: 'error'
+            });
+          }
+        });
+  }
+
+  submitPayoutDate(selectedPayoutDate) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    const data = JSON.stringify({
+      internal_line_item_id : this.selectedLineItemID,
+      payout_date : selectedPayoutDate
+    });
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/orders/payoutdate';
+    return this.http
+        .put(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
+
+  handleClosePayoutDate() {
+    this.payoutDate.hide();
+    this.selectedLineItemID = null;
+    this.selectedPayoutDate = null;
+    this.selectedDisplayLineItemID = null;
+  }
 }
+
 

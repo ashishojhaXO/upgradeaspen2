@@ -13,7 +13,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {DataTableOptions} from '../../../models/dataTableOptions';
 import {Http, Headers, RequestOptions} from '@angular/http';
 // import { OktaAuthService } from '../../../services/okta.service';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, FormArray, Validators, ReactiveFormsModule} from '@angular/forms';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import { OktaAuthService } from '../../../services/okta.service';
 import Swal from 'sweetalert2';
@@ -80,6 +80,7 @@ export class OrderComponent implements OnInit  {
 
     // gridDataResult: Object[] = new Array(Object);
     gridDataResult: Object[] = [];
+    lineItemForm: FormGroup;
 
     @ViewChild ( AppDataTable2Component )
     private appDataTable2Component : AppDataTable2Component;
@@ -678,22 +679,42 @@ export class OrderComponent implements OnInit  {
         }
     }
 
+    lineItemFormArray = new FormArray([]);
+
     addLineItem() {
 
         // this.dataRowUpdated = false;
-
-        const __this = this;
-
         // setTimeout(function () {
 
+        let formControl = {};
         const dataObj = {};
-        __this.dataFieldConfiguration.forEach(function (conf) {
 
-            console.log('conf >>')
-            console.log(conf);
-
+        this.dataFieldConfiguration.forEach(function (conf) {
+            // console.log('conf >>')
+            // console.log(conf);
             dataObj[conf.name] = conf.default_value ? conf.default_value : '';
-        });
+
+           let valiFn = []; let asyncValiFn = [];
+            let dict = {};
+
+            if( conf.validation && Validators[ conf.validation[0] ]  ) {
+                valiFn = [ Validators[ conf.validation[0] ] ] 
+                asyncValiFn.push({updateOn: 'blur'});
+
+                // dict['validators'] = [ Validators[ conf.validation[0] ] ];
+                // dict['updateOn'] = 'blur';
+            }
+
+
+            formControl[conf.name] = new FormControl('', valiFn, asyncValiFn)
+            // formControl[conf.name] = new FormControl('', dict)
+
+        }, this);
+
+        // this.lineItemForm =  new FormGroup(formControl)
+        dataObj['form'] = new FormGroup(formControl)
+        // TODO: Maybe remove since Not used at the moment
+        this.lineItemFormArray.push(dataObj['form'])
 
 
         console.log('dataObj >>')
@@ -869,7 +890,6 @@ export class OrderComponent implements OnInit  {
     }
 
     buildLineItem(lineItemDef, existingOrderInfo = null, lineItemId = null) {
-
         this.dataObject = {};
         this.gridData = {};
         this.gridData['result'] = [];
@@ -896,9 +916,11 @@ export class OrderComponent implements OnInit  {
             console.log('existingOrderInfo.lineItems >>')
             console.log(existingOrderInfo.lineItems);
 
-
             existingOrderInfo.lineItems.forEach(function (ele, index) {
+
                 const obj: any = {};
+                let formControl = {};
+
                 lineItemDef.forEach(function (line) {
                     if (ele[line.name] !== null) {
                         if (lineItemId) {
@@ -906,8 +928,16 @@ export class OrderComponent implements OnInit  {
                         }
                         obj.id = ele.id;
                         obj[line.name] = ele[line.name] && ele[line.name].toString().indexOf('T00:00:00.000Z') !== -1 ? ele[line.name].split('T')[0] : ele[line.name];
+
+                        formControl[line.name] = new FormControl(ele[line.name])
                     }
+
                 });
+
+                // Obj
+                obj['form'] = new FormGroup(formControl)
+                // Obj/
+
                 lineItemRows.push(obj);
             }, this);
         }

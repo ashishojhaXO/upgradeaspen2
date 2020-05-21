@@ -1,7 +1,7 @@
 import { Component, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import {ToasterConfig} from 'angular2-toaster';
 
 @Component({
@@ -18,10 +18,13 @@ export class AppComponent {
     timeout: 10000,
   });
 
-  constructor(private translate: TranslateService,
+  constructor(
+    private translate: TranslateService,
     private router: Router,
     public toastr: ToastsManager,
-    vRef: ViewContainerRef) {
+    vRef: ViewContainerRef,
+    private activatedRoute: ActivatedRoute
+  ) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         const userID = localStorage.getItem('loggedInUserID') || '';

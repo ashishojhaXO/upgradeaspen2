@@ -7,72 +7,89 @@
           <img src="../../assets/images/accelitas_logo_circle.png" alt="Logo">
           <img class="logo-text" src="../../assets/images/accelitas_logo_white.png" alt="Logo">
         </div>
-        <div class="col-sm-6 col-xs-12 loginFormWrapper">
           <!-- for displaying server side error -->
-          <div *ngIf="formError" class="alert alert-danger col-sm-10 col-sm-offset-1 formErrorContainer">
-              <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-              {{ formError }}
+        <div class="col-sm-6 col-xs-12 loginFormWrapper">
+
+          <div class="row">
+            <div *ngIf="formError" class="alert alert-danger col-sm-10 col-sm-offset-1 formErrorContainer margin-bottom-1px">
+                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                {{ formError }}
+            </div>
           </div>
-          <form class="col-sm-10 col-sm-offset-1 signInDataContainer"
-          [formGroup] = "loginForm"
-          (ngSubmit) = "onSubmitLoginForm()"
-          *ngIf="!isForgotContainer">
-            <div formGroupName="userData">
+
+          <div class="row">
+            <div *ngIf="registerSuccess" class="alert alert-success col-sm-10 col-sm-offset-1 margin-bottom-5px">
+                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                {{ registerSuccess }}
+            </div>
+          </div>
+
+          <div class="row">
+            <form class="col-sm-10 col-sm-offset-1 signInDataContainer"
+            [formGroup] = "loginForm"
+            (ngSubmit) = "onSubmitLoginForm()"
+            *ngIf="!isForgotContainer">
+              <div formGroupName="userData">
+                <div class="form-group clearfix">
+                  <input #username type="text" placeholder="Email" class="form-control" aria-label="Username" aria-describedby="email-icon" formControlName="userEmail">
+                  <span class="form-control-feedback"><i class="fa fa-envelope" aria-hidden="true"></i></span>
+                  <span class="sr-only" id="email-icon">Email Icon</span>
+                  <div class="col-lg-12 col-md-12 form-field alert alert-danger" *ngIf="loginForm.get('userData.userEmail').invalid && (loginForm.get('userData.userEmail').dirty || loginForm.get('userData.userEmail').touched)">
+                    <div *ngIf="loginForm.get('userData.userEmail').errors['required']">
+                      <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                      Please enter a Username.
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group clearfix">
+                  <input type="password" placeholder="Password" class="form-control" formControlName="password" aria-label="Password" aria-describedby="password-icon">
+                  <span class="form-control-feedback"><i class="fa fa-lock" aria-hidden="true"></i></span>
+                  <span class="sr-only" id="password-icon">Password Icon</span>
+                  <div class="col-lg-12 col-md-12 form-field alert alert-danger" *ngIf="loginForm.get('userData.password').invalid && (loginForm.get('userData.password').dirty || loginForm.get('userData.password').touched)">
+                    <div *ngIf="loginForm.get('userData.password').errors['required']">
+                      <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                      Please enter a Password.
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div class="form-group clearfix">
-                <input #username type="text" placeholder="Email" class="form-control" aria-label="Username" aria-describedby="email-icon" formControlName="userEmail">
+                <span style="font-size: 12px"><input style="position: relative; top: 0px" type="checkbox" formControlName="saveLogin"> Save Login</span>
+                <span style="font-size: 12px; position: relative; top: 3px; cursor: pointer" class="pull-right" (click)="isForgotContainer = true">Forgot password?</span>
+              </div>
+              <p style="clear: both"></p>
+              <p style="clear: both"></p>
+              <div class="form-group">
+                <button class="btn col-lg-12 col-md-12 col-sm-12" type="submit" [disabled]="!loginForm.valid">Login</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="row">
+            <form class="col-sm-10 col-sm-offset-1 forgotPasswordContainer"
+            [formGroup] = "forgotForm"
+            (ngSubmit) = "onSubmitForgotForm()"
+            *ngIf="isForgotContainer">
+              <div class="form-group clearfix">
+                <input type="text" class="form-control" placeholder="username or email" aria-label="Username or Email" aria-describedby="forgot-email-icon" formControlName="forgotEmail">
                 <span class="form-control-feedback"><i class="fa fa-envelope" aria-hidden="true"></i></span>
-                <span class="sr-only" id="email-icon">Email Icon</span>
-                <div class="col-lg-12 col-md-12 form-field alert alert-danger" *ngIf="loginForm.get('userData.userEmail').invalid && (loginForm.get('userData.userEmail').dirty || loginForm.get('userData.userEmail').touched)">
-                  <div *ngIf="loginForm.get('userData.userEmail').errors['required']">
+                <span class="sr-only" id="forgot-email-icon">Forgot Email Icon</span>
+                <div class="col-lg-12 col-md-12 form-field alert alert-danger" *ngIf="forgotForm.get('forgotEmail').invalid && (forgotForm.get('forgotEmail').dirty || forgotForm.get('forgotEmail').touched)">
+                  <div *ngIf="forgotForm.get('forgotEmail').errors['required']">
                     <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
                     Please enter a Username.
                   </div>
                 </div>
               </div>
               <div class="form-group clearfix">
-                <input type="password" placeholder="Password" class="form-control" formControlName="password" aria-label="Password" aria-describedby="password-icon">
-                <span class="form-control-feedback"><i class="fa fa-lock" aria-hidden="true"></i></span>
-                <span class="sr-only" id="password-icon">Password Icon</span>
-                <div class="col-lg-12 col-md-12 form-field alert alert-danger" *ngIf="loginForm.get('userData.password').invalid && (loginForm.get('userData.password').dirty || loginForm.get('userData.password').touched)">
-                  <div *ngIf="loginForm.get('userData.password').errors['required']">
-                    <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-                    Please enter a Password.
-                  </div>
-                </div>
+                <button class="btn pull-right" type="submit" [disabled]="!forgotForm.valid">Reset via Email</button>
               </div>
-            </div>
-            <div class="form-group clearfix">
-              <span style="font-size: 12px"><input style="position: relative; top: 0px" type="checkbox" formControlName="saveLogin"> Save Login</span>
-              <span style="font-size: 12px; position: relative; top: 3px; cursor: pointer" class="pull-right" (click)="isForgotContainer = true">Forgot password?</span>
-            </div>
-            <p style="clear: both"></p>
-            <p style="clear: both"></p>
-            <div class="form-group">
-              <button class="btn col-lg-12 col-md-12 col-sm-12" type="submit" [disabled]="!loginForm.valid">Login</button>
-            </div>
-          </form>
-          <form class="col-sm-10 col-sm-offset-1 forgotPasswordContainer"
-          [formGroup] = "forgotForm"
-          (ngSubmit) = "onSubmitForgotForm()"
-          *ngIf="isForgotContainer">
-            <div class="form-group clearfix">
-              <input type="text" class="form-control" placeholder="username or email" aria-label="Username or Email" aria-describedby="forgot-email-icon" formControlName="forgotEmail">
-              <span class="form-control-feedback"><i class="fa fa-envelope" aria-hidden="true"></i></span>
-              <span class="sr-only" id="forgot-email-icon">Forgot Email Icon</span>
-              <div class="col-lg-12 col-md-12 form-field alert alert-danger" *ngIf="forgotForm.get('forgotEmail').invalid && (forgotForm.get('forgotEmail').dirty || forgotForm.get('forgotEmail').touched)">
-                <div *ngIf="forgotForm.get('forgotEmail').errors['required']">
-                  <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-                  Please enter a Username.
-                </div>
+              <div class="form-group">
+                <span class="pull-right forgotLink" (click)="isForgotContainer = false">Back to Sign In</span>
               </div>
-            </div>
-            <div class="form-group clearfix">
-              <button class="btn pull-right" type="submit" [disabled]="!forgotForm.valid">Reset via Email</button>
-            </div>
-            <div class="form-group">
-              <span class="pull-right forgotLink" (click)="isForgotContainer = false">Back to Sign In</span>
-            </div>
-          </form>
+            </form>
+          </div>
+
         </div>
       </div>
     </div>
