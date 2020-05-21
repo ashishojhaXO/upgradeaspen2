@@ -246,57 +246,57 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         let htmlField = "";
 
         if(fieldType === 'decimal' || fieldType === 'varchar' || fieldType === 'string' ) {
-            htmlField = '<div class="form-group" rowIndex="' + 
-            index + 
-            '" columnIndex="' + 
-            columnIndex + 
-            '"><input placeholder="Select ' + field.label + '" class="inlineEditor ' + 
+            htmlField = '<div class="form-group" rowIndex="' +
+            index +
+            '" columnIndex="' +
+            columnIndex +
+            '"><input placeholder="Select ' + field.label + '" class="inlineEditor ' +
             (
                 (
                     (
                         (field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))
-                    ) 
+                    )
                     && __this.dataObject.paymentReceived
-                ) 
-                && !extendedRow 
-                || 
-                (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') 
-                ? 'disabled' 
-                : '' 
-            )  + '" type="text" style="width:' + 
-            (((field.size ? field.size : 20) * 7.5) + 10)  
-            + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' 
-            + $('td', row).eq(columnIndex).text() +  '"/></div>' 
-            + 
-            ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 
+                )
+                && !extendedRow
+                ||
+                (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget')
+                ? 'disabled'
+                : ''
+            )  + '" type="text" style="width:' +
+            (((field.size ? field.size : 20) * 7.5) + 10)
+            + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="'
+            + $('td', row).eq(columnIndex).text() +  '"/></div>'
+            +
+            ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1
             ? `<div *ngIf="${ rowEle.form.controls[field.name].invalid && rowEle.form.controls[field.name].dirty === true}"
             class="col-lg-12 col-md-12 form-field alert alert-danger" 
             style="display: ${ rowEle.form.controls[field.name].invalid && rowEle.form.controls[field.name].dirty === true ? 'inline-block':'none'}"
-            ><div>` 
-            + field.label  + ' is required</div></div>' 
+            ><div>`
+            + field.label  + ' is required</div></div>'
             : '')
         }
         else if(fieldType === 'text') {
-            htmlField = '<div class="form-group" rowIndex="' + 
-            index + '" columnIndex="' + 
-            columnIndex + 
-            '"><textarea placeholder="Select ' + field.label + '" class="inlineEditor ' 
-            + 
+            htmlField = '<div class="form-group" rowIndex="' +
+            index + '" columnIndex="' +
+            columnIndex +
+            '"><textarea placeholder="Select ' + field.label + '" class="inlineEditor '
+            +
             (
                 (
                     (
                     (field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))
-                    ) 
+                    )
                 && __this.dataObject.paymentReceived
-                ) 
-                && !extendedRow 
-                || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') 
-                ? 'disabled' : '' 
-            )  + '" style="width:' + 
-            (((field.size ? field.size : 20) * 7.5) + 10)  
-            + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' 
-            + $('td', row).eq(columnIndex).text() +  '"></textarea></div>' 
-            + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 
+                )
+                && !extendedRow
+                || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget')
+                ? 'disabled' : ''
+            )  + '" style="width:' +
+            (((field.size ? field.size : 20) * 7.5) + 10)
+            + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="'
+            + $('td', row).eq(columnIndex).text() +  '"></textarea></div>'
+            + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1
             ? `<div *ngIf="${ rowEle.form.controls[field.name].invalid && rowEle.form.controls[field.name].dirty === true}"
             class="col-lg-12 col-md-12 form-field alert alert-danger" 
             style="display: ${ rowEle.form.controls[field.name].invalid && rowEle.form.controls[field.name].dirty === true ? 'inline-block':'none'}"
@@ -304,86 +304,86 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             + field.label  + ' is required</div></div>' : '')
         }
         else if( fieldType === 'int') {
-           htmlField = '<div class="form-group" rowIndex="' + 
-           index + 
-           '" columnIndex="' + 
-           columnIndex + 
-           '"><input placeholder="Select ' + field.label + '" class="inlineEditor ' + 
+           htmlField = '<div class="form-group" rowIndex="' +
+           index +
+           '" columnIndex="' +
+           columnIndex +
+           '"><input placeholder="Select ' + field.label + '" class="inlineEditor ' +
            (
                (
                 (
-                    (field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) 
-                    || 
+                    (field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1)
+                    ||
                     ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))
-                ) 
+                )
                && __this.dataObject.paymentReceived
-               ) 
-               && !extendedRow 
-               || 
-               (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') 
-               ? 'disabled' : '' 
-            )  
-            + '" type="number" style="width:' 
-            + 
-            (((field.size ? field.size : 20) * 7.5) + 10)  
-            + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' 
-            + $('td', row).eq(columnIndex).text() 
-            +  '"/></div>' + 
-            ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 
+               )
+               && !extendedRow
+               ||
+               (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget')
+               ? 'disabled' : ''
+            )
+            + '" type="number" style="width:'
+            +
+            (((field.size ? field.size : 20) * 7.5) + 10)
+            + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="'
+            + $('td', row).eq(columnIndex).text()
+            +  '"/></div>' +
+            ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1
             ? `<div *ngIf="${ rowEle.form.controls[field.name].invalid && rowEle.form.controls[field.name].dirty === true}"
                 class="col-lg-12 col-md-12 form-field alert alert-danger" 
                 style="display: ${ rowEle.form.controls[field.name].invalid && rowEle.form.controls[field.name].dirty === true ? 'inline-block':'none'}"
-                ><div>` + field.label  + ' is required</div></div>' 
+                ><div>` + field.label  + ' is required</div></div>'
             : ''
             )
         }
         else if(fieldType === 'amount') {
 
             htmlField = `<div class="form-group" rowIndex="`
-                + 
-                index + 
-                '" columnIndex="' + 
-                columnIndex + '">' + 
-                (field.includeCurrency 
-                    ? 
-                    '<select class="grid-select" style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>' 
-                    : 
-                    '<select class="grid-select" style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>') 
-                    + 
-                    `<input [formControlName]="${field.name}" placeholder="Select ` + field.label + '"  class="inlineEditor ' + 
+                +
+                index +
+                '" columnIndex="' +
+                columnIndex + '">' +
+                (field.includeCurrency
+                    ?
+                    '<select class="grid-select" style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>'
+                    :
+                    '<select class="grid-select" style="width: 38px; padding: 6px 12px; font-size: 12px; height: 33px; color: #495057; border: 1px solid #ced4da; background-clip: padding-box; border-radius: 4px;"><option value="$">$</option></select>')
+                    +
+                    `<input [formControlName]="${field.name}" placeholder="Select ` + field.label + '"  class="inlineEditor ' +
                     (((
                         (
-                            field.validation && 
-                            field.validation.length && 
+                            field.validation &&
+                            field.validation.length &&
                             field.validation.indexOf('disabled') !== -1
-                        ) || 
-                        ( __this.existingIdentity && 
-                            (!field.validation || 
+                        ) ||
+                        ( __this.existingIdentity &&
+                            (!field.validation ||
                                 (
-                                field.validation && 
+                                field.validation &&
                                 field.validation.indexOf('PostOrderChange') === -1
                                 )
                             )
                         )
-                    ) && 
+                    ) &&
                         __this.dataObject.paymentReceived
                     ) &&
-                        !extendedRow || 
+                        !extendedRow ||
                         (
-                            extendedRow && 
-                            field.name !== 'end_date' && 
+                            extendedRow &&
+                            field.name !== 'end_date' &&
                             field.name !== 'additional_budget'
-                        ) ? 
-                        'disabled' : 
-                        '' 
-                    ) 
-                    + '" type="text" style="width:' 
-                    + 
-                    (((field.size ? field.size : 20) * 7.5) + 10)  
-                    + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + 
-                    ( field.validation && field.validation.length && 
-                        field.validation.indexOf('required') !== -1 
-                        ? 
+                        ) ?
+                        'disabled' :
+                        ''
+                    )
+                    + '" type="text" style="width:'
+                    +
+                    (((field.size ? field.size : 20) * 7.5) + 10)
+                    + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' +
+                    ( field.validation && field.validation.length &&
+                        field.validation.indexOf('required') !== -1
+                        ?
                         `
                         <div *ngIf="
                         ${ 
@@ -407,12 +407,12 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                             : 'none'
                         }"
                         ><div>`
-                          + field.label  + 
-                          ' is required</div></div>' 
+                          + field.label  +
+                          ' is required</div></div>'
                         : ''
                     )
-        } 
-        
+        }
+
         return htmlField;
     }
 
@@ -482,36 +482,60 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             if (this.dataObject.gridData.options) {
 
                 let columnButtonDefs = '';
-                if (this.dataObject.gridData.options.isEditOption && this.dataObject.gridData.options.isEditOption.value) {
-                    columnButtonDefs += '<a class="fa fa-pencil fa-action-view editLink" title="' + (this.dataObject.gridData.options.isEditOption.tooltip ? this.dataObject.gridData.options.isEditOption.tooltip : 'Edit' ) + '" style="margin-right: 15px; cursor: pointer">';
-                    // columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isEditOption.tooltip ? this.dataObject.gridData.options.isEditOption.tooltip : 'Edit' )  + '</span>';
-                }
-                if (this.dataObject.gridData.options.isPlayOption && this.dataObject.gridData.options.isPlayOption.value) {
-                    const iconClass = this.dataObject.gridData.options.isPlayOption.icon ? this.dataObject.gridData.options.isPlayOption.icon : 'fa-play';
-                    columnButtonDefs += '<a class="fa ' + iconClass  + ' fa-action-view playLink" title="' + (this.dataObject.gridData.options.isPlayOption.tooltip ? this.dataObject.gridData.options.isPlayOption.tooltip : 'Click' ) + '" style="margin-right: 15px; cursor: pointer">';
-                    //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isPlayOption.tooltip ? this.dataObject.gridData.options.isPlayOption.tooltip : 'Click' )  + '</span>';
-                }
-                if (this.dataObject.gridData.options.isDownloadOption && this.dataObject.gridData.options.isDownloadOption.value) {
-                    columnButtonDefs += '<a class="fa fa-download fa-action-view downloadLink" title="' + (this.dataObject.gridData.options.isDownloadOption.tooltip ? this.dataObject.gridData.options.isDownloadOption.tooltip : 'Download' ) + '" style="margin-right: 15px; cursor: pointer">';
-                    //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isDownloadOption.tooltip ? this.dataObject.gridData.options.isDownloadOption.tooltip : 'Download' )  + '</span>';
-                }
 
-                if (this.dataObject.gridData.options.isDeleteOption && this.dataObject.gridData.options.isDeleteOption.value) {
-                    columnButtonDefs += '<a class="fa fa-trash fa-action-view deleteLink" title="' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete' ) + '" style="margin-right: 15px; cursor: pointer"></a>';
-                    //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete' )  + '</span>';
-                }
-                if (this.dataObject.gridData.options.isCustomOption && this.dataObject.gridData.options.isCustomOption.value) {
-                    const iconClass = this.dataObject.gridData.options.isCustomOption.icon ? this.dataObject.gridData.options.isCustomOption.icon : 'fa-play';
-                    columnButtonDefs += '<a class="fa ' + iconClass  + ' fa-action-view customLink" title="' + (this.dataObject.gridData.options.isCustomOption.tooltip ? this.dataObject.gridData.options.isCustomOption.tooltip : 'Click' ) + '" style="margin-right: 15px;cursor: pointer">';
-                }
+                if(this.dataObject.gridData.options.isEditOption || this.dataObject.gridData.options.isPlayOption
+                    || this.dataObject.gridData.options.isDownloadOption || this.dataObject.gridData.options.isDeleteOption || this.dataObject.gridData.options.isEmailOption
+                    || this.dataObject.gridData.options.isCustomOption || this.dataObject.gridData.options.isCustomOption2 || this.dataObject.gridData.options.isCustomOption3
+                    || this.dataObject.gridData.options.isCustomOption4) {
 
-                if (this.dataObject.gridData.options.isCustomOption2 && this.dataObject.gridData.options.isCustomOption2.value) {
-                    const iconClass = this.dataObject.gridData.options.isCustomOption2.icon ? this.dataObject.gridData.options.isCustomOption2.icon : 'fa-play';
-                    columnButtonDefs += '<a class="fa ' + iconClass  + ' fa-action-view customLink2" title="' + (this.dataObject.gridData.options.isCustomOption2.tooltip ? this.dataObject.gridData.options.isCustomOption2.tooltip : 'Click' ) + '" style="margin-right: 15px;cursor: pointer">';
-                }
+                    columnButtonDefs += '<i class="actionToggleLink fa fa-ellipsis-v" style="background: #54575A; color: #fff; cursor: pointer; padding: 10px; margin-left: 20px;" aria-hidden="true" title="Click to view available actions"></i>';
 
-                if (this.dataObject.gridData.options.isEmailOption) {
-                    columnButtonDefs += '<a class="fa fa-envelope fa-action-view emailLink" style="cursor: pointer"></a>';
+                    columnButtonDefs += '<ul class="options-actions" style="list-style: none; padding: 0px; border: 1px solid; position: absolute; background: #54575A; color: #fff; padding: 5px 0px; display: none; border: 1px; margin-left: 20px;">';
+
+                    if (this.dataObject.gridData.options.isEditOption && this.dataObject.gridData.options.isEditOption.value) {
+                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa fa-pencil fa-action-view editLink" title="' + (this.dataObject.gridData.options.isEditOption.tooltip ? this.dataObject.gridData.options.isEditOption.tooltip : 'Edit') + '" style="margin-right: 15px; cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px">' + this.dataObject.gridData.options.isEditOption.tooltip + '</span></a></li>';
+                        // columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isEditOption.tooltip ? this.dataObject.gridData.options.isEditOption.tooltip : 'Edit' )  + '</span>';
+                    }
+                    if (this.dataObject.gridData.options.isPlayOption && this.dataObject.gridData.options.isPlayOption.value) {
+                        const iconClass = this.dataObject.gridData.options.isPlayOption.icon ? this.dataObject.gridData.options.isPlayOption.icon : 'fa-play';
+                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa ' + iconClass + ' fa-action-view playLink" title="' + (this.dataObject.gridData.options.isPlayOption.tooltip ? this.dataObject.gridData.options.isPlayOption.tooltip : 'Click') + '" style="margin-right: 15px; cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px">' + this.dataObject.gridData.options.isPlayOption.tooltip + '</span></a></li>';
+                        //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isPlayOption.tooltip ? this.dataObject.gridData.options.isPlayOption.tooltip : 'Click' )  + '</span>';
+                    }
+                    if (this.dataObject.gridData.options.isDownloadOption && this.dataObject.gridData.options.isDownloadOption.value) {
+                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa fa-download fa-action-view downloadLink" title="' + (this.dataObject.gridData.options.isDownloadOption.tooltip ? this.dataObject.gridData.options.isDownloadOption.tooltip : 'Download') + '" style="margin-right: 15px; cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px">' + this.dataObject.gridData.options.isDownloadOption.tooltip + '</span></a></li>';
+                        //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isDownloadOption.tooltip ? this.dataObject.gridData.options.isDownloadOption.tooltip : 'Download' )  + '</span>';
+                    }
+
+                    if (this.dataObject.gridData.options.isDeleteOption && this.dataObject.gridData.options.isDeleteOption.value) {
+                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa fa-trash fa-action-view deleteLink" title="' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete') + '" style="margin-right: 15px; cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px">' + this.dataObject.gridData.options.isDeleteOption.tooltip + '</span></a></li>';
+                        //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete' )  + '</span>';
+                    }
+
+                    if (this.dataObject.gridData.options.isEmailOption) {
+                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa fa-envelope fa-action-view emailLink" style="cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px">' + 'Email' + '</span></a></li>';
+                    }
+
+                    if (this.dataObject.gridData.options.isCustomOption && this.dataObject.gridData.options.isCustomOption.value) {
+                        const iconClass = this.dataObject.gridData.options.isCustomOption.icon ? this.dataObject.gridData.options.isCustomOption.icon : 'fa-play';
+                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa ' + iconClass + ' fa-action-view customLink" title="' + (this.dataObject.gridData.options.isCustomOption.tooltip ? this.dataObject.gridData.options.isCustomOption.tooltip : 'Click') + '" style="margin-right: 15px;cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px">' + this.dataObject.gridData.options.isCustomOption.tooltip + '</span></a></li>';
+                    }
+
+                    if (this.dataObject.gridData.options.isCustomOption2 && this.dataObject.gridData.options.isCustomOption2.value) {
+                        const iconClass = this.dataObject.gridData.options.isCustomOption2.icon ? this.dataObject.gridData.options.isCustomOption2.icon : 'fa-play';
+                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa ' + iconClass + ' fa-action-view customLink2" title="' + (this.dataObject.gridData.options.isCustomOption2.tooltip ? this.dataObject.gridData.options.isCustomOption2.tooltip : 'Click') + '" style="margin-right: 15px;cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px">' + this.dataObject.gridData.options.isCustomOption2.tooltip + '</span></a></li>';
+                    }
+
+                    if (this.dataObject.gridData.options.isCustomOption3 && this.dataObject.gridData.options.isCustomOption3.value) {
+                        const iconClass = this.dataObject.gridData.options.isCustomOption3.icon ? this.dataObject.gridData.options.isCustomOption3.icon : 'fa-play';
+                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa ' + iconClass + ' fa-action-view customLink3" title="' + (this.dataObject.gridData.options.isCustomOption3.tooltip ? this.dataObject.gridData.options.isCustomOption3.tooltip : 'Click') + '" style="margin-right: 15px;cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px">' + this.dataObject.gridData.options.isCustomOption3.tooltip + '</span></a></li>';
+                    }
+
+                    if (this.dataObject.gridData.options.isCustomOption4 && this.dataObject.gridData.options.isCustomOption4.value) {
+                        const iconClass = this.dataObject.gridData.options.isCustomOption4.icon ? this.dataObject.gridData.options.isCustomOption4.icon : 'fa-play';
+                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa ' + iconClass + ' fa-action-view customLink4" title="' + (this.dataObject.gridData.options.isCustomOption4.tooltip ? this.dataObject.gridData.options.isCustomOption4.tooltip : 'Click') + '" style="margin-right: 15px;cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px">' + this.dataObject.gridData.options.isCustomOption4.tooltip + '</span></a></li>';
+                    }
+
+                    columnButtonDefs += '</ul>';
                 }
 
                 if (columnButtonDefs) {
@@ -850,7 +874,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                         // }
                                         // options += '>' + option.text + '</option>';
                                     });
-                                    
+
                                     html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class=" ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</div></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
                                     // $('td', row).eq(columnIndex).html(html);
                                 }
@@ -924,6 +948,35 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 }
             }
 
+            // On action dropdown icon click
+            $(document).on('click','.actionToggleLink', function () {
+                const $_this = this;
+                $('.actionToggleLink').each(function(index, ele) {
+                    if ($_this !== ele) {
+                        $(this).next('ul.options-actions').removeClass('expanded');
+                        $(this).next('ul.options-actions').hide();
+                    }
+                });
+
+                if (!$(this).hasClass('expanded')) {
+                    $(this).next('ul.options-actions').addClass('expanded');
+                    $(this).next('ul.options-actions').show();
+                } else {
+                    $(this).next('ul.options-actions').removeClass('expanded');
+                    $(this).next('ul.options-actions').hide();
+                }
+
+            });
+
+            $(document).on('click', 'body', function (event) {
+                if (!$(event.target).hasClass('actionToggleLink')) {
+                    $('.actionToggleLink').each(function(index, ele) {
+                        $(this).next('ul.options-actions').removeClass('expanded');
+                        $(this).next('ul.options-actions').hide();
+                    });
+                }
+            });
+
             // On row selection
             $('#' + this.tableId + ' tbody').on('click', 'tr', function () {
                 __this.triggerActions.emit({
@@ -992,6 +1045,24 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             $('#' + this.tableId + ' tbody').on('click', '.customLink2', function () {
                 __this.triggerActions.emit({
                     action: 'handleCustom2',
+                    data: __this.dataObject.gridData.result[table.row($(this).parents('tr')).index()],
+                    rowIndex: table.row($(this).parents('tr')).index()
+                });
+            });
+
+            // Custom Icon Click
+            $('#' + this.tableId + ' tbody').on('click', '.customLink3', function () {
+                __this.triggerActions.emit({
+                    action: 'handleCustom3',
+                    data: __this.dataObject.gridData.result[table.row($(this).parents('tr')).index()],
+                    rowIndex: table.row($(this).parents('tr')).index()
+                });
+            });
+
+            // Custom Icon Click
+            $('#' + this.tableId + ' tbody').on('click', '.customLink4', function () {
+                __this.triggerActions.emit({
+                    action: 'handleCustom4',
                     data: __this.dataObject.gridData.result[table.row($(this).parents('tr')).index()],
                     rowIndex: table.row($(this).parents('tr')).index()
                 });
