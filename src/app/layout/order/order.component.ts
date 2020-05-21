@@ -934,12 +934,11 @@ export class OrderComponent implements OnInit  {
 
                 });
 
-                // obj
+                // Obj
                 obj['form'] = new FormGroup(formControl)
-                // obj/
+                // Obj/
 
                 lineItemRows.push(obj);
-
             }, this);
         }
 
