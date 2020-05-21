@@ -2438,14 +2438,14 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             console.log('context>>>>>>', context);
             console.log('context.height>>>>>>', context.height);
 
-        if(context.fixedColumnFlag){
-            let height = context.height - 18;
-            $('.DTFC_LeftWrapper>.DTFC_LeftBodyWrapper').css('height', height);
-            $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('height', height);
-            $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('max-height', height);
-            $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('padding-top', '15px');
-            $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner>table').css('border', 0);
-        }
+        // if(context.fixedColumnFlag){
+        //     let height = context.height - 18;
+        //     $('.DTFC_LeftWrapper>.DTFC_LeftBodyWrapper').css('height', height);
+        //     $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('height', height);
+        //     $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('max-height', height);
+        //     $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('padding-top', '15px');
+        //     $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner>table').css('border', 0);
+        // }
     }
 
     exportTable(){
