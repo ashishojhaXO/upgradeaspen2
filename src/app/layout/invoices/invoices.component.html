@@ -60,3 +60,32 @@
     </button>
   </div>
 </app-pop-up-modal>
+<div style="width:100%">
+  <app-pop-up-modal #Info>
+    <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
+      Invoice : {{ selectedInvoiceNumber }}
+    </div>
+    <div class="app-modal-body">
+      <div class="content">
+        <label>{{editType.text}}</label>
+        <div *ngIf="editType.action !== 'memo'; else Memo">
+          <input class="input-form-control"
+                 a2e-datetimepicker
+                 [(ngModel)]="editType.value"
+                 [options]="dateOptions"/>
+        </div>
+        <ng-template #Memo>
+          <textarea style="height: 150px; width: 100%" [(ngModel)]="editType.value"></textarea>
+        </ng-template>
+      </div>
+    </div>
+    <div class="app-modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="handleInfoUpdate()">
+        Submit
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="handleCloseInfo()">
+        Cancel
+      </button>
+    </div>
+  </app-pop-up-modal>
+</div>
