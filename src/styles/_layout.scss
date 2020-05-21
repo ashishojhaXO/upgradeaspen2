@@ -3875,3 +3875,19 @@ thead th:hover .col-search {
 select2 {
   z-index: 0;
 }
+
+ul.options-actions > li {
+    &:hover {
+      border-right: 4px solid $header-menu-hover-border;
+      background: $header-menu-hover-bg;
+    }
+  color: #adadad;
+  a {
+    color: #fff;
+    text-decoration: none;
+    &:hover { color: #f06d30 !important; }
+  }
+  a.disabled {
+    background: none !important;
+  }
+}
