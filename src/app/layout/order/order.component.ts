@@ -177,7 +177,6 @@ export class OrderComponent implements OnInit  {
     searchTemplates(id, lineItemId, existingOrder = false) {
         this.getTemplates().subscribe(
             response => {
-                console.log("RESP", response)
                 this.showSpinner = false;
                 if (response && response.orgTemplates && response.orgTemplates.templates && response.orgTemplates.templates.length) {
 
@@ -714,6 +713,7 @@ export class OrderComponent implements OnInit  {
 
         // this.lineItemForm =  new FormGroup(formControl)
         dataObj['form'] = new FormGroup(formControl)
+        // TODO: Maybe remove since Not used at the moment
         this.lineItemFormArray.push(dataObj['form'])
 
 
@@ -890,7 +890,6 @@ export class OrderComponent implements OnInit  {
     }
 
     buildLineItem(lineItemDef, existingOrderInfo = null, lineItemId = null) {
-
         this.dataObject = {};
         this.gridData = {};
         this.gridData['result'] = [];
@@ -917,9 +916,11 @@ export class OrderComponent implements OnInit  {
             console.log('existingOrderInfo.lineItems >>')
             console.log(existingOrderInfo.lineItems);
 
-
             existingOrderInfo.lineItems.forEach(function (ele, index) {
+
                 const obj: any = {};
+                let formControl = {};
+
                 lineItemDef.forEach(function (line) {
                     if (ele[line.name] !== null) {
                         if (lineItemId) {
@@ -927,8 +928,16 @@ export class OrderComponent implements OnInit  {
                         }
                         obj.id = ele.id;
                         obj[line.name] = ele[line.name] && ele[line.name].toString().indexOf('T00:00:00.000Z') !== -1 ? ele[line.name].split('T')[0] : ele[line.name];
+
+                        formControl[line.name] = new FormControl(ele[line.name])
                     }
+
                 });
+
+                // Obj
+                obj['form'] = new FormGroup(formControl)
+                // Obj/
+
                 lineItemRows.push(obj);
             }, this);
         }
