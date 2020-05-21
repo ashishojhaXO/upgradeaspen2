@@ -84,11 +84,28 @@ export class OrderComponent implements OnInit  {
 
     @ViewChild ( AppDataTable2Component )
     private appDataTable2Component : AppDataTable2Component;
-
+    isRoot: boolean;
+    orgInfo: any;
+    orgArr = [];
+    selectedOrg: any;
+    orgValue = '';
     constructor(
         // private okta: OktaAuthService,
         private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder, private okta: OktaAuthService) {
         this.formAttribute = fb;
+        const groups = localStorage.getItem('loggedInUserGroup') || '';
+        const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
+        this.orgInfo = custInfo.org;
+    
+        console.log('custInfo >>>')
+        console.log(custInfo);
+    
+        const grp = JSON.parse(groups);
+        grp.forEach(function (item) {
+          if (item === 'ROOT' || item === 'SUPER_USER') {
+            this.isRoot = true;
+          }
+        }, this);
     }
 
     ngOnInit() {
@@ -110,7 +127,11 @@ export class OrderComponent implements OnInit  {
                 //   this.searchTemplateDetails(this.template);
                 // }
             } else {
+            if (this.isRoot) {
+                this.searchOrgRequest();
+                }else{
                 this.searchTemplates(null, null , false);
+            }
             }
         });
     }
@@ -584,9 +605,10 @@ export class OrderComponent implements OnInit  {
             // token = AccessToken.accessToken;
             token = AccessToken;
         }
+        let org =this.orgValue;
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
         const options = new RequestOptions({headers: headers});
-        var url = this.api_fs.api + '/api/orders/templates';
+        var url = this.api_fs.api + '/api/orders/templates'+( org ? ('?org_uuid=' + org) : '');
         return this.http
             .get(url, options)
             .map(res => {
@@ -1258,6 +1280,65 @@ export class OrderComponent implements OnInit  {
 
     getSelect2Value(def) {
         return (this.existingOrder && !this.originalResponseObj.orderTemplateData.orderFields.find(x=> x.name === def.name).valueExtracted ? this.FormModel.attributes[def.name].value : def.value);
+    }
+
+    searchOrgRequest() {
+        return this.searchOrgData().subscribe(
+            response => {
+              if (response && response.data) {
+                response.data.forEach(function (ele) {
+                  this.orgArr.push({
+                    id: ele.org_uuid,
+                    text: ele.org_name,
+                    ord_id: ele.id
+                  });
+                }, this);
+    
+                if (this.orgArr.length) {
+                  this.orgValue = this.orgArr[0].id;
+                  this.searchTemplates(null, null , false);
+                }
+              }
+            },
+            err => {
+    
+              if(err.status === 401) {
+                let self = this;
+                this.widget.refreshElseSignout(
+                  this,
+                  err,
+                  self.searchOrgRequest.bind(self)
+                );
+              } else {
+                this.showSpinner = false;
+              }
+            }
+        );
+      }
+    searchOrgData() {
+        const AccessToken: any = localStorage.getItem('accessToken');
+        let token = '';
+        if (AccessToken) {
+          // token = AccessToken.accessToken;
+          token = AccessToken;
+        }
+    
+        const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+        const options = new RequestOptions({headers: headers});
+        var url = this.api_fs.api + '/api/orgs';
+        return this.http
+            .get(url, options)
+            .map(res => {
+              return res.json();
+            }).share();
+      }
+    OnOrgChange(e) {
+        this.showSpinner = true;
+        this.orgValue = e.value;
+        this.data.controls = '';
+        this.dataObject = '';
+        this.template='';
+        this.searchTemplates(null, null , false);
     }
 }
 
