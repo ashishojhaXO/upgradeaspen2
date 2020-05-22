@@ -20,6 +20,7 @@ import Swal from 'sweetalert2';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { take, switchMapTo, tap, map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import DataTableUtilsPluginExt from '../../../scripts/data-table/data-table-utils-plugin-ext';
 
 @Component({
   selector: 'app-vendormanagement',
@@ -58,9 +59,19 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     isActionColPosition: 1, // This can not be 0, since zeroth column logic might crash
     // since isActionColPosition is 1, isOrder is also required to be sent,
     // since default ordering assigned in dataTable is [[1, 'asc']]
-    // fixedColumn: 2,
     isOrder: [[2, 'asc']],
-    isHideColumns: [ "id"]
+    isHideColumns: [ "id"],
+
+    isFixedColumn: {
+      fixedColumns: {
+        leftColumns: 2,
+      },
+      fixedColumnFunc: (ev, $, table ) => {
+        // Util.DataTable.Func
+        DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+      },
+    },
+
   }];
   dashboard: any;
   api_fs: any;

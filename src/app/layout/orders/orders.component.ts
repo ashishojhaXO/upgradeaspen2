@@ -83,7 +83,16 @@ export class OrdersComponent implements OnInit  {
       tooltip: 'Add/Edit Payout Date'
     },
     // Commenting out fixedColumn, as we need subRow isTree children child row, to show action buttons
-    // fixedColumn: 1,
+    // NOTE: FixedColumn's Structure Changed
+    // isFixedColumn: {
+    //   fixedColumns: {
+    //     leftColumns: 1,
+    //   },
+    //   fixedColumnFunc: (ev, $, table ) => {
+    //     // Util.DataTable.Func
+    //     DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+    //   },
+    // },
     isPageLength: true,
     isPagination: true,
     sendResponseOnCheckboxClick: true,

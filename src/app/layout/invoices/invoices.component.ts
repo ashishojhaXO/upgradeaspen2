@@ -75,7 +75,17 @@ export class InvoicesComponent implements OnInit  {
     isPageLength: true,
     isPagination: true,
     sendResponseOnCheckboxClick: true,
+    // NOTE: FixedColumn's Structure Changed
     // fixedColumn: 1,
+    // isFixedColumn: {
+    //   fixedColumns: {
+    //     leftColumns: 1,
+    //   },
+    //   fixedColumnFunc: (ev, $, table ) => {
+    //     // Util.DataTable.Func
+    //     DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+    //   },
+    // },
     // Any number starting from 1 to ..., but not 0
     isActionColPosition: 0, // This can not be 0, since zeroth column logic might crash
     // since isActionColPosition is 1, isOrder is also required to be sent,

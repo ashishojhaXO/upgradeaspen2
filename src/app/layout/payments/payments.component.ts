@@ -19,6 +19,7 @@ import { OrganizationService} from '../../../services';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs/Observable';
 import swal from 'sweetalert2';
+import DataTableUtilsPluginExt from "../../../scripts/data-table/data-table-utils-plugin-ext";
 
 @Component({
   selector: 'app-payments',
@@ -43,7 +44,18 @@ export class PaymentsComponent implements OnInit  {
     isRowSelection: null,
     isPageLength: true,
     isPagination: true,
-    fixedColumn: 1
+
+    // NOTE: FixedColumn's Structure Changed
+    isFixedColumn: {
+      fixedColumns: {
+        leftColumns: 1,
+      },
+      fixedColumnFunc: (ev, $, table ) => {
+        // Util.DataTable.Func
+        DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+      },
+    },
+
   }];
   dashboard: any;
   api_fs: any;
@@ -177,7 +189,7 @@ export class PaymentsComponent implements OnInit  {
       }
     });
   }
-
+  
   orgChange(value) {
     this.dataObject.isDataAvailable = false;
     this.searchDataRequest(value);
@@ -915,4 +927,19 @@ export class PaymentsComponent implements OnInit  {
     this.dataObject.isDataAvailable = false;
     this.searchDataRequest();
   }
+
+  handleActions(ev: any) {
+    // const action = $(ev.elem).data('action');
+    const action = ev.event ? ev.event : $(ev.elem).data('action');
+
+    if(this[action]) {
+      this[action](ev);
+    } else {
+      // Some problem
+      // Function does not exists in this class, if data-action string is correct
+      // Else if all functions exists, then, data-action string coming from html is not correct
+      console.log(`Error: Function yet to be implemented: ${action}`)
+    }
+  }
+
 }

@@ -41,7 +41,17 @@ export class LineItemHistoryComponent implements OnInit  {
     isRowHighlight: true,
     isDownloadAsCsv: true,
     // Commenting out fixedColumn, as we need subRow isTree children child row, to show action buttons
+    // NOTE: FixedColumn's Structure Changed
     // fixedColumn: 1,
+    // isFixedColumn: {
+    //   fixedColumns: {
+    //     leftColumns: 1,
+    //   },
+    //   fixedColumnFunc: (ev, $, table ) => {
+    //     // Util.DataTable.Func
+    //     DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+    //   },
+    // },
     isPageLength: true,
     isPagination: true,
     sendResponseOnCheckboxClick: false,
