@@ -20,6 +20,7 @@ import {OktaAuthService} from '../../../services/okta.service';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import { OrderList } from 'primeng/primeng';
 import { AppPopUpComponent } from '../../shared/components/app-pop-up/app-pop-up.component';
+import DataTableUtilsPluginExt from '../../../scripts/data-table/data-table-utils-plugin-ext';
 
 @Component({
     selector: 'app-support',
@@ -49,7 +50,15 @@ export class SupportComponent implements OnInit {
         isPageLength: true,
         isPagination: true,
         sendResponseOnCheckboxClick: true,
-        fixedColumn: 1
+        isFixedColumn: {
+            fixedColumns: {
+                leftColumns: 1,
+            },
+            fixedColumnFunc: (ev, $, table ) => {
+                // Util.DataTable.Func
+                DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+            },
+        },
     }];
     api_fs: any;
     externalAuth: any;

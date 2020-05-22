@@ -16,6 +16,7 @@ import { FormControl, FormGroup, Validators, ValidatorFn, ValidationErrors} from
 import { OktaAuthService } from '../../../services/okta.service';
 import {DataTableAction } from '../../shared/components/app-data-table/data-table-action';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import DataTableUtilsPluginExt from '../../../scripts/data-table/data-table-utils-plugin-ext';
 
 @Component({
   selector: 'app-orgmanagement',
@@ -49,7 +50,15 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     isRowSelection: null,
     isPageLength: true,
     isPagination: true,
-    fixedColumn: 0,
+    isFixedColumn: {
+      fixedColumns: {
+        leftColumns: 0,
+      },
+      fixedColumnFunc: (ev, $, table ) => {
+        // Util.DataTable.Func
+        DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+      },
+    },
     // Any number starting from 1 to ..., but not 0
     isActionColPosition: 0, // This can not be 0, since zeroth column logic might crash
     // since isActionColPosition is 1, isOrder is also required to be sent,

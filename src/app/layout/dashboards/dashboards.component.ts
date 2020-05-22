@@ -18,6 +18,7 @@ import { OktaAuthService } from '../../../services/okta.service';
 import Swal from 'sweetalert2';
 import {moment} from 'ngx-bootstrap/chronos/test/chain';
 import {ToasterService} from 'angular2-toaster';
+import DataTableUtilsPluginExt from '../../../scripts/data-table/data-table-utils-plugin-ext';
 
 @Component({
   selector: 'app-dashboard',
@@ -77,7 +78,19 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     isRowSelection: null,
     isPageLength: true,
     isPagination: true,
-    fixedColumn: 1
+
+    // NOTE: FixedColumn's Structure Changed
+    // fixedColumn: 1
+    isFixedColumn: {
+      fixedColumns: {
+        leftColumns: 1,
+      },
+      fixedColumnFunc: (ev, $, table ) => {
+        // Util.DataTable.Func
+        DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+      },
+    },
+
   }];
   dashboard: any;
   widget: any;

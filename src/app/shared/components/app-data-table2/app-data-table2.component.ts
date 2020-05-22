@@ -869,11 +869,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     });
                 }
 
-                if (this.dataObject.gridData.options.fixedColumn){
+                if (this.dataObject.gridData.options.isFixedColumn){
                     this.fixedColumnFlag = true;
-                    fixedColumn = {
-                        "leftColumns": this.dataObject.gridData.options.fixedColumn
-                    }
+                    fixedColumn = this.dataObject.gridData.options.isFixedColumn.fixedColumns
                 }
 
                 if (this.dataObject.gridData.options.isSearchColumn) {
@@ -1044,6 +1042,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             // Initialize Data Table
             const table = $('#' + this.tableId).DataTable(dataTableOptions);
             this.table = table;
+            // const fixedColumnTable = $('.DTFC_Cloned').DataTable(dataTableOptions);
 
             // Attaching Column search to all tables
             // let columnSearch = new DataTableColumnSearchPluginExt($, document, table);
@@ -1287,6 +1286,12 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 table.off('draw');
             });
 
+            // HACK: Hiding the fixedColumns: leftColumn, on Search event on table
+            if(__this.dataObject.gridData.options.isFixedColumn) {
+                table.on('search.dt', function(ev, settings){
+                    __this.dataObject.gridData.options.isFixedColumn.fixedColumnFunc(ev, $, table);
+                })
+            }
 
             // If we decide to get data of only 1 page to show in the table and not all data
             if (__this.dataObject.gridData.options.isApiCallForNextPage ) {
@@ -2438,14 +2443,14 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             console.log('context>>>>>>', context);
             console.log('context.height>>>>>>', context.height);
 
-        // if(context.fixedColumnFlag){
-        //     let height = context.height - 18;
-        //     $('.DTFC_LeftWrapper>.DTFC_LeftBodyWrapper').css('height', height);
-        //     $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('height', height);
-        //     $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('max-height', height);
-        //     $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('padding-top', '15px');
-        //     $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner>table').css('border', 0);
-        // }
+        if(context.fixedColumnFlag){
+            let height = context.height - 18;
+            $('.DTFC_LeftWrapper>.DTFC_LeftBodyWrapper').css('height', height);
+            $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('height', height);
+            $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('max-height', height);
+            $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner').css('padding-top', '15px');
+            $('.DTFC_LeftBodyWrapper>.DTFC_LeftBodyLiner>table').css('border', 0);
+        }
     }
 
     exportTable(){

@@ -19,6 +19,7 @@ import { OrganizationService} from '../../../services';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs/Observable';
 import swal from 'sweetalert2';
+import DataTableUtilsPluginExt from "../../../scripts/data-table/data-table-utils-plugin-ext";
 
 @Component({
   selector: 'app-payments',
@@ -43,7 +44,18 @@ export class PaymentsComponent implements OnInit  {
     isRowSelection: null,
     isPageLength: true,
     isPagination: true,
-    fixedColumn: 1
+
+    // NOTE: FixedColumn's Structure Changed
+    isFixedColumn: {
+      fixedColumns: {
+        leftColumns: 1,
+      },
+      fixedColumnFunc: (ev, $, table ) => {
+        // Util.DataTable.Func
+        DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+      },
+    },
+
   }];
   dashboard: any;
   api_fs: any;
@@ -177,7 +189,7 @@ export class PaymentsComponent implements OnInit  {
       }
     });
   }
-
+  
   orgChange(value) {
     this.dataObject.isDataAvailable = false;
     this.searchDataRequest(value);
