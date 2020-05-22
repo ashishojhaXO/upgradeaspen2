@@ -95,7 +95,7 @@ export class OrdersComponent implements OnInit  {
     // isOrder: [[3, 'desc']],
     // isOrder: [[3, 'name-string-not-nullund-desc']],
     isOrder: [],
-    isHideColumns: [ "Vendor_Receipt_Id","internal_line_item_id","internal_order_id","vendor_uuid"],
+    isHideColumns: [ "vendor_receipt_id","internal_line_item_id","internal_order_id","vendor_uuid"],
 
     // TODO: How is this 'blah' thing even happening!!!
     isColumnDefs: [
@@ -140,7 +140,7 @@ export class OrdersComponent implements OnInit  {
         let ngHtmlContent = '<div>' +
             '<button class="btn action-btn api-action" data-action="retryCharge" '+ ( row.Status.trim() == "ERROR_PROCESSING_PAYMENT" ? "" : "disabled" ) + ' data-order-id="'+row.internal_order_id + '" data-line-item-id="'+row.internal_line_item_id + '" data-vendor-uuid="'+ row.vendor_uuid +'" data-display-id="'+ row.order_id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
             '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-credit-card" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span> Retry Charge</button>' +
-            '<button class="btn action-btn api-action" data-action="regenerateReceipt" data-order-id="'+row.order_id+ '" data-line-item-id= "'+ row.line_item_id +'" data-display-id="'+ row.order_id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
+            '<button class="btn action-btn api-action" data-action="regenerateReceipt" data-order-id="'+row.internal_order_id+ '" data-line-item-id= "'+ row.internal_line_item_id +'" data-display-id="'+ row.order_id +'" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
             '><span style="margin-right: 5px; position: relative;"> <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-newspaper-o" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Regenerate Receipt</button>' +
             // '<button class="btn action-btn api-action" data-action="reprocess" data-order-id="row.Order_Id " style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' +
             // '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-cogs" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Reprocess</button>' +
@@ -667,7 +667,7 @@ export class OrdersComponent implements OnInit  {
     // Call all receipts & then call this.handleDownloadLink or this.searchDownloadLink
 
     let data = {
-      "line_item_id": dataObj.data.line_item_id
+      "line_item_id": dataObj.data.internal_line_item_id
     }
     this.showSpinner = true;
 
