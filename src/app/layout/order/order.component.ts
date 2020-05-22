@@ -1332,13 +1332,19 @@ export class OrderComponent implements OnInit  {
               return res.json();
             }).share();
       }
-    OnOrgChange(e) {
+    OnOrgChange(e) {    
+        if (e.value && e.value !== this.orgValue) { 
         this.showSpinner = true;
         this.orgValue = e.value;
         this.data.controls = '';
         this.dataObject = '';
         this.template='';
+        this.templates = [];        
+        this.dataObject = {};
+        this.data.controls = {};
+        this.templateDefinition = [];
         this.searchTemplates(null, null , false);
+        }
     }
 }
 
