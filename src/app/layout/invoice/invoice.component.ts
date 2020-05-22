@@ -29,12 +29,12 @@ export class InvoiceComponent implements OnInit  {
   // invoiceId: any;
   selectedRow: any;
   invoices = [];
-  memo: string;
   selectedInvoice: any;
   @ViewChild('AddPayment') addPayment: PopUpModalComponent;
   @Input() invoiceId: any;
   @Input() invoiceNumber: any;
   @Input() orgId: any;
+  @Input() memo: string;
   isRoot: boolean;
   tempLineItemID: string;
   tempMemo: string;

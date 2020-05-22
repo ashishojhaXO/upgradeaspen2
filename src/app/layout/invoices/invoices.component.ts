@@ -249,6 +249,7 @@ export class InvoicesComponent implements OnInit  {
     if (invoiceId) {
       this.selectedInvoiceNumber = dataObj.data.invoice_number;
       this.selectedInvoice = invoiceId;
+      this.memo = dataObj.data.memo;
       this.hideTable = true;
      // this.router.navigate(['/app/admin/invoices/invoice/' + invoiceId]);
     } else {
