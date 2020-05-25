@@ -373,18 +373,18 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                             extendedRow &&
                             field.name !== 'end_date' &&
                             field.name !== 'additional_budget'
-                        ) ? 
-                        'disabled' : 
-                        '' 
-                    ) 
-                    + '" type="text" style="width:' 
-                    + 
-                    (((field.size ? field.size : 20) * 7.5) + 10)  
+                        ) ?
+                        'disabled' :
+                        ''
+                    )
+                    + '" type="text" style="width:'
+                    +
+                    (((field.size ? field.size : 20) * 7.5) + 10)
                     + 'px; padding: 6px 12px; font-size: 12px; height: 34px; color: #495057; border: 1px solid #ced4da;background-clip: padding-box; border-radius: 4px" ' +
-                    'value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' + 
-                    ( field.validation && field.validation.length && 
-                        field.validation.indexOf('required') !== -1 
-                        ? 
+                    'value="' + $('td', row).eq(columnIndex).text() +  '"/></div>' +
+                    ( field.validation && field.validation.length &&
+                        field.validation.indexOf('required') !== -1
+                        ?
                         `
                         <div *ngIf="
                         ${ 
@@ -414,41 +414,41 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     )
         }
         else if (field.type === 'date') {
-            htmlField = '<div class="form-group" rowIndex="' + 
-                index + 
-                '" columnIndex="' + 
-                columnIndex + 
-                '"><div class="input-group date datepicker"><input placeholder="Select ' + 
-                field.label + '" type="text" class="form-control inlineEditor ' + 
+            htmlField = '<div class="form-group" rowIndex="' +
+                index +
+                '" columnIndex="' +
+                columnIndex +
+                '"><div class="input-group date datepicker"><input placeholder="Select ' +
+                field.label + '" type="text" class="form-control inlineEditor ' +
                 (
                     (
                         (
-                            (field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) 
-                            || 
-                            ( 
-                                __this.existingIdentity && 
+                            (field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1)
+                            ||
+                            (
+                                __this.existingIdentity &&
                                 (
-                                    !field.validation 
-                                    || 
+                                    !field.validation
+                                    ||
                                     (field.validation && field.validation.indexOf('PostOrderChange') === -1)
                                 )
                             )
-                        ) 
-                        && 
+                        )
+                        &&
                         __this.dataObject.paymentReceived
-                    ) 
-                    && !extendedRow 
-                    || 
-                    (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') 
-                    ? 'disabled' 
-                    : '' 
-                ) + 
-                '" style="border-radius: 4px; font-size: 12px" value="' + 
-                $('td', row).eq(columnIndex).text()  + 
-                '" /> <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span></div></div>' + 
-                ( 
-                    field.validation && field.validation.length && field.validation.indexOf('required') !== -1 
-                    ? 
+                    )
+                    && !extendedRow
+                    ||
+                    (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget')
+                    ? 'disabled'
+                    : ''
+                ) +
+                '" style="border-radius: 4px; font-size: 12px" value="' +
+                $('td', row).eq(columnIndex).text()  +
+                '" /> <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span></div></div>' +
+                (
+                    field.validation && field.validation.length && field.validation.indexOf('required') !== -1
+                    ?
                     `<div *ngIf=
                         ${ 
                            rowEle.form.controls[field.name].invalid 
@@ -470,12 +470,12 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                             ? 'inline-block'
                             : 'none'
                         }"
-                    + '"><div>` 
-                    + field.label  + ' is required</div></div>' 
+                    + '"><div>`
+                    + field.label  + ' is required</div></div>'
                     : ''
                 );
 
-        } 
+        }
         else if (field.type === 'list') {
 
             let options = '<option value="">--Select--</option>';
@@ -486,9 +486,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 }
                 options += '>' + option.text + '</option>';
             });
-            htmlField = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class="form-control inlineEditor select-control grid-select ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' + 
-            ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 
-            ? 
+            htmlField = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class="form-control inlineEditor select-control grid-select ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' +
+            ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1
+            ?
                     `<div *ngIf=
                         ${ 
                            rowEle.form.controls[field.name].invalid 
@@ -510,7 +510,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                             ? 'inline-block'
                             : 'none'
                         }"
-                    + '"><div>` 
+                    + '"><div>`
 
             + field.label  + ' is required</div></div>' : '');
             // $('td', row).eq(columnIndex).html(html);
@@ -541,7 +541,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             //     const html = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><select data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class="form-control inlineEditor select-control ' + ((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1))) ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</select></div>' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? '<div class="col-lg-12 col-md-12 form-field alert alert-danger" style="display:' + ($('td', row).eq(columnIndex).text() ? 'none' : 'inline-block') + '"><div>' + field.label  + ' is required</div></div>' : '');
             //     $('td', row).eq(columnIndex).html(html);
             // }
-        } 
+        }
         else if (field.type === 'checkbox') {
             let options = '';
             field.options.forEach(function (option, index1) {
@@ -562,9 +562,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // }
                 // options += '>' + option.text + '</option>';
             });
-            htmlField = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class=" ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</div></div>' + 
-            ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 
-            ? 
+            htmlField = '<div class="form-group" rowIndex="' + index + '" columnIndex="' + columnIndex + '"><div data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class=" ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</div></div>' +
+            ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1
+            ?
                     `<div *ngIf=
                         ${ 
                            rowEle.form.controls[field.name].invalid 
@@ -586,12 +586,12 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                             ? 'inline-block'
                             : 'none'
                         }"
-                    + '"><div>` 
+                    + '"><div>`
 
 
             + field.label  + ' is required</div></div>' : '');
             // $('td', row).eq(columnIndex).html(html);
-        } 
+        }
         else if (field.type === 'radio') {
             let options = '';
             field.options.forEach(function (option, index1) {
@@ -612,11 +612,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // }
                 // options += '>' + option.text + '</option>';
             });
-            
-            htmlField = '<div class="form-group" rowIndex="' + 
-            index + '" columnIndex="' + columnIndex + '"><div data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class=" ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</div></div>' + 
-            ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 
-            ? 
+
+            htmlField = '<div class="form-group" rowIndex="' +
+            index + '" columnIndex="' + columnIndex + '"><div data-validation="' + ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1 ? 'true' : 'false' ) + '" class=" ' + ((((field.validation && field.validation.length && field.validation.indexOf('disabled') !== -1) || ( __this.existingIdentity && (!field.validation || (field.validation && field.validation.indexOf('PostOrderChange') === -1)))) && __this.dataObject.paymentReceived) && !extendedRow || (extendedRow && field.name !== 'end_date' && field.name !== 'additional_budget') ? 'disabled' : '' )  + '" style="border-radius: 4px; font-size: 12px; width:' + (((field.size ? field.size : 20) * 7.5) + 10) + 'px;">' + options + '</div></div>' +
+            ( field.validation && field.validation.length && field.validation.indexOf('required') !== -1
+            ?
                     `<div *ngIf=
                         ${ 
                            rowEle.form.controls[field.name].invalid 
@@ -638,13 +638,13 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                             ? 'inline-block'
                             : 'none'
                         }"
-                    + '"><div>` 
+                    + '"><div>`
 
             + field.label  + ' is required</div></div>' : '');
             // $('td', row).eq(columnIndex).html(html);
 
         }
-        
+
         return htmlField;
     }
 
@@ -720,9 +720,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     || this.dataObject.gridData.options.isCustomOption || this.dataObject.gridData.options.isCustomOption2 || this.dataObject.gridData.options.isCustomOption3
                     || this.dataObject.gridData.options.isCustomOption4) {
 
-                    columnButtonDefs += '<i class="actionToggleLink fa fa-ellipsis-v" style="background: #54575A; color: #fff; cursor: pointer; padding: 10px; margin-left: 20px;" aria-hidden="true" title="Click to view available actions"></i>';
+                    columnButtonDefs += '<i class="actionToggleLink fa fa-ellipsis-v" style="background: #ededed; color: #000000; cursor: pointer; padding: 10px; margin-left: 20px;" aria-hidden="true" title="Click to view available actions"></i>';
 
-                    columnButtonDefs += '<ul class="options-actions" style="list-style: none; padding: 0px; border: 1px solid; position: absolute; background: #54575A; color: #fff; padding: 5px 0px; display: none; border: 1px; margin-left: 20px;">';
+                    columnButtonDefs += '<ul class="options-actions" style="list-style: none; z-index: 1; padding: 0px; border: 1px solid; position: absolute; background: #54575A; color: #fff; padding: 5px 0px; display: none; border: 1px; margin-left: 20px;">';
 
                     if (this.dataObject.gridData.options.isEditOption && this.dataObject.gridData.options.isEditOption.value) {
                         columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa fa-pencil fa-action-view editLink" title="' + (this.dataObject.gridData.options.isEditOption.tooltip ? this.dataObject.gridData.options.isEditOption.tooltip : 'Edit') + '" style="margin-right: 15px; cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px">' + this.dataObject.gridData.options.isEditOption.tooltip + '</span></a></li>';
@@ -1010,16 +1010,16 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     html = __this.showHtmlField(field.type, __this, field, row, index, columnIndex, extendedRow, rowEle)
                                 } else if (field.type === 'amount') {
                                     html = __this.showHtmlField(field.type, __this, field, row, index, columnIndex, extendedRow, rowEle)
-                                } 
+                                }
                                 else if (field.type === 'date') {
                                     html = __this.showHtmlField(field.type, __this, field, row, index, columnIndex, extendedRow, rowEle)
-                                } 
+                                }
                                 else if (field.type === 'list') {
                                     html = __this.showHtmlField(field.type, __this, field, row, index, columnIndex, extendedRow, rowEle)
-                                } 
+                                }
                                 else if (field.type === 'checkbox') {
                                     html = __this.showHtmlField(field.type, __this, field, row, index, columnIndex, extendedRow, rowEle)
-                                } 
+                                }
                                 else if (field.type === 'radio') {
                                     html = __this.showHtmlField(field.type, __this, field, row, index, columnIndex, extendedRow, rowEle)
                                 }

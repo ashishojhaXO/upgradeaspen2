@@ -36,7 +36,7 @@
   <div class="pull-right" style="position: absolute; right: 0; z-index: 1">
     <a (click)="showInvoices()" class="button btn btn-secondary"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Back to invoices</a>
   </div>
-  <app-invoice [orgId]="orgValue" [invoiceId]="selectedInvoice" [invoiceNumber]="selectedInvoiceNumber"></app-invoice>
+  <app-invoice [orgId]="orgValue" [invoiceId]="selectedInvoice" [invoiceNumber]="selectedInvoiceNumber" [memo]="memo"></app-invoice>
 </div>
 <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
 <app-pop-up-modal #AddPayment>
