@@ -119,7 +119,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   };
   period: any= {};
   private toasterService: ToasterService;
-
+  isReportTemp = true;
   constructor(
       private okta: OktaAuthService,
       private route: ActivatedRoute, private router: Router, private http: Http,
@@ -420,7 +420,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
                           });
                 } else {
-                  this.toasterService.pop('success', 'No Report Template Definition Available', 'There is no report template definition available for the selected org');
+                  //this.toasterService.pop('success', 'No Report Template Definition Available', 'There is no report template definition available for the selected org');
+                  this.isReportTemp = false;
                   this.showSpinner = false;
                  /* Swal({
                     title: 'No Template Definition Available',
