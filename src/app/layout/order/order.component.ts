@@ -152,6 +152,7 @@ export class OrderComponent implements OnInit  {
                     if (this.isOrderExtend) {
                         this.existingOrder.lineItems.forEach(function (lineItem) {
                             lineItem['additional_budget'] = 0;
+                            // lineItem['additional_budget'] = lineItem['campaign_line_item_budget'];
                         });
                     }
 
@@ -246,7 +247,7 @@ export class OrderComponent implements OnInit  {
             }
         );
     }
-
+    
     searchTemplateDetails(templateID, existingOrderInfo = null, lineItemId = null) {
         this.templateDefinition = [];
         this.getTemplateDetails(templateID).subscribe(
@@ -1095,6 +1096,9 @@ export class OrderComponent implements OnInit  {
                         obj.field_id = corr.id;
                         obj.field_value = ele[prop];
                         obj.name = corr.name;
+                        // We need to include only those keys in final request dataObj
+                        // Whose, new value is not equal to its formControl's Original value
+                        obj.formControl = ele.form.controls[prop]
                     }
 
                     if (obj.field_id) {
@@ -1129,9 +1133,10 @@ export class OrderComponent implements OnInit  {
 
             reqObj.orderDetail.lineItems[extendedLineItemIndex].lineItemFields.forEach(function (item) {
                 if (item.name && item.name !== 'line_item_id') {
-                    if (item.name === 'end_date') {
+
+                    if (item.name === 'end_date' &&  new Date(item.field_value).setHours(0,0,0) > Date.parse( item.formControl._value ) ) {
                         dataObj['extended_end_date'] = item.field_value;
-                    } else if (item.name === 'additional_budget') {
+                    } else if (item.name === 'additional_budget' && item.field_value > 0) {
                         dataObj['extended_item_budget'] = item.field_value;
                     } else {
                         dataObj[item.name] = item.field_value;
