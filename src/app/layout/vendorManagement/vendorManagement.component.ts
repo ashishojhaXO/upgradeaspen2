@@ -62,7 +62,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     isOrder: [[2, 'asc']],
     isHideColumns: [ "id"],
 
-    isFixedColumn: {
+    /*isFixedColumn: {
       fixedColumns: {
         leftColumns: 2,
       },
@@ -70,7 +70,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
         // Util.DataTable.Func
         DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
       },
-    },
+    },*/
 
   }];
   dashboard: any;
