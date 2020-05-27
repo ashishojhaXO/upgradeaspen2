@@ -1098,7 +1098,8 @@ export class OrderComponent implements OnInit  {
                         obj.name = corr.name;
                         // We need to include only those keys in final request dataObj
                         // Whose, new value is not equal to its formControl's Original value
-                        obj.formControl = ele.form.controls[prop]
+                        // obj.formControl = ele.form.controls[prop]
+                        obj._original_value =  ele.form.controls[prop]._value
                     }
 
                     if (obj.field_id) {
@@ -1134,7 +1135,7 @@ export class OrderComponent implements OnInit  {
             reqObj.orderDetail.lineItems[extendedLineItemIndex].lineItemFields.forEach(function (item) {
                 if (item.name && item.name !== 'line_item_id') {
 
-                    if (item.name === 'end_date' &&  new Date(item.field_value).setHours(0,0,0) > Date.parse( item.formControl._value ) ) {
+                    if (item.name === 'end_date' &&  new Date(item.field_value).setHours(0,0,0) > Date.parse( item._original_value) ) {
                         dataObj['extended_end_date'] = item.field_value;
                     } else if (item.name === 'additional_budget' && item.field_value > 0) {
                         dataObj['extended_item_budget'] = item.field_value;
@@ -1200,6 +1201,7 @@ export class OrderComponent implements OnInit  {
                             type: 'success'
                         }).then(() => {
                             // this.router.navigate(['/app/targetAud/']);
+                            // TODO: Commenting For the moment
                             this.router.navigate(['/app/orderPayment/' + response.order_id, this.vendor_id]);
                         });
                     }
