@@ -432,7 +432,7 @@ export class OrderComponent implements OnInit  {
                     // Perform API Lookup for line item configuration
                     if(!this.existingOrder) {
                         this.dataFieldConfiguration.forEach(function (lineItem) {
-                            if (lineItem.validation && lineItem.validation.indexOf('apiLookup') !== -1 && ele.request_url) {
+                            if (lineItem.validation && lineItem.validation.indexOf('apiLookup') !== -1 && lineItem.request_url) {
                                 this.performRealApiLookUpForValue(lineItem, null).subscribe(
                                     responseLookup => {
                                         if(lineItem.request_mapped_property) {
