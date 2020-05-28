@@ -438,7 +438,19 @@ export class CustomFormbuilderComponent implements OnInit {
   }
 
   ValidateAPILookUp(item) {
-    this.onShowSpinner.emit(true)
+
+    if (!item.request_url) {
+      Swal({
+        title: '',
+        // html: item.request_mapped_property ? responseLookup[item.request_mapped_property] : JSON.stringify(responseLookup),
+        html: "Request Url cannot be blank",
+        type: 'error'
+      }).then((value)=>{
+      });
+      return false;
+    }
+
+    this.onShowSpinner.emit(true);
 
     this.performApiLookUpForValue(item.request_type, item.request_url, item.request_payload).subscribe(
         responseLookup => {
@@ -512,7 +524,7 @@ export class CustomFormbuilderComponent implements OnInit {
     }
 
     const data = requestPayload ? requestPayload : {};
-    const apiDomain = requestUrl.indexOf('http://') !== -1 || requestUrl.indexOf('https://') !== -1 ? '' : this.api_fs.api;
+    const apiDomain = requestUrl && (requestUrl.indexOf('http://') !== -1 || requestUrl.indexOf('https://') !== -1) ? '' : this.api_fs.api;
 
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
