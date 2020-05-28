@@ -26,6 +26,18 @@ export class GenericService {
     this.service = new Service(router, http, toastr);
   }
 
+
+  /**
+   * GET
+   * A potential GET wrapper for all the GET API Calls
+   * @param functionToCall: function to make the GET Api Call 
+   * @param functionToCallParams: Params to pass to the function that makes the GET Api Call 
+   * @param successCallback: callBack function on success of the GET api call
+   * @param errorCallback: callBack function on error of the GET api call
+   */
+  getWrapper(functionToCall, functionToCallParams, successCallback, errorCallback) {
+  }
+
   /**
    * POST Regenerate Receipt
    * @param dataObj
@@ -368,6 +380,25 @@ export class GenericService {
       {"Content-Type": "application/csv"}
     );
   }
+  
+  /**
+   * Get the list of currently available payment methods of the user
+   * @param dataObj
+   */
+  getPaymentMethods(dataObj: any) {
+    let limit = dataObj.limit || 25;
+    let pageNo = dataObj.pageNo || 1;
+
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+
+    return this.service.Call(
+      'get', 
+      apiPath.api +
+      this.base.API +
+      this.base.GET_ORDERS_ENDPOINT + '?limit='+limit+'&page='+pageNo 
+    );
+  }
+
 
 
   /**
