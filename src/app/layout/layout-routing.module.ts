@@ -33,6 +33,7 @@ import { JobsComponent } from './jobs/jobs.component';
 import { OperationsDashboardComponent } from './operations-dashboard/operations-dashboard.component';
 import {UploadsComponent} from './../layout/uploads/uploads.component';
 import { BaseFieldsListComponent } from './base-fields-list/base-fields-list.component';
+import { PaymentMethodsComponent } from './payment-methods/payment-methods.component';
 
 const routes: Routes = [
     {
@@ -505,7 +506,16 @@ const routes: Routes = [
                     breadcrumbs: true,
                     text: 'User Settings'
                 }
+            },
+            {
+                path: 'payment-methods',
+                component: PaymentMethodsComponent,
+                data: {
+                    breadcrumbs: true,
+                    text: 'Payment Methods'
+                }
             }
+
         ]
     }
 ];
