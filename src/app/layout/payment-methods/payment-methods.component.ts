@@ -30,6 +30,7 @@ export class PaymentMethodsComponent implements OnInit {
   showSpinner: boolean;
   api_fs: any;
   vendorUuid:any;
+  userUuid:any;
   displayId: any;
   widget: any;
   isRoot: boolean;
@@ -53,8 +54,6 @@ export class PaymentMethodsComponent implements OnInit {
     // }
 
     if (window['fs_widget_config']) {
-      console.log('window.location.hostname')
-      console.log(window.location.hostname);
 
       console.log('window[\'fs_widget_config\'] >>')
       console.log(window['fs_widget_config']);
@@ -65,6 +64,8 @@ export class PaymentMethodsComponent implements OnInit {
       window['fs_widget_config'].vendor_id = this.vendorId = this.vendorUuid;
       window['fs_widget_config'].api_key = customerInfo.org.x_api_key;
       window['fs_widget_config'].org_id = customerInfo.org.org_id;
+      window['fs_widget_config'].user_uuid = this.userUuid = customerInfo.user.user_uuid;
+
       console.log("vendorUuid",this.vendorId);
       // Temp assignment FOR TESTING:
       // window['fs_widget_config'].vendor_id = '592f94f3-e2b1-4621-b1c0-c795ee2a1814'
@@ -127,29 +128,22 @@ export class PaymentMethodsComponent implements OnInit {
   paymentTypeSelection(type) {
     this.selectionType = type;
 
-    console.log("selTYP: ", this.selectionType);
-
     if ( this.selectionType == 'default') {
-      console.log("IF mein")
       this.postPaymentMethods(1);
     }
   }
 
   successCB(res) {
 
-    console.log("SCB: ", res);
     const self = this;
     self.paymentOptions = [];
     if(res.attributes && res.attributes.length > 0){
-      console.log("SCB IFFF: ", res, this , " self", self);
       self.paymentOptions = res.attributes;
       // set paymentsChargeData to use it for charging
       res.attributes.filter((k, i) => {
         return k.is_default == 1 ? this.setPaymentsChargeData(k) : Object()
       })[0]
 
-      console.log("SCB IFFF: self.paymentOptions ", self.paymentOptions ,
-          " this payMC", this.paymentsChargeData );
     }
 
   }
@@ -159,7 +153,8 @@ export class PaymentMethodsComponent implements OnInit {
   }
 
   setPaymentsMethodsData() {
-    this.paymentsMethodsData = { vendor_id : this.vendorId } ;
+    // this.paymentsMethodsData = { vendor_id : this.vendorId } ;
+    this.paymentsMethodsData = { user_id : this.userUuid };
   }
 
   postPaymentMethods(option) {
@@ -167,7 +162,7 @@ export class PaymentMethodsComponent implements OnInit {
     this.setPaymentsMethodsData()
 
     return this.genericService
-        .postPaymentsMethods(this.paymentsMethodsData)
+        .postUserPaymentsMethods(this.paymentsMethodsData)
         .subscribe(
             (res) => {
               this.showSpinner = false;
@@ -183,8 +178,6 @@ export class PaymentMethodsComponent implements OnInit {
                     self.postPaymentMethods.bind(self, option)
                 );
               } else {
-                console.log('err >>')
-                console.log(err);
                 this.showSpinner = false;
                 Swal({
                   title: 'An error occurred',
@@ -198,8 +191,6 @@ export class PaymentMethodsComponent implements OnInit {
   }
 
   setDefaultPaymentMethod(option) {
-    console.log('option >>')
-    console.log(option);
     const obj = {
       vendor_id : this.vendorId,
       paymentmethodid : option.paymentmethodid
@@ -237,7 +228,6 @@ export class PaymentMethodsComponent implements OnInit {
 
   setPaymentsChargeData(option) {
     // [paymentsChargeData]="option.is_default == '1' ? option : false"
-    console.log("OPtion", option);
     this.paymentsChargeData = {
       vendorid: this.vendorId,
       orderid: this.orderId,

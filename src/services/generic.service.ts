@@ -185,6 +185,7 @@ export class GenericService {
         apiPath.api +
       this.base.API +
       this.base.POST_PAYMENTS_METHODS_ENDPOINT,
+      // POST_USER_PAYMENTS_METHODS_ENDPOINT 
       data
     );
   }
@@ -396,6 +397,24 @@ export class GenericService {
       apiPath.api +
       this.base.API +
       this.base.GET_ORDERS_ENDPOINT + '?limit='+limit+'&page='+pageNo 
+    );
+  }
+
+  /**
+   * POST User Payments Methods
+   * @param dataObj
+   */
+  public postUserPaymentsMethods(dataObj: any) {
+
+    const data = JSON.stringify(dataObj);
+
+    const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+    return this.service.Call(
+      'post',
+        apiPath.api +
+      this.base.API +
+      this.base.POST_USER_PAYMENTS_METHODS_ENDPOINT,
+      data
     );
   }
 
