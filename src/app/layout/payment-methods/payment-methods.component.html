@@ -39,8 +39,8 @@
                     <div *ngIf="paymentOptions; else fetchingExistingPayments">
                         <div style="font-size: 12px; margin: 15px 10px" *ngIf="paymentOptions.length; else noExistingPayments">
 
-                            <div 
-                                class="width-90-pct" 
+                            <div
+                                class="width-90-pct"
                                 style="border-collapse:separate; border-spacing: 0 1em;"
                             >
 
@@ -213,7 +213,7 @@
     </div>
     <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
 </div>
-<app-script-embedder [src]="api_fs.widget"
+<app-script-embedder src="./../../../assets/widget.js"
                      type="text/javascript"></app-script-embedder>
 
 <script type="text/javascript">
