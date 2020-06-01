@@ -4,7 +4,19 @@
  * Author: Dinesh Yadav
  * Date: 2019-06-17 10:00:00
  */
-import {Component, EventEmitter, Input, ViewChild, OnInit, Output, ElementRef, Sanitizer, SimpleChanges, OnChanges} from '@angular/core';
+import {
+    Component,
+    EventEmitter,
+    Input,
+    ViewChild,
+    OnInit,
+    Output,
+    ElementRef,
+    Sanitizer,
+    SimpleChanges,
+    OnChanges,
+    AfterViewInit
+} from '@angular/core';
 import {FormBuilder} from '@angular/forms';
 import 'datatables.net';
 import * as _ from 'lodash';
@@ -42,7 +54,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     @Input() sendResponseOnCheckboxClick?: any;
     // widget: any;
     api_fs: any;
-    tableId = 'example';
+    @Input() tableId = 'example';
     @Input() dataFieldsConfiguration: any;
     @Input() lineItemForm: any;
     @Input() lineItemFormArray: any;
@@ -86,14 +98,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             console.log('dataObject >>>');
             console.log(this.dataObject);
 
-            console.log('this.dataObject.gridId >>>@@@##');
-            console.log(this.dataObject.gridId);
+            // if(this.dataObject.gridId) {
+            //     this.tableId = this.dataObject.gridId;
+            // }
 
-            if(this.dataObject.gridId) {
-                this.tableId = this.dataObject.gridId;
-            }
-
-            if ( $.fn.DataTable.isDataTable('#' + this.tableId) ) {
+            if ( $.fn.DataTable.isDataTable('#' + this.tableId)) {
                 $('#' + this.tableId).DataTable().clear().destroy();
                 $('#' + this.tableId).empty();
             }
@@ -106,10 +115,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         }
 
         if ( changes['dataRowUpdatedLen']) {
-
-            if(this.dataObject.gridId) {
-                this.tableId = this.dataObject.gridId;
-            }
 
             if ( $.fn.DataTable.isDataTable('#' + this.tableId) ) {
                 $('#' + this.tableId).DataTable().clear().destroy();

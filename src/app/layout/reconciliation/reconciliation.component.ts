@@ -16,6 +16,7 @@ import { Http, Headers, RequestOptions } from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
 import Swal from 'sweetalert2';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {moment} from 'ngx-bootstrap/chronos/test/chain';
 
 @Component({
   selector: 'app-reconciliation',
@@ -59,6 +60,11 @@ export class ReconciliationComponent implements OnInit {
       icon: 'fa-plus-circle',
       tooltip: 'View Order Info'
     },
+    isCustomOption2: {
+      value : true,
+      icon : 'fa-pencil',
+      tooltip: 'Add/Edit SES No'
+    },
     isRowSelection: null,
     isPageLength: true,
     isPagination: true,
@@ -74,6 +80,7 @@ export class ReconciliationComponent implements OnInit {
   channelData: any;
   selectedChannel: any;
   selectedSupplier: any;
+  selectedSES: any;
 
   settings: any = {
     singleSelection: true,
@@ -90,6 +97,7 @@ export class ReconciliationComponent implements OnInit {
   hideTable: boolean;
   selectedInvoice: any;
   selectedInvoiceNumber: any;
+  selectedInvoiceHeaderId: any;
   hasData: boolean;
   selectedInvoiceDetails: any;
   memo: string;
@@ -98,8 +106,16 @@ export class ReconciliationComponent implements OnInit {
   orgValue = '';
   orgInfo: any;
   isRoot: boolean;
+  dashboardConfig: any;
+  period: any= {};
+  dateOptions = {
+    format: "MMM YYYY",
+    showClear: false
+  };
 
   @ViewChild('UploadInvoice') uploadInvoice: PopUpModalComponent;
+  @ViewChild('SES') SES: PopUpModalComponent;
+
   uploadForm: FormGroup;
   uploadModel: any;
   select2Options = {
@@ -156,6 +172,300 @@ export class ReconciliationComponent implements OnInit {
       this.orgValue = this.selectedOrg[0].id;
     }
     this.searchDataRequest();
+
+    const testJSON = {
+      "data": {
+        "views": [
+          {
+            "filters": {
+              "dataset": [],
+              "source": [
+                {
+                  "hasAllOption": false,
+                  "order": 1,
+                  "parent": [],
+                  "displayDefault": true,
+                  "f7_name": "period",
+                  "alias": "Period",
+                  "type": "monthpicker"
+                },
+                {
+                  "hasAllOption": false,
+                  "order": 2,
+                  "parent": [],
+                  "displayDefault": true,
+                  "f7_name": "site_name",
+                  "alias": "Supplier",
+                  "type": "popupButton"
+                },
+                {
+                  "hasAllOption": false,
+                  "order": 3,
+                  "parent": [],
+                  "displayDefault": true,
+                  "f7_name": "mk_number",
+                  "alias": "Marketing Contract",
+                  "type": "popupButton"
+                },
+                {
+                  "hasAllOption": false,
+                  "order": 4,
+                  "parent": [],
+                  "displayDefault": true,
+                  "f7_name": "po_number",
+                  "alias": "Purchase Order",
+                  "type": "popupButton"
+                },
+                {
+                  "hasAllOption": true,
+                  "order": 5,
+                  "parent": [
+                    "period",
+                    "supplier"
+                  ],
+                  "displayDefault": true,
+                  "f7_name": "invoice_number",
+                  "alias": "Invoice Number",
+                  "type": "popupButton"
+                }
+              ]
+            },
+            "name": "Reconciliation"
+          }
+        ]
+      }
+    };
+
+    this.populateFilters(testJSON);
+  }
+
+  populateFilters(filterResponse, seedResponse = null) {
+
+    localStorage.setItem('dashboardConfig_reconciliation', JSON.stringify(filterResponse));
+    const dashboardConfig = filterResponse.data;
+
+    this.dashboardConfig = {};
+    this.dashboardConfig.filterProps = [];
+    const getSelectedTypeConfig = dashboardConfig.views.find(x => x.name.toLowerCase() === 'reconciliation');
+
+    if (getSelectedTypeConfig) {
+
+      getSelectedTypeConfig.filters.source.forEach(function (filter, index) {
+        if (filter.f7_name != 'month') {
+          var newFilter: any = {};
+          newFilter.f7Name = filter.f7_name;
+          newFilter.label = filter.alias;
+          newFilter.values = [];
+          newFilter.displayDefault = null; // filter.displayDefault;
+
+          if (!newFilter.displayDefault && seedResponse) {
+            if (seedResponse[newFilter.f7Name] && seedResponse[newFilter.f7Name].length) {
+              if (seedResponse[newFilter.f7Name] !== 'period') {
+                newFilter.values = [{
+                  id: seedResponse[newFilter.f7Name][0],
+                  label: seedResponse[newFilter.f7Name][0]
+                }];
+              }
+            }
+          }
+          //  newFilter.values = filter.default_value ? [filter.default_value] : [];
+
+          newFilter.isMultiSelect = filter.hasAllOption || false;
+          newFilter.dependentOn = filter.parent || [];
+          newFilter.includeCustom = false;
+          newFilter.isMultipleCustomType = false;
+          newFilter.isTag = false;
+          newFilter.placeHolderText = '';
+          newFilter.placeHolderValue = '';
+          newFilter.apiRequestUrl = '';
+          newFilter.apiRequestType = '';
+          newFilter.type = filter.type;
+
+          this.dashboardConfig.filterProps.push(newFilter);
+        }
+      }, this);
+    }
+
+    console.log('this.dashboardConfig >>>')
+    console.log(this.dashboardConfig);
+
+    const periodFilter = this.dashboardConfig.filterProps.find( x=> x.f7Name === 'period');
+    if (periodFilter && seedResponse && seedResponse['period'] && seedResponse['period'].values && seedResponse['period'].values.startDate) {
+
+      periodFilter.values = [{
+        id: seedResponse['period'].values.startDate,
+        itemName: this.getMonthName(seedResponse['period'].values.startDate.split('-')[1].replace('0','')) + ' ' + seedResponse['period'].values.startDate.split('-')[0]
+      }];
+
+      this.period.display = moment(periodFilter.values[0].id).format('MMM YYYY');
+      this.period.value =  moment(periodFilter.values[0].id).format('MMM YYYY');
+    } else {
+      const d = new Date(),
+          month = '' + (d.getMonth() + 1),
+          year = d.getFullYear();
+      this.period.display = moment(year + '-' + ( month.length < 2 ? ('0' + month) : month) + '-01').format('MMM YYYY');
+      this.period.value =  moment(year + '-' + ( month.length < 2 ? ('0' + month) : month) + '-01').format('MMM YYYY');
+    }
+  }
+
+  getDependentConfig(dependsOn: any) {
+    return this.dashboardConfig.filterProps.filter(function (x) {
+      return dependsOn.indexOf(x.f7Name) !== -1;
+    });
+  }
+
+  getData(filterConfig, dependentConfig) {
+
+    const applyFilter = [];
+    if(dependentConfig.length) {
+      dependentConfig.forEach(function (config) {
+        if (config.values.length) {
+          const values = [];
+          config.values.forEach(function (val) {
+            values.push(val.id);
+          });
+          applyFilter.push({
+            f7Name : config.f7Name,
+            values : values
+          });
+        }
+      });
+    }
+
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
+    const options = new RequestOptions({headers: headers});
+
+    console.log('applyFilter >>>')
+    console.log(applyFilter);
+
+    var dateField;
+    const objDate = this.dashboardConfig.filterProps.find(x=> x.f7Name === 'period').values;
+    if(objDate && objDate.length) {
+      dateField = objDate[0].id;
+    } else {
+      dateField = this.formatDate(new Date());
+    }
+
+    var startDate = dateField + 'T00:00:00Z';
+    var endDate = '';
+    var endDateOftheMonth = 0;
+    if (dateField.split('-')[1] == 12) {
+      endDateOftheMonth = new Date(dateField.split('-')[0], dateField.split('-')[1], 0).getDate();
+      endDate = dateField.split('-')[0] + '-' + dateField.split('-')[1] + '-' + endDateOftheMonth  + 'T23:59:59Z';
+    } else {
+      endDateOftheMonth = new Date(dateField.split('-')[0], dateField.split('-')[1], 0).getDate();
+      endDate = dateField.split('-')[0] + '-' + dateField.split('-')[1] + '-' + endDateOftheMonth  + 'T23:59:59Z';
+    }
+
+    const dataObj = {
+      filter: applyFilter,
+      entity: filterConfig.f7Name,
+      page: 1,
+      limit: 10,
+      period: {
+        f7Name: 'date',
+        values: {
+          startDate: startDate,
+          endDate: endDate
+        }
+      }
+    };
+
+    var obj = JSON.stringify(dataObj);
+
+    console.log('filter dataObj >>')
+    console.log(obj);
+    let org = this.orgValue;
+    return this.http
+        .post(this.api_fs.api + '/api/reports/org/homd/filters'+( org ? ('?org_id=' + org) : ''), obj, options )
+        .map(res => {
+          const result = res.json();
+          const ret = [];
+          if (result.length) {
+            result.forEach(function (item) {
+              ret.push({id: item, label: item});
+            });
+          }
+          return ret;
+        });
+  }
+
+  formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, '01'].join('-');
+  }
+
+  OnPeriodChange(e, filter) {
+    if (e && e._d) {
+      this.period.display = moment(e._d).format('MMM YYYY');
+      this.period.value = moment(e._d).format('YYYY-MM-01');
+    }
+
+    this.dashboardConfig.filterProps.map(function (x) {
+      if (x.f7Name === 'period' && x.values && x.values.length) {
+        x.values[0].id = this.period.value;
+        x.values[0].itemName = this.period.display;
+      }
+    }, this);
+  }
+
+  updateFilterConfig(data) {
+    console.log('updated value ' + data.f7Name)
+    console.log(data);
+
+    // Reset the filters dependent on the current field
+    this.dashboardConfig.filterProps.forEach(function (item) {
+      if (item.dependentOn.indexOf(data.f7Name) != -1) {
+        item.values = [];
+      }
+    });
+  }
+
+  getMonthName(num) {
+    switch (num) {
+      case '1' : return 'Jan';
+      case '2' : return 'Feb';
+      case '3' : return 'Mar';
+      case '4' : return 'Apr';
+      case '5' : return 'May';
+      case '6' : return 'Jun';
+      case '7' : return 'Jul';
+      case '8' : return 'Aug';
+      case '9' : return 'Sep';
+      case '10' : return 'Oct';
+      case '11' : return 'Nov';
+      case '12' : return 'Dec';
+    }
+  }
+
+  getFilter(dashboardType): any {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken;
+    }
+    let org = this.orgValue;
+
+    console.log('token >>>>')
+    console.log(token);
+
+    const headers = new Headers({'Content-Type': 'application/json', 'callingapp' : 'aspen', 'token' : token});
+    const options = new RequestOptions({headers: headers});
+    return this.http.get(this.api_fs.api + '/api/reports/org/Home%20Depot/template/dashboard?templatename=' + dashboardType + ( org ? ('&org_id=' + org) : ''), options).toPromise()
+        .then(data => data.json())
+        .catch();
   }
 
   handleSelect(selectedItem, type) {
@@ -173,6 +483,10 @@ export class ReconciliationComponent implements OnInit {
   search() {
     this.dataObject.isDataAvailable = false;
     this.showSpinner = true;
+
+    console.log('this.dashboardConfig ####');
+    console.log(this.dashboardConfig);
+
     this.searchDataRequest();
   }
 
@@ -213,7 +527,20 @@ export class ReconciliationComponent implements OnInit {
     const dataObj = {
       year: this.selectedPeriod[0].id.split('-')[0],
       month: this.selectedPeriod[0].id.split('-')[1]
-    }
+    };
+
+    // const dataObj = {
+    //     year: "2020",
+    //     month: "03",
+    //     invoice_header_id: 1376,
+    //     order_id: "325",
+    //     filters: {
+    //       invoice_number: ["120047554", "20USIV04771"],
+    //       mk_number: ["1193"],
+    //       po_number: ["119"]
+    //     }
+    // }
+
     const obj = JSON.stringify(dataObj);
     console.log('obj >>')
     console.log(obj)
@@ -270,6 +597,7 @@ export class ReconciliationComponent implements OnInit {
     this.gridData.rowsToColor = rowsToColor;
     this.dashboard = 'paymentGrid';
     this.dataObject.gridData = this.gridData;
+    this.dataObject.gridId = 'reconciliation';
     console.log(this.gridData);
     this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
     // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
@@ -497,6 +825,7 @@ export class ReconciliationComponent implements OnInit {
     this.selectedInvoice = null;
     this.selectedInvoiceNumber = null;
   }
+
   handleCustom(dataObj: any) {
     let invoice_header_id = "";
     if (dataObj.data.invoice_header_id) {
@@ -552,6 +881,86 @@ export class ReconciliationComponent implements OnInit {
         }
       );
   }
+
+  handleCustom2(dataObj: any) {
+    const invoiceId = dataObj.data.invoice_header_id;
+    if (invoiceId) {
+      this.selectedInvoiceNumber = dataObj.data.invoice_number;
+      this.selectedInvoiceHeaderId = dataObj.data.invoice_header_id;
+      this.selectedSES = dataObj.data.ses_number;
+      this.SES.show();
+    }
+  }
+
+  handleSubmitSES() {
+    if (!this.selectedSES) {
+      Swal({
+        title: 'No SES Number Provided',
+        html: 'Please enter a value',
+        type: 'error'
+      });
+      return;
+    }
+    this.submitSES().subscribe(
+        response => {
+          this.handleCloseSES();
+          Swal({
+            title: 'Success',
+            html: response.message ? response.message : 'SES number successfully updated',
+            type: 'success'
+          }).then( () => {
+            this.reLoad();
+          });
+        },
+        err => {
+          if(err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+                this,
+                err,
+                self.submitSES.bind(self)
+            );
+          } else {
+            this.showSpinner = false;
+            Swal({
+              title: 'An error occurred',
+              html: err._body ? JSON.parse(err._body).message : 'No error definition available',
+              type: 'error'
+            });
+          }
+        });
+  }
+
+  submitSES() {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    const data = JSON.stringify({
+      invoice_header_id : this.selectedInvoiceHeaderId,
+      ses_number : this.selectedSES
+    });
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    const url = this.api_fs.api + '/api/payments/invoices/update';
+    return this.http
+        .post(url, data, options)
+        .map(res => {
+          return res.json();
+        }).share();
+  }
+
+  handleCloseSES() {
+    this.selectedInvoiceNumber = null;
+    this.selectedInvoiceHeaderId = null;
+    this.selectedSES = null;
+    this.SES.hide();
+  }
+
   invoiceOrderCsv(res) {
     let rows = res;
     let arr: Array<String> = [];

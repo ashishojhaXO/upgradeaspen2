@@ -167,7 +167,7 @@ export class LineItemHistoryComponent implements OnInit  {
     this.gridData['headers'] = headers;
     this.gridData['options'] = this.options[0];
     this.dataObject.gridData = this.gridData;
-    this.dataObject.gridId = 'lineItemHistory';
+    // this.dataObject.gridId = 'lineItemHistory';
     this.dataObject.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
     // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
   }
