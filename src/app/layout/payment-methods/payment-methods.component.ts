@@ -104,24 +104,26 @@ export class PaymentMethodsComponent implements OnInit {
     }
 
     if (!this.orderId) {
-      Swal ({
-        title: 'No Order ID found',
-        text: 'We did not find an order to be paid for',
-        type: 'error'
-      }).then( () => {
-        this.router.navigate(['/app/order/orders']);
-      });
+      console.log("NOORDID")
+      // Swal ({
+      //   title: 'No Order ID found',
+      //   text: 'We did not find an order to be paid for',
+      //   type: 'error'
+      // }).then( () => {
+        // this.router.navigate(['/app/order/orders']);
+      // });
     }
   }
   initVendorUuid(){
     if (!this.vendorUuid) {
-      Swal({
-        title: 'No Vendor ID found',
-        text: 'We did not find vendor id for this order',
-        type: 'error'
-      }).then( () => {
-        this.router.navigate(['/app/order/orders']);
-      });
+      console.log("NOVENDID")
+      // Swal({
+      //   title: 'No Vendor ID found',
+      //   text: 'We did not find vendor id for this order',
+      //   type: 'error'
+      // }).then( () => {
+        // this.router.navigate(['/app/order/orders']);
+      // });
     }
   }
 
@@ -248,7 +250,7 @@ export class PaymentMethodsComponent implements OnInit {
                 text: 'Your payment for the order ' + (this.displayId ? this.displayId : this.orderId) + ' was successfully charged',
                 type: 'success'
               }).then( () => {
-                this.router.navigate(['/app/order/orders']);
+                // this.router.navigate(['/app/order/orders']);
               });
             },
             (err) => {

@@ -1,5 +1,10 @@
 var fs_widget_config = {
     // conguration for payment type label ( optional )
+    title: {
+        text: 'Payment Type', // default : Payment Type
+        backgroundColor: '#fff', // default : #fff ( accepts all hash, name or rgba )
+        color: '#000', // default : #000 ( accepts all hash, name or rgba )
+    },
     label: {
         text: 'Payment Type', // default : Payment Type
         backgroundColor: '#fff', // default : #fff ( accepts all hash, name or rgba )
