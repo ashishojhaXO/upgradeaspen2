@@ -14,6 +14,7 @@ import { GenericService } from '../../../services/generic.service';
 import { DataTableOptions } from '../../../models/dataTableOptions';
 import Swal from 'sweetalert2';
 import { OktaAuthService } from '../../../services/okta.service';
+import {Headers, Http, RequestOptions} from '@angular/http';
 
 @Component({
   selector: 'app-payment-methods',
@@ -42,7 +43,8 @@ export class PaymentMethodsComponent implements OnInit {
     private genericService: GenericService,
     private router: Router,
     private okta: OktaAuthService,
-  ) { 
+    private http: Http
+  ) {
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
 
     // if(window.location.hostname.indexOf('-dev') !== -1 || window.location.hostname.indexOf('localhost') !== -1) {
@@ -140,10 +142,10 @@ export class PaymentMethodsComponent implements OnInit {
 
     const self = this;
     self.paymentOptions = [];
-    if(res.attributes && res.attributes.length > 0){
-      self.paymentOptions = res.attributes;
+    if(res.body && res.body.length > 0){
+      self.paymentOptions = res.body;
       // set paymentsChargeData to use it for charging
-      res.attributes.filter((k, i) => {
+      res.body.filter((k, i) => {
         return k.is_default == 1 ? this.setPaymentsChargeData(k) : Object()
       })[0]
 
@@ -151,12 +153,14 @@ export class PaymentMethodsComponent implements OnInit {
 
   }
 
+
+
   errorCB(err) {
     console.log("ECB: ", err);
   }
 
   setPaymentsMethodsData() {
-    this.paymentsMethodsData = { vendor_id : this.vendorId } ;
+    this.paymentsMethodsData = { user_id : this.userUuid } ;
     // this.paymentsMethodsData = { user_id : this.userUuid };
   }
 
@@ -164,8 +168,35 @@ export class PaymentMethodsComponent implements OnInit {
     this.showSpinner = true;
     this.setPaymentsMethodsData()
 
-    return this.genericService
-        .postUserPaymentsMethods(this.paymentsMethodsData)
+    // return this.genericService
+    //     .postUserPaymentsMethods(this.paymentsMethodsData)
+    //     .subscribe(
+    //         (res) => {
+    //           this.showSpinner = false;
+    //           // this.successCB.apply(this, [res])
+    //           this.successCB(res);
+    //         },
+    //         (err) => {
+    //           if(err.status === 401) {
+    //             let self = this;
+    //             this.widget.refreshElseSignout(
+    //                 this,
+    //                 err,
+    //                 self.postPaymentMethods.bind(self, option)
+    //             );
+    //           } else {
+    //             this.showSpinner = false;
+    //             Swal({
+    //               title: 'An error occurred',
+    //               html: err._body ? JSON.parse(err._body).message : 'No error definition available',
+    //               type: 'error'
+    //             });
+    //           }
+    //           //this.errorCB(rej)
+    //         }
+    //     )
+
+    return this.getPaymentMethods(this.paymentsMethodsData)
         .subscribe(
             (res) => {
               this.showSpinner = false;
@@ -191,6 +222,17 @@ export class PaymentMethodsComponent implements OnInit {
               //this.errorCB(rej)
             }
         )
+  }
+
+  getPaymentMethods(dataObj) {
+    const obj = JSON.stringify(dataObj);
+    const headers = new Headers({ 'Content-Type': 'application/json', org_id : window['fs_widget_config'].org_id, 'x-api-key' : window['fs_widget_config'].api_key });
+    const options = new RequestOptions({ headers: headers });
+    return this.http
+        .post(this.api_fs.api + '/api/payments/widget/user-payment-methods', obj, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
 
   setDefaultPaymentMethod(option) {
@@ -276,18 +318,18 @@ export class PaymentMethodsComponent implements OnInit {
 
 
   //
-  protected getPaymentMethodsSuccess(){}
+  // protected getPaymentMethodsSuccess(){}
+  //
+  // protected getPaymentMethodsError(){}
 
-  protected getPaymentMethodsError(){}
-
-  protected getPaymentMethods() {
-    let dataObj: object = {};
-    return this.genericService.getPaymentMethods(dataObj)
-      .subscribe(
-        this.getPaymentMethodsSuccess,   
-        this.getPaymentMethodsError,   
-      )
-  }
+  // protected getPaymentMethods() {
+  //   let dataObj: object = {};
+  //   return this.genericService.getPaymentMethods(dataObj)
+  //     .subscribe(
+  //       this.getPaymentMethodsSuccess,
+  //       this.getPaymentMethodsError,
+  //     )
+  // }
   //-
 
 }
