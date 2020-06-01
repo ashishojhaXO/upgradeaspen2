@@ -69,8 +69,8 @@ export class OrdersComponent implements OnInit  {
     },
     isPlayOption: {
       value : true,
-      icon : 'fa-info-circle',
-      tooltip: 'View Details'
+      icon : 'fa-plus-circle',
+      tooltip: 'View Order Details'
     },
     isCustomOption: {
       value : true,
@@ -684,7 +684,7 @@ export class OrdersComponent implements OnInit  {
         .subscribe(
             (res) => {
               this.showSpinner = false;
-              if(res.data.length){  
+              if(res.data.length){
                 res.data.forEach( function (obj) {
                   obj.order_id = dataObj.data.order_id;
                   obj.line_item_id = dataObj.data.line_item_id;

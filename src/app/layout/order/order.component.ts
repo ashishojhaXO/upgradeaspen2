@@ -96,10 +96,10 @@ export class OrderComponent implements OnInit  {
         const groups = localStorage.getItem('loggedInUserGroup') || '';
         const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
         this.orgInfo = custInfo.org;
-    
+
         console.log('custInfo >>>')
         console.log(custInfo);
-    
+
         const grp = JSON.parse(groups);
         grp.forEach(function (item) {
           if (item === 'ROOT' || item === 'SUPER_USER') {
@@ -247,7 +247,7 @@ export class OrderComponent implements OnInit  {
             }
         );
     }
-    
+
     searchTemplateDetails(templateID, existingOrderInfo = null, lineItemId = null) {
         this.templateDefinition = [];
         this.getTemplateDetails(templateID).subscribe(
@@ -361,7 +361,7 @@ export class OrderComponent implements OnInit  {
 
                     // Perform API Lookup order field configuration
                     response.orderTemplateData.orderFields.forEach(function (ele) {
-                        if (ele.validation && ele.validation.indexOf('apiLookup') !== -1) {
+                        if (ele.validation && ele.validation.indexOf('apiLookup') !== -1 && ele.request_url) {
                             this.performRealApiLookUpForValue(ele, this.data.controls, null).subscribe(
                                 responseLookup => {
                                     if(ele.request_mapped_property) {
@@ -432,7 +432,7 @@ export class OrderComponent implements OnInit  {
                     // Perform API Lookup for line item configuration
                     if(!this.existingOrder) {
                         this.dataFieldConfiguration.forEach(function (lineItem) {
-                            if (lineItem.validation && lineItem.validation.indexOf('apiLookup') !== -1) {
+                            if (lineItem.validation && lineItem.validation.indexOf('apiLookup') !== -1 && lineItem.request_url) {
                                 this.performRealApiLookUpForValue(lineItem, null).subscribe(
                                     responseLookup => {
                                         if(lineItem.request_mapped_property) {
@@ -484,7 +484,7 @@ export class OrderComponent implements OnInit  {
                     // Perform API Lookup for line item configuration
                     if (!this.existingOrder) {
                         this.dataFieldConfiguration.forEach(function (lineItem) {
-                            if (lineItem.validation && lineItem.validation.indexOf('apiLookup') !== -1) {
+                            if (lineItem.validation && lineItem.validation.indexOf('apiLookup') !== -1 && lineItem.request_url) {
                                 this.performRealApiLookUpForValue(lineItem, null).subscribe(
                                     responseLookup => {
                                         if(lineItem.request_mapped_property) {
@@ -683,7 +683,7 @@ export class OrderComponent implements OnInit  {
         }
 
         const data = requestPayload ? requestPayload : {};
-        const apiDomain = requestUrl.indexOf('http://') !== -1 || requestUrl.indexOf('https://') !== -1 ? '' : this.api_fs.api;
+        const apiDomain = requestUrl && (requestUrl.indexOf('http://') !== -1 || requestUrl.indexOf('https://') !== -1) ? '' : this.api_fs.api;
 
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
         const options = new RequestOptions({headers: headers});
@@ -721,7 +721,7 @@ export class OrderComponent implements OnInit  {
             let dict = {};
 
             if( conf.validation && Validators[ conf.validation[0] ]  ) {
-                valiFn = [ Validators[ conf.validation[0] ] ] 
+                valiFn = [ Validators[ conf.validation[0] ] ]
                 asyncValiFn.push({updateOn: 'blur'});
 
                 // dict['validators'] = [ Validators[ conf.validation[0] ] ];
@@ -804,85 +804,87 @@ export class OrderComponent implements OnInit  {
 
             if (dependOnFields.length) {
                 dependOnFields.forEach(function (ele) {
-                    this.performRealApiLookUpForValue(ele, this.form.controls, name).subscribe(
-                        responseLookup => {
-                            if(ele.request_mapped_property) {
-                                if (ele.type === 'list') {
-                                    if( Object.prototype.toString.call( responseLookup[ele.request_mapped_property] ) === '[object Array]' ) {
-                                        (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property].length ? responseLookup[ele.request_mapped_property][0] : '');
-                                        const options = [];
+                    if (ele.request_url) {
+                        this.performRealApiLookUpForValue(ele, this.form.controls, name).subscribe(
+                            responseLookup => {
+                                if(ele.request_mapped_property) {
+                                    if (ele.type === 'list') {
+                                        if( Object.prototype.toString.call( responseLookup[ele.request_mapped_property] ) === '[object Array]' ) {
+                                            (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property].length ? responseLookup[ele.request_mapped_property][0] : '');
+                                            const options = [];
 
-                                        options.push({ id: '', text: 'Empty'});
-                                        responseLookup[ele.request_mapped_property].forEach(function (prop) {
+                                            options.push({ id: '', text: 'Empty'});
+                                            responseLookup[ele.request_mapped_property].forEach(function (prop) {
 
-                                            if (typeof prop === 'object') {
-                                                options.push({
-                                                    id: prop.key, text: prop.value
-                                                });
-                                            } else {
-                                                options.push({
-                                                    id: prop, text: prop
-                                                });
-                                            }
-                                        });
-                                        this.data.controls.forEach(function (ctrl) {
-                                            if (ctrl.name === ele.name) {
-                                                if (this.existingOrder && !this.originalResponseObj.orderTemplateData.orderFields.find(x => x.name === ele.name).valueExtracted) {
-                                                    const corr = options.filter(function (op) {
-                                                        return op.id === this.existingOrder.order[ele.name];
-                                                    }, this);
-
-                                                    console.log('corr >>>')
-                                                    console.log(corr);
-
-                                                    if (corr && corr.length) {
-                                                        ctrl.options = options;
-                                                        (<FormControl>this.form.controls[ele.name]).setValue(this.existingOrder.order[ele.name]);
-                                                        this.originalResponseObj.orderTemplateData.orderFields.find(x => x.name === ele.name).valueExtracted = true;
-                                                    }
+                                                if (typeof prop === 'object') {
+                                                    options.push({
+                                                        id: prop.key, text: prop.value
+                                                    });
                                                 } else {
-                                                    ctrl.options = options;
+                                                    options.push({
+                                                        id: prop, text: prop
+                                                    });
                                                 }
+                                            });
+                                            this.data.controls.forEach(function (ctrl) {
+                                                if (ctrl.name === ele.name) {
+                                                    if (this.existingOrder && !this.originalResponseObj.orderTemplateData.orderFields.find(x => x.name === ele.name).valueExtracted) {
+                                                        const corr = options.filter(function (op) {
+                                                            return op.id === this.existingOrder.order[ele.name];
+                                                        }, this);
 
-                                            }
-                                        }, this);
+                                                        console.log('corr >>>')
+                                                        console.log(corr);
 
-                                        // if (this.existingOrder && !this.originalResponseObj.orderTemplateData.orderFields.find(x=> x.name === ele.name).valueExtracted) {
-                                        //     (<FormControl>this.form.controls[ele.name]).setValue(this.existingOrder.order[ele.name]);
-                                        //    // this.FormModel.attributes[name].value = this.existingOrder.order[ele.name];
-                                        //     this.originalResponseObj.orderTemplateData.orderFields.find(x=> x.name === ele.name).valueExtracted = true;
-                                        // }
+                                                        if (corr && corr.length) {
+                                                            ctrl.options = options;
+                                                            (<FormControl>this.form.controls[ele.name]).setValue(this.existingOrder.order[ele.name]);
+                                                            this.originalResponseObj.orderTemplateData.orderFields.find(x => x.name === ele.name).valueExtracted = true;
+                                                        }
+                                                    } else {
+                                                        ctrl.options = options;
+                                                    }
 
+                                                }
+                                            }, this);
+
+                                            // if (this.existingOrder && !this.originalResponseObj.orderTemplateData.orderFields.find(x=> x.name === ele.name).valueExtracted) {
+                                            //     (<FormControl>this.form.controls[ele.name]).setValue(this.existingOrder.order[ele.name]);
+                                            //    // this.FormModel.attributes[name].value = this.existingOrder.order[ele.name];
+                                            //     this.originalResponseObj.orderTemplateData.orderFields.find(x=> x.name === ele.name).valueExtracted = true;
+                                            // }
+
+                                        } else {
+                                            (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property]);
+                                            this.data.controls.forEach(function (ctrl) {
+                                                if (ctrl.name === ele.name) {
+                                                    ctrl.options = [{
+                                                        id: responseLookup[ele.request_mapped_property], text: responseLookup[ele.request_mapped_property]
+                                                    }];
+                                                }
+                                            }, this);
+                                        }
                                     } else {
                                         (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property]);
-                                        this.data.controls.forEach(function (ctrl) {
-                                            if (ctrl.name === ele.name) {
-                                                ctrl.options = [{
-                                                    id: responseLookup[ele.request_mapped_property], text: responseLookup[ele.request_mapped_property]
-                                                }];
-                                            }
-                                        }, this);
                                     }
-                                } else {
-                                    (<FormControl>this.form.controls[ele.name]).setValue(responseLookup[ele.request_mapped_property]);
                                 }
-                            }
-                        },err => {
-                            if(err.status === 401) {
-                                // let self = this;
-                                // this.widget.refreshElseSignout(
-                                //     this,
-                                //     err,
-                                //     self.searchTemplates.bind(self)
-                                // );
-                            } else {
-                                this.data.controls.forEach(function (ctrl) {
-                                    if (ctrl.name === ele.name) {
-                                        ctrl.options = [];
-                                    }
-                                }, this);
-                            }
-                        });
+                            },err => {
+                                if(err.status === 401) {
+                                    // let self = this;
+                                    // this.widget.refreshElseSignout(
+                                    //     this,
+                                    //     err,
+                                    //     self.searchTemplates.bind(self)
+                                    // );
+                                } else {
+                                    this.data.controls.forEach(function (ctrl) {
+                                        if (ctrl.name === ele.name) {
+                                            ctrl.options = [];
+                                        }
+                                    }, this);
+                                }
+                            });
+                    }
                 }, this);
             }
         }
@@ -1300,7 +1302,7 @@ export class OrderComponent implements OnInit  {
                     ord_id: ele.id
                   });
                 }, this);
-    
+
                 if (this.orgArr.length) {
                   this.orgValue = this.orgArr[0].id;
                   this.searchTemplates(null, null , false);
@@ -1308,7 +1310,7 @@ export class OrderComponent implements OnInit  {
               }
             },
             err => {
-    
+
               if(err.status === 401) {
                 let self = this;
                 this.widget.refreshElseSignout(
@@ -1329,7 +1331,7 @@ export class OrderComponent implements OnInit  {
           // token = AccessToken.accessToken;
           token = AccessToken;
         }
-    
+
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
         const options = new RequestOptions({headers: headers});
         var url = this.api_fs.api + '/api/orgs';
@@ -1339,14 +1341,14 @@ export class OrderComponent implements OnInit  {
               return res.json();
             }).share();
       }
-    OnOrgChange(e) {    
-        if (e.value && e.value !== this.orgValue) { 
+    OnOrgChange(e) {
+        if (e.value && e.value !== this.orgValue) {
         this.showSpinner = true;
         this.orgValue = e.value;
         this.data.controls = '';
         this.dataObject = '';
         this.template='';
-        this.templates = [];        
+        this.templates = [];
         this.dataObject = {};
         this.data.controls = {};
         this.templateDefinition = [];

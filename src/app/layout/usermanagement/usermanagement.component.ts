@@ -113,6 +113,7 @@ export class UserManagementComponent implements OnInit  {
   showSpinner: boolean;
   userID: string;
   isRoot: boolean;
+  isRoleSuperUser: boolean;
   orgInfo: any;
   selectedOrg: any;
   orgArr: any;
@@ -155,7 +156,7 @@ export class UserManagementComponent implements OnInit  {
       first: new FormControl('', Validators.required),
       last: new FormControl('', Validators.required),
       role: new FormControl('', Validators.required),
-      org: new FormControl('', this.isRoot ? Validators.required: null),
+      org: new FormControl('', this.isRoot && !this.isRoleSuperUser ? Validators.required: null),
       vendor: new FormControl('', Validators.required),
     });
 
@@ -488,6 +489,23 @@ export class UserManagementComponent implements OnInit  {
         role : e.value
       });
     }
+
+    this.isRoleSuperUser = this.selectedRole == '4' ? true : false;
+
+    if (this.isRoleSuperUser) {
+      this.userForm.controls['vendor'].setValidators(null);
+    } else {
+      this.userForm.controls['vendor'].setValidators([Validators.required]);
+    }
+
+    this.userForm.controls['vendor'].updateValueAndValidity();
+
+    console.log('this.userForm >>>')
+    console.log(this.userForm);
+
+    console.log('this.isRoleSuperUser >>>')
+    console.log(this.isRoleSuperUser);
+
   }
 
   OnSourceChanged(e: any): void {
@@ -631,10 +649,13 @@ export class UserManagementComponent implements OnInit  {
     dataObj.last_name = this.userForm.controls['last'].value;
     // dataObj.source = this.selectedSource;
     dataObj.role_id = this.selectedRole;
-    if(this.isRoot) {
-      dataObj.org_uuid = this.selectedOrg;
+    if (!this.isRoleSuperUser) {
+      if (this.isRoot) {
+        dataObj.org_uuid = this.selectedOrg;
+      }
+      dataObj.vendor_id = this.selectedVendor;
     }
-    dataObj.vendor_id = this.selectedVendor;
+
     // if (this.selectedSource === 'vendor') {
     //
     // }
@@ -754,6 +775,9 @@ export class UserManagementComponent implements OnInit  {
     this.hideSubmit = false;
     this.userForm.reset();
     this.selectedSource = '';
+    this.isRoleSuperUser = false;
+    this.userForm.controls['vendor'].setValidators([Validators.required]);
+    this.userForm.controls['vendor'].updateValueAndValidity();
 
     if (this.vendorOptions && this.vendorOptions.length) {
       this.selectedVendor = this.vendorOptions[0].id;
@@ -778,7 +802,7 @@ export class UserManagementComponent implements OnInit  {
       this.userForm.patchValue({
         org : this.orgArr[0].id
       });
-    }    
+    }
     setTimeout(() => this.userEmailEl.nativeElement.focus());
   }
 
