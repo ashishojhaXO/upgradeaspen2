@@ -847,7 +847,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     let dict = {
                         extend: 'csv',
                         bom: true,
-                        charset: 'UTF-8',
+                        charset: 'UTF-16',
                         text: '<span><i class="fa fa-download fa-Idown" aria-hidden="true"></i></span>',
                         exportOptions: {
                             columns: ":visible"

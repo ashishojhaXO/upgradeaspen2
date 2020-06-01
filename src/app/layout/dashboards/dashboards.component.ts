@@ -390,6 +390,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           .then(
               response => {
                 if (response && response.data && response.data.views) {
+                  this.isReportTemp = true;
                   this.getSeedData()
                       .then(
                           response1 => {
