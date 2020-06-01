@@ -18,32 +18,49 @@
           ></app-multiselect-drop-down>
         </div>
       </div>
-      <div class="sidebar-form-control">
-        <p class="title">Period</p>
-        <div class="sidebar-container">
-          <app-multiselect-drop-down [data]="periodData"
-                                     [selectedItems]="selectedPeriod"
-                                     [loading]="loading"
-                                     [settings]="settings"
-                                     [dropDownAction]="this"
-                                     (onSelect)="handleSelect($event, 'selectedPeriod')"
-                                     (onDeSelect)="handleDeSelect($event, 'selectedPeriod')"
-          ></app-multiselect-drop-down>
+
+      <div *ngFor="let filter of dashboardConfig.filterProps; let i = index;">
+        <div class="sidebar-form-control" *ngIf="filter.type === 'monthpicker'" >
+          <p class="title">{{filter.label}}:</p>
+          <div style="height: 40px">
+            <input class="input-form-control" style="text-align: center; width: 215px; height: 38px; cursor: pointer"
+                   a2e-datetimepicker
+                   [title]="period.display"
+                   (ngModelChange)="OnPeriodChange($event, filter)"
+                   [(ngModel)]="period.value"
+                   [options]="dateOptions"/>
+            <span style="padding: 10px 12px; position: relative; left: 176px; top: -29px; background: #eeeeee; color: #555555;">
+                    <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+          </div>
+        </div>
+        <div class="sidebar-form-control" *ngIf="filter.type === 'dropdown'" >
+          <p class="title">{{filter.label}}:</p>
+          <app-wrapper-multiselect-drop-down [updatedValue]="filter.values" (valueUpdate)="updateFilterConfig($event)" [filterConfig]="filter" [dependentConfig]="getDependentConfig(filter.dependentOn)"
+          ></app-wrapper-multiselect-drop-down>
+        </div>
+        <div class="sidebar-form-control" *ngIf="filter.type === 'popupButton'" >
+          <p class="title">{{filter.label}}:</p>
+          <app-popup-button
+                  [popupDataAction]="this"
+                  (valueUpdate)="updateFilterConfig($event)"
+                  [filterConfig]="filter"
+                  [dependentConfig]="getDependentConfig(filter.dependentOn)">
+          </app-popup-button>
+        </div>
+        <div class="sidebar-form-control" *ngIf="filter.type === 'text'" >
+          <p class="title">{{filter.label}}:</p>
+          <input type="text" style="position: relative;
+                      width: 100%;
+                      padding: 0 10px;
+                      color: #333;
+                      background: #f7f7f7;
+                      border-radius: 3px;
+                      border: 1px solid #f7f7f7;
+                      text-align: left;
+                      line-height: 34px;">
         </div>
       </div>
-      <!--<div class="sidebar-form-control">-->
-        <!--<p class="title">Channel</p>-->
-        <!--<div class="sidebar-container">-->
-          <!--<app-multiselect-drop-down [data]="channelData"-->
-                                     <!--[selectedItems]="selectedChannel"-->
-                                     <!--[loading]="loading"-->
-                                     <!--[settings]="settings"-->
-                                     <!--[dropDownAction]="this"-->
-                                     <!--(onSelect)="handleSelect($event, 'selectedChannel')"-->
-                                     <!--(onDeSelect)="handleDeSelect($event, 'selectedChannel')"-->
-          <!--&gt;</app-multiselect-drop-down>-->
-        <!--</div>-->
-      <!--</div>-->
     </div>
   </div>
   <div class="sidebar-form-control">
@@ -60,7 +77,7 @@
   </div>
   <div style="padding-top: 35px">
     <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObject.isDataAvailable">
-      <app-data-table2 [dataObject]="dataObject" identity="reconciliation" [sendResponseOnCheckboxClick]=true
+      <app-data-table2 [dataObject]="dataObject" tableId="reconciliation_dataTable" identity="reconciliation" [sendResponseOnCheckboxClick]=true
       (triggerActions)="handleRow($event)"></app-data-table2>
     </div>
     <div class="page-header" *ngIf="!dataObject.isDataAvailable">
@@ -128,6 +145,30 @@
       </button>
       <button type="button" class="btn btn-secondary" (click)="handleCloseModal(UploadInvoice)">
         Close
+      </button>
+    </div>
+  </app-pop-up-modal>
+</div>
+<div style="width:100%">
+  <app-pop-up-modal #SES>
+    <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
+      Update SES for Invoice :
+    </div>
+    <div class="app-modal-body">
+      <div class="content">
+        <label>SES Number</label>
+        <div>
+          <input class="input-form-control"
+                 [(ngModel)]="selectedSES"/>
+        </div>
+      </div>
+    </div>
+    <div class="app-modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="handleSubmitSES()">
+        Submit
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="handleCloseSES()">
+        Cancel
       </button>
     </div>
   </app-pop-up-modal>

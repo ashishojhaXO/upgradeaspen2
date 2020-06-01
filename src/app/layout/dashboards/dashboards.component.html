@@ -119,7 +119,7 @@
   <div>
     <div class="gridOverflow" *ngIf="dataObject.isDataAvailable">
       <div style="padding: 20px">
-        <app-data-table2 #table [dataObject]="dataObject" (triggerActions)="this[$event.action]($event)"></app-data-table2>
+        <app-data-table2 #table [dataObject]="dataObject" tableId="dashboard_dataTable" (triggerActions)="this[$event.action]($event)"></app-data-table2>
       </div>
       <!--<app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height"></app-data-table1>-->
     </div>

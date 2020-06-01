@@ -582,6 +582,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
           itemName: this.getMonthName(seedResponse['period'].values.startDate.split('-')[1].replace('0','')) + ' ' + seedResponse['period'].values.startDate.split('-')[0]
         }];
 
+        console.log('periodFilter.values[0].id >>>')
+        console.log(periodFilter.values[0].id);
+
         this.period.display = moment(periodFilter.values[0].id).format('MMM YYYY');
         this.period.value =  moment(periodFilter.values[0].id).format('MMM YYYY');
       }
