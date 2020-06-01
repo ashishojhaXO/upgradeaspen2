@@ -1,0 +1,222 @@
+<div>
+    <div class="col-lg-12 col-md-12">
+        <p class="pull-left page-title">{{isExistingOrder ? 'MODIFY ' : 'CONFIGURE '}}
+            PAYMENT</p>
+    </div>
+    <p style="clear: both"></p>
+    <div *ngIf="isRoot" class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 10px;">
+        <div class="alert alert-danger">
+        <i class="fa fa-exclamation-triangle"></i> Super User cannot add payment method
+        </div>
+    </div>
+    <p style="clear: both"></p>
+    <!--<div class="col-lg-2 col-md-2 col-sm-2" style="border: 1px solid #fff; background: #fff; border-radius: 4px">-->
+        <!--<ul style="list-style: none">-->
+            <!--<li style="margin-top: 20px; position: relative;"><i-->
+                    <!--style="position: absolute; top:0px; left: -26px; font-size: 18px; color: #0777bc"-->
+                    <!--class="fa fa-check-circle"></i><a style="font-size: 12px" href="javascript:void(0)"-->
+                                                      <!--routerLink="/app/order/{{orderId}}">Create Order</a></li>-->
+            <!--&lt;!&ndash;<li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:3px; left: -26px" class="fa fa-arrow-right"></i><a href="javascript:void(0)">Configure AD</a></li>&ndash;&gt;-->
+            <!--&lt;!&ndash;<li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:0px; left: -26px; font-size: 18px; color: #0777bc" class="fa fa-check-circle"></i><a style="font-size: 12px" href="javascript:void(0)" routerLink="/app/targetAud">Target Audience</a></li>&ndash;&gt;-->
+            <!--&lt;!&ndash;<li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:0px; left: -26px; font-size: 18px; color: #0777bc" class="fa fa-check-circle"></i><a style="font-size: 12px" href="javascript:void(0)" routerLink="/app/orderSummary">Summary</a></li>&ndash;&gt;-->
+            <!--<li style="margin-top: 20px; position: relative;"><i style="position: absolute; top:3px; left: -26px"-->
+                                                                 <!--class="fa fa-arrow-right"></i><a-->
+                    <!--style="font-size: 12px" href="javascript:void(0)">Payment</a></li>-->
+        <!--</ul>-->
+    <!--</div>-->
+    <div class="col-lg-12 col-md-12 col-sm-12" style="border-radius: 4px">
+        <div style="background: #fff; padding: 10px 0px">
+            <div style="margin-bottom: 10px; margin-left: 15px">
+                <input
+                        type="radio"
+                        name="payment"
+                        value="default"
+                        [checked]="selectionType === 'default'"
+                        (change)="paymentTypeSelection('default')"
+                        style="margin-right: 10px"
+                /> Pay by CC/ACH
+                <div [hidden]="selectionType !== 'default'">
+                    <div *ngIf="paymentOptions; else fetchingExistingPayments">
+                        <div style="font-size: 12px; margin: 15px 10px" *ngIf="paymentOptions.length; else noExistingPayments">
+
+                            <div 
+                                class="width-90-pct" 
+                                style="border-collapse:separate; border-spacing: 0 1em;"
+                            >
+
+                                <div class="row margin-3px" >
+                                    <div>
+                                        <div class="col-md-6 h5 bold " >Existing Payment Information</div>
+                                        <div class="col-md-3 h5 bold " style="position: relative;left: 27px;">Status</div>
+                                        <div class="col-md-1 h5 bold " >Default</div>
+                                        <div class="col-md-1 h5 bold " ></div>
+                                    </div>
+                                </div>
+                                <div >
+                                    <div
+                                        class="row margin-3px border-radius-10px payment-method-row"
+                                        *ngFor="let option of paymentOptions; let i = index;"
+                                    >
+
+                                        <div class="col-md-6" >
+                                            <img style="width: 40px;margin-right: 10px"
+                                                src="./../../../assets/images/{{ option.payment_method === 'ACH' ? option.payment_method.toLowerCase() : option.payment_method_type.toLowerCase()}}.png"/>
+                                            <span
+                                                    style="font-size: 12px;margin-left: 15px"
+                                            >
+                                                {{option.payment_method === 'ACH' ? ('xxxxxxxx' + option.last_four_digits) : ('xxxx-xxxx-' + option.last_four_digits) }}
+                                            </span>
+                                        </div >
+
+                                        <div class="col-md-3" >
+                                            <span
+                                                    style="font-size: 12px; padding: 15px"
+                                            >
+                                                {{option.status ? option.status.toUpperCase() : '-'}}
+                                            </span>
+                                            <i
+                                                *ngIf="option.status && option.status.toUpperCase() === 'PAYMENT SETUP PENDING'"
+                                                placement="top"
+                                                style="margin-left: 5px; position: relative; top: 1px"
+                                                class="fa fa-question-circle"
+                                            ></i>
+                                        </div >
+                                        <div class="col-md-1" >
+                                            <input
+                                                type="radio"
+                                                name="default"
+                                                (change)="setDefaultPaymentMethod(option)"
+                                                [checked]="option.is_default == '1' ? true : false"
+                                            />
+                                        </div >
+                                        <div class="col-md-1" >
+                                            <button *ngIf="option.status && option.status.toUpperCase() === 'PAYMENT SETUP COMPLETED'"
+                                                    class="btn btn-primary"
+                                                    style="text-transform: none"
+                                                    (click)="postPaymentsCharge(option)">
+                                                Pay
+                                            </button>
+                                        </div >
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <ng-template #noExistingPayments>
+                            <div style="margin: 20px 30px">No existing payments found</div>
+                        </ng-template>
+                    </div>
+                    <ng-template #fetchingExistingPayments>
+                        <div style="margin: 20px 30px">Fetching existing payments ..</div>
+                    </ng-template>
+                    <span style="position: relative; top: 10px">Select NEW : </span>
+                    <div id="fs_widget">
+                    </div>
+                </div>
+            </div>
+            <!--<div style="margin-left: 15px">-->
+            <!--<input-->
+            <!--type="radio"-->
+            <!--name="payment"-->
+            <!--value="loan"-->
+            <!--(change)="paymentTypeSelection('loan')"-->
+            <!--style="margin-right: 10px"-->
+            <!--/> Apply for Short Term Business Loan-->
+            <!--<div [hidden]="selectionType !== 'loan'">-->
+            <!--<div>-->
+            <!--<label class="col-lg-2 col-md-2 col-sm-12" style="margin-top: 20px;">Personal Details</label>-->
+            <!--<div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 20px">-->
+            <!--<div>-->
+            <!--<label class="col-lg-2 col-md-2 col-sm-12">Full Name</label>-->
+            <!--<div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">-->
+            <!--<input type="text" class="input-form-control" style="height: 29px"/>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 20px">-->
+            <!--<div>-->
+            <!--<label class="col-lg-2 col-md-2 col-sm-12">Gender</label>-->
+            <!--<div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">-->
+            <!--<select2 width="100%" placeholder="Select"-->
+            <!--class="col-lg-4 col-md-4"-->
+            <!--style="padding: 0px; line-height: 1.42857143; width: 160px"-->
+            <!--[data]="[{id: '1', text: 'Male'}, {id: '2', text: 'Female'}]"></select2>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 20px">-->
+            <!--<div>-->
+            <!--<label class="col-lg-2 col-md-2 col-sm-12">Age</label>-->
+            <!--<div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">-->
+            <!--<input type="text" class="input-form-control" style="height: 29px"/>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 20px">-->
+            <!--<div>-->
+            <!--<label class="col-lg-2 col-md-2 col-sm-12">Street Address</label>-->
+            <!--<div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">-->
+            <!--<input type="text" class="input-form-control" style="height: 29px"/>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 20px">-->
+            <!--<div>-->
+            <!--<label class="col-lg-2 col-md-2 col-sm-12">City</label>-->
+            <!--<div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">-->
+            <!--<input type="text" class="input-form-control" style="height: 29px"/>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 20px">-->
+            <!--<div>-->
+            <!--<label class="col-lg-2 col-md-2 col-sm-12">State</label>-->
+            <!--<div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">-->
+            <!--<input type="text" class="input-form-control" style="height: 29px"/>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="col-lg-12 col-md-12 col-sm-12" style=" margin-top: 20px">-->
+            <!--<div>-->
+            <!--<label class="col-lg-2 col-md-2 col-sm-12">Zip Code</label>-->
+            <!--<div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">-->
+            <!--<input type="text" class="input-form-control" style="height: 29px"/>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="col-lg-12 col-md-12 col-sm-12" style=" margin-top: 20px">-->
+            <!--<div>-->
+            <!--<label class="col-lg-2 col-md-2 col-sm-12">Country</label>-->
+            <!--<div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">-->
+            <!--<input type="text" class="input-form-control" style="height: 29px"/>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<p style="clear: both"></p>-->
+
+            <!--</div>-->
+            <!--<div style="margin-top: 20px;">-->
+            <!--<button class="btn btn-primary">CANCEL</button>-->
+            <!--&lt;!&ndash;[disabled]="form && !form.valid"&ndash;&gt;-->
+            <!--<button class="btn btn-primary"-->
+            <!--style="text-transform: none">-->
+            <!--SAVE-->
+            <!--</button>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+        </div>
+    </div>
+    <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
+</div>
+<app-script-embedder [src]="api_fs.widget"
+                     type="text/javascript"></app-script-embedder>
+
+<script type="text/javascript">
+    console.log("---SOME: ", some);
+    // some();
+</script>

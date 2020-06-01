@@ -3891,3 +3891,34 @@ ul.options-actions > li {
     background: none !important;
   }
 }
+
+
+.border-radius-10px {
+  border-radius: 10px;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.margin-3px {
+  margin: 3px;
+}
+
+.payment-method-header {
+  margin: 3px;
+}
+
+.payment-method-row:nth-of-type(odd) {
+  background: blanchedalmond;
+  // background: #4e9b49
+}
+
+.payment-method-row:nth-of-type(even) {
+  background: lightgrey;
+  // background: #54575A
+}
+
+.width-90-pct {
+  width: 90%;
+}

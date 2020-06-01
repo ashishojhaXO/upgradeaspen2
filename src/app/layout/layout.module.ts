@@ -71,6 +71,7 @@ import { ReconciliationLineItemsComponent } from './reconciliation/reconciliatio
 import { ReconciliationProfilesComponent } from './reconciliation/reconciliation-profiles/reconciliation-profiles.component';
 import { FocusDirective } from '../shared/directives/Focus.directive';
 import { BaseFieldsListComponent } from './base-fields-list/base-fields-list.component';
+import { PaymentMethodsComponent } from './payment-methods/payment-methods.component';
 
 @NgModule({
     imports: [
@@ -146,7 +147,8 @@ import { BaseFieldsListComponent } from './base-fields-list/base-fields-list.com
         ReconciliationLineItemsComponent,
         ReconciliationProfilesComponent,
         FocusDirective,
-        BaseFieldsListComponent
+        BaseFieldsListComponent,
+        PaymentMethodsComponent
     ],
     providers: [
         AuthGuard,

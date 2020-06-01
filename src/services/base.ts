@@ -9,6 +9,8 @@ export class BaseService {
 
   API = '/api';
   POST_PAYMENTS_METHODS_ENDPOINT = '/payments/methods';
+  POST_USER_PAYMENTS_METHODS_ENDPOINT = '/api/payments/widget/user-payment-methods';
+
   POST_PAYMENTS_CHARGE_ENDPOINT = '/payments/charge';
   ADMIN_REPORT = '/admin/report';
   ADMIN_REPORT_DOWNLOAD = "/admin/report/download";
