@@ -38,63 +38,73 @@
                 <div [hidden]="selectionType !== 'default'">
                     <div *ngIf="paymentOptions; else fetchingExistingPayments">
                         <div style="font-size: 12px; margin: 15px 10px" *ngIf="paymentOptions.length; else noExistingPayments">
-                            <table style="border-collapse:separate; border-spacing: 0 1em;">
-                                <thead>
-                                <tr>
-                                    <th style="width:50%">Existing Payment Information</th>
-                                    <th style="width:30%; position: relative;left: 27px;">Status</th>
-                                    <th style="width:10%">Default</th>
-                                    <th style="width:10%"></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr
+
+                            <div 
+                                class="width-90-pct" 
+                                style="border-collapse:separate; border-spacing: 0 1em;"
+                            >
+
+                                <div class="row margin-3px" >
+                                    <div>
+                                        <div class="col-md-6 h5 bold " >Existing Payment Information</div>
+                                        <div class="col-md-3 h5 bold " style="position: relative;left: 27px;">Status</div>
+                                        <div class="col-md-1 h5 bold " >Default</div>
+                                        <div class="col-md-1 h5 bold " ></div>
+                                    </div>
+                                </div>
+                                <div >
+                                    <div
+                                        class="row margin-3px border-radius-10px payment-method-row"
                                         *ngFor="let option of paymentOptions; let i = index;"
-                                        style="background: blanchedalmond"
-                                >
-                                    <td style="width:50%; padding: 15px;">
-                                        <img style="width: 40px;margin-right: 10px"
-                                             src="./../../../assets/images/{{ option.payment_method === 'ACH' ? option.payment_method.toLowerCase() : option.payment_method_type.toLowerCase()}}.png"/>
-                                        <!--<span style="font-size: 12px;margin-right: 5px">{{option.payment_method === 'ACH' ? option.payment_method : ( option.payment_method_type ? option.payment_method_type.toUpperCase() : '-' ) }}</span>-->
-                                        <!--<span style="font-size: 12px;margin-left: 15px">{{option.payment_method ? option.payment_method.toUpperCase() : '-'}}</span>-->
-                                        <span
-                                                style="font-size: 12px;margin-left: 15px"
-                                        >
-                    {{option.payment_method === 'ACH' ? ('xxxxxxxx' + option.last_four_digits) : ('xxxx-xxxx-' + option.last_four_digits) }}
-                </span>
-                                    </td>
-                                    <td style="width:30%; padding: 15px;">
-                <span
-                        style="font-size: 12px; padding: 15px"
-                >{{option.status ? option.status.toUpperCase() : '-'}}</span>
-                                        <i
+                                    >
+
+                                        <div class="col-md-6" >
+                                            <img style="width: 40px;margin-right: 10px"
+                                                src="./../../../assets/images/{{ option.payment_method === 'ACH' ? option.payment_method.toLowerCase() : option.payment_method_type.toLowerCase()}}.png"/>
+                                            <span
+                                                    style="font-size: 12px;margin-left: 15px"
+                                            >
+                                                {{option.payment_method === 'ACH' ? ('xxxxxxxx' + option.last_four_digits) : ('xxxx-xxxx-' + option.last_four_digits) }}
+                                            </span>
+                                        </div >
+
+                                        <div class="col-md-3" >
+                                            <span
+                                                    style="font-size: 12px; padding: 15px"
+                                            >
+                                                {{option.status ? option.status.toUpperCase() : '-'}}
+                                            </span>
+                                            <i
                                                 *ngIf="option.status && option.status.toUpperCase() === 'PAYMENT SETUP PENDING'"
                                                 placement="top"
                                                 style="margin-left: 5px; position: relative; top: 1px"
                                                 class="fa fa-question-circle"
-                                        ></i>
-                                    </td>
-                                    <td style="width:10%; padding: 15px;">
-                                        <input
+                                            ></i>
+                                        </div >
+                                        <div class="col-md-1" >
+                                            <input
                                                 type="radio"
                                                 name="default"
                                                 (change)="setDefaultPaymentMethod(option)"
                                                 [checked]="option.is_default == '1' ? true : false"
-                                        />
-                                        <!--[disabled]="option.status.toUpperCase() !== 'PAYMENT SETUP COMPLETED'"-->
-                                    </td>
-                                    <td style="width:10%; padding: 15px;">
-                                        <button *ngIf="option.status && option.status.toUpperCase() === 'PAYMENT SETUP COMPLETED'"
-                                                class="btn btn-primary"
-                                                style="text-transform: none"
-                                                (click)="postPaymentsCharge(option)">
-                                            Pay
-                                        </button>
-                                        <!--*ngIf="paymentsChargeData.paymentmethodid == option.paymentmethodid"-->
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                                            />
+                                        </div >
+                                        <div class="col-md-1" >
+                                            <button *ngIf="option.status && option.status.toUpperCase() === 'PAYMENT SETUP COMPLETED'"
+                                                    class="btn btn-primary"
+                                                    style="text-transform: none"
+                                                    (click)="postPaymentsCharge(option)">
+                                                Pay
+                                            </button>
+                                        </div >
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+
                         </div>
                         <ng-template #noExistingPayments>
                             <div style="margin: 20px 30px">No existing payments found</div>

@@ -412,7 +412,9 @@ export class GenericService {
       'post',
         apiPath.api +
       this.base.API +
-      this.base.POST_USER_PAYMENTS_METHODS_ENDPOINT,
+      this.base.
+POST_PAYMENTS_METHODS_ENDPOINT ,
+      // POST_USER_PAYMENTS_METHODS_ENDPOINT,
       data
     );
   }
