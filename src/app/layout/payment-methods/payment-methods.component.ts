@@ -153,8 +153,6 @@ export class PaymentMethodsComponent implements OnInit {
 
   }
 
-
-
   errorCB(err) {
     console.log("ECB: ", err);
   }
@@ -168,35 +166,13 @@ export class PaymentMethodsComponent implements OnInit {
     this.showSpinner = true;
     this.setPaymentsMethodsData()
 
-    // return this.genericService
-    //     .postUserPaymentsMethods(this.paymentsMethodsData)
-    //     .subscribe(
-    //         (res) => {
-    //           this.showSpinner = false;
-    //           // this.successCB.apply(this, [res])
-    //           this.successCB(res);
-    //         },
-    //         (err) => {
-    //           if(err.status === 401) {
-    //             let self = this;
-    //             this.widget.refreshElseSignout(
-    //                 this,
-    //                 err,
-    //                 self.postPaymentMethods.bind(self, option)
-    //             );
-    //           } else {
-    //             this.showSpinner = false;
-    //             Swal({
-    //               title: 'An error occurred',
-    //               html: err._body ? JSON.parse(err._body).message : 'No error definition available',
-    //               type: 'error'
-    //             });
-    //           }
-    //           //this.errorCB(rej)
-    //         }
-    //     )
+    let headers = { 
+      org_id: window['fs_widget_config'].org_id, 
+      'x-api-key': window['fs_widget_config'].api_key 
+    };
 
-    return this.getPaymentMethods(this.paymentsMethodsData)
+    return this.genericService
+        .postUserPaymentsMethods(this.paymentsMethodsData, headers)
         .subscribe(
             (res) => {
               this.showSpinner = false;
@@ -219,20 +195,8 @@ export class PaymentMethodsComponent implements OnInit {
                   type: 'error'
                 });
               }
-              //this.errorCB(rej)
             }
         )
-  }
-
-  getPaymentMethods(dataObj) {
-    const obj = JSON.stringify(dataObj);
-    const headers = new Headers({ 'Content-Type': 'application/json', org_id : window['fs_widget_config'].org_id, 'x-api-key' : window['fs_widget_config'].api_key });
-    const options = new RequestOptions({ headers: headers });
-    return this.http
-        .post(this.api_fs.api + '/api/payments/widget/user-payment-methods', obj, options)
-        .map(res => {
-          return res.json();
-        }).share();
   }
 
   setDefaultPaymentMethod(option) {

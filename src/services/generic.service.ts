@@ -403,9 +403,10 @@ export class GenericService {
    * POST User Payments Methods
    * @param dataObj
    */
-  public postUserPaymentsMethods(dataObj: any) {
+  public postUserPaymentsMethods(dataObj: any, headers) {
 
     const data = JSON.stringify(dataObj);
+    let deleteHeaderKeys = ['token', 'callingapp'];
 
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
     return this.service.Call(
@@ -413,9 +414,10 @@ export class GenericService {
         apiPath.api +
       this.base.API +
       this.base.
-POST_PAYMENTS_METHODS_ENDPOINT ,
-      // POST_USER_PAYMENTS_METHODS_ENDPOINT,
-      data
+      POST_USER_PAYMENTS_METHODS_ENDPOINT,
+      data,
+      headers,
+      deleteHeaderKeys
     );
   }
 
