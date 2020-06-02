@@ -154,7 +154,7 @@ export class ReconciliationComponent implements OnInit {
 
   ngOnInit() {
 
-    this.showSpinner = true;
+   // this.showSpinner = true;
     this.widget = this.okta.getWidget();
 
     this.height = '50vh';
@@ -171,7 +171,8 @@ export class ReconciliationComponent implements OnInit {
     if (this.selectedOrg[0].id) {
       this.orgValue = this.selectedOrg[0].id;
     }
-    this.searchDataRequest();
+
+   // this.searchDataRequest();
 
     const testJSON = {
       "data": {
@@ -524,10 +525,16 @@ export class ReconciliationComponent implements OnInit {
     if (AccessToken) {
       token = AccessToken;
     }
-    const dataObj = {
+    const dataObj1 = {
       year: this.selectedPeriod[0].id.split('-')[0],
       month: this.selectedPeriod[0].id.split('-')[1]
     };
+
+    console.log('this.selectedPeriod >>')
+    console.log(this.selectedPeriod);
+
+    console.log('this.period >>')
+    console.log(this.period);
 
     // const dataObj = {
     //     year: "2020",
@@ -540,6 +547,36 @@ export class ReconciliationComponent implements OnInit {
     //       po_number: ["119"]
     //     }
     // }
+
+    const dataObj: any = {};
+    const filters = {};
+    this.dashboardConfig.filterProps.forEach(function (filter) {
+      if(filter.f7Name !== 'type' && filter.f7Name !== 'period') {
+        var newFilter: any = {};
+        newFilter.f7Name = filter.f7Name;
+        newFilter.values = [];
+        if (Object.prototype.toString.call(filter.values) === '[object Array]') {
+          if(filter.values.length) {
+            var ret = filter.values.map(function (val) {
+              return val.id;
+            });
+            newFilter.values = ret;
+          }
+        } else if (filter.values) {
+          newFilter.values.push(filter.values);
+        }
+
+        for (const prop in newFilter) {
+          filters[newFilter.f7Name] = newFilter.values;
+        }
+      }
+    }, this);
+    dataObj.filters = filters;
+    dataObj.year = this.period.display.split(' ')[1];
+    dataObj.month = this.getMonthNum(this.period.display.split(' ')[0]);
+
+    console.log('dataObj >>>')
+    console.log(dataObj);
 
     const obj = JSON.stringify(dataObj);
     console.log('obj >>')
@@ -948,7 +985,7 @@ export class ReconciliationComponent implements OnInit {
     const options = new RequestOptions({headers: headers});
     const url = this.api_fs.api + '/api/payments/invoices/update';
     return this.http
-        .post(url, data, options)
+        .put(url, data, options)
         .map(res => {
           return res.json();
         }).share();
@@ -1326,5 +1363,22 @@ export class ReconciliationComponent implements OnInit {
       .map(res => {
         return res.json();
       }).share();
+  }
+
+  getMonthNum(name) {
+    switch (name) {
+      case 'Jan' : return '01';
+      case 'Feb' : return '02';
+      case 'Mar' : return '03';
+      case 'Apr' : return '04';
+      case 'May' : return '05';
+      case 'Jun' : return '06';
+      case 'Jul' : return '07';
+      case 'Aug' : return '08';
+      case 'Sep' : return '09';
+      case 'Oct' : return '10';
+      case 'Nov' : return '11';
+      case 'Dec' : return '12';
+    }
   }
 }
