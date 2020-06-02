@@ -1351,6 +1351,10 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             }
 
+            if (__this.dataObject.gridData.options.isDataTableGlobalSearchApi ) {
+                // TODO: Call Table Global search API
+            }
+
             // Highlight pre checked rows
             if (__this.dataObject.gridData && __this.dataObject.gridData.result) {
                 __this.dataObject.gridData.result.forEach(function (data, index) {

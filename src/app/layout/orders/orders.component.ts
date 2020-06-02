@@ -22,7 +22,6 @@ import { modalConfigDefaults } from 'ngx-bootstrap/modal/modal-options.class';
 
 import { CsvService } from '../../../services/csv';
 import {ToasterService} from 'angular2-toaster';
-import DataTableColumnSearchPluginExt from '../../../scripts/data-table/data-table-search-plugin-ext';
 import {moment} from 'ngx-bootstrap/chronos/test/chain';
 
 @Component({
@@ -135,9 +134,9 @@ export class OrdersComponent implements OnInit  {
 
     },
 
-    // isColumnSearch: ($, table) => {
-    //   let d = new DataTableColumnSearchPluginExt($, document, table);
-    // },
+    isDataTableGlobalSearchApi: {
+      value: true
+    },
 
     isTree: true,
     // isChildRowActions required when there need to be actions below every row.

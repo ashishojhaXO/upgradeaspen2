@@ -139,7 +139,11 @@ export class Service {
         'callingapp': 'aspen' 
       }
     }
-    headers = this.deleteHeaderKeys(deleteHeaderKeys, options)
+    // console.log("HEDSSS: ", headers)
+
+    headers = this.deleteHeaderKeys(deleteHeaderKeys, headers)
+
+    // console.log("HEDSSS2: ", headers)
 
     headers = new Headers(headers);
 
