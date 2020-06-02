@@ -19,12 +19,12 @@ export class Service {
    * @param url
    * @param data
    */
-  Call(method: any, url: any, data: any, options?: any) {
+  Call(method: any, url: any, data: any, options?: any, deleteHeaderKeys?: Array<string>) {
 
     const Url = url;
     const Method = method;
     const Data = data;
-    const Options = this.getHeaders();
+    const Options = this.getHeaders(options);
 
     console.log('Options >>');
     console.log(Options);
@@ -32,6 +32,7 @@ export class Service {
     switch (Method) {
 
       case 'post': {
+
         return this.http
           .post(Url, Data, Options)
           .map(res => {
@@ -91,21 +92,57 @@ export class Service {
     }
   }
 
+  deleteHeaderKeys(keysToRemoveArray: Array<string>, options?) {
+    let headers = {};
+
+    // TODO: No type checking happening at them moment
+    if(!keysToRemoveArray)
+      headers = options;
+
+    if(!options)
+      headers = {};
+
+    // Remove keys from this options dict
+    if(keysToRemoveArray && options) {
+      keysToRemoveArray.map((val, idx) => delete options[val])
+      headers = options
+    }
+
+    return headers;
+  }
+
+
+  extendHeaders(options?) {
+    // If empty, return empty object
+    if(!options)
+      return {};
+
+    let headers = {...options};
+    return headers
+  }
+
   /**
    * Get header with token for all service calls
    * @returns Header Object
    */
-  getHeaders() {
+  getHeaders(options?, deleteHeaderKeys?) {
     // TODO: Need to accept Dynamic headers here
     const token = localStorage.getItem('accessToken'); // "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1YWRkYjAxODA4MzZjMDA5ODRiY2UyN2UiLCJlbWFpbCI6ImZ1c2lvbnNldmVuLmlvK2J0aWxAZ21haWwuY29tIiwibmFtZSI6IkRFVl9CVElMIiwiY2xpZW50Q29kZSI6ImJ0aWwiLCJleHAiOjE1NTAxNDA4NjUsImlhdCI6MTU0OTUzNjA2NX0.nNwbKih3u9Yby4hlV0gXW7qXWs22V5Gq6QaB5aRjhCg";
     // const token = localStorage.getItem('token')
-    const headers = new Headers(
-      { 
+
+    let headers = this.extendHeaders(options)
+    headers = {
+      ...headers, 
+      ...{ 
         'Content-Type': 'application/json', 
         'token': token, 
         'callingapp': 'aspen' 
       }
-    );
+    }
+    headers = this.deleteHeaderKeys(deleteHeaderKeys, options)
+
+    headers = new Headers(headers);
+
     return new RequestOptions({ headers: headers });
   }
 
