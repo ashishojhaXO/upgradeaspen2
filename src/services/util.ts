@@ -24,7 +24,7 @@ export class Service {
     const Url = url;
     const Method = method;
     const Data = data;
-    const Options = this.getHeaders(options);
+    const Options = this.getHeaders(options, deleteHeaderKeys);
 
     console.log('Options >>');
     console.log(Options);
@@ -134,9 +134,7 @@ export class Service {
     const token = localStorage.getItem('accessToken'); // "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1YWRkYjAxODA4MzZjMDA5ODRiY2UyN2UiLCJlbWFpbCI6ImZ1c2lvbnNldmVuLmlvK2J0aWxAZ21haWwuY29tIiwibmFtZSI6IkRFVl9CVElMIiwiY2xpZW50Q29kZSI6ImJ0aWwiLCJleHAiOjE1NTAxNDA4NjUsImlhdCI6MTU0OTUzNjA2NX0.nNwbKih3u9Yby4hlV0gXW7qXWs22V5Gq6QaB5aRjhCg";
     // const token = localStorage.getItem('token')
 
-
     let headers = this.extendHeaders(options)
-    console.log("HEDSS: ", headers)
     headers = {
       ...headers, 
       ...{ 
@@ -145,10 +143,7 @@ export class Service {
         'callingapp': 'aspen' 
       }
     }
-    console.log("HEDSS2: ", headers)
-    console.log("KTOR: ", deleteHeaderKeys)
     headers = this.deleteHeaderKeys(deleteHeaderKeys, headers)
-    console.log("HEDSS3: ", headers)
 
     headers = new Headers(headers);
 
