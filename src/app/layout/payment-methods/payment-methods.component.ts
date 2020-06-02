@@ -62,17 +62,17 @@ export class PaymentMethodsComponent implements OnInit {
       const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
       this.vendorUuid = this.route.snapshot.paramMap.get('vendor_uuid');
       this.displayId = this.route.snapshot.paramMap.get('displayId');
-      this.initVendorUuid();
+      // this.initVendorUuid();
       window['fs_widget_config'].vendor_id = this.vendorId = this.vendorUuid;
       window['fs_widget_config'].api_key = customerInfo.org.x_api_key;
       window['fs_widget_config'].org_id = customerInfo.org.org_id;
       window['fs_widget_config'].user_uuid = this.userUuid = customerInfo.user.user_uuid;
 
-      console.log("vendorUuid",this.vendorId);
+      // console.log("vendorUuid",this.vendorId);
       // FTM
       // Temp assignment FOR TESTING:
-      window['fs_widget_config'].vendor_id = '592f94f3-e2b1-4621-b1c0-c795ee2a1814'
-      this.vendorId = '592f94f3-e2b1-4621-b1c0-c795ee2a1814';
+      // window['fs_widget_config'].vendor_id = '592f94f3-e2b1-4621-b1c0-c795ee2a1814'
+      // this.vendorId = '592f94f3-e2b1-4621-b1c0-c795ee2a1814';
     }
     const groups = localStorage.getItem('loggedInUserGroup') || '';
     const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
@@ -88,7 +88,7 @@ export class PaymentMethodsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.initVars();
+    // this.initVars();
     this.widget = this.okta.getWidget();
     // set Pay by CC/ACH by default
     this.selectionType = 'default';
@@ -101,25 +101,24 @@ export class PaymentMethodsComponent implements OnInit {
     }
   }
 
-  initVars() {
-    if(!this.orderId) {
-      this.orderId = this.route.snapshot.paramMap.get('id') || '';
-    }
+  // initVars() {
+  //   if(!this.orderId) {
+  //     this.orderId = this.route.snapshot.paramMap.get('id') || '';
+  //   }
 
-    if (!this.orderId) {
-      console.log("NOORDID")
-      // Swal ({
-      //   title: 'No Order ID found',
-      //   text: 'We did not find an order to be paid for',
-      //   type: 'error'
-      // }).then( () => {
-        // this.router.navigate(['/app/order/orders']);
-      // });
-    }
-  }
-  initVendorUuid(){
-    if (!this.vendorUuid) {
-      console.log("NOVENDID")
+  //   if (!this.orderId) {
+  //     Swal ({
+  //       title: 'No Order ID found',
+  //       text: 'We did not find an order to be paid for',
+  //       type: 'error'
+  //     }).then( () => {
+  //       this.router.navigate(['/app/order/orders']);
+  //     });
+  //   }
+  // }
+  // initVendorUuid(){
+  //   if (!this.vendorUuid) {
+  //     console.log("NOVENDID")
       // Swal({
       //   title: 'No Vendor ID found',
       //   text: 'We did not find vendor id for this order',
@@ -127,8 +126,8 @@ export class PaymentMethodsComponent implements OnInit {
       // }).then( () => {
         // this.router.navigate(['/app/order/orders']);
       // });
-    }
-  }
+  //   }
+  // }
 
   paymentTypeSelection(type) {
     this.selectionType = type;
