@@ -100,14 +100,18 @@ export class Service {
       headers = options;
 
     if(!options)
-      headers = {};
+      headers = options;
 
     // Remove keys from this options dict
     if(keysToRemoveArray && options) {
-      keysToRemoveArray.map((val, idx) => delete options[val])
+      console.log("inDEL: ", keysToRemoveArray , options)
+      keysToRemoveArray.map((val, idx) => {
+        delete options[val]
+      })
       headers = options
     }
 
+    console.log("inDEL hed: ", headers)
     return headers;
   }
 
@@ -130,7 +134,9 @@ export class Service {
     const token = localStorage.getItem('accessToken'); // "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1YWRkYjAxODA4MzZjMDA5ODRiY2UyN2UiLCJlbWFpbCI6ImZ1c2lvbnNldmVuLmlvK2J0aWxAZ21haWwuY29tIiwibmFtZSI6IkRFVl9CVElMIiwiY2xpZW50Q29kZSI6ImJ0aWwiLCJleHAiOjE1NTAxNDA4NjUsImlhdCI6MTU0OTUzNjA2NX0.nNwbKih3u9Yby4hlV0gXW7qXWs22V5Gq6QaB5aRjhCg";
     // const token = localStorage.getItem('token')
 
+
     let headers = this.extendHeaders(options)
+    console.log("HEDSS: ", headers)
     headers = {
       ...headers, 
       ...{ 
@@ -139,7 +145,10 @@ export class Service {
         'callingapp': 'aspen' 
       }
     }
-    headers = this.deleteHeaderKeys(deleteHeaderKeys, options)
+    console.log("HEDSS2: ", headers)
+    console.log("KTOR: ", deleteHeaderKeys)
+    headers = this.deleteHeaderKeys(deleteHeaderKeys, headers)
+    console.log("HEDSS3: ", headers)
 
     headers = new Headers(headers);
 
