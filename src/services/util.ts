@@ -24,7 +24,7 @@ export class Service {
     const Url = url;
     const Method = method;
     const Data = data;
-    const Options = this.getHeaders(options);
+    const Options = this.getHeaders(options, deleteHeaderKeys);
 
     console.log('Options >>');
     console.log(Options);
@@ -100,14 +100,18 @@ export class Service {
       headers = options;
 
     if(!options)
-      headers = {};
+      headers = options;
 
     // Remove keys from this options dict
     if(keysToRemoveArray && options) {
-      keysToRemoveArray.map((val, idx) => delete options[val])
+      console.log("inDEL: ", keysToRemoveArray , options)
+      keysToRemoveArray.map((val, idx) => {
+        delete options[val]
+      })
       headers = options
     }
 
+    console.log("inDEL hed: ", headers)
     return headers;
   }
 
@@ -139,7 +143,7 @@ export class Service {
         'callingapp': 'aspen' 
       }
     }
-    headers = this.deleteHeaderKeys(deleteHeaderKeys, options)
+    headers = this.deleteHeaderKeys(deleteHeaderKeys, headers)
 
     headers = new Headers(headers);
 

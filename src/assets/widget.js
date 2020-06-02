@@ -1,15 +1,9 @@
 var vendor_details = null,selectedPaymentType = 'ach';
 
-console.log("BEFFFWIDGETTTTTTT", fs_widget_config );
-
-// TODO: Remove Later, this `some` function
-// var some = function() {
 
 $(document).ready(function () {
-    console.log("WIDGETTTTTTT")
     if ($('#fs_widget').length) {
 
-    console.log("fsWIDLen")
 
         appendScripts();
         appendStyles();
@@ -51,8 +45,6 @@ $(document).ready(function () {
         throw "No Element found with id : fs_widget"
     }
 });
-
-// }
 
 function setProperties() {
     if(fs_widget_config) {
@@ -122,7 +114,6 @@ function appendScripts() {
 }
 
 function renderExistingPayments() {
-    console.log("renderExistingPayments", fs_widget_config);
 
     if(!fs_widget_config.user_uuid) {
         return;
@@ -187,20 +178,19 @@ function renderExistingPayments() {
                 $('#fs_widget').prepend(sectionDiv0);
 
                 setTimeout(function () {
-                    // FTM
-                    // tippy('i.hover', {
-                    //     content: '<div style="width: 100%; margin: 5px;">\n' +
-                    //         '                                        <p style="padding: 10px">\n' +
-                    //         '                                            <b>Payment Information Received</b>\n' +
-                    //         '                                            <br/>\n' +
-                    //         '                                            <br/>\n' +
-                    //         '                                            <span>We have received your payment details and it is currently being processed.\n' +
-                    //         '                                                <br/>\n' +
-                    //         '                                                It would take approximately 15 minutes after which updates will be reflected.\n' +
-                    //         '                                                </span>\n' +
-                    //         '                                        </p>\n' +
-                    //         '                                    </div>',
-                    // })
+                    tippy('i.hover', {
+                        content: '<div style="width: 100%; margin: 5px;">\n' +
+                            '                                        <p style="padding: 10px">\n' +
+                            '                                            <b>Payment Information Received</b>\n' +
+                            '                                            <br/>\n' +
+                            '                                            <br/>\n' +
+                            '                                            <span>We have received your payment details and it is currently being processed.\n' +
+                            '                                                <br/>\n' +
+                            '                                                It would take approximately 15 minutes after which updates will be reflected.\n' +
+                            '                                                </span>\n' +
+                            '                                        </p>\n' +
+                            '                                    </div>',
+                    })
                 }, 1000);
             }
         },
@@ -212,7 +202,6 @@ function renderExistingPayments() {
 }
 
 function renderForm1() {
-    console.log("renderForm1");
     // Create Vendor Form
     const sectionDiv1 = $('<div/>', {
         style: 'margin: 20px 0px 40px 10px',
@@ -259,7 +248,6 @@ function renderForm1() {
 }
 
 function renderPayment() {
-    console.log("renderPayment")
     // Create Payment Container
     const sectionPayment = $('<div/>', {
         style: '',
@@ -283,10 +271,9 @@ function editPaymentDetails() {
         return;
     }
 
-    // FTM: Comment out
-    // $.preloader.start({
-    //     modal: true
-    // });
+    $.preloader.start({
+        modal: true
+    });
 
     window.history.replaceState(null, null, window.location.pathname);
 
@@ -297,45 +284,9 @@ function editPaymentDetails() {
     $(document.body).css({'cursor' : 'wait'});
 
     var data = {
-        // 'vendor_id': fs_widget_config.vendor_id
         'user_id': fs_widget_config.user_uuid
     };
 
-    // $.ajax({
-        // url: api_domain_base + 
-        // // "/api/silver/app-token",
-        // "/api/payments/widget/user-token",
-        // type: "POST",
-        // data: JSON.stringify(data),
-        // contentType: "application/json",
-        // dataType: "json",
-        // headers: {
-        //     'Content-Type': 'application/json',
-        //     'org_id': fs_widget_config.org_id,
-        //     'x-api-key': fs_widget_config.api_key
-        // },
-        // success: function (res) {
-        //     if (res.body && res.body.app_token) {
-                // const data1 = {
-                //     'app_token': res.body.app_token
-                // };
-
-                // $.ajax({
-                    // url: api_domain_base + "/api/silver/vendor-by-app-token",
-                    // type: "POST",
-                    // data: JSON.stringify(data1),
-                    // contentType: "application/json",
-                    // dataType: "json",
-                    // headers: {
-                    //     'Content-Type': 'application/json',
-                    //     'org_id': fs_widget_config.org_id,
-                    //     'x-api-key': fs_widget_config.api_key
-                    // },
-                    // success: function (res1) {
-                        // console.log('success getVendorDetails');
-                        // console.log(res1);
-                        // vendor_details = res1.body;
-                        // localStorage.setItem('fs_vendor_details', JSON.stringify(vendor_details));
 
 // Here------------------- 
                         const data2 = {
@@ -346,9 +297,7 @@ function editPaymentDetails() {
                         };
 
                         $.ajax({
-                            url: api_domain_base + 
-                            // "/api/silver/vendor-token",
-                            "/api/payments/widget/user-token",
+                            url: api_domain_base + "/api/payments/widget/user-token",
                             type: "POST",
                             data: JSON.stringify(data2),
                             contentType: "application/json",
@@ -359,28 +308,20 @@ function editPaymentDetails() {
                                 'x-api-key': fs_widget_config.api_key
                             },
                             success: function (res) {
-                                console.log("usTOK Succ: ", res)
                                 // if (res.body && res.body.external_token) {
                                 if (res.body && res.body.token_id) {
-                                console.log("usTOK Succ IF")
                                     localStorage.setItem('payment_token', res.body.token_id);
                                     localStorage.setItem('api_key', fs_widget_config.api_key);
                                     localStorage.setItem('org_id', fs_widget_config.org_id);
                                     localStorage.setItem('vendor_id', fs_widget_config.vendor_id);
                                 
-                                    console.log("usTOK Succ DOM ID: ", payment_domain_base + res.body.token_id)
-    // FTM
-    var payment_domain_base = 'https://stage.snappayglobal.com/interop/interoprequest?reqno=';
-
 
                                     $('#payment_iFrame').attr('src', payment_domain_base + res.body.token_id);
                                     $('#payment_iFrame').css('width', '100%');
                                     // FIX : change height of the payment form based on selection
                                     if(selectedPaymentType == 'ach') {
-                                console.log("usTOK Succ ACH")
                                         $('#payment_iFrame').attr('style', 'width: 100%; height: 400px !important');
                                     } else if (selectedPaymentType == 'cc') {
-                                console.log("usTOK Succ CC")
                                         $('#payment_iFrame').attr('style', 'width: 100%; height: 450px !important');
                                     }
                                     // if(selectedPaymentType === 'ach') {
@@ -394,12 +335,10 @@ function editPaymentDetails() {
                                     // }
                                     $('#fs_widget .sectionPayment').fadeIn("slow");
 
-                                    // FTM
-                                    // $.preloader.stop();
+                                    $.preloader.stop();
                                     $(document.body).css({'cursor' : 'default'});
                                 }
 
-                                console.log('ELLLSE');
                             },
                             error: function (er) {
                                 console.log('error !!!!');
@@ -409,24 +348,6 @@ function editPaymentDetails() {
                             }
                         });
 // Here------------------- /
-
-                    // },
-                    // error: function (er) {
-                    //     console.log('error !!!!');
-                    //     console.log(er);
-                    //     $.preloader.stop();
-                    //     $(document.body).css({'cursor' : 'default'});
-                    // }
-                // });
-        //     }
-        // },
-        // error: function (er) {
-        //     console.log('error !!!!');
-        //     console.log(er);
-        //     $.preloader.stop();
-        //     $(document.body).css({'cursor' : 'default'});
-        // }
-    // });
 }
 
 function updatePaymentType(type) {
@@ -493,6 +414,3 @@ function finalizePayment() {
         });
     }
 }
-
-// TODO: Remove Later
-var api_domain_base = "https://plazo-dev.fusionseven.net";
