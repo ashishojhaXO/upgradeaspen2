@@ -213,10 +213,5 @@
     </div>
     <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
 </div>
-<app-script-embedder src="./../../../assets/widget.js"
+<app-script-embedder [src]="api_fs.widgetV2"
                      type="text/javascript"></app-script-embedder>
-
-<script type="text/javascript">
-    console.log("---SOME: ", some);
-    // some();
-</script>
