@@ -923,9 +923,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   search() {
 
     var dateField;
-    const obj = this.dashboardConfig.filterProps.find(x=> x.f7Name === 'period').values;
-    if(obj && obj.length) {
-      dateField = obj[0].id;
+    const objDate = this.period.display;
+    if (objDate) {
+      dateField = objDate.split(' ')[1] + '-' + this.getMonthNum(objDate.split(' ')[0]) + '-01';
     } else {
       dateField = this.formatDate(new Date());
     }
@@ -1131,4 +1131,21 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   this.orgValue="";
   this.ngOnInit();
  }
+
+  getMonthNum(name) {
+    switch (name) {
+      case 'Jan' : return '01';
+      case 'Feb' : return '02';
+      case 'Mar' : return '03';
+      case 'Apr' : return '04';
+      case 'May' : return '05';
+      case 'Jun' : return '06';
+      case 'Jul' : return '07';
+      case 'Aug' : return '08';
+      case 'Sep' : return '09';
+      case 'Oct' : return '10';
+      case 'Nov' : return '11';
+      case 'Dec' : return '12';
+    }
+  }
 }
