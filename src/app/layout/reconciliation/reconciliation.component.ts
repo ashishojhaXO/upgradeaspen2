@@ -195,8 +195,20 @@ export class ReconciliationComponent implements OnInit {
                   "order": 2,
                   "parent": [],
                   "displayDefault": true,
-                  "f7_name": "site_name",
+                  "f7_name": "supplier",
                   "alias": "Supplier",
+                  "type": "popupButton"
+                },
+                {
+                  "hasAllOption": true,
+                  "order": 5,
+                  "parent": [
+                    "period",
+                    "supplier"
+                  ],
+                  "displayDefault": true,
+                  "f7_name": "invoice_number",
+                  "alias": "Invoice Number",
                   "type": "popupButton"
                 },
                 {
@@ -215,18 +227,6 @@ export class ReconciliationComponent implements OnInit {
                   "displayDefault": true,
                   "f7_name": "po_number",
                   "alias": "Purchase Order",
-                  "type": "popupButton"
-                },
-                {
-                  "hasAllOption": true,
-                  "order": 5,
-                  "parent": [
-                    "period",
-                    "supplier"
-                  ],
-                  "displayDefault": true,
-                  "f7_name": "invoice_number",
-                  "alias": "Invoice Number",
                   "type": "popupButton"
                 }
               ]
@@ -345,9 +345,9 @@ export class ReconciliationComponent implements OnInit {
     console.log(applyFilter);
 
     var dateField;
-    const objDate = this.dashboardConfig.filterProps.find(x=> x.f7Name === 'period').values;
-    if(objDate && objDate.length) {
-      dateField = objDate[0].id;
+    const objDate = this.period.display;
+    if (objDate) {
+      dateField = objDate.split(' ')[1] + '-' + this.getMonthNum(objDate.split(' ')[0]) + '-01';
     } else {
       dateField = this.formatDate(new Date());
     }
@@ -525,10 +525,9 @@ export class ReconciliationComponent implements OnInit {
     if (AccessToken) {
       token = AccessToken;
     }
-    const dataObj1 = {
-      year: this.selectedPeriod[0].id.split('-')[0],
-      month: this.selectedPeriod[0].id.split('-')[1]
-    };
+
+    this.selectedPeriod[0].id = this.period.display.split(' ')[1] + '-' + this.getMonthNum(this.period.display.split(' ')[0]) + '-01';
+    this.selectedPeriod[0].itemName = this.period.display;
 
     console.log('this.selectedPeriod >>')
     console.log(this.selectedPeriod);

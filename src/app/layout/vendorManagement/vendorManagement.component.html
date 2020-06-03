@@ -145,6 +145,9 @@
               <div *ngIf="vendorForm.controls['zip'].errors.required">
                 Zip is required.
               </div>
+              <div *ngIf="vendorForm.controls['zip'].errors.pattern">
+                Only numbers allowed.
+              </div>
             </div>
             <div class="form-group-fields">
               <label class="col-lg-4 col-md-4">Country <span class="mandatory">*</span> </label>

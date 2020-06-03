@@ -122,7 +122,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
       address_2: new FormControl(''),
       city: new FormControl('', Validators.required),
       state: new FormControl('', Validators.required),
-      zip: new FormControl('', Validators.required),
+      zip: new FormControl('', [Validators.required, Validators.pattern('^[0-9-]*$')]),
       country: new FormControl('', Validators.required)
     });
 
