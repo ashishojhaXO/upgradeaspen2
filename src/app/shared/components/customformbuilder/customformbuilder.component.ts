@@ -406,20 +406,20 @@ export class CustomFormbuilderComponent implements OnInit {
   }
 
   validationSet(field: string, value:boolean, item){
+    if(field === 'apiLookup') {
+      item.request_type = 'get';
+      item.request_url = '';
+      item.request_payload = '';
+      item.request_mapped_property = '';
+      item.request_dependent_property = '';
+    }
     if(value){
-      item.validation.push(field)
+      item.validation.push(field);
       if (field === 'apiLookup') {
         item.request_mapped_property = 'data';
       }
     }else{
       item.validation.splice(item.validation.indexOf(field), 1)
-      if(field === 'apiLookup') {
-        item.request_type = '';
-        item.request_url = '';
-        item.request_payload = '';
-        item.request_mapped_property = '';
-        item.request_dependent_property = '';
-      }
     }
   }
 
