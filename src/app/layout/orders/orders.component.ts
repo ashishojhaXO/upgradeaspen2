@@ -135,7 +135,16 @@ export class OrdersComponent implements OnInit  {
     },
 
     isDataTableGlobalSearchApi: {
-      value: true
+      value: true,
+      apiMethod: () => {
+        // Initiate Search Api Call/Class
+        // DataTable Api class
+
+        // this.searchApi()
+        console.log( "tADDD: ", this.appDataTable2Component )
+
+      }
+
     },
 
     isTree: true,
