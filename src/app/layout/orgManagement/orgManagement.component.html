@@ -121,7 +121,10 @@
               <div *ngIf="orgForm.controls['zip'].errors.required">
                 Zip is required.
               </div>
-            </div>
+              <div *ngIf="orgForm.controls['zip'].errors.pattern">
+                Only numbers allowed.
+              </div>
+             </div>
             <div class="form-group-fields">
               <label class="col-lg-4 col-md-4 col-sm-4">Country <span class="mandatory">*</span> </label>
               <input formControlName="country" [(ngModel)]="orgModel.country" type="text" class="col-lg-8 col-md-8 col-sm-8 form-field"/>
