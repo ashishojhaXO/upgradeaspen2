@@ -67,6 +67,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     fixedColumnFlag: boolean;
 
     rowEle: any;
+    dataTableSearchPlugin: DataTableColumnSearchPluginExt;
 
     constructor(
         public toastr: ToastsManager,
@@ -88,7 +89,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         //     this.tableId = this.externalTableId;
         // }
         // this.initializeTable();
-
+        this.dataTableSearchPlugin =  new DataTableColumnSearchPluginExt();
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -930,6 +931,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     style: this.dataObject.gridData.options.isRowSelection && this.dataObject.gridData.options.isRowSelection.isMultiple ? 'multi' : 'os',
                 },
 
+                // searching: __this.dataObject.gridData.options.isDataTableGlobalSearchApi && 
+                //     __this.dataObject.gridData.options.isDataTableGlobalSearchApi.value ?
+                //     !__this.dataObject.gridData.options.isDataTableGlobalSearchApi.value :
+                //     true,
+
                 order: this.dataObject.gridData.options.isOrder ?
                     this.dataObject.gridData.options.isOrder :
                     [[1, 'asc']],
@@ -1286,13 +1292,16 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 });
 
                 // Attaching Column search to all tables
-                let columnSearch = new DataTableColumnSearchPluginExt($, document, table);
+                // let columnSearch = new DataTableColumnSearchPluginExt($, document, table);
+                // let columnSearch = new DataTableColumnSearchPluginExt();
+                __this.dataTableSearchPlugin.columnSearch($, document, table)
 
                 table.off('draw');
             });
 
             // HACK: Hiding the fixedColumns: leftColumn, on Search event on table
             if(__this.dataObject.gridData.options.isFixedColumn) {
+                // table.off('search.dt');
                 table.on('search.dt', function(ev, settings){
                     __this.dataObject.gridData.options.isFixedColumn.fixedColumnFunc(ev, $, table);
                 })
@@ -1341,19 +1350,26 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // Order-
 
 
-                $(document).off( 'keyup', 'input.input-sm');
-                $(document).on( 'keyup', 'input.input-sm', function (ev) {
-                    // If currentPage exists, currentPage is not the same as table's page & also input value goes empty
-                    if(currentPage && currentPage != table.page.info().page || ev.currentTarget.value.trim() == "" ){
-                        table.page(currentPage).draw(false);
-                    }
-                });
+                // NOTE: May not be needed now, as Search is going to be api call
+                // $(document).off( 'keyup', 'input.input-sm');
+                // $(document).on( 'keyup', 'input.input-sm', function (ev) {
+                //     // If currentPage exists, currentPage is not the same as table's page & also input value goes empty
+                //     if(currentPage && currentPage != table.page.info().page || ev.currentTarget.value.trim() == "" ){
+                //         table.page(currentPage).draw(false);
+                //     }
+                // });
 
             }
 
+            // search
+            // Datatable Main table global search
             if (__this.dataObject.gridData.options.isDataTableGlobalSearchApi ) {
                 // TODO: Call Table Global search API
-                __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod();
+                // __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod();
+                table.off('search.dt');
+                table.on('search.dt', function(ev, settings){
+                    __this.dataTableSearchPlugin.attachOnChangeOnSearchInput(ev, $, document, table);
+                })
             }
 
             // Highlight pre checked rows

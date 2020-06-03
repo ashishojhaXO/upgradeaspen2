@@ -143,6 +143,8 @@ export class OrdersComponent implements OnInit  {
         // this.searchApi()
         console.log( "tADDD: ", this.appDataTable2Component )
 
+        // Attach to change event and call api & pass the result to DataTable Object
+
       }
 
     },

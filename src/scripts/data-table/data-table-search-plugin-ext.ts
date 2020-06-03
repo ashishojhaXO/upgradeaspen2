@@ -1,13 +1,20 @@
 
 export default class DataTableColumnSearchPluginExt {
 
-  constructor($, document, table) {
+  constructor() {
 
     // // this.attachSearchIcon($)
     // this.attachElemsToColumnHeader($, document);
     // this.attachClickInputSearch($)
     // // this.attachClickToSearch($)
     // this.attachSearchToInput($, table);
+
+
+    // Attach onChange to DataTable Main Search
+    // Attach onClick to sort button
+  }
+  
+  columnSearch($, document, table) {
 
     this.attachElemsToColumnHeader($, document);
     this.attachClickInputSearch($)
@@ -126,6 +133,40 @@ export default class DataTableColumnSearchPluginExt {
     // var table = $('#example').DataTable();
 
     $(document).ready( this.docReady($, table))
+
+  }
+
+
+
+  // attachSearchOnChange
+  attachOnChangeOnSearchInput(ev, $, document, table) {
+    console.log("ATTTTTTT")
+    $(document).ready(function(e){
+      
+      $('input.input-sm').on('change', function(e){
+        e.stopPropagation();
+        console.log("H0000")
+
+      })
+
+    })
+
+  }
+
+  // Search API
+  // On search input change, Call the search endpoint & return the result
+  search() {
+
+  }
+
+  // attachOnClickOnSortIcon
+  attachOnClickOnSortIcon($, document, table) {
+
+  }
+
+  // Sort APP
+  // Call the sort endpoint & return the result
+  sort() {
 
   }
 
