@@ -195,7 +195,7 @@ export class ReconciliationComponent implements OnInit {
                   "order": 2,
                   "parent": [],
                   "displayDefault": true,
-                  "f7_name": "site_name",
+                  "f7_name": "supplier",
                   "alias": "Supplier",
                   "type": "popupButton"
                 },
@@ -204,7 +204,7 @@ export class ReconciliationComponent implements OnInit {
                   "order": 5,
                   "parent": [
                     "period",
-                    "site_name"
+                    "supplier"
                   ],
                   "displayDefault": true,
                   "f7_name": "invoice_number",
