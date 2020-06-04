@@ -67,6 +67,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     fixedColumnFlag: boolean;
 
     rowEle: any;
+    dataTableSearchPlugin: DataTableColumnSearchPluginExt;
 
     constructor(
         public toastr: ToastsManager,
@@ -88,7 +89,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
         //     this.tableId = this.externalTableId;
         // }
         // this.initializeTable();
-
+        this.dataTableSearchPlugin =  new DataTableColumnSearchPluginExt();
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -930,6 +931,17 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     style: this.dataObject.gridData.options.isRowSelection && this.dataObject.gridData.options.isRowSelection.isMultiple ? 'multi' : 'os',
                 },
 
+                searchDelay: __this.dataObject.gridData.options.isDataTableGlobalSearchApi && 
+                    __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchDelay ?
+                    __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchDelay :
+                    0,
+
+                // NOTE: setting search value here, triggers the on 'search' routine
+                // search: 
+                // __this.dataObject.gridData.options.search ? 
+                // __this.dataObject.gridData.options.search : 
+                // "",
+
                 order: this.dataObject.gridData.options.isOrder ?
                     this.dataObject.gridData.options.isOrder :
                     [[1, 'asc']],
@@ -1048,9 +1060,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             const table = $('#' + this.tableId).DataTable(dataTableOptions);
             this.table = table;
             // const fixedColumnTable = $('.DTFC_Cloned').DataTable(dataTableOptions);
-
-            // Attaching Column search to all tables
-            // let columnSearch = new DataTableColumnSearchPluginExt($, document, table);
 
             // Set column display box location
             $('.dt-button.buttons-collection.buttons-colvis').on('click', function () {
@@ -1222,6 +1231,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             // Handle click on "Select all" control
             $('#' + this.tableId + '-select-all').on('click', function () {
 
+                console.log("ISITISIT")
+
                 // Check/uncheck all checkboxes in the table
                 const rows = table.rows({'search': 'applied'}).nodes();
 
@@ -1286,13 +1297,16 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 });
 
                 // Attaching Column search to all tables
-                let columnSearch = new DataTableColumnSearchPluginExt($, document, table);
+                // let columnSearch = new DataTableColumnSearchPluginExt($, document, table);
+                // let columnSearch = new DataTableColumnSearchPluginExt();
+                __this.dataTableSearchPlugin.columnSearch($, document, table)
 
                 table.off('draw');
             });
 
             // HACK: Hiding the fixedColumns: leftColumn, on Search event on table
             if(__this.dataObject.gridData.options.isFixedColumn) {
+                table.off('search.dt');
                 table.on('search.dt', function(ev, settings){
                     __this.dataObject.gridData.options.isFixedColumn.fixedColumnFunc(ev, $, table);
                 })
@@ -1341,14 +1355,32 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // Order-
 
 
-                $(document).off( 'keyup', 'input.input-sm');
-                $(document).on( 'keyup', 'input.input-sm', function (ev) {
-                    // If currentPage exists, currentPage is not the same as table's page & also input value goes empty
-                    if(currentPage && currentPage != table.page.info().page || ev.currentTarget.value.trim() == "" ){
-                        table.page(currentPage).draw(false);
-                    }
-                });
+                // NOTE: May not be needed now, as Search is going to be api call
+                // $(document).off( 'keyup', 'input.input-sm');
+                // $(document).on( 'keyup', 'input.input-sm', function (ev) {
+                //     // If currentPage exists, currentPage is not the same as table's page & also input value goes empty
+                //     if(currentPage && currentPage != table.page.info().page || ev.currentTarget.value.trim() == "" ){
+                //         table.page(currentPage).draw(false);
+                //     }
+                // });
 
+            }
+
+            // search
+            // Datatable Main table global search
+            if (__this.dataObject.gridData.options.isDataTableGlobalSearchApi ) {
+                // TODO: Call Table Global search API
+                // __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod();
+                table.off('search.dt');
+                table.on('search.dt', function(ev, settings){
+                    // NOTE: Might be a bad logic
+                    // WARN: Optimization Problem: When typed 2 Char,
+                    // Though its ignoring the call for Frist Char
+                    // But still sending 2 calls in type of Second Char
+                    if(table.search() && table.search().length > 1) {
+                        __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod(ev, $, document, table);
+                    }
+                })
             }
 
             // Highlight pre checked rows
@@ -1361,10 +1393,12 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             }
 
             // FIX *** FOR PROBLEM WHERE THE COLUMN WIDTH IS RENDERED INCORRECTLY
-            setTimeout(function () {
-                console.log("STO ADJ")
-                table.columns.adjust().draw(false);
-            }, 0);
+            // setTimeout(function () {
+                // console.log("STO ADJ")
+                // NOTE: This line triggering the `search.dt` event on table
+                // Commenting out for the moment
+                // table.columns.adjust().draw(false);
+            // }, 0);
 
             __this.registerCheckboxSelection(table, __this);
             __this.registerUnCheckboxSelection(table, __this);

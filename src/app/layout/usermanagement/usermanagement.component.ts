@@ -20,8 +20,6 @@ import { GenericService } from '../../../services/generic.service';
 import { AppDataTable2Component } from '../../shared/components/app-data-table2/app-data-table2.component';
 import { CsvService } from '../../../services/csv';
 
-import DataTableColumnSearchPluginExt from '../../../scripts/data-table/data-table-search-plugin-ext';
-
 @Component({
   selector: 'app-usermanagement',
   templateUrl: './usermanagement.component.html',
@@ -93,9 +91,6 @@ export class UserManagementComponent implements OnInit  {
 
     },
 
-    // isColumnSearch: ($, table) => {
-    //   let d = new DataTableColumnSearchPluginExt($, document, table);
-    // }
 
   }];
   dashboard: any;

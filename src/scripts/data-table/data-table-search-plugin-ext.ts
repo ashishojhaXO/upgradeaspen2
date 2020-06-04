@@ -1,13 +1,20 @@
 
 export default class DataTableColumnSearchPluginExt {
 
-  constructor($, document, table) {
+  constructor() {
 
     // // this.attachSearchIcon($)
     // this.attachElemsToColumnHeader($, document);
     // this.attachClickInputSearch($)
     // // this.attachClickToSearch($)
     // this.attachSearchToInput($, table);
+
+
+    // Attach onChange to DataTable Main Search
+    // Attach onClick to sort button
+  }
+  
+  columnSearch($, document, table) {
 
     this.attachElemsToColumnHeader($, document);
     this.attachClickInputSearch($)
@@ -128,5 +135,45 @@ export default class DataTableColumnSearchPluginExt {
     $(document).ready( this.docReady($, table))
 
   }
+
+
+
+  // Search-API
+  // attachSearchOnChange
+  attachOnChangeOnSearchInput(ev, $, document, table) {
+    // $(document).ready(function(e){
+      $('input.input-sm').off('change');
+      $('input.input-sm').on('change', function(e){
+        // e.stopPropagation();
+        console.log("CHHHHHH");
+      })
+    // })
+  }
+
+  // Search API
+  // On search input change, Call the search endpoint & return the result
+  searchApiCall(ev, $, document, table) {
+    console.log("SRAAAAA")
+  }
+
+  // Search-API/
+
+
+  // Sort-API
+  // attachOnClickOnSortIcon
+  attachOnClickOnSortIcon($, document, table) {
+    $('th.sorting,th.sorting_asc,th.sorting.desc').on('click', function(e){
+      // e.stopPropagation();
+      console.log("CLIIIII");
+    })
+  }
+
+  // Sort API Call
+  // Call the sort endpoint & return the result
+  sortApiCall() {
+
+  }
+
+  // Sort-API/
 
 }

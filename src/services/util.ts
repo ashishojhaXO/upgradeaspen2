@@ -104,14 +104,12 @@ export class Service {
 
     // Remove keys from this options dict
     if(keysToRemoveArray && options) {
-      console.log("inDEL: ", keysToRemoveArray , options)
       keysToRemoveArray.map((val, idx) => {
         delete options[val]
       })
       headers = options
     }
 
-    console.log("inDEL hed: ", headers)
     return headers;
   }
 

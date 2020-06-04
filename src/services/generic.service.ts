@@ -343,6 +343,7 @@ export class GenericService {
     let org = data.org || null;
     let limit = data.limit || 25;
     let page = data.page || 1;
+    let search = data.search || "";
 
     // const data = JSON.stringify(dataObj);
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
@@ -354,7 +355,8 @@ export class GenericService {
       this.base.GET_ORDERS_LINE_ITEMS_ENDPOINT 
         + '?limit='+limit+'&page='+page
         // + (isRoot ? ('&org_uuid=' + org) : ''),
-        + ( org ? ('&org_uuid=' + org)  : ''),
+        + ( org ? ('&org_uuid=' + org)  : '')
+        + ( search ? ('&search=' + search)  : ''),
       data
     );
 

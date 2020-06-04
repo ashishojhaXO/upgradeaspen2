@@ -41,7 +41,6 @@ export class LayoutComponent implements DoCheck, OnInit {
 
   ngOnInit() {
 
-    console.log("LAYYO: ")    
     this._addFeedbackWidget();
   }
 
