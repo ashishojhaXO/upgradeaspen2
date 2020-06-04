@@ -25,6 +25,7 @@ export class ReconciliationProfilesComponent implements OnInit {
   @Input() invoiceNumber: any;
   @Input() period: any;
   @Input() supplier: any;
+  @Input() filters: any;
   itemDetails: any;
   constructor(
     private okta: OktaAuthService,
@@ -120,7 +121,8 @@ export class ReconciliationProfilesComponent implements OnInit {
     let dataObj = {
       year: period[0].id.split('-')[0],
       month: period[0].id.split('-')[1],
-      invoice_header_id: data.invoice_header_id
+      invoice_header_id: data.invoice_header_id,
+      filters : this.filters
     }
     if(data.supplier.toLowerCase() === 'kenshoo'){
       dataObj['profile_name'] = data.profile_name;
@@ -132,6 +134,7 @@ export class ReconciliationProfilesComponent implements OnInit {
         dataObj['profile_name'] = data.profile_name;
       }
     }
+
     const obj = JSON.stringify(dataObj);
     console.log('obj >>')
     console.log(obj)
@@ -253,7 +256,8 @@ export class ReconciliationProfilesComponent implements OnInit {
       year: period[0].id.split('-')[0],
       month: period[0].id.split('-')[1],
       invoice_header_id: InvoiceHeaderID,
-      profile_name: profileName
+      profile_name: profileName,
+      filters: this.filters
     }
     const obj = JSON.stringify(dataObj);
     console.log('obj >>')
@@ -277,8 +281,10 @@ export class ReconciliationProfilesComponent implements OnInit {
     const dataObj = {
       year: period[0].id.split('-')[0],
       month: period[0].id.split('-')[1],
-      invoice_header_id: invoiceId
+      invoice_header_id: invoiceId,
+      filters: this.filters
     }
+
     const obj = JSON.stringify(dataObj);
     console.log('obj >>')
     console.log(obj)

@@ -91,7 +91,7 @@
   <div class="pull-right" style="position: absolute; right: 0; z-index: 1">
     <a (click)="showReDashboard()" class="button btn btn-secondary"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Back To Reconciliation Dashboard</a>
   </div>
-  <app-reconciliation-profiles [period]="selectedPeriod" [supplier]="selectedSupplier" [invoiceId]="selectedInvoice" [invoiceNumber]="selectedInvoiceNumber"></app-reconciliation-profiles>
+  <app-reconciliation-profiles [filters]="selectedFilters" [period]="selectedPeriod" [supplier]="selectedSupplier" [invoiceId]="selectedInvoice" [invoiceNumber]="selectedInvoiceNumber"></app-reconciliation-profiles>
 </div>
 <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
 <div style="width:100%">
