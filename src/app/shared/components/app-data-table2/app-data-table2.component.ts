@@ -936,43 +936,20 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchDelay :
                     0,
 
+                // NOTE: setting search value here, triggers the on 'search' routine
+                // search: 
+                // __this.dataObject.gridData.options.search ? 
+                // __this.dataObject.gridData.options.search : 
+                // "",
+
                 order: this.dataObject.gridData.options.isOrder ?
                     this.dataObject.gridData.options.isOrder :
                     [[1, 'asc']],
 
                 initComplete: function(settings) {
-                    console.log("niii: ", 
-                    "this: ", this, 
-                    "__THI: ", __this, 
-                    "sett: ", settings
-                    );
-
                     $('#' + __this.tableId + ' tbody td').each(function () {
                         $(this).attr('title', $(this).text());
                     });
-
-            // if (__this.dataObject.gridData.options.isDataTableGlobalSearchApi ) {
-
-            //         console.log("niii2: ", 
-            //         "this: ", this, 
-            //         "__THI: ", __this, 
-            //         "sett: ", settings
-            //         );
-
-            //     // TODO: Call Table Global search API
-            //     // __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod();
-            //     __this.table.off('search.dt');
-            //     __this.table.on('search.dt', function(ev, settings){
-            //         console.log("SEEEEEEEHHHA", this, ev, settings )
-
-            //         // NOTE: Might be a bad logic
-            //         if(__this.table.search()) {
-            //             __this.dataObject.gridData.options.isDataTableGlobalSearchApi.
-            //             apiMethod(ev, $, document, __this.table);
-            //         }
-            //     })
-            // }
-
                 },
                 pageLength: pageLength,
                 displayStart: this.dataObject.gridData.options.isDisplayStart || 0,
@@ -1396,10 +1373,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod();
                 table.off('search.dt');
                 table.on('search.dt', function(ev, settings){
-                    console.log("SEEEEEEEHHHA", table.search())
-
                     // NOTE: Might be a bad logic
-                    if(table.search()) {
+                    // WARN: Optimization Problem: When typed 2 Char,
+                    // Though its ignoring the call for Frist Char
+                    // But still sending 2 calls in type of Second Char
+                    if(table.search() && table.search().length > 1) {
                         __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod(ev, $, document, table);
                     }
                 })

@@ -138,7 +138,7 @@ export class OrdersComponent implements OnInit  {
 
     isDataTableGlobalSearchApi: {
       value: true,
-      searchDelay: 5000, // in milli Second
+      searchDelay: 2000, // in milli Second
 
       apiMethod: (ev, $, document, table) => {
         // Initiate Search Api Call/Class
@@ -152,6 +152,8 @@ export class OrdersComponent implements OnInit  {
       }
 
     },
+
+
 
     isTree: true,
     // isChildRowActions required when there need to be actions below every row.
@@ -194,6 +196,7 @@ export class OrdersComponent implements OnInit  {
     showClear: true
   };
   // retryChargeState: boolean = true;
+  searchQuery: string = "";
 
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
@@ -645,9 +648,7 @@ export class OrdersComponent implements OnInit  {
   }
 
   searchApiDataRequest(org = null, table?) {
-    console.log("SRAPIRRRR: ", 
-    // org, table
-    )
+    this.searchQuery = table.search();
 
     // if no table, then send all default, page=1 & limit=25
     // else, send table data
@@ -725,7 +726,14 @@ export class OrdersComponent implements OnInit  {
     //   this.isHomeDepot = true;
     // }
 
+    if(this.searchQuery) {
+      this.options[0]["search"] = {
+        "search": this.searchQuery 
+      }
+    }
+
     this.gridData['options'] = this.options[0];
+
 
     this.gridData.columnsToColor = [
       { index: 13, name: 'MERCHANT PROCESSING FEE', color: 'rgb(47,132,234,0.2)'},
