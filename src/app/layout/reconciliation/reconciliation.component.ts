@@ -81,6 +81,7 @@ export class ReconciliationComponent implements OnInit {
   selectedChannel: any;
   selectedSupplier: any;
   selectedSES: any;
+  selectedFilters: any;
 
   settings: any = {
     singleSelection: true,
@@ -212,7 +213,7 @@ export class ReconciliationComponent implements OnInit {
                   "type": "popupButton"
                 },
                 {
-                  "hasAllOption": false,
+                  "hasAllOption": true,
                   "order": 3,
                   "parent": [],
                   "displayDefault": true,
@@ -221,7 +222,7 @@ export class ReconciliationComponent implements OnInit {
                   "type": "popupButton"
                 },
                 {
-                  "hasAllOption": false,
+                  "hasAllOption": true,
                   "order": 4,
                   "parent": [],
                   "displayDefault": true,
@@ -570,6 +571,7 @@ export class ReconciliationComponent implements OnInit {
         }
       }
     }, this);
+    this.selectedFilters = filters;
     dataObj.filters = filters;
     dataObj.year = this.period.display.split(' ')[1];
     dataObj.month = this.getMonthNum(this.period.display.split(' ')[0]);
@@ -841,20 +843,27 @@ export class ReconciliationComponent implements OnInit {
     if (AccessToken) {
       token = AccessToken;
     }
-    const year = this.selectedPeriod[0].id.split('-')[0];
-    const month = this.selectedPeriod[0].id.split('-')[1]
-    let invoice_param = "";
+
+    const dataObj: any = {
+      year: this.selectedPeriod[0].id.split('-')[0],
+      month: this.selectedPeriod[0].id.split('-')[1],
+      filters: this.selectedFilters
+    };
+
     if (invoice_header_id) {
-      invoice_param = "&invoice_header_id=" + invoice_header_id;
+      dataObj.invoice_header_id = invoice_header_id;
     }
+
+    const obj = JSON.stringify(dataObj);
+
     const headers = new Headers({ 'Content-Type': 'application/json', 'token': token, 'callingapp': 'aspen' });
     const options = new RequestOptions({ headers: headers });
-    const url = this.api_fs.api + '/api/reports/reconciliation/export?year=' + year + '&month=' + month + invoice_param;
+    const url = this.api_fs.api + '/api/reports/reconciliation/export';
     return this.http
-      .get(url, options)
-      .map(res => {
-        return res.json();
-      }).share();
+        .post(url, obj, options)
+        .map(res => {
+          return res.json();
+        }).share();
   }
   showReDashboard() {
     this.hideTable = false;
