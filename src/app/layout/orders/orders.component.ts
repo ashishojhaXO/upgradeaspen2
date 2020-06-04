@@ -23,6 +23,8 @@ import { modalConfigDefaults } from 'ngx-bootstrap/modal/modal-options.class';
 import { CsvService } from '../../../services/csv';
 import {ToasterService} from 'angular2-toaster';
 import {moment} from 'ngx-bootstrap/chronos/test/chain';
+import DataTableColumnSearchPluginExt from '../../../scripts/data-table/data-table-search-plugin-ext';
+import DataTableUtilsPluginExt from '../../../scripts/data-table/data-table-utils-plugin-ext';
 
 @Component({
   selector: 'app-orders',
@@ -136,12 +138,14 @@ export class OrdersComponent implements OnInit  {
 
     isDataTableGlobalSearchApi: {
       value: true,
-      apiMethod: () => {
+      searchDelay: 5000, // in milli Second
+
+      apiMethod: (ev, $, document, table) => {
         // Initiate Search Api Call/Class
         // DataTable Api class
 
-        // this.searchApi()
-        console.log( "tADDD: ", this.appDataTable2Component )
+        // this.dataTableSearchPlugin.search(ev, $, document, table)
+        this.searchApiDataRequest(this.orgValue, table)
 
         // Attach to change event and call api & pass the result to DataTable Object
 
@@ -203,6 +207,8 @@ export class OrdersComponent implements OnInit  {
   currentTable: any;
   hasTemplates = false;
   private toaster: any;
+  
+  dataTableSearchPlugin: DataTableColumnSearchPluginExt;
 
   constructor(
       private okta: OktaAuthService,
@@ -253,6 +259,8 @@ export class OrdersComponent implements OnInit  {
     } else {
       this.searchDataRequest();
     }
+
+    this.dataTableSearchPlugin =  new DataTableColumnSearchPluginExt();
   }
 
   apiMethod = (table, pageLength, csv?) => {
@@ -480,14 +488,20 @@ export class OrdersComponent implements OnInit  {
   }
   // Success & Error CBs/
 
-  compileDataForPage(org, table) {
-    // if no table, then send all default, page=1 & limit=25
-    // else, send table data
+  compileData(org, table) {
     let data = {
       page: 1,
       limit: +localStorage.getItem("gridPageCount"),
       org: org ? org : ''
     };
+
+    return data;
+  }
+
+  compileDataForPage(org, table) {
+    // if no table, then send all default, page=1 & limit=25
+    // else, send table data
+    let data = this.compileData(org, table)
 
     if(table) {
       let tab = table.page.info();
@@ -614,6 +628,65 @@ export class OrdersComponent implements OnInit  {
             }
         );
   }
+
+  compileDataForSearch(org = null, table?) {
+    let data = this.compileData(org, table);
+
+    data = {
+      ...data,
+      ...{
+        'search': table.search() 
+      }
+    }
+
+    // console.log("aDR DAT: ", data)
+
+    return data;
+  }
+
+  searchApiDataRequest(org = null, table?) {
+    console.log("SRAPIRRRR: ", 
+    // org, table
+    )
+
+    // if no table, then send all default, page=1 & limit=25
+    // else, send table data
+    let data = this.compileDataForSearch(org, table);
+
+    // this.hasData = false;
+    this.showSpinner = true;
+
+    const self = this;
+    return this.genericService
+        .getOrdersLineItems(data, this.isRoot)
+        .subscribe(
+            response => {
+              if (response && response.data.rows && typeof response.data.rows == "object" && response.data.rows.length ) {
+                this.showSpinner = false;
+                // this.populateDataTable(response, true);
+                this.searchDataRequestCB(response, table);
+              } else {
+                this.showSpinner = false;
+                // self.popUp.showPopUp(self.popUp.popUpDict.noData)
+                // console.log("No data to show")
+              }
+            },
+            err => {
+              if(err.status === 401) {
+                this.widget.refreshElseSignout(
+                    this,
+                    err,
+                    self.searchApiDataRequest.bind(self, org, table),
+                    self.errorCallback.bind(self)
+                );
+              } else {
+                this.showSpinner = false;
+              }
+
+            }
+        );
+  }
+
 
   populateDataTable(response, initialLoad) {
     const tableData = response;

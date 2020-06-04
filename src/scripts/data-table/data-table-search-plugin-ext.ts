@@ -138,36 +138,42 @@ export default class DataTableColumnSearchPluginExt {
 
 
 
+  // Search-API
   // attachSearchOnChange
   attachOnChangeOnSearchInput(ev, $, document, table) {
-    console.log("ATTTTTTT")
-    $(document).ready(function(e){
-      
+    // $(document).ready(function(e){
+      $('input.input-sm').off('change');
       $('input.input-sm').on('change', function(e){
-        e.stopPropagation();
-        console.log("H0000")
-
+        // e.stopPropagation();
+        console.log("CHHHHHH");
       })
-
-    })
-
+    // })
   }
 
   // Search API
   // On search input change, Call the search endpoint & return the result
-  search() {
-
+  searchApiCall(ev, $, document, table) {
+    console.log("SRAAAAA")
   }
 
+  // Search-API/
+
+
+  // Sort-API
   // attachOnClickOnSortIcon
   attachOnClickOnSortIcon($, document, table) {
-
+    $('th.sorting,th.sorting_asc,th.sorting.desc').on('click', function(e){
+      // e.stopPropagation();
+      console.log("CLIIIII");
+    })
   }
 
-  // Sort APP
+  // Sort API Call
   // Call the sort endpoint & return the result
-  sort() {
+  sortApiCall() {
 
   }
+
+  // Sort-API/
 
 }

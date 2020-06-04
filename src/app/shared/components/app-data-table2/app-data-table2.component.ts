@@ -931,19 +931,48 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     style: this.dataObject.gridData.options.isRowSelection && this.dataObject.gridData.options.isRowSelection.isMultiple ? 'multi' : 'os',
                 },
 
-                // searching: __this.dataObject.gridData.options.isDataTableGlobalSearchApi && 
-                //     __this.dataObject.gridData.options.isDataTableGlobalSearchApi.value ?
-                //     !__this.dataObject.gridData.options.isDataTableGlobalSearchApi.value :
-                //     true,
+                searchDelay: __this.dataObject.gridData.options.isDataTableGlobalSearchApi && 
+                    __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchDelay ?
+                    __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchDelay :
+                    0,
 
                 order: this.dataObject.gridData.options.isOrder ?
                     this.dataObject.gridData.options.isOrder :
                     [[1, 'asc']],
 
                 initComplete: function(settings) {
+                    console.log("niii: ", 
+                    "this: ", this, 
+                    "__THI: ", __this, 
+                    "sett: ", settings
+                    );
+
                     $('#' + __this.tableId + ' tbody td').each(function () {
                         $(this).attr('title', $(this).text());
                     });
+
+            // if (__this.dataObject.gridData.options.isDataTableGlobalSearchApi ) {
+
+            //         console.log("niii2: ", 
+            //         "this: ", this, 
+            //         "__THI: ", __this, 
+            //         "sett: ", settings
+            //         );
+
+            //     // TODO: Call Table Global search API
+            //     // __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod();
+            //     __this.table.off('search.dt');
+            //     __this.table.on('search.dt', function(ev, settings){
+            //         console.log("SEEEEEEEHHHA", this, ev, settings )
+
+            //         // NOTE: Might be a bad logic
+            //         if(__this.table.search()) {
+            //             __this.dataObject.gridData.options.isDataTableGlobalSearchApi.
+            //             apiMethod(ev, $, document, __this.table);
+            //         }
+            //     })
+            // }
+
                 },
                 pageLength: pageLength,
                 displayStart: this.dataObject.gridData.options.isDisplayStart || 0,
@@ -1054,9 +1083,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             const table = $('#' + this.tableId).DataTable(dataTableOptions);
             this.table = table;
             // const fixedColumnTable = $('.DTFC_Cloned').DataTable(dataTableOptions);
-
-            // Attaching Column search to all tables
-            // let columnSearch = new DataTableColumnSearchPluginExt($, document, table);
 
             // Set column display box location
             $('.dt-button.buttons-collection.buttons-colvis').on('click', function () {
@@ -1228,6 +1254,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             // Handle click on "Select all" control
             $('#' + this.tableId + '-select-all').on('click', function () {
 
+                console.log("ISITISIT")
+
                 // Check/uncheck all checkboxes in the table
                 const rows = table.rows({'search': 'applied'}).nodes();
 
@@ -1301,7 +1329,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             // HACK: Hiding the fixedColumns: leftColumn, on Search event on table
             if(__this.dataObject.gridData.options.isFixedColumn) {
-                // table.off('search.dt');
+                table.off('search.dt');
                 table.on('search.dt', function(ev, settings){
                     __this.dataObject.gridData.options.isFixedColumn.fixedColumnFunc(ev, $, table);
                 })
@@ -1368,7 +1396,12 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod();
                 table.off('search.dt');
                 table.on('search.dt', function(ev, settings){
-                    __this.dataTableSearchPlugin.attachOnChangeOnSearchInput(ev, $, document, table);
+                    console.log("SEEEEEEEHHHA", table.search())
+
+                    // NOTE: Might be a bad logic
+                    if(table.search()) {
+                        __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod(ev, $, document, table);
+                    }
                 })
             }
 
@@ -1382,10 +1415,12 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             }
 
             // FIX *** FOR PROBLEM WHERE THE COLUMN WIDTH IS RENDERED INCORRECTLY
-            setTimeout(function () {
-                console.log("STO ADJ")
-                table.columns.adjust().draw(false);
-            }, 0);
+            // setTimeout(function () {
+                // console.log("STO ADJ")
+                // NOTE: This line triggering the `search.dt` event on table
+                // Commenting out for the moment
+                // table.columns.adjust().draw(false);
+            // }, 0);
 
             __this.registerCheckboxSelection(table, __this);
             __this.registerUnCheckboxSelection(table, __this);
