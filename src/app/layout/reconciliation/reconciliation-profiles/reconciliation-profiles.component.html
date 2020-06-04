@@ -123,14 +123,16 @@
                     <!--<th>Reference Number</th>-->
                     <!--<th>Billing Period</th>-->
                     <!--<th>Billing Due Date</th>-->
-                    <th>Billed Amount</th>
-                    <th>Calculated Amount</th>
-                    <th>Discrepancy Amount</th>
                     <th>Order/Line Item Id</th>
-                    <th>Paid Amount</th>
+                    <th>Campaign</th>
+                    <th>Vendor</th>
                     <th>MK #</th>
                     <th>Channel PO #</th>
                     <th>Media Service PO #</th>
+                    <th style="text-align: right;">Billed Amount</th>
+                    <th style="text-align: right;">Calculated Amount</th>
+                    <th style="text-align: right;">Discrepancy Amount</th>
+                    <th style="text-align: right;">Paid Amount</th>
                   </tr>
                 </thead>
                 <tbody style="max-height: 500px; overflow-y: scroll; overflow-x: hidden">
@@ -151,16 +153,16 @@
                       <!--<td>{{item.reference_number}}</td>-->
                       <!--<td>{{item.billing_period}}</td>-->
                       <!--<td>{{item.billing_due_date}}</td>-->
-
-                      <td>{{invoice.isKenshoo ? (invoice.billedAmount | currency:"USD":true:'1.2-2') : (item.order_billed_amount ? (item.order_billed_amount | currency:"USD":true:'1.2-2') : 0)}}</td>
-                      <td>{{invoice.isKenshoo ? (item.total_spend ? (item.total_spend  | currency:"USD":true:'1.2-2') : 0) : (item.order_calculated_amount ? (item.order_calculated_amount  | currency:"USD":true:'1.2-2') : 0)}}</td>
-                      <td>{{invoice.isKenshoo ? (invoice.discrepancyAmount | currency:"USD":true:'1.2-2') : (item.order_discrepancy_amount ? (item.order_discrepancy_amount | currency:"USD":true:'1.2-2') : 0)}}</td>
                       <td>{{item.order_id || '-'}}</td>
-                      <td>{{item.total_invoice_paid_amount ? (item.total_invoice_paid_amount | currency:"USD":true:'1.2-2') : 0}}</td>
+                      <td style="width: 200px; word-break: break-all; white-space: pre-wrap">{{item.campaign_name || '-'}}</td>
+                      <td>{{item.vendor_name || '-'}}</td>
                       <td>{{item.mk_number || '-'}}</td>
                       <td>{{item.channel_po_number || '-'}}</td>
                       <td>{{item.media_service_po_number || '-'}}</td>
-
+                      <td style="text-align: right;">{{invoice.isKenshoo ? (invoice.billedAmount | currency:"USD":true:'1.2-2') : (item.order_billed_amount ? (item.order_billed_amount | currency:"USD":true:'1.2-2') : 0)}}</td>
+                      <td style="text-align: right;">{{invoice.isKenshoo ? (item.total_spend ? (item.total_spend  | currency:"USD":true:'1.2-2') : 0) : (item.order_calculated_amount ? (item.order_calculated_amount  | currency:"USD":true:'1.2-2') : 0)}}</td>
+                      <td style="text-align: right;">{{invoice.isKenshoo ? (invoice.discrepancyAmount | currency:"USD":true:'1.2-2') : (item.order_discrepancy_amount ? (item.order_discrepancy_amount | currency:"USD":true:'1.2-2') : 0)}}</td>
+                      <td style="text-align: right;">{{item.total_invoice_paid_amount ? (item.total_invoice_paid_amount | currency:"USD":true:'1.2-2') : 0}}</td>
                     </tr>
                     <ng-container *ngIf="item.show && item.lineItems">
                       <tr *ngFor="let sItem of item.lineItems; let i= index" style="height: 50px;">
@@ -176,16 +178,16 @@
                         <!--<td class="coloredTd">{{sItem.reference_number}}</td>-->
                         <!--<td class="coloredTd">{{sItem.billing_period}}</td>-->
                         <!--<td class="coloredTd">{{sItem.billing_due_date}}</td>-->
-
-                        <td class="coloredTd">{{sItem.line_item_billed_amount ? (sItem.line_item_billed_amount | currency:"USD":true:'1.2-2') : 0}}</td>
-                        <td class="coloredTd">{{invoice.isKenshoo ? (sItem.total_spend ? (sItem.total_spend | currency:"USD":true:'1.2-2') : 0) : (sItem.line_item_calculated_amount ? (sItem.line_item_calculated_amount | currency:"USD":true:'1.2-2') : 0)}}</td>
-                        <td class="coloredTd">{{sItem.line_item_discrepancy_amount ? (sItem.line_item_discrepancy_amount | currency:"USD":true:'1.2-2') : 0}}</td>
                         <td class="coloredTd">{{sItem.line_item_id || '-'}}</td>
-                        <td class="coloredTd">{{sItem.line_item_paid_amount ? (sItem.line_item_paid_amount | currency:"USD":true:'1.2-2') : 0}}</td>
+                        <td class="coloredTd" style="width: 200px; word-break: break-all; white-space: pre-wrap">{{sItem.campaign_name || '-'}}</td>
+                        <td class="coloredTd">{{sItem.vendor_name || '-'}}</td>
                         <td class="coloredTd">{{sItem.mk_number || '-'}}</td>
                         <td class="coloredTd">{{sItem.channel_po_number || '-'}}</td>
                         <td class="coloredTd">{{sItem.media_service_po_number || '-'}}</td>
-
+                        <td class="coloredTd" style="text-align: right;">{{sItem.line_item_billed_amount ? (sItem.line_item_billed_amount | currency:"USD":true:'1.2-2') : 0}}</td>
+                        <td class="coloredTd" style="text-align: right;">{{invoice.isKenshoo ? (sItem.total_spend ? (sItem.total_spend | currency:"USD":true:'1.2-2') : 0) : (sItem.line_item_calculated_amount ? (sItem.line_item_calculated_amount | currency:"USD":true:'1.2-2') : 0)}}</td>
+                        <td class="coloredTd" style="text-align: right;">{{sItem.line_item_discrepancy_amount ? (sItem.line_item_discrepancy_amount | currency:"USD":true:'1.2-2') : 0}}</td>
+                        <td class="coloredTd" style="text-align: right;">{{sItem.line_item_paid_amount ? (sItem.line_item_paid_amount | currency:"USD":true:'1.2-2') : 0}}</td>
                       </tr>
                     </ng-container>
                     <!--<tr>-->
