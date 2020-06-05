@@ -91,3 +91,9 @@ a[href^="tel"]{
 .prevent-click:active{
   pointer-events: none;
 }
+.dash-page-chk{
+  .pure-checkbox label{
+    width: 100%;
+    text-align: left;
+  }
+}
