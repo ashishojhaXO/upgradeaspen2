@@ -606,12 +606,13 @@ export class OrdersComponent implements OnInit  {
     data = this.compileDataForPage(org, table);
 
     if(search){
-      data = {
-        ...data,
-        ...{
-          'search': search
-        }
-      }
+      // data = {
+      //   ...data,
+      //   ...{
+      //     'search': search
+      //   }
+      // }
+      data['search'] = search;
     }
     
     // this.hasData = false;
@@ -653,14 +654,13 @@ export class OrdersComponent implements OnInit  {
   compileDataForSearch(org = null, table?) {
     let data = this.compileData(org, table);
 
-    data = {
-      ...data,
-      ...{
-        'search': table.search()
-      }
-    }
-
-    // console.log("aDR DAT: ", data)
+    // data = {
+    //   ...data,
+    //   ...{
+    //     'search': table.search()
+    //   }
+    // }
+    data['search'] = table.search();
 
     return data;
   }
