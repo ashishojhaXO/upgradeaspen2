@@ -152,9 +152,21 @@ export class OrdersComponent implements OnInit  {
       }
 
     },
+    isDataTableGlobalSortApi: {
+      sortTriggered: false,
+      searchDelay: 2000, // in milli Second
+      apiMethod: (sort) => {
+        // Initiate Search Api Call/Class
+        // DataTable Api class
+        console.log('sort >>')
+        console.log(sort);
+        this.searchDataRequest(this.orgValue, this.currentTable, sort);
+        // this.dataTableSearchPlugin.search(ev, $, document, table)
+        // Attach to change event and call api & pass the result to DataTable Object
 
+      }
 
-
+    },
     isTree: true,
     // isChildRowActions required when there need to be actions below every row.
     isChildRowActions: {
@@ -210,7 +222,7 @@ export class OrdersComponent implements OnInit  {
   currentTable: any;
   hasTemplates = false;
   private toaster: any;
-  
+
   dataTableSearchPlugin: DataTableColumnSearchPluginExt;
 
   constructor(
@@ -590,7 +602,7 @@ export class OrdersComponent implements OnInit  {
     this.populateDataTable(li, true);
   }
 
-  searchDataRequest(org = null, table?) {
+  searchDataRequest(org = null, table?, sort?) {
 
     // if no table, then send all default, page=1 & limit=25
     // else, send table data
@@ -603,7 +615,7 @@ export class OrdersComponent implements OnInit  {
     // return this.searchData(org)
     return this.genericService
     // .successMockCall(data)
-        .getOrdersLineItems(data, this.isRoot)
+        .getOrdersLineItems(data, this.isRoot, sort)
         .subscribe(
             response => {
               if (response && response.data.rows && typeof response.data.rows == "object" && response.data.rows.length ) {
@@ -638,7 +650,7 @@ export class OrdersComponent implements OnInit  {
     data = {
       ...data,
       ...{
-        'search': table.search() 
+        'search': table.search()
       }
     }
 
@@ -688,7 +700,6 @@ export class OrdersComponent implements OnInit  {
         );
   }
 
-
   populateDataTable(response, initialLoad) {
     const tableData = response;
     this.gridData = {};
@@ -728,7 +739,7 @@ export class OrdersComponent implements OnInit  {
 
     if(this.searchQuery) {
       this.options[0]["search"] = {
-        "search": this.searchQuery 
+        "search": this.searchQuery
       }
     }
 

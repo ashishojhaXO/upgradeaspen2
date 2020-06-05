@@ -30,8 +30,8 @@ export class GenericService {
   /**
    * GET
    * A potential GET wrapper for all the GET API Calls
-   * @param functionToCall: function to make the GET Api Call 
-   * @param functionToCallParams: Params to pass to the function that makes the GET Api Call 
+   * @param functionToCall: function to make the GET Api Call
+   * @param functionToCallParams: Params to pass to the function that makes the GET Api Call
    * @param successCallback: callBack function on success of the GET api call
    * @param errorCallback: callBack function on error of the GET api call
    */
@@ -92,7 +92,7 @@ export class GenericService {
     );
   }
 
-  
+
 
   /**
    * Get Orders Method
@@ -105,10 +105,10 @@ export class GenericService {
 
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
     return this.service.Call(
-      'get', 
+      'get',
       apiPath.api +
       this.base.API +
-      this.base.GET_ORDERS_ENDPOINT + '?limit='+limit+'&page='+pageNo 
+      this.base.GET_ORDERS_ENDPOINT + '?limit='+limit+'&page='+pageNo
     );
   }
 
@@ -143,9 +143,9 @@ export class GenericService {
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
 
     return this.service.Call(
-      'get', 
-      apiPath.api + 
-      this.base.API + 
+      'get',
+      apiPath.api +
+      this.base.API +
       this.base.GET_USERS_ENDPOINT + '?limit='+limit+'&page='+page+ ( org ? ('&org_uuid=' + org) : '')
     );
   }
@@ -164,7 +164,7 @@ export class GenericService {
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
 
     return this.service.Call(
-      'get', 
+      'get',
       apiPath.api + this.base.API + this.base.GET_USERS_ENDPOINT + '?limit='+limit+'&page='+page+ ( org ? ('&org_uuid=' + org) : ''),
       {},
       {"Content-Type": "application/csv"}
@@ -226,14 +226,14 @@ export class GenericService {
         data
     );
   }
-  
+
   postOrderReceiptList(dataObj) {
 
     const data = JSON.stringify(dataObj);
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
 
     return this.service.Call(
-      'post', 
+      'post',
       apiPath.api + this.base.API + this.base.POST_ORDERS_RECEIPT_DOWNLOAD_ENDPOINT,
       data
     );
@@ -248,9 +248,9 @@ export class GenericService {
     const data = JSON.stringify(dataObj);
 
     return this.service.Call(
-      'post', 
+      'post',
       apiPath.api +
-      this.base.API + 
+      this.base.API +
       this.base.ADMIN_REPORT_DOWNLOAD,
       data
     );
@@ -267,9 +267,9 @@ export class GenericService {
     console.log("dataObj: ", dataObj, " data; ", data);
 
     return this.service.Call(
-      'post', 
+      'post',
       apiPath.api +
-      this.base.API + 
+      this.base.API +
       this.base.ADMIN_REPORT,
       data
     );
@@ -286,9 +286,9 @@ export class GenericService {
     console.log("dataObj: ", dataObj, " data; ", data);
 
     return this.service.Call(
-      'post', 
+      'post',
       apiPath.api +
-      this.base.API + 
+      this.base.API +
       this.base.ADMIN_REPORT,
       data
     );
@@ -303,16 +303,16 @@ export class GenericService {
 
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
     return this.service.Call(
-      'get', 
+      'get',
       apiPath.api +
       this.base.API +
-      this.base.GET_JOBS_ENDPOINT 
+      this.base.GET_JOBS_ENDPOINT
     );
   }
 
 
   /**
-   * POST postJobReportExecute 
+   * POST postJobReportExecute
    * Execute a Report of a particular Job_id
    * @param dataObj
    */
@@ -323,9 +323,9 @@ export class GenericService {
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
 
     return this.service.Call(
-      'post', 
+      'post',
       apiPath.api +
-      this.base.API + 
+      this.base.API +
       this.base.POST_JOB_REPORT_EXECUTE,
       data
     );
@@ -335,28 +335,28 @@ export class GenericService {
 
   /**
    * GET getOrders
-   * Get order line-items 
+   * Get order line-items
    * @param dataObj
    */
-  getOrdersLineItems(data, isRoot=null) {
+  getOrdersLineItems(data, isRoot=null, sort?) {
 
     let org = data.org || null;
     let limit = data.limit || 25;
     let page = data.page || 1;
     let search = data.search || "";
-
     // const data = JSON.stringify(dataObj);
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
 
     return this.service.Call(
-      'get', 
+      'get',
       apiPath.api +
-      this.base.API + 
-      this.base.GET_ORDERS_LINE_ITEMS_ENDPOINT 
+      this.base.API +
+      this.base.GET_ORDERS_LINE_ITEMS_ENDPOINT
         + '?limit='+limit+'&page='+page
         // + (isRoot ? ('&org_uuid=' + org) : ''),
         + ( org ? ('&org_uuid=' + org)  : '')
-        + ( search ? ('&search=' + search)  : ''),
+        + ( search ? ('&search=' + search)  : '')
+        + ( sort ? ('&sort_by=' + sort.sortColumn.key + '&sort_order=' + sort.sortDirection)  : ''),
       data
     );
 
@@ -371,9 +371,9 @@ export class GenericService {
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
 
     return this.service.Call(
-      'get', 
-      apiPath.api + this.base.API + 
-      this.base.GET_ORDERS_LINE_ITEMS_ENDPOINT 
+      'get',
+      apiPath.api + this.base.API +
+      this.base.GET_ORDERS_LINE_ITEMS_ENDPOINT
         + '?limit='+limit+'&page='+page
         // + (isRoot ? ('&org_uuid=' + org) : '')
         + ( org ? ('&org_uuid=' + org)  : '')
@@ -382,7 +382,7 @@ export class GenericService {
       {"Content-Type": "application/csv"}
     );
   }
-  
+
   /**
    * Get the list of currently available payment methods of the user
    * @param dataObj
@@ -394,10 +394,10 @@ export class GenericService {
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
 
     return this.service.Call(
-      'get', 
+      'get',
       apiPath.api +
       this.base.API +
-      this.base.GET_ORDERS_ENDPOINT + '?limit='+limit+'&page='+pageNo 
+      this.base.GET_ORDERS_ENDPOINT + '?limit='+limit+'&page='+pageNo
     );
   }
 
