@@ -931,15 +931,15 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     style: this.dataObject.gridData.options.isRowSelection && this.dataObject.gridData.options.isRowSelection.isMultiple ? 'multi' : 'os',
                 },
 
-                searchDelay: __this.dataObject.gridData.options.isDataTableGlobalSearchApi && 
+                searchDelay: __this.dataObject.gridData.options.isDataTableGlobalSearchApi &&
                     __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchDelay ?
                     __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchDelay :
                     0,
 
                 // NOTE: setting search value here, triggers the on 'search' routine
-                // search: 
-                // __this.dataObject.gridData.options.search ? 
-                // __this.dataObject.gridData.options.search : 
+                // search:
+                // __this.dataObject.gridData.options.search ?
+                // __this.dataObject.gridData.options.search :
                 // "",
 
                 order: this.dataObject.gridData.options.isOrder ?
@@ -1381,6 +1381,35 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod(ev, $, document, table);
                     }
                 })
+            }
+
+            // sorting
+            // Datatable Main table global sort
+            if (__this.dataObject.gridData.options.isDataTableGlobalSortApi) {
+                // TODO: Call Table Global sort API
+                $('#' + this.tableId).off('order.dt');
+                $('#' + this.tableId).on('order.dt', function (ev) {
+                    if (table.order().length && !__this.dataObject.gridData.options.isDataTableGlobalSortApi.sortTriggered) {
+                        // Introduced sortTriggered to avoid multiples call. TODO # figure out whats causing such behavior
+                        __this.dataObject.gridData.options.isDataTableGlobalSortApi.sortTriggered = true;
+                        let columnAdjustment = 0;
+                        if(__this.identity === 'orders') {
+                            columnAdjustment = 2;
+                        }
+                        const sort = {
+                            sortColumn : __this.dataObject.gridData.headers[table.order()[0][0] - columnAdjustment],
+                            sortDirection : table.order()[0][1]
+                        };
+
+                        __this.dataObject.gridData.options.isDataTableGlobalSortApi.apiMethod(sort);
+
+                        setTimeout(function () {
+                            __this.dataObject.gridData.options.isDataTableGlobalSortApi.sortTriggered = false;
+                        }, 1000);
+                    }
+                });
+
+                console.log('register !!')
             }
 
             // Highlight pre checked rows
