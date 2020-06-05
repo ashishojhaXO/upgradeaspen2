@@ -36,6 +36,7 @@ import set = Reflect.set;
 
 import DataTableColumnSearchPluginExt from '../../../../scripts/data-table/data-table-search-plugin-ext';
 import { field } from '../customformbuilder/customformbuilder.model';
+import { stringFormat } from 'ngx-breadcrumbs/src/mc-breadcrumbs.shared';
 
 declare var $: any;
 
@@ -68,6 +69,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
     rowEle: any;
     dataTableSearchPlugin: DataTableColumnSearchPluginExt;
+    searchQ: string;
 
     constructor(
         public toastr: ToastsManager,
@@ -1366,9 +1368,17 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             }
 
+
             // search
             // Datatable Main table global search
             if (__this.dataObject.gridData.options.isDataTableGlobalSearchApi ) {
+
+                if(__this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchQuery) {
+                    $("input.input-sm").val(
+                        __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchQuery
+                    );
+                }
+
                 // TODO: Call Table Global search API
                 // __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod();
                 table.off('search.dt');
@@ -1377,9 +1387,15 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     // WARN: Optimization Problem: When typed 2 Char,
                     // Though its ignoring the call for Frist Char
                     // But still sending 2 calls in type of Second Char
-                    if(table.search() && table.search().length > 1) {
+                    if( table.search() 
+                        && table.search().length > 1 && 
+                        __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchQuery != table.search() 
+                    ) {
                         __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod(ev, $, document, table);
                     }
+
+                    // Seeting this after because, we need to compare oldVal to newVal above
+                    __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchQuery = table.search();
                 })
             }
 

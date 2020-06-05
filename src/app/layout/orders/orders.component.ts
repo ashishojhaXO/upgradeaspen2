@@ -139,34 +139,29 @@ export class OrdersComponent implements OnInit  {
     isDataTableGlobalSearchApi: {
       value: true,
       searchDelay: 2000, // in milli Second
-
+      searchQuery: "",
       apiMethod: (ev, $, document, table) => {
         // Initiate Search Api Call/Class
         // DataTable Api class
-
+        // Call Search api & pass the result to DataTable Object
         // this.dataTableSearchPlugin.search(ev, $, document, table)
-        this.searchApiDataRequest(this.orgValue, table)
-
-        // Attach to change event and call api & pass the result to DataTable Object
-
+        // this.searchApiDataRequest(this.orgValue, table)
+        this.searchDataRequest(this.orgValue, this.currentTable, null, table.search());
       }
-
     },
+
     isDataTableGlobalSortApi: {
       sortTriggered: false,
-      searchDelay: 2000, // in milli Second
       apiMethod: (sort) => {
         // Initiate Search Api Call/Class
         // DataTable Api class
         console.log('sort >>')
         console.log(sort);
+        // Call api & pass the result to DataTable Object
         this.searchDataRequest(this.orgValue, this.currentTable, sort);
-        // this.dataTableSearchPlugin.search(ev, $, document, table)
-        // Attach to change event and call api & pass the result to DataTable Object
-
       }
-
     },
+
     isTree: true,
     // isChildRowActions required when there need to be actions below every row.
     isChildRowActions: {
@@ -290,7 +285,8 @@ export class OrdersComponent implements OnInit  {
         this.searchDataRequestCsv(this.orgValue, table, csv);
       }
       else {
-        this.searchDataRequest(null, table);
+        // this.searchDataRequest(null, table);
+        this.searchDataRequest(this.orgValue, table);
       }
     }
   }
@@ -602,12 +598,22 @@ export class OrdersComponent implements OnInit  {
     this.populateDataTable(li, true);
   }
 
-  searchDataRequest(org = null, table?, sort?) {
+  searchDataRequest(org = null, table?, sort?, search?) {
 
     // if no table, then send all default, page=1 & limit=25
     // else, send table data
-    let data = this.compileDataForPage(org, table);
+    let data = {};
+    data = this.compileDataForPage(org, table);
 
+    if(search){
+      data = {
+        ...data,
+        ...{
+          'search': search
+        }
+      }
+    }
+    
     // this.hasData = false;
     this.showSpinner = true;
 
@@ -660,7 +666,8 @@ export class OrdersComponent implements OnInit  {
   }
 
   searchApiDataRequest(org = null, table?) {
-    this.searchQuery = table.search();
+
+    this.options[0].isDataTableGlobalSearchApi.searchQuery = table.search();
 
     // if no table, then send all default, page=1 & limit=25
     // else, send table data
@@ -737,11 +744,11 @@ export class OrdersComponent implements OnInit  {
     //   this.isHomeDepot = true;
     // }
 
-    if(this.searchQuery) {
-      this.options[0]["search"] = {
-        "search": this.searchQuery
-      }
-    }
+    // if(this.options[0].isDataTableGlobalSearchApi.searchQuery) {
+    //   this.options[0]["search"] = {
+    //     "search": this.searchQuery
+    //   }
+    // }
 
     this.gridData['options'] = this.options[0];
 
