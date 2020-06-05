@@ -212,18 +212,21 @@ export class GenericService {
    * PUT Set Default Payment method
    * @param dataObj
    */
-  public setDefaultPaymentMethod(dataObj: any) {
+  public setDefaultPaymentMethod(dataObj: any, headers) {
 
     const data = JSON.stringify(dataObj);
+    let deleteHeaderKeys = ['token', 'callingapp'];
 
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
-
     return this.service.Call(
         'put',
         apiPath.api +
         this.base.API +
-        this.base.PUT_DEFAULT_PAYMENTS_METHOD,
-        data
+        this.base.
+            PUT_DEFAULT_PAYMENTS_METHOD,
+        data,
+        headers,
+        deleteHeaderKeys
     );
   }
 

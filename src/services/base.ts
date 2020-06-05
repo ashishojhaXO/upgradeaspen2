@@ -14,7 +14,7 @@ export class BaseService {
   POST_PAYMENTS_CHARGE_ENDPOINT = '/payments/charge';
   ADMIN_REPORT = '/admin/report';
   ADMIN_REPORT_DOWNLOAD = "/admin/report/download";
-  PUT_DEFAULT_PAYMENTS_METHOD = '/payments/methods/default';
+  PUT_DEFAULT_PAYMENTS_METHOD = '/payment-method/set-default';
   GET_ORDERS_ENDPOINT = '/orders'; //'/orders'
   GET_USERS_ENDPOINT = '/users'; //'/orders'
 

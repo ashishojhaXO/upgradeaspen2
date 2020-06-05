@@ -165,9 +165,9 @@ export class PaymentMethodsComponent implements OnInit {
     this.showSpinner = true;
     this.setPaymentsMethodsData()
 
-    let headers = { 
-      org_id: window['fs_widget_config'].org_id, 
-      'x-api-key': window['fs_widget_config'].api_key 
+    let headers = {
+      org_id: window['fs_widget_config'].org_id,
+      'x-api-key': window['fs_widget_config'].api_key
     };
 
     return this.genericService
@@ -199,12 +199,20 @@ export class PaymentMethodsComponent implements OnInit {
   }
 
   setDefaultPaymentMethod(option) {
+
     const obj = {
-      vendor_id : this.vendorId,
-      paymentmethodid : option.paymentmethodid
+      user_id : this.userUuid,
+      payment_method_id : option.payment_method_id
     }
+
+    const headers = {
+      org_id: window['fs_widget_config'].org_id,
+      'x-api-key': window['fs_widget_config'].api_key,
+      'Content-Type': 'application/json'
+    };
+
     this.genericService
-        .setDefaultPaymentMethod(obj)
+        .setDefaultPaymentMethod(obj, headers)
         .subscribe( (res) => {
               this.showSpinner = false;
               Swal({
