@@ -212,7 +212,7 @@ export class GenericService {
    * PUT Set Default Payment method
    * @param dataObj
    */
-  public setDefaultPaymentMethod(dataObj: any, headers) {
+  public setDefaultPaymentMethod(dataObj: any, headers?) {
 
     const data = JSON.stringify(dataObj);
     let deleteHeaderKeys = ['token', 'callingapp'];
