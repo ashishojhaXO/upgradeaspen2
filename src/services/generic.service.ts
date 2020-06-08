@@ -219,7 +219,7 @@ export class GenericService {
 
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
     return this.service.Call(
-        'put',
+        'post',
         apiPath.api +
         this.base.API +
         this.base.
