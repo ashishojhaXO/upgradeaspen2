@@ -45,6 +45,7 @@ export class OrdersComponent implements OnInit  {
   select2Options = {
     // placeholder: { id: '', text: 'Select organization' }
   };
+  sortOption: any;
   options: Array<any> = [{
     isSearchColumn: true,
     isTableInfo: true,
@@ -146,7 +147,7 @@ export class OrdersComponent implements OnInit  {
         // Call Search api & pass the result to DataTable Object
         // this.dataTableSearchPlugin.search(ev, $, document, table)
         // this.searchApiDataRequest(this.orgValue, table)
-        this.searchDataRequest(this.orgValue, this.currentTable, null, table.search());
+        this.searchDataRequest(this.orgValue, this.currentTable, table.search());
       }
     },
 
@@ -157,6 +158,7 @@ export class OrdersComponent implements OnInit  {
         // DataTable Api class
         console.log('sort >>')
         console.log(sort);
+        this.sortOption = sort;
         // Call api & pass the result to DataTable Object
         this.searchDataRequest(this.orgValue, this.currentTable, sort);
       }
@@ -598,7 +600,7 @@ export class OrdersComponent implements OnInit  {
     this.populateDataTable(li, true);
   }
 
-  searchDataRequest(org = null, table?, sort?, search?) {
+  searchDataRequest(org = null, table?, search?) {
 
     // if no table, then send all default, page=1 & limit=25
     // else, send table data
@@ -614,7 +616,7 @@ export class OrdersComponent implements OnInit  {
       // }
       data['search'] = search;
     }
-    
+
     // this.hasData = false;
     this.showSpinner = true;
 
@@ -622,7 +624,7 @@ export class OrdersComponent implements OnInit  {
     // return this.searchData(org)
     return this.genericService
     // .successMockCall(data)
-        .getOrdersLineItems(data, this.isRoot, sort)
+        .getOrdersLineItems(data, this.isRoot, this.sortOption)
         .subscribe(
             response => {
               if (response && response.data.rows && typeof response.data.rows == "object" && response.data.rows.length ) {
