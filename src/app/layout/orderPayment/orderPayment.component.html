@@ -71,12 +71,30 @@
                 <span
                         style="font-size: 12px; padding: 15px"
                 >{{option.status ? option.status.toUpperCase() : '-'}}</span>
+
+                                    <ng-template #htmlContent>
+                                        <div style="border: 1px solid #FFFFFF; border-radius: 4px; width: 100%; margin: 5px; display: none;">
+                                            <p style="padding: 10px">
+                                                <b>Payment Information Received</b>
+                                                <br/>
+                                                <br/>
+                                                <span>We have received your payment details and it is currently being processed.
+                                                <br/>
+                                                It would take approximately 15 minutes after which updates will be reflected.
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </ng-template>
+
                                         <i
-                                                *ngIf="option.status && option.status.toUpperCase() === 'PAYMENT SETUP PENDING'"
-                                                placement="top"
-                                                style="margin-left: 5px; position: relative; top: 1px"
-                                                class="fa fa-question-circle"
+                                            *ngIf="option.status && option.status.toUpperCase() === 'PAYMENT SETUP PENDING'"
+                                            placement="top"
+                                            title="Payment Information Received. We have received your payment details and it is currently being processed. It would take approximately 15 minutes after which updates will be reflected."
+                                            style="margin-left: 5px; position: relative; top: 1px"
+                                            class="fa fa-question-circle"
                                         ></i>
+
+
                                     </td>
                                     <td style="width:10%; padding: 15px;">
                                         <input

@@ -124,30 +124,22 @@ export class OrderPaymentComponent {
 
   paymentTypeSelection(type) {
     this.selectionType = type;
-
-    console.log("selTYP: ", this.selectionType);
-
     if ( this.selectionType == 'default') {
-      console.log("IF mein")
       this.postPaymentMethods(1);
     }
   }
 
   successCB(res) {
 
-    console.log("SCB: ", res);
     const self = this;
     self.paymentOptions = [];
     if(res.attributes && res.attributes.length > 0){
-      console.log("SCB IFFF: ", res, this , " self", self);
       self.paymentOptions = res.attributes;
       // set paymentsChargeData to use it for charging
       res.attributes.filter((k, i) => {
         return k.is_default == 1 ? this.setPaymentsChargeData(k) : Object()
       })[0]
 
-      console.log("SCB IFFF: self.paymentOptions ", self.paymentOptions ,
-          " this payMC", this.paymentsChargeData );
     }
 
   }
@@ -239,7 +231,6 @@ export class OrderPaymentComponent {
 
   setPaymentsChargeData(option) {
     // [paymentsChargeData]="option.is_default == '1' ? option : false"
-    console.log("OPtion", option);
     this.paymentsChargeData = {
       vendorid: this.vendorId,
       orderid: this.orderId,
