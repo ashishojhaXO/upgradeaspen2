@@ -117,7 +117,7 @@
           "index": 1,
           "level": 2,
           "name": "orgmanagement",
-          "title": "Org Management",
+          "title": "Orgs",
           "id": "orgmanagement",
           "url": "app/admin/orgmanagement"
         },
@@ -125,7 +125,7 @@
           "index": 2,
           "level": 2,
           "name": "usermanagement",
-          "title": "User Management",
+          "title": "Users",
           "id": "usermanagement",
           "url": "app/admin/usermanagement"
         },
@@ -133,7 +133,7 @@
           "index": 3,
           "level": 2,
           "name": "vendormanagement",
-          "title": "Vendor Management",
+          "title": "Vendors",
           "id": "vendormanagement",
           "url": "app/admin/vendormanagement"
         },
@@ -141,7 +141,7 @@
           "index": 4,
           "level": 2,
           "name": "invoices",
-          "title": "Invoice Management",
+          "title": "Invoices",
           "id": "invoices",
           "url": "app/admin/invoices"
         },
@@ -149,7 +149,7 @@
           "index": 5,
           "level": 2,
           "name": "emailmanagement",
-          "title": "Email Management",
+          "title": "Emails",
           "id": "emailmanagement",
           "url": "app/admin/emailmanagement"
         },
