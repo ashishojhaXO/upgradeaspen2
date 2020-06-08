@@ -508,11 +508,11 @@ const routes: Routes = [
                 }
             },
             {
-                path: 'payment-methods',
+                path: 'manage-payments',
                 component: PaymentMethodsComponent,
                 data: {
                     breadcrumbs: true,
-                    text: 'Payment Methods'
+                    text: 'Manage Payments'
                 }
             }
 
