@@ -10,7 +10,12 @@ export class TooltipDirective {
     tooltip: HTMLElement;
     offset = 10;
 
-    constructor(private el: ElementRef, private renderer: Renderer2) { }
+    constructor(private el: ElementRef, private renderer: Renderer2) {
+    }
+
+    // ngOnInit() {
+    //     let ee = this.el
+    // }
 
     @HostListener('mouseenter') onMouseEnter() {
         if (!this.tooltip) { this.show(); }
