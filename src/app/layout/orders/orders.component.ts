@@ -158,6 +158,9 @@ export class OrdersComponent implements OnInit  {
         // DataTable Api class
         console.log('sort >>')
         console.log(sort);
+        if (this.sortOption && this.sortOption.sortColumn.key === sort.sortColumn.key) {
+          sort.sortDirection = sort.sortDirection === 'asc' ? 'desc' : 'asc';
+        }
         this.sortOption = sort;
         // Call api & pass the result to DataTable Object
         this.searchDataRequest(this.orgValue, this.currentTable, sort);
