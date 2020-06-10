@@ -152,6 +152,13 @@ export class UserManagementComponent implements OnInit  {
       email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       first: new FormControl('', Validators.required),
       last: new FormControl('', Validators.required),
+      phone: new FormControl('', null),
+      address_1: new FormControl('', Validators.required),
+      address_2: new FormControl('', null),
+      city: new FormControl('', Validators.required),
+      state: new FormControl('', Validators.required),
+      zip: new FormControl('', Validators.required),
+      country: new FormControl('', Validators.required),
       role: new FormControl('', Validators.required),
       org: new FormControl('', this.isRoot && !this.isRoleSuperUser ? Validators.required: null),
       vendor: new FormControl('', null),
@@ -160,7 +167,14 @@ export class UserManagementComponent implements OnInit  {
     this.userModel = {
       email: '',
       first: '',
-      last: ''
+      last: '',
+      phone: '',
+      address_1: '',
+      address_2: '',
+      city: '',
+      state: '',
+      zip: '',
+      country: ''
     };
 
     const groups = localStorage.getItem('loggedInUserGroup') || '';
@@ -647,6 +661,13 @@ export class UserManagementComponent implements OnInit  {
     dataObj.email_id = this.userForm.controls['email'].value;
     dataObj.first_name = this.userForm.controls['first'].value;
     dataObj.last_name = this.userForm.controls['last'].value;
+    dataObj.phone = this.userForm.controls['phone'].value;
+    dataObj.address_1 = this.userForm.controls['address_1'].value;
+    dataObj.address_2 = this.userForm.controls['address_2'].value;
+    dataObj.city = this.userForm.controls['city'].value;
+    dataObj.state = this.userForm.controls['state'].value;
+    dataObj.zip = this.userForm.controls['zip'].value;
+    dataObj.country = this.userForm.controls['country'].value;
     // dataObj.source = this.selectedSource;
     dataObj.role_id = this.selectedRole;
     if (!this.isRoleSuperUser) {
@@ -655,7 +676,8 @@ export class UserManagementComponent implements OnInit  {
       }
       dataObj.vendor_id = this.selectedVendor  ? this.selectedVendor : null;
     }
-    this.performUserAdditionRequest(dataObj);
+
+     this.performUserAdditionRequest(dataObj);
   }
 
   getRolesService() {
