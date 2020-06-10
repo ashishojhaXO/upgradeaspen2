@@ -77,7 +77,8 @@ export default class DataTableColumnSearchPluginExt {
       // $('div.dataTables_scrollHead table:first thead th.sorting, .sorting_asc, .sorting_desc')
       // $('div.dataTables_scrollHead table thead th tr').find(".sorting, .sorting_asc, .sorting_desc")
       // $('div.dataTables_scrollHead table thead th.sorting, .sorting_asc, .sorting_desc')
-      $('div.dataTables_scrollHead table thead tr').find("th.sorting, th.sorting_asc, th.sorting_desc")
+      $('div.dataTables_scrollHead table thead tr')
+      .find("th.sorting, th.sorting_asc, th.sorting_desc")
       .each( function () {
         // var title = $("#example thead th").text();
         var title = $(this).text();
@@ -141,39 +142,17 @@ export default class DataTableColumnSearchPluginExt {
   // Search-API
   // attachSearchOnChange
   attachOnChangeOnSearchInput(ev, $, document, table) {
-    // $(document).ready(function(e){
-      $('input.input-sm').off('change');
-      $('input.input-sm').on('change', function(e){
-        // e.stopPropagation();
-        console.log("CHHHHHH");
-      })
-    // })
   }
 
   // Search API
   // On search input change, Call the search endpoint & return the result
   searchApiCall(ev, $, document, table) {
-    console.log("SRAAAAA")
   }
 
   // Search-API/
 
 
-  // Sort-API
-  // attachOnClickOnSortIcon
-  attachOnClickOnSortIcon($, document, table) {
-    $('th.sorting,th.sorting_asc,th.sorting.desc').on('click', function(e){
-      // e.stopPropagation();
-      console.log("CLIIIII");
-    })
-  }
 
-  // Sort API Call
-  // Call the sort endpoint & return the result
-  sortApiCall() {
 
-  }
-
-  // Sort-API/
 
 }

@@ -56,7 +56,8 @@ export class SupportComponent implements OnInit {
             },
             fixedColumnFunc: (ev, $, table ) => {
                 // Util.DataTable.Func
-                DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+                // DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+                let d = new DataTableUtilsPluginExt(ev, $, table).run();
             },
         },
     }];

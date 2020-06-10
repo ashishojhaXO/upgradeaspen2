@@ -56,7 +56,8 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
       },
       fixedColumnFunc: (ev, $, table ) => {
         // Util.DataTable.Func
-        DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+        // DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+        let d = new DataTableUtilsPluginExt(ev, $, table).run();
       },
     },
     // Any number starting from 1 to ..., but not 0

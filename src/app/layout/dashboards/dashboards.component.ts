@@ -83,15 +83,20 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
     // NOTE: FixedColumn's Structure Changed
     // fixedColumn: 1
-    // isFixedColumn: {
-    //   fixedColumns: {
-    //     leftColumns: 1,
-    //   },
-    //   fixedColumnFunc: (ev, $, table ) => {
-    //     // Util.DataTable.Func
-    //     DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
-    //   },
-    // },
+    isFixedColumn: {
+      fixedColumns: {
+        leftColumns: 1,
+      },
+      fixedColumnFunc: (ev, $, table ) => {
+        // Util.DataTable.Func
+        // DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+        new DataTableUtilsPluginExt(ev, $, table).run();
+      },
+      fixedColumnFilterToggle: ($, table) => {
+        new DataTableUtilsPluginExt(null, $, table).attachClickInputSearch();
+      }
+
+    },
 
   }];
   dashboard: any;
