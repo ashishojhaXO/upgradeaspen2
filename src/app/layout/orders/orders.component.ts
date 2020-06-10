@@ -339,7 +339,6 @@ export class OrdersComponent implements OnInit  {
     return this.searchOrgData().subscribe(
         response => {
           if (response && response.data) {
-
             response.data.forEach(function (item) {
               this.orgArr.push({
                 id: item.org_uuid,

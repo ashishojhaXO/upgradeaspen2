@@ -15,7 +15,7 @@
           <!--{{ org.text }}-->
         <!--</option>-->
       <!--</select>-->
-      <select2 width="100%" *ngIf="orgArr.length"
+      <select2 width="resolve" *ngIf="orgArr.length"
                class="col-lg-12 col-md-12"
                style="padding: 0px;"
                [value]="orgValue"
