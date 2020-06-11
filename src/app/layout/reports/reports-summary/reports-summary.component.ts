@@ -79,10 +79,10 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
                 const groups = localStorage.getItem('loggedInUserGroup') || '';
                 const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
                 this.orgInfo = custInfo.org;
-            
+
                 console.log('custInfo >>>')
                 console.log(custInfo);
-            
+
                 const grp = JSON.parse(groups);
                 grp.forEach(function (item) {
                   if(item === 'ROOT' || item === 'SUPER_USER') {
@@ -248,7 +248,7 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.populateReportDataTable.bind(self)
             );
           } else {
@@ -265,7 +265,7 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
       // token = AccessToken.accessToken;
       token = AccessToken;
     }
-    let org=this.orgValue; 
+    let org=this.orgValue;
     console.log('token >>')
     console.log(token);
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
@@ -346,6 +346,10 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
     return this.searchOrgData().subscribe(
         response => {
           if (response && response.data) {
+            this.orgArr.push({
+              id: '',
+              text: 'All'
+            });
             response.data.forEach(function (ele) {
               this.orgArr.push({
                 id: ele.org_uuid,
@@ -386,11 +390,14 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
           return res.json();
         }).share();
   }
-  orgChange(value) {
-    this.showSpinner = true;
-    this.dataObject.isDataAvailable = false;
-    this.populateReportDataTable();
-  }
 
+  OnOrgChange(e) {
+    if (e.value !== this.orgValue) {
+      this.orgValue = e.value;
+      this.showSpinner = true;
+      this.dataObject.isDataAvailable = false;
+      this.populateReportDataTable();
+    }
+  }
 
 }

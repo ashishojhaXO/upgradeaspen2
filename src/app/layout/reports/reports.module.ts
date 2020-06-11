@@ -20,6 +20,7 @@ import { AppChartsModule } from '../../shared/components/app-charts/app-charts.m
 import {AppDataTableModule, AppSpinnerModule, DataTableModule, AppDataTable2Module} from '../../shared/components';
 import {ReportsUtil} from '../../shared/util/reports-util';
 import { OktaAuthService } from '../../../services/okta.service';
+import { Select2Module } from 'ng2-select2';
 
 @NgModule({
   imports: [
@@ -38,7 +39,8 @@ import { OktaAuthService } from '../../../services/okta.service';
     TagModule,
     AppPopupButtonModule,
     AppChartsModule,
-    AppSpinnerModule
+    AppSpinnerModule,
+    Select2Module
   ],
   declarations: [ReportsSummaryComponent, AdhocReportBuilderComponent, AlertNoticationdashboardsComponent, AlertNoticationdashboardsComponent],
   providers: [OrganizationService, AuthService, TheReportsService, ReportsService, ReportsUtil, DatePipe, OktaAuthService],
