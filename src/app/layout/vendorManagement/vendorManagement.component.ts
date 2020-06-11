@@ -68,7 +68,8 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
       },
       fixedColumnFunc: (ev, $, table ) => {
         // Util.DataTable.Func
-        DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+        // DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+        let d = new DataTableUtilsPluginExt(ev, $, table).run();
       },
     },*/
 

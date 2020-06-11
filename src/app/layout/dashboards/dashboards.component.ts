@@ -19,11 +19,13 @@ import Swal from 'sweetalert2';
 import {moment} from 'ngx-bootstrap/chronos/test/chain';
 import {ToasterService} from 'angular2-toaster';
 import DataTableUtilsPluginExt from '../../../scripts/data-table/data-table-utils-plugin-ext';
+import { GenericService } from '../../../services/generic.service';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboards.component.html',
-  styleUrls: ['./dashboards.component.scss']
+  styleUrls: ['./dashboards.component.scss'],
+  providers: [GenericService]
 })
 export class DashboardsComponent implements OnInit, PopupDataAction  {
 
@@ -87,8 +89,13 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       },
       fixedColumnFunc: (ev, $, table ) => {
         // Util.DataTable.Func
-        DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+        // DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+        new DataTableUtilsPluginExt(ev, $, table).run();
       },
+      fixedColumnFilterToggle: ($, table) => {
+        new DataTableUtilsPluginExt(null, $, table).attachClickInputSearch();
+      }
+
     },
 
   }];
@@ -123,7 +130,10 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   constructor(
       private okta: OktaAuthService,
       private route: ActivatedRoute, private router: Router, private http: Http,
-      toasterService: ToasterService) {
+      toasterService: ToasterService,
+      protected genericService: GenericService,
+  
+    ) {
     this.showSpinner = false;
     const groups = localStorage.getItem('loggedInUserGroup') || '';
     const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
@@ -474,7 +484,6 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   }
 
   getSeedDashboard() {
-    console.log("gSD")
 
     const AccessToken: any = localStorage.getItem('accessToken');
     let token = '';
@@ -1118,9 +1127,12 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         }).share();
   }
 
+  handleActions() {
+    // console.log("handleAct")
+  }
+
   handleSelect(selectedItem, type) {
    if(selectedItem.id){
-    console.log("Org",selectedItem);
     this.selectedOrg = [selectedItem];
     this.ngOnInit();
    }
