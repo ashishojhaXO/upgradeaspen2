@@ -31,6 +31,7 @@ export class OrderPaymentComponent {
   // domain: string;
   api_fs: any;
   vendorUuid:any;
+  userUuid:any;
   displayId: any;
   widget: any;
   isRoot: boolean;
@@ -58,7 +59,11 @@ export class OrderPaymentComponent {
       console.log('window[\'fs_widget_config\'] >>')
       console.log(window['fs_widget_config']);
       const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
-      this.vendorUuid = this.route.snapshot.paramMap.get('vendor_uuid');
+
+      // this.vendorUuid = this.route.snapshot.paramMap.get('vendor_uuid');
+      this.vendorUuid = customerInfo.vendor.vendor_id
+      this.userUuid = this.route.snapshot.paramMap.get('vendor_uuid');
+
       this.displayId = this.route.snapshot.paramMap.get('displayId');
       this.initVendorUuid();
       window['fs_widget_config'].vendor_id = this.vendorId = this.vendorUuid;
@@ -153,7 +158,8 @@ export class OrderPaymentComponent {
   paymentsChargeData: any;
 
   setPaymentsMethodsData() {
-    this.paymentsMethodsData = { vendor_id : this.vendorId } ;
+    // this.paymentsMethodsData = { vendor_id : this.vendorId } ;
+    this.paymentsMethodsData = { user_id: this.userUuid} ;
   }
 
   postPaymentMethods(option) {

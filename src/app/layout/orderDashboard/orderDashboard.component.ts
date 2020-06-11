@@ -34,6 +34,7 @@ export class OrderDashboardComponent implements OnInit  {
   @Input() displayOrderID: any;
   @Input() lineItemID: any;
   @Input() vendorUuid: any;
+  @Input() userUuid: any;
   config: any;
   options: any;
   orderDetails: any;
@@ -203,7 +204,8 @@ export class OrderDashboardComponent implements OnInit  {
     console.log('this.displayOrderID >>')
     console.log(this.displayOrderID);
     if (!this.orderDetails.payment_received_date) {
-      this.router.navigate(['/app/orderPayment/', this.orderID, this.vendorUuid, this.displayOrderID]);
+      // this.router.navigate(['/app/orderPayment/', this.orderID, this.vendorUuid, this.displayOrderID]);
+      this.router.navigate(['/app/orderPayment/', this.orderID, this.userUuid, this.displayOrderID]);
     }
   }
 

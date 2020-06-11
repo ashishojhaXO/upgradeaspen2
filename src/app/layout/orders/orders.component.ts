@@ -222,6 +222,7 @@ export class OrdersComponent implements OnInit  {
   currentTable: any;
   hasTemplates = false;
   private toaster: any;
+  selectedUserUuid: any;
 
   dataTableSearchPlugin: DataTableColumnSearchPluginExt;
 
@@ -251,6 +252,8 @@ export class OrdersComponent implements OnInit  {
 
     console.log('grp >>>')
     console.log(grp);
+
+    this.selectedUserUuid = JSON.parse(localStorage.getItem("customerInfo") ).user.user_uuid
 
     let isUser = false;
     grp.forEach(function (item) {
@@ -592,6 +595,8 @@ export class OrdersComponent implements OnInit  {
     this.response = res.data.rows;
     let li = this.calc(res, table);
 
+    console.log("LIIII: ", li);
+
     // In order to refresh DataTable, we have to reassign the data variable, dataObject here.
     // TODO: Data to send to html
     // NumberOfPages: Send number of rowCount/limit
@@ -837,7 +842,7 @@ export class OrdersComponent implements OnInit  {
   }
 
   handleRun(dataObj: any) {
-    console.log('dataObj.data >>')
+    console.log('hRun dataObj.data >>')
     console.log(dataObj.data.order_id);
 
     this.selectedOrderID = dataObj.data.internal_order_id;
