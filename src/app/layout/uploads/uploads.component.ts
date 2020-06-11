@@ -29,9 +29,8 @@ export class UploadsComponent implements OnInit  {
   api_fs: any;
   widget: any;
   isRoot: boolean;
-  orgArr: any;
+  orgArr = [];
   orgValue = '';
-
   constructor(
     private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder, private okta: OktaAuthService) {
   }
@@ -61,15 +60,16 @@ export class UploadsComponent implements OnInit  {
     return this.searchOrgData().subscribe(
         response => {
           if (response && response.data) {
-
-            const orgArr = [];
             response.data.forEach(function (item) {
-              orgArr.push({
+              this.orgArr.push({
                 id: item.org_uuid,
                 text: item.org_name
               });
-            });
-            this.orgArr = orgArr;
+            }, this);
+
+            if (this.orgArr.length) {
+              this.orgValue = this.orgArr[0].id;
+            }
           }
         },
         err => {
@@ -115,8 +115,10 @@ export class UploadsComponent implements OnInit  {
         }).share();
   }
 
-  orgChange(value) {
-
+  OnOrgChange(e) {
+    if (e.value && e.value !== this.orgValue) {
+      this.orgValue = e.value;
+    }
   }
 
   OnUploadTypeChange(e) {

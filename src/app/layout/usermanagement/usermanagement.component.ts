@@ -111,7 +111,8 @@ export class UserManagementComponent implements OnInit  {
   isRoleSuperUser: boolean;
   orgInfo: any;
   selectedOrg: any;
-  orgArr: any;
+  orgArrLanding = [];
+  orgArr = [];
   response: any;
   orgValue = '';
   hasData: boolean;
@@ -237,16 +238,16 @@ export class UserManagementComponent implements OnInit  {
     return this.searchOrgData().subscribe(
         response => {
           if (response && response.data) {
-
-            const orgArr = [];
             response.data.forEach(function (item) {
-              orgArr.push({
+              this.orgArr.push({
                 id: item.org_uuid,
                 text: item.org_name
               });
-            });
+            }, this);
 
-            this.orgArr = orgArr;
+            this.orgArrLanding = JSON.parse(JSON.stringify(this.orgArr));
+            this.orgArrLanding.unshift({ id: '', text: 'All'});
+
             if (this.orgArr.length) {
               this.selectedOrg = this.orgArr[0].id;
               this.userForm.patchValue({
@@ -555,6 +556,14 @@ export class UserManagementComponent implements OnInit  {
     }
   }
 
+  OnOrgLandingChange(e) {
+    if (e.value !== this.orgValue) {
+      this.orgValue = e.value;
+      this.dataObject.isDataAvailable = false;
+      this.searchDataRequest(this.orgValue);
+    }
+  }
+
   handleRowSelection(rowObj: any, rowData: any) {
 
   }
@@ -582,13 +591,6 @@ export class UserManagementComponent implements OnInit  {
         return res.json();
       }).share();
   }
-
-
-  orgChange(value) {
-      this.dataObject.isDataAvailable = false;
-      this.searchDataRequest(value);
-  }
-
 
   setDataTableHeaders( ) {
     // Ideally pass data into this function & then set the DataTableHeaders

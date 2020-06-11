@@ -117,6 +117,9 @@ export class InvoicesComponent implements OnInit  {
     format: "YYYY-MM-DD",
     showClear: true
   };
+  select2Options = {
+    // placeholder: { id: '', text: 'Select organization' }
+  };
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
     const groups = localStorage.getItem('loggedInUserGroup') || '';
@@ -678,6 +681,10 @@ export class InvoicesComponent implements OnInit  {
     return this.searchOrgData().subscribe(
         response => {
           if (response && response.data) {
+            this.orgArr.push({
+              id: '',
+              text: 'All'
+            });
             response.data.forEach(function (ele) {
               this.orgArr.push({
                 id: ele.org_uuid,
@@ -719,9 +726,12 @@ export class InvoicesComponent implements OnInit  {
         }).share();
   }
 
-  orgChange(value) {
-    this.showSpinner = true;
-    this.dataObject.isDataAvailable = false;
-    this.searchDataRequest();
+  OnOrgChange(e) {
+    if (e.value !== this.orgValue) {
+      this.orgValue = e.value;
+      this.showSpinner = true;
+      this.dataObject.isDataAvailable = false;
+      this.searchDataRequest();
+    }
   }
 }

@@ -103,7 +103,7 @@ export class AlertNoticationdashboardsComponent implements OnInit {
             let self = this;
             this.widget.refreshElseSignout(
               this,
-              err, 
+              err,
               self.searchDataRequest.bind(self)
             );
           } else {
@@ -120,7 +120,7 @@ export class AlertNoticationdashboardsComponent implements OnInit {
       // token = AccessToken.accessToken;
       token = AccessToken;
     }
-    let org=this.orgValue; 
+    let org=this.orgValue;
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
     var url = this.api_fs.api + '/api/reports/alert'+( org ? ('?org_uuid=' + org) : '');
@@ -176,6 +176,10 @@ export class AlertNoticationdashboardsComponent implements OnInit {
     return this.searchOrgData().subscribe(
         response => {
           if (response && response.data) {
+            this.orgArr.push({
+              id: '',
+              text: 'All'
+            });
             response.data.forEach(function (ele) {
               this.orgArr.push({
                 id: ele.org_uuid,
@@ -216,10 +220,14 @@ export class AlertNoticationdashboardsComponent implements OnInit {
           return res.json();
         }).share();
   }
-  orgChange(value) {
-    this.showSpinner = true;
-    this.dataObject.isDataAvailable = false;
-    this.searchDataRequest();
+
+  OnOrgChange(e) {
+    if (e.value !== this.orgValue) {
+      this.orgValue = e.value;
+      this.showSpinner = true;
+      this.dataObject.isDataAvailable = false;
+      this.searchDataRequest();
+    }
   }
 
 }

@@ -86,6 +86,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
   resultStatus: any;
   orgValue = '';
   orgArr = [];
+  orgArrLanding = [];
   isRoot: boolean;
   orgInfo: any;
   hideSubmit: any;
@@ -112,7 +113,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     }, this);
 
     this.vendorForm = new FormGroup({
-      org: new FormControl('', this.isRoot ? Validators.required : null),
+      org: new FormControl('', null),
       external_vendor_id: new FormControl('', Validators.required),
       first_name: new FormControl('', Validators.required),
       last_name: new FormControl('', Validators.required),
@@ -165,6 +166,9 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
                 text: ele.org_name
               });
             }, this);
+
+            this.orgArrLanding = JSON.parse(JSON.stringify(this.orgArr));
+            this.orgArrLanding.unshift({ id: '', text: 'All'});
 
             this.vendorModel.org = this.orgArr[0].id;
             this.vendorForm.patchValue({
@@ -261,10 +265,24 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
         }).share();
   }
 
-  orgChange(value) {
-    this.dataObject.isDataAvailable = false;
-    this.searchDataRequest(value);
+  OnOrgChanged(e: any) {
+    if (e.value && e.value !== this.vendorModel.org) {
+      this.vendorModel.org = e.value;
+    }
   }
+
+  OnOrgLandingChange(e) {
+    if (e.value !== this.orgValue) {
+      this.orgValue = e.value;
+      this.dataObject.isDataAvailable = false;
+      this.searchDataRequest(this.orgValue);
+    }
+  }
+
+  // orgChange(value) {
+  //   this.dataObject.isDataAvailable = false;
+  //   this.searchDataRequest(value);
+  // }
 
   populateDataTable(response, initialLoad) {
     const tableData = response;
@@ -413,7 +431,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.error = '';
     const dataObj: any = {};
     if (this.isRoot) {
-      dataObj.org_uuid = this.vendorForm.controls['org'].value;
+      dataObj.org_uuid = this.vendorModel.org;
     }
     dataObj.external_vendor_id = this.vendorForm.controls['external_vendor_id'].value;
     dataObj.first_name = this.vendorForm.controls['first_name'].value;
@@ -551,6 +569,11 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
     this.hideSubmit = false;
     this.vendorForm.reset();
     modalComponent.hide();
+
+    if (this.orgArr && this.orgArr.length) {
+      this.vendorModel.org = this.orgArr[0].id;
+    }
+
     this.reLoad();
   }
 
@@ -589,7 +612,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
               error,
               this.validateCompany.bind(self, company_name)
             );
-          }   
+          }
           return Observable.throw(error.status);
       }).share();
    }
