@@ -31,6 +31,7 @@ export class OrderPaymentComponent {
   // domain: string;
   api_fs: any;
   vendorUuid:any;
+  userUuid: any;
   displayId: any;
   widget: any;
   isRoot: boolean;
@@ -64,6 +65,8 @@ export class OrderPaymentComponent {
       window['fs_widget_config'].vendor_id = this.vendorId = this.vendorUuid;
       window['fs_widget_config'].api_key = customerInfo.org.x_api_key;
       window['fs_widget_config'].org_id = customerInfo.org.org_id;
+      window['fs_widget_config'].user_uuid = this.userUuid = customerInfo.user.user_uuid;
+
       console.log("vendorUuid",this.vendorId);
       // Temp assignment FOR TESTING:
       // window['fs_widget_config'].vendor_id = '592f94f3-e2b1-4621-b1c0-c795ee2a1814'
@@ -194,12 +197,26 @@ export class OrderPaymentComponent {
   setDefaultPaymentMethod(option) {
     console.log('option >>')
     console.log(option);
+    /*
     const obj = {
       vendor_id : this.vendorId,
       paymentmethodid : option.paymentmethodid
     }
+    */
+
+    const obj = {
+      user_id : this.userUuid,
+      payment_method_id : option.paymentmethodid
+    }
+
+    const headers = {
+      org_id: window['fs_widget_config'].org_id,
+      'x-api-key': window['fs_widget_config'].api_key,
+      'Content-Type': 'application/json'
+    };
+
     this.genericService
-        .setDefaultPaymentMethod(obj)
+        .setDefaultPaymentMethod(obj, headers)
         .subscribe( (res) => {
               this.showSpinner = false;
               Swal({
