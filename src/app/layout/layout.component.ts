@@ -25,7 +25,7 @@ export class LayoutComponent implements DoCheck, OnInit {
   });
   const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
     if((custInfo.org.meta_data).length){
-     this.metaData = JSON.parse(custInfo.org.meta_data);;
+     this.metaData = JSON.parse(custInfo.org.meta_data.replace(/'/g, '"'));
     }
     this._applyAyncTheme(this.metaData);
   }
