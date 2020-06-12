@@ -111,12 +111,15 @@ export class UserManagementComponent implements OnInit  {
   isRoleSuperUser: boolean;
   orgInfo: any;
   selectedOrg: any;
-  orgArr: any;
+  orgArrLanding = [];
+  orgArr = [];
   response: any;
   orgValue = '';
   hasData: boolean;
   hideSubmit = false;
-
+  select2Options = {
+     placeholder: { id: '', text: 'Select Vendor' }
+  };
   sourceOptions = [
     {
       id: 'f7',
@@ -150,15 +153,29 @@ export class UserManagementComponent implements OnInit  {
       email: new FormControl('', [Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]),
       first: new FormControl('', Validators.required),
       last: new FormControl('', Validators.required),
+      phone: new FormControl('', null),
+      address_1: new FormControl('', Validators.required),
+      address_2: new FormControl('', null),
+      city: new FormControl('', Validators.required),
+      state: new FormControl('', Validators.required),
+      zip: new FormControl('', Validators.required),
+      country: new FormControl('', Validators.required),
       role: new FormControl('', Validators.required),
       org: new FormControl('', this.isRoot && !this.isRoleSuperUser ? Validators.required: null),
-      vendor: new FormControl('', Validators.required),
+      vendor: new FormControl('', null),
     });
 
     this.userModel = {
       email: '',
       first: '',
-      last: ''
+      last: '',
+      phone: '',
+      address_1: '',
+      address_2: '',
+      city: '',
+      state: '',
+      zip: '',
+      country: ''
     };
 
     const groups = localStorage.getItem('loggedInUserGroup') || '';
@@ -221,16 +238,16 @@ export class UserManagementComponent implements OnInit  {
     return this.searchOrgData().subscribe(
         response => {
           if (response && response.data) {
-
-            const orgArr = [];
             response.data.forEach(function (item) {
-              orgArr.push({
+              this.orgArr.push({
                 id: item.org_uuid,
                 text: item.org_name
               });
-            });
+            }, this);
 
-            this.orgArr = orgArr;
+            this.orgArrLanding = JSON.parse(JSON.stringify(this.orgArr));
+            this.orgArrLanding.unshift({ id: '', text: 'All'});
+
             if (this.orgArr.length) {
               this.selectedOrg = this.orgArr[0].id;
               this.userForm.patchValue({
@@ -302,6 +319,10 @@ export class UserManagementComponent implements OnInit  {
         this.showSpinner = false;
         if (response) {
           const vendorOptions = [];
+          vendorOptions.push({
+            id: '',
+            text: ''
+          });
           response.forEach(function (item) {
             vendorOptions.push({
               id: item.vendor_id,
@@ -309,12 +330,12 @@ export class UserManagementComponent implements OnInit  {
             });
           });
           this.vendorOptions = vendorOptions;
-          if(response.length) {
-            this.selectedVendor = response[0].vendor_id;
-            this.userForm.patchValue({
-              vendor : response[0].vendor_id
-            });
-          }
+          // if(response.length) {
+          //   this.selectedVendor = response[0].vendor_id;
+          //   this.userForm.patchValue({
+          //     vendor : response[0].vendor_id
+          //   });
+          // }
         }
       },
       err => {
@@ -487,13 +508,12 @@ export class UserManagementComponent implements OnInit  {
 
     this.isRoleSuperUser = this.selectedRole == '4' ? true : false;
 
-    if (this.isRoleSuperUser) {
-      this.userForm.controls['vendor'].setValidators(null);
-    } else {
-      this.userForm.controls['vendor'].setValidators([Validators.required]);
-    }
-
-    this.userForm.controls['vendor'].updateValueAndValidity();
+    // if (this.isRoleSuperUser) {
+    //   this.userForm.controls['vendor'].setValidators(null);
+    // } else {
+    //   this.userForm.controls['vendor'].setValidators([Validators.required]);
+    // }
+    // this.userForm.controls['vendor'].updateValueAndValidity();
 
     console.log('this.userForm >>>')
     console.log(this.userForm);
@@ -536,6 +556,14 @@ export class UserManagementComponent implements OnInit  {
     }
   }
 
+  OnOrgLandingChange(e) {
+    if (e.value !== this.orgValue) {
+      this.orgValue = e.value;
+      this.dataObject.isDataAvailable = false;
+      this.searchDataRequest(this.orgValue);
+    }
+  }
+
   handleRowSelection(rowObj: any, rowData: any) {
 
   }
@@ -563,13 +591,6 @@ export class UserManagementComponent implements OnInit  {
         return res.json();
       }).share();
   }
-
-
-  orgChange(value) {
-      this.dataObject.isDataAvailable = false;
-      this.searchDataRequest(value);
-  }
-
 
   setDataTableHeaders( ) {
     // Ideally pass data into this function & then set the DataTableHeaders
@@ -642,20 +663,23 @@ export class UserManagementComponent implements OnInit  {
     dataObj.email_id = this.userForm.controls['email'].value;
     dataObj.first_name = this.userForm.controls['first'].value;
     dataObj.last_name = this.userForm.controls['last'].value;
+    dataObj.phone = this.userForm.controls['phone'].value;
+    dataObj.address_1 = this.userForm.controls['address_1'].value;
+    dataObj.address_2 = this.userForm.controls['address_2'].value;
+    dataObj.city = this.userForm.controls['city'].value;
+    dataObj.state = this.userForm.controls['state'].value;
+    dataObj.zip = this.userForm.controls['zip'].value;
+    dataObj.country = this.userForm.controls['country'].value;
     // dataObj.source = this.selectedSource;
     dataObj.role_id = this.selectedRole;
     if (!this.isRoleSuperUser) {
       if (this.isRoot) {
         dataObj.org_uuid = this.selectedOrg;
       }
-      dataObj.vendor_id = this.selectedVendor;
+      dataObj.vendor_id = this.selectedVendor  ? this.selectedVendor : null;
     }
 
-    // if (this.selectedSource === 'vendor') {
-    //
-    // }
-
-    this.performUserAdditionRequest(dataObj);
+     this.performUserAdditionRequest(dataObj);
   }
 
   getRolesService() {
@@ -771,8 +795,8 @@ export class UserManagementComponent implements OnInit  {
     this.userForm.reset();
     this.selectedSource = '';
     this.isRoleSuperUser = false;
-    this.userForm.controls['vendor'].setValidators([Validators.required]);
-    this.userForm.controls['vendor'].updateValueAndValidity();
+   // this.userForm.controls['vendor'].setValidators([Validators.required]);
+   // this.userForm.controls['vendor'].updateValueAndValidity();
 
     if (this.vendorOptions && this.vendorOptions.length) {
       this.selectedVendor = this.vendorOptions[0].id;

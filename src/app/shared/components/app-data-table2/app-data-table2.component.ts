@@ -1317,6 +1317,10 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // let columnSearch = new DataTableColumnSearchPluginExt();
                 __this.dataTableSearchPlugin.columnSearch($, document, table)
 
+                if(__this.dataObject.gridData.options.isFixedColumn ) {
+                    __this.dataObject.gridData.options.isFixedColumn.fixedColumnFilterToggle($, table);
+                }
+
                 table.off('draw');
             });
 
@@ -1327,6 +1331,10 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     __this.dataObject.gridData.options.isFixedColumn.fixedColumnFunc(ev, $, table);
                 })
             }
+
+            // if(__this.dataObject.gridData.options.isFixedColumnFilterToggle) {
+            //     __this.dataObject.gridData.options.isFixedColumnFilterToggle.toggle($, table);
+            // }
 
             // If we decide to get data of only 1 page to show in the table and not all data
             if (__this.dataObject.gridData.options.isApiCallForNextPage ) {

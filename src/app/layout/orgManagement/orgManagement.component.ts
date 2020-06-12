@@ -56,7 +56,8 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
       },
       fixedColumnFunc: (ev, $, table ) => {
         // Util.DataTable.Func
-        DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+        // DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+        let d = new DataTableUtilsPluginExt(ev, $, table).run();
       },
     },
     // Any number starting from 1 to ..., but not 0
@@ -468,27 +469,28 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
           if (response) {
             this.showSpinner = false;
             this.error = { type : response.data ? 'success' : 'fail' , message : response.data ?  'Org successfully ' + ( this.editID ? 'updated' : 'created' ) : 'Org ' + ( this.editID ? 'editing' : 'creation' ) + ' failed' };
-            if (!this.editID) {
-              const vendorObj: any = {};
-              vendorObj.org_uuid = response.data.org_uuid;
-              vendorObj.external_vendor_id = Math.floor(1000000000 + Math.random() * 9000000000);
-              vendorObj.first_name = dataObj.first_name;
-              vendorObj.last_name = dataObj.last_name;
-              vendorObj.company_name = response.data.org_name;
-              vendorObj.email = dataObj.email_id;
-              vendorObj.alternate_email_id = dataObj.alternate_email_id;
-              vendorObj.address_1 = dataObj.address_1;
-              vendorObj.address_2 = dataObj.address_2;
-              vendorObj.city = dataObj.city;
-              vendorObj.state = dataObj.state;
-              vendorObj.zip = dataObj.zip;
-              vendorObj.country = dataObj.country;
-              this.performVendorAdditionRequest(vendorObj);
-            } else {
-              if (response.data) {
-                this.hideSubmit = true;
-              }
+            if (response.data) {
+              this.hideSubmit = true;
             }
+            // if (!this.editID) {
+            //   const vendorObj: any = {};
+            //   vendorObj.org_uuid = response.data.org_uuid;
+            //   vendorObj.external_vendor_id = Math.floor(1000000000 + Math.random() * 9000000000);
+            //   vendorObj.first_name = dataObj.first_name;
+            //   vendorObj.last_name = dataObj.last_name;
+            //   vendorObj.company_name = response.data.org_name;
+            //   vendorObj.email = dataObj.email_id;
+            //   vendorObj.alternate_email_id = dataObj.alternate_email_id;
+            //   vendorObj.address_1 = dataObj.address_1;
+            //   vendorObj.address_2 = dataObj.address_2;
+            //   vendorObj.city = dataObj.city;
+            //   vendorObj.state = dataObj.state;
+            //   vendorObj.zip = dataObj.zip;
+            //   vendorObj.country = dataObj.country;
+            //   this.performVendorAdditionRequest(vendorObj);
+            // } else {
+            //
+            // }
           }
         },
         err => {

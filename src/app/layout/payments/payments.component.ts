@@ -52,7 +52,8 @@ export class PaymentsComponent implements OnInit  {
       },
       fixedColumnFunc: (ev, $, table ) => {
         // Util.DataTable.Func
-        DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+        // DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+        let d = new DataTableUtilsPluginExt(ev, $, table).run();
       },
     },
 
@@ -127,7 +128,7 @@ export class PaymentsComponent implements OnInit  {
   dropList: boolean = false;
   payeeObject: any;
   isRoot: boolean;
-  orgArr: any;
+  orgArr = [];
   orgValue = '';
 
   constructor(private okta: OktaAuthService, private organizationService: OrganizationService, private route: ActivatedRoute, private router: Router, private http: Http) {
@@ -189,10 +190,13 @@ export class PaymentsComponent implements OnInit  {
       }
     });
   }
-  
-  orgChange(value) {
-    this.dataObject.isDataAvailable = false;
-    this.searchDataRequest(value);
+
+  OnOrgChange(e) {
+    if (e.value !== this.orgValue) {
+      this.orgValue = e.value;
+      this.dataObject.isDataAvailable = false;
+      this.searchDataRequest(this.orgValue);
+    }
   }
 
   onSearchChange(e){
@@ -364,16 +368,16 @@ export class PaymentsComponent implements OnInit  {
     return this.searchOrgData().subscribe(
         response => {
           if (response && response.data) {
-
-            const orgArr = [];
+            this.orgArr.push({
+              id: '',
+              text: 'All'
+            })
             response.data.forEach(function (item) {
-              orgArr.push({
+              this.orgArr.push({
                 id: item.org_uuid,
                 text: item.org_name
               });
-            });
-
-            this.orgArr = orgArr;
+            }, this);
           }
         },
         err => {

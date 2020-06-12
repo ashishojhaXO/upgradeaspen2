@@ -7,14 +7,20 @@
     </div>
   </div>
   <div *ngIf="isRoot">
-    <label class="col-xs-12 col-sm-2">Select Org: </label>
+    <label class="col-xs-12 col-sm-1">Select Org: </label>
     <div class="col-xs-12 col-sm-6">
-      <select [(ngModel)]="orgValue" class="form-control" (change)='orgChange(orgValue)'>
-        <option [value]="''" >All</option>
-        <option *ngFor="let org of orgArr" [value]="org.id">
-          {{ org.text }}
-        </option>
-      </select>
+      <!--<select [(ngModel)]="orgValue" class="form-control" (change)='orgChange(orgValue)'>-->
+        <!--<option [value]="''" >All</option>-->
+        <!--<option *ngFor="let org of orgArr" [value]="org.id">-->
+          <!--{{ org.text }}-->
+        <!--</option>-->
+      <!--</select>-->
+      <select2 width="resolve" *ngIf="orgArrLanding.length"
+               class="col-lg-12 col-md-12"
+               style="padding: 0px;"
+               [value]="orgValue"
+               (valueChanged)="OnOrgLandingChange($event);"
+               [data]="orgArrLanding"></select2>
     </div>
   </div>
   <div class="">
@@ -79,6 +85,62 @@
               </div>
             </div>
             <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">Phone : </label>
+              <input formControlName="phone" [(ngModel)]="userModel.phone" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">Address 1 <span class="mandatory">*</span> </label>
+              <input formControlName="address_1" [(ngModel)]="userModel.address_1" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="userForm.controls['address_1'].invalid && (userForm.controls['address_1'].dirty || userForm.controls['address_1'].touched)" class="alert alert-danger">
+              <div *ngIf="userForm.controls['address_1'].errors.required">
+                Address 1 is required.
+              </div>
+            </div>
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">Address 2 : </label>
+              <input formControlName="address_2" [(ngModel)]="userModel.address_2" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">City <span class="mandatory">*</span> </label>
+              <input formControlName="city" [(ngModel)]="userModel.city" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="userForm.controls['city'].invalid && (userForm.controls['city'].dirty || userForm.controls['city'].touched)" class="alert alert-danger">
+              <div *ngIf="userForm.controls['city'].errors.required">
+                City is required.
+              </div>
+            </div>
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">State <span class="mandatory">*</span> </label>
+              <input formControlName="state" [(ngModel)]="userModel.state" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="userForm.controls['state'].invalid && (userForm.controls['state'].dirty || userForm.controls['state'].touched)" class="alert alert-danger">
+              <div *ngIf="userForm.controls['state'].errors.required">
+                State is required.
+              </div>
+            </div>
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">Zip <span class="mandatory">*</span> </label>
+              <input formControlName="zip" [(ngModel)]="userModel.zip" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="userForm.controls['zip'].invalid && (userForm.controls['zip'].dirty || userForm.controls['zip'].touched)" class="alert alert-danger">
+              <div *ngIf="userForm.controls['zip'].errors.required">
+                Zip is required.
+              </div>
+              <div *ngIf="userForm.controls['zip'].errors.pattern">
+                Only numbers allowed.
+              </div>
+            </div>
+            <div class="form-group-fields">
+              <label class="col-lg-4 col-md-4">Country <span class="mandatory">*</span> </label>
+              <input formControlName="country" [(ngModel)]="userModel.country" type="text" class="col-lg-8 col-md-8 form-field"/>
+            </div>
+            <div class="col-lg-12 col-md-12 form-field" *ngIf="userForm.controls['country'].invalid && (userForm.controls['country'].dirty || userForm.controls['country'].touched)" class="alert alert-danger">
+              <div *ngIf="userForm.controls['country'].errors.required">
+                Country is required.
+              </div>
+            </div>
+            <div class="form-group-fields">
               <label class="col-lg-4 col-md-4">Role <span class="mandatory">*</span> </label>
               <select2 width="100%" placeholder="Select" class="col-lg-8 col-md-8" style="padding: 0px; line-height: 1.42857143"
                        [value]="selectedRole"
@@ -89,7 +151,7 @@
             <div *ngIf="!isRoleSuperUser">
               <div class="form-group-fields" *ngIf="isRoot">
                 <label class="col-lg-4 col-md-4">Org <span class="mandatory">*</span>  </label>
-                <select2 width="100%" placeholder="Select" class="col-lg-8 col-md-8" style="padding: 0px; line-height: 1.42857143"
+                <select2 *ngIf="orgArr.length" width="100%" placeholder="Select" class="col-lg-8 col-md-8" style="padding: 0px; line-height: 1.42857143"
                          [value]="selectedOrg"
                          (valueChanged)="OnOrgChanged($event);"
                          [data]="orgArr"
@@ -103,9 +165,10 @@
               <!--[data]="sourceOptions"></select2>-->
               <!--</div>-->
               <div class="form-group-fields">
-                <label class="col-lg-4 col-md-4">Vendor ID <span class="mandatory">*</span> </label>
+                <label class="col-lg-4 col-md-4">Vendor ID</label>
                 <select2 width="100%" placeholder="Select" class="col-lg-8 col-md-8" style="padding: 0px; line-height: 1.42857143"
                          [value]="selectedVendor"
+                         [options]="select2Options"
                          (valueChanged)="OnVendorChanged($event);"
                          [data]="vendorOptions"></select2>
               </div>

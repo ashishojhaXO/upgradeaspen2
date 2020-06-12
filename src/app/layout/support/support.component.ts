@@ -56,7 +56,8 @@ export class SupportComponent implements OnInit {
             },
             fixedColumnFunc: (ev, $, table ) => {
                 // Util.DataTable.Func
-                DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+                // DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
+                let d = new DataTableUtilsPluginExt(ev, $, table).run();
             },
         },
     }];
@@ -102,6 +103,9 @@ export class SupportComponent implements OnInit {
     selectedOrg: any;
     orgValue = '';
     dataObject: any = {};
+    select2Options = {
+        // placeholder: { id: '', text: 'Select organization' }
+    };
 
     constructor(
         private okta: OktaAuthService,
@@ -113,16 +117,16 @@ export class SupportComponent implements OnInit {
         const groups = localStorage.getItem('loggedInUserGroup') || '';
         const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
         this.orgInfo = custInfo.org;
-    
+
         console.log('custInfo >>>')
         console.log(custInfo);
-    
+
         const grp = JSON.parse(groups);
         grp.forEach(function (item) {
           if(item === 'ROOT' || item === 'SUPER_USER') {
             this.isRoot = true;
           }
-        }, this);        
+        }, this);
     }
 
     ngOnInit() {
@@ -130,7 +134,7 @@ export class SupportComponent implements OnInit {
         this.showSpinner = true;
         this.height = '50vh';
         this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
-        this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));        
+        this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
         this.searchOrgRequest();
         Observable.fromEvent(this.searchField.nativeElement, 'keyup').debounceTime(500).subscribe(value => {
             this.matchingResults = [];
@@ -171,6 +175,11 @@ export class SupportComponent implements OnInit {
         this.showSpinner = false;
     }
 
+    OnOrgChange(e) {
+        if (e.value && e.value !== this.orgValue) {
+            this.orgValue = e.value;
+        }
+    }
 
     OnSearchSelect(e: any): void {
 
@@ -360,7 +369,7 @@ export class SupportComponent implements OnInit {
             // token = AccessToken.accessToken;
             token = AccessToken;
         }
-        let org=this.orgValue; 
+        let org=this.orgValue;
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
         const options = new RequestOptions({headers: headers});
         var url = this.api_fs.api + '/api/orders/vendor?vendor_id=' + vendorID + ( org ? ('&org_uuid=' + org) : '');;
@@ -378,7 +387,7 @@ export class SupportComponent implements OnInit {
             // token = AccessToken.accessToken;
             token = AccessToken;
         }
-        let org=this.orgValue; 
+        let org=this.orgValue;
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
         const options = new RequestOptions({headers: headers});
         var url = this.api_fs.api + '/api/vendors/search?search=' + match + ( org ? ('&org_uuid=' + org) : '');
@@ -396,7 +405,7 @@ export class SupportComponent implements OnInit {
             // token = AccessToken.accessToken;
             token = AccessToken;
         }
-        let org=this.orgValue; 
+        let org=this.orgValue;
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen' });
         const options = new RequestOptions({headers: headers});
         var url = this.api_fs.api + '/api/orders/search?search=' + match+( org ? ('&org_uuid=' + org) : '');
@@ -431,7 +440,7 @@ export class SupportComponent implements OnInit {
             // token = AccessToken.accessToken;
             token = AccessToken;
         }
-        let org=this.orgValue;    
+        let org=this.orgValue;
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
         const options = new RequestOptions({headers: headers});
         var url = this.api_fs.api + '/api/payments/transactions'+( org ? ('?org_uuid=' + org) : '');
@@ -476,7 +485,7 @@ export class SupportComponent implements OnInit {
         console.log('this.selectedVendor >>')
         console.log(this.selectedVendor);
 
-        let org=this.orgValue; 
+        let org=this.orgValue;
         const dataOb={
             vendor_id: this.selectedVendorUUID,
             org_id: 2,
@@ -734,9 +743,13 @@ export class SupportComponent implements OnInit {
                   });
                 }, this);
               }
+
+              if (this.orgArr.length) {
+                  this.orgValue = this.orgArr[0].id;
+              }
             },
             err => {
-    
+
               if(err.status === 401) {
                 let self = this;
                 this.widget.refreshElseSignout(
@@ -757,7 +770,7 @@ export class SupportComponent implements OnInit {
           // token = AccessToken.accessToken;
           token = AccessToken;
         }
-    
+
         const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
         const options = new RequestOptions({headers: headers});
         var url = this.api_fs.api + '/api/orgs';
@@ -770,7 +783,7 @@ export class SupportComponent implements OnInit {
       orgChange(value) {
         this.showSpinner = true;
         this.dataObject.isDataAvailable = false;
-        this.searchType = '';        
+        this.searchType = '';
         this.showSpinner = false;
       }
 }
