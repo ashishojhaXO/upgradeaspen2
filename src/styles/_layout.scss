@@ -61,6 +61,7 @@ label {
 .btn-primary:hover, .btn-secondary:hover {
   background: #54575a !important;
   color: #fff !important;
+  border-color: transparent !important;
 }
 
 p.page-title {
@@ -923,7 +924,7 @@ ul.main-menu li a {
 }
 
 .bottom-menu {
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

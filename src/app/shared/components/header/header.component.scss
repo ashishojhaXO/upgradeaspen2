@@ -66,4 +66,13 @@ input.form-field {
 .modal-content {
   height: 45vh !important;
 }
-
+.theme-org-dropdown{
+  float: right; margin-right: 10px
+}
+.theme-org-dropdown select{
+  width: 150px;
+  height: 29px; 
+  padding-left: 10px;
+  background-color: #181818;
+  color: #fff; border: none;
+}

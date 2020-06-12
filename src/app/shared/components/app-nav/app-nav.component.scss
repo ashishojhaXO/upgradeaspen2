@@ -34,17 +34,16 @@
     background: #54575A;
     width: 100%;
     left: 0px;
-
-    padding: 3px 0px 3px 15px;
 }
 
  .nav.navbar-nav.main-menu > div .bottom-menu > div {
-    margin: 5px 20px 12px 0px;
+   margin: 10px;
  }
 
 .nav.navbar-nav.main-menu > div .bottom-menu > div a {
-  background: #54575A !important;
+  background: transparent;
   font-size: 14px;
+  padding-bottom: 5px;
 }
 
 .nav.navbar-nav.main-menu > div .bottom-menu > div a.active-bar {
@@ -60,7 +59,7 @@
     margin: 2px;
     color: #eeedef;
     font-weight: 100;
-    background: #252425 !important;
+    background: transparent;
     font-size: 12px;
     line-height: normal;
     //letter-spacing: 1px;
@@ -72,5 +71,7 @@
       color: #eeedef;
     }
 }
-
+.nav.navbar-nav.main-menu a.active {
+  background: transparent !important;
+}
 

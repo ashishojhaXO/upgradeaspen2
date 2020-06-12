@@ -81,6 +81,9 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
   logoFile: any;
   showLogo = false;
   @ViewChild('org_name') org_nameEl:ElementRef;
+  defaultColors = {themeColor:'#252425',themeTxtColor:'#eeedef', subMenuColor: '#54575A', subMenuTxtColor:'#eeedef', filterColor:'#54575a',
+                  filterTxtColor:'#adadad',primaryBtnColor:'#f06d30',primaryBtnTxtColor:'#fff',secondaryBtnColor:'#ededed',
+                  secondaryBtnTxtColor:'#4e9b49' };
 
   constructor(
       private okta: OktaAuthService,
@@ -101,6 +104,15 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
       country: new FormControl('', Validators.required),
       logo: new FormControl(''),
       themeColor: new FormControl(''),
+      themeTxtColor: new FormControl(''),
+      subMenuColor: new FormControl(''),
+      subMenuTxtColor: new FormControl(''),
+      filterColor: new FormControl(''),
+      filterTxtColor: new FormControl(''),
+      primaryBtnColor: new FormControl(''),
+      primaryBtnTxtColor: new FormControl(''),
+      secondaryBtnColor: new FormControl(''),
+      secondaryBtnTxtColor: new FormControl(''),
       allowCreate: new FormControl(''),
       logoType: new FormControl('')
     }, this.alternateEmailValidator);
@@ -117,7 +129,16 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
       state: '',
       zip: '',
       country: '',
-      themeColor: '#252425',
+      themeColor: this.defaultColors['themeColor'],
+      themeTxtColor: this.defaultColors['themeTxtColor'],
+      subMenuColor: this.defaultColors['subMenuColor'],
+      subMenuTxtColor: this.defaultColors['subMenuTxtColor'],
+      filterColor: this.defaultColors['filterColor'],
+      filterTxtColor: this.defaultColors['filterTxtColor'],
+      primaryBtnColor: this.defaultColors['primaryBtnColor'],
+      primaryBtnTxtColor: this.defaultColors['primaryBtnTxtColor'],
+      secondaryBtnColor: this.defaultColors['secondaryBtnColor'],
+      secondaryBtnTxtColor: this.defaultColors['secondaryBtnTxtColor'],
       logo: 'https://static.accelitas.io/accelitas_logo_trans.png',
       originalLogo: 'https://static.accelitas.io/accelitas_logo_trans.png',
       allowCreate: true,
@@ -289,6 +310,15 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
       this.orgModel.logo = meta.logo;
       this.orgModel.originalLogo = meta.logo;
       this.orgModel.themeColor = meta.themeColor;
+      this.orgModel.themeTxtColor = meta.themeTxtColor;
+      this.orgModel.subMenuColor = meta.subMenuColor;
+      this.orgModel.subMenuTxtColor = meta.subMenuTxtColor;
+      this.orgModel.filterColor = meta.filterColor;
+      this.orgModel.filterTxtColor = meta.filterTxtColor;
+      this.orgModel.primaryBtnColor = meta.primaryBtnColor;
+      this.orgModel.primaryBtnTxtColor = meta.primaryBtnTxtColor;
+      this.orgModel.secondaryBtnColor = meta.secondaryBtnColor;
+      this.orgModel.secondaryBtnTxtColor = meta.secondaryBtnTxtColor;
       this.orgModel.allowCreate = typeof this.orgModel.allowCreate === 'string' ? (meta.order_create_enabled === 'true' ? true : false) : meta.order_create_enabled;
       this.orgForm.patchValue({
         allowCreate : typeof this.orgModel.allowCreate === 'string' ? (meta.order_create_enabled === 'true' ? true : false) : meta.order_create_enabled
@@ -354,6 +384,15 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     const meta = {
       logo : this.orgModel.logo,
       themeColor: this.orgModel.themeColor,
+      themeTxtColor: this.orgModel.themeTxtColor,
+      subMenuColor: this.orgModel.subMenuColor,
+      subMenuTxtColor: this.orgModel.subMenuTxtColor,
+      filterColor: this.orgModel.filterColor,
+      filterTxtColor: this.orgModel.filterTxtColor,
+      primaryBtnColor: this.orgModel.primaryBtnColor,
+      primaryBtnTxtColor: this.orgModel.primaryBtnTxtColor,
+      secondaryBtnColor: this.orgModel.secondaryBtnColor,
+      secondaryBtnTxtColor: this.orgModel.secondaryBtnTxtColor,
       order_create_enabled: this.orgModel.allowCreate ? 'true' : 'false'
     };
 
@@ -556,9 +595,45 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     this.orgForm.patchValue({
       allowCreate : true
     });
-    this.orgModel.themeColor = '#252425';
+    this.orgModel.themeColor = this.defaultColors['themeColor'];
     this.orgForm.patchValue({
-      themeColor : '#252425'
+      themeColor : this.defaultColors['themeColor']
+    });
+    this.orgModel.themeTxtColor = this.defaultColors['themeTxtColor'];
+    this.orgForm.patchValue({
+      themeTxtColor : this.defaultColors['themeTxtColor']
+    });
+    this.orgModel.subMenuColor = this.defaultColors['subMenuColor'];
+    this.orgForm.patchValue({
+      subMenuColor : this.defaultColors['subMenuColor']
+    });
+    this.orgModel.subMenuTxtColor = this.defaultColors['subMenuTxtColor'];
+    this.orgForm.patchValue({
+      subMenuTxtColor : this.defaultColors['subMenuTxtColor']
+    });
+    this.orgModel.filterColor = this.defaultColors['filterColor'];
+    this.orgForm.patchValue({
+      filterColor : this.defaultColors['filterColor']
+    });
+    this.orgModel.filterTxtColor = this.defaultColors['filterTxtColor'];
+    this.orgForm.patchValue({
+      filterTxtColor : this.defaultColors['filterTxtColor']
+    });
+    this.orgModel.primaryBtnColor = this.defaultColors['primaryBtnColor'];
+    this.orgForm.patchValue({
+      primaryBtnColor : this.defaultColors['primaryBtnColor']
+    });
+    this.orgModel.primaryBtnTxtColor = this.defaultColors['primaryBtnTxtColor'];
+    this.orgForm.patchValue({
+      primaryBtnTxtColor : this.defaultColors['primaryBtnTxtColor']
+    });
+    this.orgModel.secondaryBtnColor = this.defaultColors['secondaryBtnColor'];
+    this.orgForm.patchValue({
+      secondaryBtnColor : this.defaultColors['secondaryBtnColor']
+    });
+    this.orgModel.secondaryBtnTxtColor = this.defaultColors['secondaryBtnTxtColor'];
+    this.orgForm.patchValue({
+      secondaryBtnTxtColor : this.defaultColors['secondaryBtnTxtColor']
     });
     modalComponent.hide();
     this.reLoad();
