@@ -14,6 +14,7 @@ import { GenericService } from '../../../services/generic.service';
 import { DataTableOptions } from '../../../models/dataTableOptions';
 import Swal from 'sweetalert2';
 import { OktaAuthService } from '../../../services/okta.service';
+import {Headers, RequestOptions, Http} from '@angular/http';
 
 @Component({
   selector: 'app-order-payment',
@@ -40,6 +41,7 @@ export class OrderPaymentComponent {
       private genericService: GenericService,
       private router: Router,
       private okta: OktaAuthService,
+      private http: Http
   ) {
 
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
@@ -197,27 +199,22 @@ export class OrderPaymentComponent {
   setDefaultPaymentMethod(option) {
     console.log('option >>')
     console.log(option);
-    /*
     const obj = {
       vendor_id : this.vendorId,
       paymentmethodid : option.paymentmethodid
-    }
-    */
-
-    const obj = {
-      vendor_id : this.vendorId,
-      payment_method_id : option.paymentmethodid
-    }
-
-    const headers = {
-      org_id: window['fs_widget_config'].org_id,
-      'x-api-key': window['fs_widget_config'].api_key,
-      'Content-Type': 'application/json'
     };
 
-    this.genericService
-        .setDefaultPaymentMethod(obj, headers)
-        .subscribe( (res) => {
+    // const AccessToken: any = localStorage.getItem('accessToken');
+    // let token = '';
+    // if (AccessToken) {
+    //   // token = AccessToken.accessToken;
+    //   token = AccessToken;
+    // }
+    //
+    // const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    // const options = new RequestOptions({headers: headers});
+
+    this.setVendorPaymentMethodsRequest(obj).subscribe( (res) => {
               this.showSpinner = false;
               Swal({
                 title: 'Default Payment Method Successfully Changed',
@@ -244,6 +241,38 @@ export class OrderPaymentComponent {
                 });
               }
             });
+  }
+
+  setVendorPaymentMethodsRequest(dataObj) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    const obj = JSON.stringify(dataObj);
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/payments/methods/default';
+    return this.http
+        .put(url, obj, options)
+        .map(res => {
+          return res.json();
+        }).share();
+
+    // const data = JSON.stringify(dataObj);
+    // const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+    // return this.api.Call(
+    //     'put',
+    //     apiPath.api +
+    //     this.base.API +
+    //     this.base.
+    //         PUT_VENDOR_DEFAULT_PAYMENTS_METHOD,
+    //     data,
+    //     option
+    // );
   }
 
   setPaymentsChargeData(option) {

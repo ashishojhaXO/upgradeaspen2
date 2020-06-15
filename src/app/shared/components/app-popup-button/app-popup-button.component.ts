@@ -41,7 +41,7 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
   constructor(public toastr: ToastsManager,public router: Router,private http: Http) {
     const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
     if((custInfo.org.meta_data).length){
-     this.metaData = JSON.parse(custInfo.org.meta_data);;
+     this.metaData = JSON.parse(custInfo.org.meta_data.replace(/'/g, '"'));;
     }
   }
 
