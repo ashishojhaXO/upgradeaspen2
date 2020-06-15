@@ -236,7 +236,7 @@ export class InvoiceComponent implements OnInit  {
     if (prop === 'profile_name') {
       targetField = this.tempProfile;
     } else if (prop === 'memo') {
-      targetField = this.tempMemo;
+      targetField = this.tempMemo ? this.tempMemo : '';
     }
 
     console.log('targetField >>')
