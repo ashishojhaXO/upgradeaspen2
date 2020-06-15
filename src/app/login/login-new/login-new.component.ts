@@ -41,20 +41,23 @@ export class LoginNewComponent implements OnInit {
 
   error: string;
   registerSuccess : string;
+  forgotSuccess : string; 
 
   ngOnInit() {
 
     this.route.queryParams.subscribe(params => {
       if (params) {
+        console.log("params",params);
         if(params.error == 401 ) {
           this.error = 'You are not authorized to access this application';
         } else if (params['Welcome']) {
           this.registerSuccess = 'Your account has been activated. You may login now with your credentials';
-          // ['primaryauth.title'] = 
-        }
+          // ['primaryauth.title'] =         
+       } else if (params['pwd-change']) {
+          this.registerSuccess = 'Your password has been reset successfully. You may login now with your credentials';
+       }
       }
     });
-
     this.formOnInit();
     this.initVars();
   }
@@ -220,18 +223,18 @@ export class LoginNewComponent implements OnInit {
         }).share();
   }
 
-  forgotPasswordService(forgotObj: Object) {
+  forgotPasswordService(email) {
 
     const headers = new Headers({'Content-Type': 'application/json' , 'callingapp' : 'aspen' });
     const options = new RequestOptions({headers: headers});
 
     const api_url_part = "/api";
-    const endPoint = "/users/token/signin";
+    const endPoint = "/users/"+email+"/reset";
     const url = this.api_fs.api + api_url_part + endPoint;
     // const body = {username: username, password: password};
 
     this.showSpinner = true;
-    return this.http.post(url, forgotObj, options).map(res => {
+    return this.http.post(url, options).map(res => {
       return res.json()
     }).share();
   }
@@ -241,17 +244,16 @@ export class LoginNewComponent implements OnInit {
       let forgotEmail = this.forgotForm.get('forgotEmail').value;
       //forgot api comes here
       const forgotObj = {"email": forgotEmail};
-      this.forgotPasswordService(forgotObj).subscribe( res => {
+      this.forgotPasswordService(forgotEmail).subscribe( res => {
         this.showSpinner = false;
-        // this.formError = res.statusText;
         console.log("res", res);
-        this.formError = res.json().message;
+        this.forgotForm.reset();
+        this.forgotSuccess = "Password reset link has been sent to your registered email.";
+        //this.formError = res.json().message;
       }, rej => {
-        //this.loginForm.reset();
         this.showSpinner = false;
-        // this.formError = rej.statusText; //for error handling
         console.log("rej 2", rej);
-        this.formError = rej.json().message; //for error handling
+        this.formError = rej.json().message;
       });
     }
   }
