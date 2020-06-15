@@ -13,11 +13,13 @@ import {ToastsManager} from 'ng2-toastr';
 import {TheReportsService} from '../reportsLocal.service';
 import { OktaAuthService } from '../../../../services/okta.service';
 import {Http, Headers, RequestOptions} from '@angular/http';
+import { GenericService } from '../../../../services/generic.service';
 
 @Component({
   selector: 'app-reports',
   templateUrl: './reports-summary.component.html',
-  styleUrls: ['./reports-summary.component.scss']
+  styleUrls: ['./reports-summary.component.scss'],
+  providers: [GenericService]
 })
 export class ReportsSummaryComponent implements OnInit, DataTableAction  {
 
@@ -42,17 +44,27 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
     isAddRow: false,
     isColVisibility: true,
     isDownloadAsCsv: true,
+    // isDownloadOption: {
+    //   value: true,
+    //   icon: ''
+    // },
     isDownloadOption: {
       value: true,
-      icon: ''
+      icon: '',
+      tooltip: 'Download Report',
     },
     isRowSelection: null,
     isPageLength: true,
     isPagination: true,
     isTree: true,
     inheritHeadersForTree: true,
+    // isPlayOption: {
+    //   value : true
+    // },
     isPlayOption: {
-      value : true
+      value : true,
+      icon : 'fa-plus-circle',
+      tooltip: 'Execute Report'
     },
     // Any number starting from 1 to ..., but not 0
     isActionColPosition: 1, // This can not be 0, since zeroth column logic might crash
@@ -75,7 +87,9 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
 
   constructor(private route: ActivatedRoute, private router: Router,
               public reportsService: TheReportsService, public datePipe: DatePipe,
-              public toastr: ToastsManager, private authService: AuthService, private okta: OktaAuthService, private http: Http) {
+              public toastr: ToastsManager, private authService: AuthService, private okta: OktaAuthService, private http: Http,
+              protected genericService: GenericService
+         ) {
                 const groups = localStorage.getItem('loggedInUserGroup') || '';
                 const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
                 this.orgInfo = custInfo.org;

@@ -116,7 +116,7 @@ export class GenericService {
    * Success Mock Call
    * @param dataObj
    */
-  successMockCall(data) {
+  successMockCall(data?) {
 
     let test = new TestClass();
     return test.someHttpEP();
