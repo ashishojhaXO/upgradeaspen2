@@ -55,6 +55,9 @@ export class PaymentsComponent implements OnInit  {
         // DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
         let d = new DataTableUtilsPluginExt(ev, $, table).run();
       },
+      fixedColumnFilterToggle: ($, table) => {
+        new DataTableUtilsPluginExt(null, $, table).attachClickInputSearch();
+      }
     },
 
   }];
