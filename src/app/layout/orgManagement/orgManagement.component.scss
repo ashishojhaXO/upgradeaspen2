@@ -50,4 +50,23 @@ input.form-field {
 .mandatory {
   color: red;
 }
-
+.theme-wrap{
+  margin-top: 35px;
+}
+.col-cust-22{
+  padding-left: 0;
+  padding-right: 0;
+  width: 22%;
+}
+.col-cust-22 input{
+  width: 100%;
+}
+.theme-color-viwer{
+  height: 34px;
+  border: 1px solid rgb(204, 204, 204);
+  border-radius: 4px;
+  background: rgb(37, 36, 37);
+  margin-left: 9px;
+  margin-right: 10px;
+  margin-top: 22px;
+}

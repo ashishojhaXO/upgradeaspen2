@@ -36,10 +36,13 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
   selectedText: any;
   originalResult: any;
   originalSelection: any;
+  metaData: '';
 
-  constructor(public toastr: ToastsManager,
-              public router: Router,
-              private http: Http) {
+  constructor(public toastr: ToastsManager,public router: Router,private http: Http) {
+    const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
+    if((custInfo.org.meta_data).length){
+     this.metaData = JSON.parse(custInfo.org.meta_data.replace(/'/g, '"'));;
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -70,8 +73,28 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
         }, this);
       }
     }
+    this._applyTheme(this.metaData);
   }
-
+  _applyTheme(paramData){
+    if(paramData && paramData['filterColor']){
+      let filterTxtColor = paramData['filterTxtColor'];
+        $(".sidebar-title h3").css('cssText','color:'+filterTxtColor); 
+    }    
+    if(paramData && paramData['primaryBtnColor']){
+      let primaryBtnColor = paramData['primaryBtnColor'];
+      let primaryBtnTxtColor = paramData['primaryBtnTxtColor'];
+       //Button Primary
+        $(".btn-primary").css('cssText','color:'+primaryBtnTxtColor+'; background-color:'+primaryBtnColor+'; border-color:'+primaryBtnColor);
+       //Modal Header
+        $(".modal-header").css('cssText','color:'+primaryBtnTxtColor+'; background:'+primaryBtnColor);
+      }
+     //Button Secondary
+      if(paramData && paramData['secondaryBtnColor']){
+        let secondaryBtnColor = paramData['secondaryBtnColor'];
+        let secondaryBtnTxtColor = paramData['secondaryBtnTxtColor'];
+        $(".btn-secondary").css('cssText','color:'+secondaryBtnTxtColor+'; background-color:'+secondaryBtnColor+'; border-color:'+secondaryBtnColor);
+      }
+  }
   _OnDelete() {
     this.OnDelete.emit();
   }
@@ -204,6 +227,7 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
     //   // this.dataObject.isDataAvailable = true;
     //   // this.dataObject.gridData.result = this.gridData;
     // }
+    this._applyTheme(this.metaData);    
   }
 
   addItem() {

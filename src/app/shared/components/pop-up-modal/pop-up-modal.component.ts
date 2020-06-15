@@ -7,7 +7,7 @@ import {Component} from '@angular/core';
              [ngStyle]="{'display': visible ? 'block' : 'none', 'opacity': visibleAnimate ? 1 : 0}">
             <div class="modal-dialog" style="width: 55%; margin-top: 0%">
                 <div class="modal-content" style="height: 100vh; overflow-x: scroll; padding-bottom: 30px;">
-                    <div class="modal-header" style="height: 50px;">
+                    <div class="modal-header">
                         <ng-content select=".app-modal-header"></ng-content>
                     </div>
                     <div class="modal-body">

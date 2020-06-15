@@ -14,6 +14,7 @@ import { GenericService } from '../../../services/generic.service';
 import { DataTableOptions } from '../../../models/dataTableOptions';
 import Swal from 'sweetalert2';
 import { OktaAuthService } from '../../../services/okta.service';
+import {Headers, RequestOptions, Http} from '@angular/http';
 
 @Component({
   selector: 'app-order-payment',
@@ -31,7 +32,7 @@ export class OrderPaymentComponent {
   // domain: string;
   api_fs: any;
   vendorUuid:any;
-  userUuid:any;
+  userUuid: any;
   displayId: any;
   widget: any;
   isRoot: boolean;
@@ -40,6 +41,7 @@ export class OrderPaymentComponent {
       private genericService: GenericService,
       private router: Router,
       private okta: OktaAuthService,
+      private http: Http
   ) {
 
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
@@ -69,7 +71,9 @@ export class OrderPaymentComponent {
       window['fs_widget_config'].vendor_id = this.vendorId = this.vendorUuid;
       window['fs_widget_config'].api_key = customerInfo.org.x_api_key;
       window['fs_widget_config'].org_id = customerInfo.org.org_id;
-      console.log("vendorUuid",this.vendorId);
+      window['fs_widget_config'].user_uuid = this.userUuid = customerInfo.user.user_uuid;
+
+      // console.log("vendorUuid",this.vendorId);
       // Temp assignment FOR TESTING:
       // window['fs_widget_config'].vendor_id = '592f94f3-e2b1-4621-b1c0-c795ee2a1814'
       // this.vendorId = '592f94f3-e2b1-4621-b1c0-c795ee2a1814';
@@ -203,10 +207,19 @@ export class OrderPaymentComponent {
     const obj = {
       vendor_id : this.vendorId,
       paymentmethodid : option.paymentmethodid
-    }
-    this.genericService
-        .setDefaultPaymentMethod(obj)
-        .subscribe( (res) => {
+    };
+
+    // const AccessToken: any = localStorage.getItem('accessToken');
+    // let token = '';
+    // if (AccessToken) {
+    //   // token = AccessToken.accessToken;
+    //   token = AccessToken;
+    // }
+    //
+    // const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    // const options = new RequestOptions({headers: headers});
+
+    this.setVendorPaymentMethodsRequest(obj).subscribe( (res) => {
               this.showSpinner = false;
               Swal({
                 title: 'Default Payment Method Successfully Changed',
@@ -233,6 +246,38 @@ export class OrderPaymentComponent {
                 });
               }
             });
+  }
+
+  setVendorPaymentMethodsRequest(dataObj) {
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      // token = AccessToken.accessToken;
+      token = AccessToken;
+    }
+
+    const obj = JSON.stringify(dataObj);
+
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/payments/methods/default';
+    return this.http
+        .put(url, obj, options)
+        .map(res => {
+          return res.json();
+        }).share();
+
+    // const data = JSON.stringify(dataObj);
+    // const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
+    // return this.api.Call(
+    //     'put',
+    //     apiPath.api +
+    //     this.base.API +
+    //     this.base.
+    //         PUT_VENDOR_DEFAULT_PAYMENTS_METHOD,
+    //     data,
+    //     option
+    // );
   }
 
   setPaymentsChargeData(option) {

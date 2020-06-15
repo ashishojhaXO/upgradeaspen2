@@ -236,7 +236,7 @@ export class InvoiceComponent implements OnInit  {
     if (prop === 'profile_name') {
       targetField = this.tempProfile;
     } else if (prop === 'memo') {
-      targetField = this.tempMemo;
+      targetField = this.tempMemo ? this.tempMemo : '';
     }
 
     console.log('targetField >>')
@@ -484,7 +484,8 @@ export class InvoiceComponent implements OnInit  {
       lineItems.push({
         id : item.line_item_id,
         amount: item.pay ? parseFloat(item.pay) : 0,
-        client_id: item.client_id
+        client_id: item.client_id,
+        invoice_line_item_id: item.id
       });
     }, this);
 
