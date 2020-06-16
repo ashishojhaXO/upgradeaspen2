@@ -1,58 +1,56 @@
 <div>
-    <div class="col-lg-12 col-md-12">
-        <p class="pull-left page-title">Support</p>
-    </div>
-    <div *ngIf="isRoot" style="margin-bottom: 15px;">
-        <label class="col-xs-12 col-sm-1">Select Org: </label>
-        <div class="col-xs-12 col-sm-6">
-            <select2 width="resolve" *ngIf="orgArr.length"
-                     class="col-lg-12 col-md-12"
-                     style="padding: 0px; min-width: 200px"
-                     [value]="orgValue"
-                     [options]="select2Options"
-                     (valueChanged)="OnOrgChange($event);"
-                     [data]="orgArr"></select2>
-          <!--<select [(ngModel)]="orgValue" class="form-control" (change)='orgChange(orgValue)'>-->
-            <!--<option [value]="''" >All</option>-->
-            <!--<option *ngFor="let org of orgArr" [value]="org.id">-->
-              <!--{{ org.text }}-->
-            <!--</option>-->
-          <!--</select>-->
+    <!--<div class="col-lg-12 col-md-12">-->
+        <!--<p class="pull-left page-title">Support</p>-->
+    <!--</div>-->
+    <app-sidebar1>
+        <div class="sidebar-title">
+            <h3>FILTERS</h3>
         </div>
-        <div class="clearfix"></div>
-    </div>
-    <div class="col-lg-12 cold-md-12 col-sm-12">
-        <div style="margin-left: 19px; padding-bottom: 20px">
-            <label>Search By </label>
-            <div
-                style="display: inline-block; position: relative; top: 9px"
-            >
-                <select2 *ngIf="searchOptions.length" width="50%" placeholder="Select Type"
-                class="col-lg-4 col-md-4"
-                style="padding: 0px; line-height: 1.42857143"
-                [value]="searchType"
-                (valueChanged)="OnSearchChange($event);"
-                [data]="searchOptions"></select2>
+        <div class="sidebar-form-control">
+            <div class="sidebar-form-control dash-page-chk" *ngIf="isRoot">
+                <p class="title">Org:</p>
+                <div class="dash-cust-width">
+                    <select2 width="215px" *ngIf="orgArr.length"
+                             class="col-lg-12 col-md-12"
+                             style="padding: 0px; min-width: 200px"
+                             [value]="orgValue"
+                             [options]="select2Options"
+                             (valueChanged)="OnOrgChange($event);"
+                             [data]="orgArr"></select2>
+                </div>
             </div>
-                <input style="width: 60%; padding-left: 5px; padding-right: 20px"
-                    type="text"
-                    class="form-fields adhoc-report-input-box"
-                    #searchField
-                    placeholder="Search"
-                    [attr.disabled]="searchType === 'retry' ? '' : null"
-                    [(ngModel)]='searchcontent'>
-                <span (click)="clearSearch()" style="position: relative; left: -20px; cursor: pointer"><i class="fa fa-close"></i></span>
+            <p style="clear: both"></p>
+        </div>
+        <div class="sidebar-form-control" style="position: relative">
+            <p class="title">Search By:</p>
+            <div class="dash-cust-width">
+                <select2 *ngIf="searchOptions.length" width="215px" placeholder="Select Type"
+                         class="col-lg-12 col-md-12"
+                         style="padding: 0px; min-width: 200px;"
+                         [value]="searchType"
+                         (valueChanged)="OnSearchChange($event);"
+                         [data]="searchOptions"></select2>
+            </div>
+            <p style="clear: both"></p>
+            <input style="width: 214px;"
+                   type="text"
+                   class="form-fields adhoc-report-input-box"
+                   #searchField
+                   placeholder="Search"
+                   [attr.disabled]="searchType === 'retry' ? '' : null"
+                   [(ngModel)]='searchcontent'>
+            <span (click)="clearSearch()" style="position: absolute; right: 10px; bottom: 15px; cursor: pointer"><i class="fa fa-close"></i></span>
 
 
-            <div *ngIf="matchingResults.length; else noMatch" style="position: absolute; height: 200px; overflow: scroll; background-color: white; width: 57.1%; z-index: 10000; margin-left: 167px; border: 1px solid #cbcbcb; border-top: none">
-                        <ul style="list-style: none; padding-left: 5px">
-                          <li class="matching-results" *ngFor="let ele of matchingResults; let i = index;">
-                              <span style="display: block" (click)="OnSearchSelect(ele)">{{ searchType === 'vendor' ? ( ele.id + ' - ' + ele.name ) : ele.name }}</span>
-                          </li>
-                        </ul>
+            <div *ngIf="matchingResults.length; else noMatch" class="searchBox">
+                <ul style="list-style: none; padding-left: 5px">
+                    <li class="matching-results" *ngFor="let ele of matchingResults; let i = index;">
+                        <span style="display: block" (click)="OnSearchSelect(ele)">{{ searchType === 'vendor' ? ( ele.id + ' - ' + ele.name ) : ele.name }}</span>
+                    </li>
+                </ul>
             </div>
             <ng-template #noMatch>
-                <div *ngIf="this.searchcontent" style="position: absolute; height: 200px; overflow: scroll; background-color: white; width: 57.1%; z-index: 10000; margin-left: 167px; border: 1px solid #cbcbcb; border-top: none">
+                <div *ngIf="this.searchcontent" class="searchBox">
                     <span *ngIf="!inSearchMode; else searching" style="font-size: 12px; padding-left: 5px">No Match Found</span>
                     <ng-template #searching>
                         <span style="font-size: 12px; padding-left: 5px">Searching ...</span>
@@ -61,7 +59,10 @@
             </ng-template>
             <p style="clear: both"></p>
         </div>
-        <div *ngIf="searchType === 'vendor' && selectedVendor">
+    </app-sidebar1>
+    <div class="app-container">
+        <label style="font-size: 16px" *ngIf="selectedVendor || selectedOrder">Summary</label>
+        <div *ngIf="searchType === 'vendor' && selectedVendor" style="border: 1px solid; padding: 10px; height: 170px; margin-bottom: 20px">
             <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
                 <label class="col-lg-3 col-md-3">Selected Vendor : </label>
                 <span class="col-lg-9 col-md-9">{{selectedVendorName}}</span>
@@ -83,137 +84,323 @@
                 <span class="col-lg-9 col-md-9">{{availableBalance}}</span>
             </div>
             <!--<div style="padding-left: 0px" class="col-lg-12 col-md-12">-->
-                <!--<label class="col-lg-3 col-md-3">Payment Methods : </label>-->
-                <!--<div class="col-lg-9 col-md-9" *ngIf="paymentMethods.length; else noPayments">-->
-                    <!--<div *ngFor="let ele of paymentMethods; let i = index;" style="margin-bottom: 10px">-->
-                        <!--<label>Payment Method</label><span style="margin-left: 5px">{{ele.payment_method}}</span><br>-->
-                        <!--<label>Last 4 digits</label><span style="margin-left: 5px">{{ele.last_four_digits}}</span><br>-->
-                        <!--<label>Payment Status</label><span style="margin-left: 5px">{{ele.status}}</span><br>-->
-                        <!--<label>Default</label><span-->
-                            <!--style="margin-left: 5px">{{(ele.is_default == 1 ? 'Yes' : 'No')}}</span>-->
-                    <!--</div>-->
-                <!--</div>-->
-                <!--<ng-template #noPayments>-->
-                    <!--<span class="col-lg-9 col-md-9"> No Payments Found</span>-->
-                <!--</ng-template>-->
+            <!--<label class="col-lg-3 col-md-3">Payment Methods : </label>-->
+            <!--<div class="col-lg-9 col-md-9" *ngIf="paymentMethods.length; else noPayments">-->
+            <!--<div *ngFor="let ele of paymentMethods; let i = index;" style="margin-bottom: 10px">-->
+            <!--<label>Payment Method</label><span style="margin-left: 5px">{{ele.payment_method}}</span><br>-->
+            <!--<label>Last 4 digits</label><span style="margin-left: 5px">{{ele.last_four_digits}}</span><br>-->
+            <!--<label>Payment Status</label><span style="margin-left: 5px">{{ele.status}}</span><br>-->
+            <!--<label>Default</label><span-->
+            <!--style="margin-left: 5px">{{(ele.is_default == 1 ? 'Yes' : 'No')}}</span>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<ng-template #noPayments>-->
+            <!--<span class="col-lg-9 col-md-9"> No Payments Found</span>-->
+            <!--</ng-template>-->
             <!--</div>-->
         </div>
-        <div *ngIf="searchType === 'order' && selectedOrder">
+        <div *ngIf="searchType === 'order' && selectedOrder" style="border: 1px solid; padding: 10px; height: 235px; margin-bottom: 20px">
             <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
                 <label class="col-lg-3 col-md-3">Selected Order ID : </label>
                 <span class="col-lg-9 col-md-9">{{selectedOrderID}}</span>
             </div>
             <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
                 <label class="col-lg-3 col-md-3">Selected Line Item ID : </label>
-            <span class="col-lg-9 col-md-9">{{selectedOrderLineItemID}}</span>
-        </div>
-        <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
-            <label class="col-lg-3 col-md-3">Selected Channel : </label>
-            <span class="col-lg-9 col-md-9">{{selectedOrderChannel}}</span>
-        </div>
+                <span class="col-lg-9 col-md-9">{{selectedOrderLineItemID}}</span>
+            </div>
+            <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
+                <label class="col-lg-3 col-md-3">Selected Channel : </label>
+                <span class="col-lg-9 col-md-9">{{selectedOrderChannel}}</span>
+            </div>
 
-        <div *ngIf="searchType === 'order' && orderDetails">
-            <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
-                <label class="col-lg-3 col-md-3">Order Status: </label>
-                <span class="col-lg-9 col-md-9">{{orderDetails.order_status}}</span>
+            <div *ngIf="searchType === 'order' && orderDetails">
+                <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
+                    <label class="col-lg-3 col-md-3">Order Status: </label>
+                    <span class="col-lg-9 col-md-9">{{orderDetails.order_status}}</span>
+                </div>
+                <!-- Start3Div, These 3 can be looped though -->
+                <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
+                    <label class="col-lg-3 col-md-3">Order Creation Date: </label>
+                    <span class="col-lg-9 col-md-9">{{orderDetails.order_creation_date | date:'MM/dd/yyyy'}}</span>
+                </div>
+                <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
+                    <label class="col-lg-3 col-md-3">Order Updated At: </label>
+                    <span class="col-lg-9 col-md-9">{{orderDetails.order_updated_at | date:'MM/dd/yyyy'}}</span>
+                </div>
+                <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
+                    <label class="col-lg-3 col-md-3">Order Cancellation Date: </label>
+                    <span class="col-lg-9 col-md-9">{{orderDetails.order_cancellation_date | date:'MM/dd/yyyy'}}</span>
+                </div>
+                <!-- Start3Div/ -->
             </div>
-            <!-- Start3Div, These 3 can be looped though -->
-            <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
-                <label class="col-lg-3 col-md-3">Order Creation Date: </label>
-                <span class="col-lg-9 col-md-9">{{orderDetails.order_creation_date | date:'MM/dd/yyyy'}}</span>
-            </div>
-            <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
-                <label class="col-lg-3 col-md-3">Order Updated At: </label>
-                <span class="col-lg-9 col-md-9">{{orderDetails.order_updated_at | date:'MM/dd/yyyy'}}</span>
-            </div>
-            <div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">
-                <label class="col-lg-3 col-md-3">Order Cancellation Date: </label>
-                <span class="col-lg-9 col-md-9">{{orderDetails.order_cancellation_date | date:'MM/dd/yyyy'}}</span>
-            </div>
-            <!-- Start3Div/ -->
-        </div>
             <!--<div style="padding-left: 0px" class="col-lg-12 col-md-12">-->
-                <!--<label class="col-lg-3 col-md-3">Payment Methods : </label>-->
-                <!--<div class="col-lg-9 col-md-9" *ngIf="paymentMethods.length; else noPayments">-->
-                    <!--<div *ngFor="let ele of paymentMethods; let i = index;" style="margin-bottom: 10px">-->
-                        <!--<label>Payment Method</label><span style="margin-left: 5px">{{ele.payment_method}}</span><br>-->
-                        <!--<label>Last 4 digits</label><span style="margin-left: 5px">{{ele.last_four_digits}}</span><br>-->
-                        <!--<label>Payment Status</label><span style="margin-left: 5px">{{ele.status}}</span><br>-->
-                        <!--<label>Default</label><span-->
-                            <!--style="margin-left: 5px">{{(ele.is_default == 1 ? 'Yes' : 'No')}}</span>-->
-                    <!--</div>-->
-                <!--</div>-->
-                <!--<ng-template #noPayments>-->
-                    <!--<span class="col-lg-9 col-md-9"> No Payments Found</span>-->
-                <!--</ng-template>-->
+            <!--<label class="col-lg-3 col-md-3">Payment Methods : </label>-->
+            <!--<div class="col-lg-9 col-md-9" *ngIf="paymentMethods.length; else noPayments">-->
+            <!--<div *ngFor="let ele of paymentMethods; let i = index;" style="margin-bottom: 10px">-->
+            <!--<label>Payment Method</label><span style="margin-left: 5px">{{ele.payment_method}}</span><br>-->
+            <!--<label>Last 4 digits</label><span style="margin-left: 5px">{{ele.last_four_digits}}</span><br>-->
+            <!--<label>Payment Status</label><span style="margin-left: 5px">{{ele.status}}</span><br>-->
+            <!--<label>Default</label><span-->
+            <!--style="margin-left: 5px">{{(ele.is_default == 1 ? 'Yes' : 'No')}}</span>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<ng-template #noPayments>-->
+            <!--<span class="col-lg-9 col-md-9"> No Payments Found</span>-->
+            <!--</ng-template>-->
             <!--</div>-->
         </div>
-        <p style="clear: both"></p>
-        <div style="padding-left: 0px" [class]="searchType === 'order' ? 'col-lg-6 col-md-6' : 'col-lg-4 col-md-4'" *ngIf="searchType === 'vendor' || searchType === 'order'">
-            <span>{{searchType === 'order' ? 'Order History' : 'Orders'}}</span>
+        <div style="padding-left: 0px" *ngIf="searchType === 'vendor' || searchType === 'order'">
+            <label style="font-size: 14px">{{searchType === 'order' ? 'Order History' : 'Orders'}}</label>
             <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectOrders.isDataAvailable">
                 <app-data-table2 [dataObject]="dataObjectOrders"
                                  (triggerActions)="this[$event.action]($event)"></app-data-table2>
             </div>
             <div class="page-header" style="margin-left: 0px" *ngIf="!dataObjectOrders.isDataAvailable">
-                <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to
+                <div style="height: 200px;background-color: #ffff; width: 102%;padding: 17% 42%;">There is no data to
                     display.
                 </div>
             </div>
         </div>
-        <div style="padding-left: 0px" class="col-lg-4 col-md-4" *ngIf="searchType === 'vendor'">
-            <span>Payment Methods</span>
-            <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectPaymentMethods.isDataAvailable">
-                <app-data-table2 [dataObject]="dataObjectPaymentMethods"
-                                 (triggerActions)="this[$event.action]($event)"></app-data-table2>
-            </div>
-            <div class="page-header" style="margin-left: 0px" *ngIf="!dataObjectPaymentMethods.isDataAvailable">
-                <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to
-                    display.
-                </div>
-            </div>
-        </div>
-        <div style="padding-left: 0px" [class]="searchType === 'order' ? 'col-lg-6 col-md-6' : 'col-lg-4 col-md-4'" *ngIf="searchType === 'vendor' || searchType === 'order'">
-            <span>Transactions</span>
+        <!--<div style="padding-left: 0px" *ngIf="searchType === 'vendor'">-->
+            <!--<label style="font-size: 14px">Payment Methods</label>-->
+            <!--<div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectPaymentMethods.isDataAvailable">-->
+                <!--<app-data-table2 [dataObject]="dataObjectPaymentMethods"-->
+                                 <!--(triggerActions)="this[$event.action]($event)"></app-data-table2>-->
+            <!--</div>-->
+            <!--<div class="page-header" style="margin-left: 0px" *ngIf="!dataObjectPaymentMethods.isDataAvailable">-->
+                <!--<div style="height: 200px;background-color: #ffff; width: 102%;padding: 17% 42%;">There is no data to-->
+                    <!--display.-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div style="padding-left: 0px" *ngIf="searchType === 'vendor' || searchType === 'order'">
+            <label style="font-size: 14px">Transactions</label>
             <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectPayments.isDataAvailable">
                 <app-data-table2 [dataObject]="dataObjectPayments"
                                  (triggerActions)="this[$event.action]($event)"></app-data-table2>
             </div>
             <div class="page-header" style="margin-left: 0px" *ngIf="!dataObjectPayments.isDataAvailable">
-                <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to
+                <div style="height: 200px;background-color: #ffff; width: 102%;padding: 17% 42%;">There is no data to
                     display.
                 </div>
             </div>
         </div>
+    </div>
+    <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
+
+
+    <!--<div *ngIf="isRoot" style="margin-bottom: 15px;">-->
+        <!--<label class="col-xs-12 col-sm-1">Select Org: </label>-->
+        <!--<div class="col-xs-12 col-sm-6">-->
+            <!--<select2 width="resolve" *ngIf="orgArr.length"-->
+                     <!--class="col-lg-12 col-md-12"-->
+                     <!--style="padding: 0px; min-width: 200px"-->
+                     <!--[value]="orgValue"-->
+                     <!--[options]="select2Options"-->
+                     <!--(valueChanged)="OnOrgChange($event);"-->
+                     <!--[data]="orgArr"></select2>-->
+          <!--&lt;!&ndash;<select [(ngModel)]="orgValue" class="form-control" (change)='orgChange(orgValue)'>&ndash;&gt;-->
+            <!--&lt;!&ndash;<option [value]="''" >All</option>&ndash;&gt;-->
+            <!--&lt;!&ndash;<option *ngFor="let org of orgArr" [value]="org.id">&ndash;&gt;-->
+              <!--&lt;!&ndash;{{ org.text }}&ndash;&gt;-->
+            <!--&lt;!&ndash;</option>&ndash;&gt;-->
+          <!--&lt;!&ndash;</select>&ndash;&gt;-->
+        <!--</div>-->
+        <!--<div class="clearfix"></div>-->
+    <!--</div>-->
+    <div class="col-lg-12 cold-md-12 col-sm-12">
+        <!--<div style="margin-left: 19px; padding-bottom: 20px">-->
+            <!--<label>Search By </label>-->
+            <!--<div-->
+                <!--style="display: inline-block; position: relative; top: 9px"-->
+            <!--&gt;-->
+                <!--<select2 *ngIf="searchOptions.length" width="50%" placeholder="Select Type"-->
+                <!--class="col-lg-4 col-md-4"-->
+                <!--style="padding: 0px; line-height: 1.42857143"-->
+                <!--[value]="searchType"-->
+                <!--(valueChanged)="OnSearchChange($event);"-->
+                <!--[data]="searchOptions"></select2>-->
+            <!--</div>-->
+                <!--<input style="width: 60%; padding-left: 5px; padding-right: 20px"-->
+                    <!--type="text"-->
+                    <!--class="form-fields adhoc-report-input-box"-->
+                    <!--#searchField-->
+                    <!--placeholder="Search"-->
+                    <!--[attr.disabled]="searchType === 'retry' ? '' : null"-->
+                    <!--[(ngModel)]='searchcontent'>-->
+                <!--<span (click)="clearSearch()" style="position: relative; left: -20px; cursor: pointer"><i class="fa fa-close"></i></span>-->
+
+
+            <!--<div *ngIf="matchingResults.length; else noMatch" style="position: absolute; height: 200px; overflow: scroll; background-color: white; width: 57.1%; z-index: 10000; margin-left: 167px; border: 1px solid #cbcbcb; border-top: none">-->
+                        <!--<ul style="list-style: none; padding-left: 5px">-->
+                          <!--<li class="matching-results" *ngFor="let ele of matchingResults; let i = index;">-->
+                              <!--<span style="display: block" (click)="OnSearchSelect(ele)">{{ searchType === 'vendor' ? ( ele.id + ' - ' + ele.name ) : ele.name }}</span>-->
+                          <!--</li>-->
+                        <!--</ul>-->
+            <!--</div>-->
+            <!--<ng-template #noMatch>-->
+                <!--<div *ngIf="this.searchcontent" style="position: absolute; height: 200px; overflow: scroll; background-color: white; width: 57.1%; z-index: 10000; margin-left: 167px; border: 1px solid #cbcbcb; border-top: none">-->
+                    <!--<span *ngIf="!inSearchMode; else searching" style="font-size: 12px; padding-left: 5px">No Match Found</span>-->
+                    <!--<ng-template #searching>-->
+                        <!--<span style="font-size: 12px; padding-left: 5px">Searching ...</span>-->
+                    <!--</ng-template>-->
+                <!--</div>-->
+            <!--</ng-template>-->
+            <!--<p style="clear: both"></p>-->
+        <!--</div>-->
+        <!--<div *ngIf="searchType === 'vendor' && selectedVendor">-->
+            <!--<div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">-->
+                <!--<label class="col-lg-3 col-md-3">Selected Vendor : </label>-->
+                <!--<span class="col-lg-9 col-md-9">{{selectedVendorName}}</span>-->
+            <!--</div>-->
+            <!--<div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">-->
+                <!--<label class="col-lg-3 col-md-3">Selected Vendor UUID : </label>-->
+                <!--<span class="col-lg-9 col-md-9">{{selectedVendorUUID}}</span>-->
+            <!--</div>-->
+            <!--<div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">-->
+                <!--<label class="col-lg-3 col-md-3">Pending AP : </label>-->
+                <!--<span class="col-lg-9 col-md-9">{{pendingAP}}</span>-->
+            <!--</div>-->
+            <!--<div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">-->
+                <!--<label class="col-lg-3 col-md-3">Pending AR : </label>-->
+                <!--<span class="col-lg-9 col-md-9">{{pendingAR}}</span>-->
+            <!--</div>-->
+            <!--<div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">-->
+                <!--<label class="col-lg-3 col-md-3">Available Balance : </label>-->
+                <!--<span class="col-lg-9 col-md-9">{{availableBalance}}</span>-->
+            <!--</div>-->
+            <!--&lt;!&ndash;<div style="padding-left: 0px" class="col-lg-12 col-md-12">&ndash;&gt;-->
+                <!--&lt;!&ndash;<label class="col-lg-3 col-md-3">Payment Methods : </label>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="col-lg-9 col-md-9" *ngIf="paymentMethods.length; else noPayments">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div *ngFor="let ele of paymentMethods; let i = index;" style="margin-bottom: 10px">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<label>Payment Method</label><span style="margin-left: 5px">{{ele.payment_method}}</span><br>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<label>Last 4 digits</label><span style="margin-left: 5px">{{ele.last_four_digits}}</span><br>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<label>Payment Status</label><span style="margin-left: 5px">{{ele.status}}</span><br>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<label>Default</label><span&ndash;&gt;-->
+                            <!--&lt;!&ndash;style="margin-left: 5px">{{(ele.is_default == 1 ? 'Yes' : 'No')}}</span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<ng-template #noPayments>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<span class="col-lg-9 col-md-9"> No Payments Found</span>&ndash;&gt;-->
+                <!--&lt;!&ndash;</ng-template>&ndash;&gt;-->
+            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+        <!--</div>-->
+        <!--<div *ngIf="searchType === 'order' && selectedOrder">-->
+            <!--<div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">-->
+                <!--<label class="col-lg-3 col-md-3">Selected Order ID : </label>-->
+                <!--<span class="col-lg-9 col-md-9">{{selectedOrderID}}</span>-->
+            <!--</div>-->
+            <!--<div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">-->
+                <!--<label class="col-lg-3 col-md-3">Selected Line Item ID : </label>-->
+            <!--<span class="col-lg-9 col-md-9">{{selectedOrderLineItemID}}</span>-->
+        <!--</div>-->
+        <!--<div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">-->
+            <!--<label class="col-lg-3 col-md-3">Selected Channel : </label>-->
+            <!--<span class="col-lg-9 col-md-9">{{selectedOrderChannel}}</span>-->
+        <!--</div>-->
+
+        <!--<div *ngIf="searchType === 'order' && orderDetails">-->
+            <!--<div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">-->
+                <!--<label class="col-lg-3 col-md-3">Order Status: </label>-->
+                <!--<span class="col-lg-9 col-md-9">{{orderDetails.order_status}}</span>-->
+            <!--</div>-->
+            <!--&lt;!&ndash; Start3Div, These 3 can be looped though &ndash;&gt;-->
+            <!--<div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">-->
+                <!--<label class="col-lg-3 col-md-3">Order Creation Date: </label>-->
+                <!--<span class="col-lg-9 col-md-9">{{orderDetails.order_creation_date | date:'MM/dd/yyyy'}}</span>-->
+            <!--</div>-->
+            <!--<div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">-->
+                <!--<label class="col-lg-3 col-md-3">Order Updated At: </label>-->
+                <!--<span class="col-lg-9 col-md-9">{{orderDetails.order_updated_at | date:'MM/dd/yyyy'}}</span>-->
+            <!--</div>-->
+            <!--<div style="padding-left: 0px; margin-bottom: 10px" class="col-lg-12 col-md-12">-->
+                <!--<label class="col-lg-3 col-md-3">Order Cancellation Date: </label>-->
+                <!--<span class="col-lg-9 col-md-9">{{orderDetails.order_cancellation_date | date:'MM/dd/yyyy'}}</span>-->
+            <!--</div>-->
+            <!--&lt;!&ndash; Start3Div/ &ndash;&gt;-->
+        <!--</div>-->
+            <!--&lt;!&ndash;<div style="padding-left: 0px" class="col-lg-12 col-md-12">&ndash;&gt;-->
+                <!--&lt;!&ndash;<label class="col-lg-3 col-md-3">Payment Methods : </label>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="col-lg-9 col-md-9" *ngIf="paymentMethods.length; else noPayments">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div *ngFor="let ele of paymentMethods; let i = index;" style="margin-bottom: 10px">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<label>Payment Method</label><span style="margin-left: 5px">{{ele.payment_method}}</span><br>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<label>Last 4 digits</label><span style="margin-left: 5px">{{ele.last_four_digits}}</span><br>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<label>Payment Status</label><span style="margin-left: 5px">{{ele.status}}</span><br>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<label>Default</label><span&ndash;&gt;-->
+                            <!--&lt;!&ndash;style="margin-left: 5px">{{(ele.is_default == 1 ? 'Yes' : 'No')}}</span>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<ng-template #noPayments>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<span class="col-lg-9 col-md-9"> No Payments Found</span>&ndash;&gt;-->
+                <!--&lt;!&ndash;</ng-template>&ndash;&gt;-->
+            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+        <!--</div>-->
+        <!--<p style="clear: both"></p>-->
+        <!--<div style="padding-left: 0px" [class]="searchType === 'order' ? 'col-lg-6 col-md-6' : 'col-lg-4 col-md-4'" *ngIf="searchType === 'vendor' || searchType === 'order'">-->
+            <!--<span>{{searchType === 'order' ? 'Order History' : 'Orders'}}</span>-->
+            <!--<div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectOrders.isDataAvailable">-->
+                <!--<app-data-table2 [dataObject]="dataObjectOrders"-->
+                                 <!--(triggerActions)="this[$event.action]($event)"></app-data-table2>-->
+            <!--</div>-->
+            <!--<div class="page-header" style="margin-left: 0px" *ngIf="!dataObjectOrders.isDataAvailable">-->
+                <!--<div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to-->
+                    <!--display.-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div style="padding-left: 0px" class="col-lg-4 col-md-4" *ngIf="searchType === 'vendor'">-->
+            <!--<span>Payment Methods</span>-->
+            <!--<div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectPaymentMethods.isDataAvailable">-->
+                <!--<app-data-table2 [dataObject]="dataObjectPaymentMethods"-->
+                                 <!--(triggerActions)="this[$event.action]($event)"></app-data-table2>-->
+            <!--</div>-->
+            <!--<div class="page-header" style="margin-left: 0px" *ngIf="!dataObjectPaymentMethods.isDataAvailable">-->
+                <!--<div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to-->
+                    <!--display.-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div style="padding-left: 0px" [class]="searchType === 'order' ? 'col-lg-6 col-md-6' : 'col-lg-4 col-md-4'" *ngIf="searchType === 'vendor' || searchType === 'order'">-->
+            <!--<span>Transactions</span>-->
+            <!--<div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectPayments.isDataAvailable">-->
+                <!--<app-data-table2 [dataObject]="dataObjectPayments"-->
+                                 <!--(triggerActions)="this[$event.action]($event)"></app-data-table2>-->
+            <!--</div>-->
+            <!--<div class="page-header" style="margin-left: 0px" *ngIf="!dataObjectPayments.isDataAvailable">-->
+                <!--<div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to-->
+                    <!--display.-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
 
         <!-- Retry Orders -->
-        <div style="padding-left: 0px"
-            *ngIf="searchType === 'retry'"
-        >
-            <span>Failed Orders</span>
-            <div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectRetryOrders.isDataAvailable">
-                <button class="btn active-btn"
-                    (click)="retrySubmitBtn($event)"
-                    (cancel)="cancel($event)"
-                    (confirm)="retrySubmitBtn($event)"
-                    [attr.disabled]="selectedRowLength > 0 ? null : ''"
-                >
-                    Retry
-                </button>
-                <app-data-table2
-                    [dataObject]="dataObjectRetryOrders"
-                    [sendResponseOnCheckboxClick]=true
-                    (triggerActions)="handleRow($event)"
-                ></app-data-table2>
-            </div>
-            <div class="page-header" style="margin-left: 0px" *ngIf="!dataObjectRetryOrders.isDataAvailable">
-                <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to
-                    display.
-                </div>
-            </div>
-        </div>
+        <!--<div style="padding-left: 0px"-->
+            <!--*ngIf="searchType === 'retry'"-->
+        <!--&gt;-->
+            <!--<span>Failed Orders</span>-->
+            <!--<div class="gridOverflow pull-left" style="padding: 20px" *ngIf="dataObjectRetryOrders.isDataAvailable">-->
+                <!--<button class="btn active-btn"-->
+                    <!--(click)="retrySubmitBtn($event)"-->
+                    <!--(cancel)="cancel($event)"-->
+                    <!--(confirm)="retrySubmitBtn($event)"-->
+                    <!--[attr.disabled]="selectedRowLength > 0 ? null : ''"-->
+                <!--&gt;-->
+                    <!--Retry-->
+                <!--</button>-->
+                <!--<app-data-table2-->
+                    <!--[dataObject]="dataObjectRetryOrders"-->
+                    <!--[sendResponseOnCheckboxClick]=true-->
+                    <!--(triggerActions)="handleRow($event)"-->
+                <!--&gt;</app-data-table2>-->
+            <!--</div>-->
+            <!--<div class="page-header" style="margin-left: 0px" *ngIf="!dataObjectRetryOrders.isDataAvailable">-->
+                <!--<div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to-->
+                    <!--display.-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
 
-        <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
+        <!--<app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>-->
     </div>
 </div>
 
