@@ -59,6 +59,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   error: any;
   api_fs: any;
   externalAuth: any;
+  showManagePayments: boolean;
 
   isMenuOpened: boolean;
   resetForm: FormGroup;
@@ -206,25 +207,33 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
 
           let isRoot = false;
           let isAdmin = false;
+          let isSupport = false;
           let removeMenuItems = true;
           if (groupArr.length) {
             groupArr.forEach(function (grp) {
-              if (grp === 'ROOT' || grp === 'SUPER_USER' || grp === 'ORG_ADMIN') {
+              if (grp === 'ROOT' || grp === 'SUPER_USER' || grp === 'ORG_ADMIN' || grp === 'SUPPORT') {
                 if(grp === 'ORG_ADMIN') {
                   isAdmin = true;
                 }
                 if (grp === 'ROOT' || grp === 'SUPER_USER') {
                   isRoot = true;
                 }
+                if (grp === 'SUPPORT') {
+                  isSupport = true;
+                }
                 removeMenuItems = false;
               }
             });
           }
 
+          if (!isRoot && !isAdmin && !isSupport) {
+            this.showManagePayments = true;
+          }
+
          // this.mainmenu = response['admin'];
-          const menu = JSON.parse(JSON.stringify(response['admin']));
+          let menu = JSON.parse(JSON.stringify(response['admin']));
           this.mainmenu = menu;
-          
+
           if (removeMenuItems) {
             var reducedMenu = menu.filter(function (res) {
               return res.id !== 'payments' && res.id !== 'admin' && res.id !== 'reports';
@@ -233,10 +242,13 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
           }
 
           if (isAdmin && !isRoot) {
+            menu = menu.filter(function (m){
+               return m.name !== 'payments';
+            });
             this.mainmenu = menu.map(function (m){
               if (m.name === 'admin') {
                 m.submenu = m.submenu.filter(function (ele: any) {
-                  return ele.name !== 'orgmanagement' && ele.name !== 'emailmanagement' && ele.name !== 'analytics' && ele.name !== 'support' && ele.name !== 'uploads';
+                  return ele.name !== 'orgmanagement' && ele.name !== 'emailmanagement' && ele.name !== 'analytics' && ele.name !== 'invoices' && ele.name !== 'support' && ele.name !== 'uploads';
                 });
               }
               return m;
@@ -255,6 +267,20 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
                 });
               }
             }
+          }
+
+          if (isSupport) {
+            menu = menu.filter(function (m){
+              return m.name !== 'dashboards' && m.name !== 'reports' && m.name !== 'orders';
+            });
+            this.mainmenu = menu.map(function (m){
+              if (m.name === 'admin') {
+                m.submenu = m.submenu.filter(function (ele: any) {
+                  return ele.name !== 'orgmanagement' && ele.name !== 'usermanagement' && ele.name !== 'vendormanagement' && ele.name !== 'uploads' && ele.name !== 'baseFields' && ele.name !== 'ordertemplatelist' ;
+                });
+              }
+              return m;
+            });
           }
 
           if (window.location.pathname) {
