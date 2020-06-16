@@ -65,6 +65,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   resetForm: FormGroup;
   resetModel: any;
   @ViewChild('oldPassword') oldPasswordEl:ElementRef;
+  loggedInVendorTitle="";
   constructor(
       // private okta: OktaAuthService,
       private translate: TranslateService,
@@ -109,6 +110,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
     this.loggedInVendor = this.auth.getIdentityInfo('loggedInVendor');
     this.loggedInOrg = localStorage.getItem('loggedInOrg');
     this.popoverOpen = false;
+    this.loggedInVendorTitle = this.loggedInVendor!= "-" ? " ( "+this.loggedInVendor + ") " : "" ;
     if (!_.isNull(this.loggedInUser) || !_.isUndefined(this.loggedInUser)) {
       // this.getCountries();
       this.getPreferenceMenu();
