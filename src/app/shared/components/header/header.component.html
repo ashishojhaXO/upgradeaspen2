@@ -31,13 +31,13 @@
         <div style="float: right; margin-top: 11px">
           <div style="float: right">
             <button style="background-color: transparent; border: none" (click)="toggleMenu($event)">
-              <span class="prof-img" style="position: relative;top: -15px;">
+              <span class="prof-img" style="position: relative;top: -2px;margin-right: 20px; float:left;">
                   <i class="fa fa-user-circle" style="font-size: 2.7em"></i>
                 </span>
-              <span class="welcome-user-text-wrap" title="{{loggedInUser}} ( {{loggedInVendor}} )">
+              <span class="welcome-user-text-wrap" title="{{loggedInUser}} {{loggedInVendorTitle}}">
                 <span class="welcome-txt">Welcome </span>
                 <span class="welcome-user-text">{{loggedInUser}}</span>
-                <span class="welcome-user-text">( {{loggedInVendor}} )</span>
+                <span class="welcome-user-text" [style.opacity]="loggedInVendorTitle == '' ? 0  : ''">( {{loggedInVendor}} )</span>
                 <!---->
                 <i aria-hidden="true" class="fa fa-caret-down"></i></span>
             </button>
