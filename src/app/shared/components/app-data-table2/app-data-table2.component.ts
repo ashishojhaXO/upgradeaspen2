@@ -733,21 +733,21 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     columnButtonDefs += '<ul class="options-actions" style="list-style: none; z-index: 1; padding: 0px; border: 1px solid; position: absolute; background: #54575A; color: #fff; padding: 5px 0px; display: none; border: 1px; margin-left: 20px;">';
 
                     if (this.dataObject.gridData.options.isEditOption && this.dataObject.gridData.options.isEditOption.value) {
-                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa fa-pencil fa-action-view editLink" title="' + (this.dataObject.gridData.options.isEditOption.tooltip ? this.dataObject.gridData.options.isEditOption.tooltip : 'Edit') + '" style="margin-right: 15px; cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px">' + this.dataObject.gridData.options.isEditOption.tooltip + '</span></a></li>';
+                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa fa-pencil fa-action-view editLink" title="' + (this.dataObject.gridData.options.isEditOption.tooltip ? this.dataObject.gridData.options.isEditOption.tooltip : 'Edit') + '" style="margin-right: 15px; cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px; font-family: sans-serif; font-size: 14px">' + this.dataObject.gridData.options.isEditOption.tooltip + '</span></a></li>';
                         // columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isEditOption.tooltip ? this.dataObject.gridData.options.isEditOption.tooltip : 'Edit' )  + '</span>';
                     }
                     if (this.dataObject.gridData.options.isPlayOption && this.dataObject.gridData.options.isPlayOption.value) {
                         const iconClass = this.dataObject.gridData.options.isPlayOption.icon ? this.dataObject.gridData.options.isPlayOption.icon : 'fa-play';
-                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa ' + iconClass + ' fa-action-view playLink" title="' + (this.dataObject.gridData.options.isPlayOption.tooltip ? this.dataObject.gridData.options.isPlayOption.tooltip : 'Click') + '" style="margin-right: 15px; cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px">' + this.dataObject.gridData.options.isPlayOption.tooltip + '</span></a></li>';
+                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa ' + iconClass + ' fa-action-view playLink" title="' + (this.dataObject.gridData.options.isPlayOption.tooltip ? this.dataObject.gridData.options.isPlayOption.tooltip : 'Click') + '" style="margin-right: 15px; cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px; font-family: sans-serif; font-size: 14px">' + this.dataObject.gridData.options.isPlayOption.tooltip + '</span></a></li>';
                         //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isPlayOption.tooltip ? this.dataObject.gridData.options.isPlayOption.tooltip : 'Click' )  + '</span>';
                     }
                     if (this.dataObject.gridData.options.isDownloadOption && this.dataObject.gridData.options.isDownloadOption.value) {
-                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa fa-download fa-action-view downloadLink" title="' + (this.dataObject.gridData.options.isDownloadOption.tooltip ? this.dataObject.gridData.options.isDownloadOption.tooltip : 'Download') + '" style="margin-right: 15px; cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px">' + this.dataObject.gridData.options.isDownloadOption.tooltip + '</span></a></li>';
+                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa fa-download fa-action-view downloadLink" title="' + (this.dataObject.gridData.options.isDownloadOption.tooltip ? this.dataObject.gridData.options.isDownloadOption.tooltip : 'Download') + '" style="margin-right: 15px; cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px; font-family: sans-serif; font-size: 14px">' + this.dataObject.gridData.options.isDownloadOption.tooltip + '</span></a></li>';
                         //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isDownloadOption.tooltip ? this.dataObject.gridData.options.isDownloadOption.tooltip : 'Download' )  + '</span>';
                     }
 
                     if (this.dataObject.gridData.options.isDeleteOption && this.dataObject.gridData.options.isDeleteOption.value) {
-                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa fa-trash fa-action-view deleteLink" title="' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete') + '" style="margin-right: 15px; cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px">' + this.dataObject.gridData.options.isDeleteOption.tooltip + '</span></a></li>';
+                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa fa-trash fa-action-view deleteLink" title="' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete') + '" style="margin-right: 15px; cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px; font-family: sans-serif; font-size: 14px">' + this.dataObject.gridData.options.isDeleteOption.tooltip + '</span></a></li>';
                         //  columnButtonDefs += '<span class="ng-tooltip ng-tooltip-right" style="transition: opacity 500ms ease 0s; left: 55px;">' + (this.dataObject.gridData.options.isDeleteOption.tooltip ? this.dataObject.gridData.options.isDeleteOption.tooltip : 'Delete' )  + '</span>';
                     }
 
@@ -757,27 +757,27 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                     if (this.dataObject.gridData.options.isCustomOption && this.dataObject.gridData.options.isCustomOption.value) {
                         const iconClass = this.dataObject.gridData.options.isCustomOption.icon ? this.dataObject.gridData.options.isCustomOption.icon : 'fa-play';
-                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa ' + iconClass + ' fa-action-view customLink" title="' + (this.dataObject.gridData.options.isCustomOption.tooltip ? this.dataObject.gridData.options.isCustomOption.tooltip : 'Click') + '" style="margin-right: 15px;cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px">' + this.dataObject.gridData.options.isCustomOption.tooltip + '</span></a></li>';
+                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa ' + iconClass + ' fa-action-view customLink" title="' + (this.dataObject.gridData.options.isCustomOption.tooltip ? this.dataObject.gridData.options.isCustomOption.tooltip : 'Click') + '" style="margin-right: 15px;cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px; font-family: sans-serif; font-size: 14px">' + this.dataObject.gridData.options.isCustomOption.tooltip + '</span></a></li>';
                     }
 
                     if (this.dataObject.gridData.options.isCustomOption2 && this.dataObject.gridData.options.isCustomOption2.value) {
                         const iconClass = this.dataObject.gridData.options.isCustomOption2.icon ? this.dataObject.gridData.options.isCustomOption2.icon : 'fa-play';
-                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa ' + iconClass + ' fa-action-view customLink2" title="' + (this.dataObject.gridData.options.isCustomOption2.tooltip ? this.dataObject.gridData.options.isCustomOption2.tooltip : 'Click') + '" style="margin-right: 15px;cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px">' + this.dataObject.gridData.options.isCustomOption2.tooltip + '</span></a></li>';
+                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa ' + iconClass + ' fa-action-view customLink2" title="' + (this.dataObject.gridData.options.isCustomOption2.tooltip ? this.dataObject.gridData.options.isCustomOption2.tooltip : 'Click') + '" style="margin-right: 15px;cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px; font-family: sans-serif; font-size: 14px">' + this.dataObject.gridData.options.isCustomOption2.tooltip + '</span></a></li>';
                     }
 
                     if (this.dataObject.gridData.options.isCustomOption3 && this.dataObject.gridData.options.isCustomOption3.value) {
                         const iconClass = this.dataObject.gridData.options.isCustomOption3.icon ? this.dataObject.gridData.options.isCustomOption3.icon : 'fa-play';
-                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa ' + iconClass + ' fa-action-view customLink3" title="' + (this.dataObject.gridData.options.isCustomOption3.tooltip ? this.dataObject.gridData.options.isCustomOption3.tooltip : 'Click') + '" style="margin-right: 15px;cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px">' + this.dataObject.gridData.options.isCustomOption3.tooltip + '</span></a></li>';
+                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa ' + iconClass + ' fa-action-view customLink3" title="' + (this.dataObject.gridData.options.isCustomOption3.tooltip ? this.dataObject.gridData.options.isCustomOption3.tooltip : 'Click') + '" style="margin-right: 15px;cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px; font-family: sans-serif; font-size: 14px">' + this.dataObject.gridData.options.isCustomOption3.tooltip + '</span></a></li>';
                     }
 
                     if (this.dataObject.gridData.options.isCustomOption4 && this.dataObject.gridData.options.isCustomOption4.value) {
                         const iconClass = this.dataObject.gridData.options.isCustomOption4.icon ? this.dataObject.gridData.options.isCustomOption4.icon : 'fa-play';
-                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa ' + iconClass + ' fa-action-view customLink4" title="' + (this.dataObject.gridData.options.isCustomOption4.tooltip ? this.dataObject.gridData.options.isCustomOption4.tooltip : 'Click') + '" style="margin-right: 15px;cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px">' + this.dataObject.gridData.options.isCustomOption4.tooltip + '</span></a></li>';
+                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa ' + iconClass + ' fa-action-view customLink4" title="' + (this.dataObject.gridData.options.isCustomOption4.tooltip ? this.dataObject.gridData.options.isCustomOption4.tooltip : 'Click') + '" style="margin-right: 15px;cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px; font-family: sans-serif; font-size: 14px">' + this.dataObject.gridData.options.isCustomOption4.tooltip + '</span></a></li>';
                     }
 
                     if (this.dataObject.gridData.options.isCustomOption5 && this.dataObject.gridData.options.isCustomOption5.value) {
                         const iconClass = this.dataObject.gridData.options.isCustomOption5.icon ? this.dataObject.gridData.options.isCustomOption5.icon : 'fa-play';
-                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa ' + iconClass + ' fa-action-view customLink5" title="' + (this.dataObject.gridData.options.isCustomOption5.tooltip ? this.dataObject.gridData.options.isCustomOption5.tooltip : 'Click') + '" style="margin-right: 15px;cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px">' + this.dataObject.gridData.options.isCustomOption5.tooltip + '</span></a></li>';
+                        columnButtonDefs += '<li style="padding: 10px 0px"><a class="fa ' + iconClass + ' fa-action-view customLink5" title="' + (this.dataObject.gridData.options.isCustomOption5.tooltip ? this.dataObject.gridData.options.isCustomOption5.tooltip : 'Click') + '" style="margin-right: 15px;cursor: pointer; margin-left: 10px;"><span style="margin-left: 10px; font-family: sans-serif; font-size: 14px">' + this.dataObject.gridData.options.isCustomOption5.tooltip + '</span></a></li>';
                     }
 
                     columnButtonDefs += '</ul>';
@@ -1595,9 +1595,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                 const disableUnlock = !(rowData['external_status'] === 'DEACTIVATED');
 
                                 const retHtml = '<div>' +
-                                    '<button  class="btn action-btn api-action"  data-action="resendEmail" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + (disableActivation ? ' disabled="disabled" ' : '') + '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-arrow-right" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span> Resend Activation Email</button>' +
-                                    '<button class="btn action-btn api-action" data-action="deactivate" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + (disableDeActivate ? ' disabled="disabled" ' : '') + '><span style="margin-right: 5px; position: relative;"> <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-times" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>DEACTIVATE</button>' +
-                                    '<button class="btn action-btn api-action" data-action="unlock" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"' + (disableUnlock ? ' disabled="disabled" ' : '') + '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-unlock" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Unlock and Resend Activation email</button>' +
+                                    '<button  class="btn action-btn api-action"  data-action="resendEmail" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-family: sans-serif;"' + (disableActivation ? ' disabled="disabled" ' : '') + '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i><i class="fa fa-arrow-right" style="color: #5cb85c; font-size: 8px; position: absolute; top: 4px; left: 5px" aria-hidden="true"></i></span> Resend Activation Email</button>' +
+                                    '<button class="btn action-btn api-action" data-action="deactivate" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-family: sans-serif;"' + (disableDeActivate ? ' disabled="disabled" ' : '') + '><span style="margin-right: 5px; position: relative;"> <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-times" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>DEACTIVATE</button>' +
+                                    '<button class="btn action-btn api-action" data-action="unlock" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-family: sans-serif;"' + (disableUnlock ? ' disabled="disabled" ' : '') + '><span style="margin-right: 5px; position: relative;"><i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i><i class="fa fa-unlock" style="color: #3FA8F4; font-size: 8px; position: absolute; top: 8px; left: 6px" aria-hidden="true"></i></span>Unlock and Resend Activation email</button>' +
                                     '</div>';
                                 row.child(retHtml).show();
                                 __this.attachEvents(row);
@@ -1780,7 +1780,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     <button
                                         class="btn action-btn api-action"
                                         data-action="resendEmail"
-                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
+                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-family: sans-serif;"
                                     >
                                         <span style="margin-right: 5px; position: relative;">
                                             <i class="fa fa-user" style="font-size: 20px" aria-hidden="true"></i>
@@ -1791,7 +1791,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     <button
                                         class="btn action-btn api-action"
                                         data-action="deactivate"
-                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
+                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-family: sans-serif;"
                                     >
                                         <span style="margin-right: 5px; position: relative;">
                                             <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i>
@@ -1802,7 +1802,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                                     <button
                                         class="btn action-btn api-action"
                                         data-action="unlock"
-                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
+                                        style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-family: sans-serif;"
                                     >
                                         <span style="margin-right: 5px; position: relative;">
                                             <i class="fa fa-user" style="font-size: 20px;" aria-hidden="true"></i>
