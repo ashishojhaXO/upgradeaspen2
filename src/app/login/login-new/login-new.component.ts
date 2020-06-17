@@ -41,7 +41,7 @@ export class LoginNewComponent implements OnInit {
 
   error: string;
   registerSuccess : string;
-  forgotSuccess : string; 
+  forgotSuccess : string;
 
   ngOnInit() {
 
@@ -52,7 +52,7 @@ export class LoginNewComponent implements OnInit {
           this.error = 'You are not authorized to access this application';
         } else if (params['Welcome']) {
           this.registerSuccess = 'Your account has been activated. You may login now with your credentials';
-          // ['primaryauth.title'] =         
+          // ['primaryauth.title'] =
        } else if (params['pwd-change']) {
           this.registerSuccess = 'Your password has been reset successfully. You may login now with your credentials';
        }
@@ -131,6 +131,10 @@ export class LoginNewComponent implements OnInit {
 
   encodeValue(value: string): string {
     return encodeURIComponent(value);
+  }
+
+  OnUserNameChange() {
+    this.loginForm.get('userData.password').setValue('');
   }
 
   onSubmitLoginForm(){
