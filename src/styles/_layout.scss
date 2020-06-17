@@ -2190,8 +2190,8 @@ ul.bottom-menu li a:hover {
     font-family: sans-serif;
 
     &:hover {
-      background-color: $septenary-bg;
-      color: #eeedef
+      background-color: $septenary-bg !important;
+      color: #eeedef !important
     }
   }
 }
