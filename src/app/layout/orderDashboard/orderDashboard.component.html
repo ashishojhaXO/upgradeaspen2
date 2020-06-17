@@ -52,8 +52,13 @@
                    aria-hidden="true"></i></span>
             Cancel Order
         </button>
-        <button class="btn action-btn api-action" [disabled]="orderDetails.payment_received_date ? 'disabled' : null" (click)="payOrder()"
-                style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-family: sans-serif;;">
+        <button 
+            *ngIf="isUser"
+            class="btn action-btn api-action" 
+            [disabled]="orderDetails.payment_received_date ? 'disabled' : null" 
+            (click)="payOrder()"
+            style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-family: sans-serif;;"
+        >
             <span style="margin-right: 5px; position: relative;">
                 <i class="fa fa-money"
                    style="font-size: 20px; position: relative; top: 2px"
@@ -117,5 +122,42 @@
             </li>
         </ul>
     </div>
+</div>
+
+<div 
+    *ngIf="isUser"
+>
+  <app-pop-up-modal #ManagePayments>
+    <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
+       Payment Methods:
+    </div>
+    <div class="app-modal-body">
+      <div class="content">
+        <app-payment-methods
+            [ordersScreen]="{orderid: orderID, lineitems: [lineItemID]}"
+            [orderId]="orderID"
+            [displayID]="displayOrderID"
+        >
+        </app-payment-methods>
+
+        <div style="margin-left: 42px">
+            <button type="button" 
+                class="btn btn-primary" 
+                [routerLink]="['/app/manage-payments']">
+                Add New Payment Method
+            </button>
+        </div>
+
+
+      </div>
+    </div>
+    <div class="app-modal-footer">
+
+
+      <button type="button" class="btn btn-secondary" (click)="managePayments.hide()">
+        Cancel
+      </button>
+    </div>
+  </app-pop-up-modal>
 </div>
 

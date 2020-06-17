@@ -34,10 +34,14 @@ export class OrderDashboardComponent implements OnInit  {
   @Input() displayOrderID: any;
   @Input() lineItemID: any;
   @Input() vendorUuid: any;
+  @Input() userUuid: any;
+  @ViewChild('ManagePayments') managePayments: PopUpModalComponent;
   config: any;
   options: any;
   orderDetails: any;
   lineItemDetails = [];
+  isUser: boolean;
+  isRoot: boolean;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
   }
@@ -50,6 +54,23 @@ export class OrderDashboardComponent implements OnInit  {
     this.config = this.mergeConfig(this.options);
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
+
+
+    const groups = localStorage.getItem('loggedInUserGroup') || '';
+    const grp = JSON.parse(groups);
+
+    // this.selectedUserUuid = JSON.parse(localStorage.getItem("customerInfo") ).user.user_uuid
+
+    // let isUser = false;
+    grp.forEach(function (item) {
+      if (item === 'USER') {
+        this.isUser = true;
+      }
+      else if(item === 'ROOT' || item === 'SUPER_USER') {
+        this.isRoot = true;
+      }
+    }, this);
+
     this.searchDateRequest(this.orderID, this.lineItemID);
   }
 
@@ -202,9 +223,11 @@ export class OrderDashboardComponent implements OnInit  {
   payOrder() {
     console.log('this.displayOrderID >>')
     console.log(this.displayOrderID);
-    if (!this.orderDetails.payment_received_date) {
-      this.router.navigate(['/app/orderPayment/', this.orderID, this.vendorUuid, this.displayOrderID]);
-    }
+    // if (!this.orderDetails.payment_received_date) {
+    //   // this.router.navigate(['/app/orderPayment/', this.orderID, this.vendorUuid, this.displayOrderID]);
+    //   this.router.navigate(['/app/orderPayment/', this.orderID, this.userUuid, this.displayOrderID]);
+    // }
+    this.managePayments.show();
   }
 
   editOrder() {
