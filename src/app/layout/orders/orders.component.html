@@ -129,7 +129,11 @@
   </div>
 
   <div *ngIf="isHistory; else regular">
-    <app-line-item-history *ngIf="selectedLineItemID" [lineItemID]="selectedLineItemID" [displayLineItemID]="selectedDisplayLineItemID"></app-line-item-history>
+    <app-line-item-history 
+      *ngIf="selectedLineItemID" 
+      [lineItemID]="selectedLineItemID" 
+      [displayLineItemID]="selectedDisplayLineItemID"
+    ></app-line-item-history>
   </div>
   <ng-template #regular>
     <app-order-dashboard 

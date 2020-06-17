@@ -595,8 +595,6 @@ export class OrdersComponent implements OnInit  {
     this.response = res.data.rows;
     let li = this.calc(res, table);
 
-    console.log("LIIII: ", li);
-
     // In order to refresh DataTable, we have to reassign the data variable, dataObject here.
     // TODO: Data to send to html
     // NumberOfPages: Send number of rowCount/limit

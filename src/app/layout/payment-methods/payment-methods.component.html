@@ -27,14 +27,19 @@
     <div class="col-lg-12 col-md-12 col-sm-12" style="border-radius: 4px">
         <div style="background: #fff; padding: 10px 0px">
             <div style="margin-bottom: 10px; margin-left: 15px">
-                <input
-                        type="radio"
-                        name="payment"
-                        value="default"
-                        [checked]="selectionType === 'default'"
-                        (change)="paymentTypeSelection('default')"
-                        style="margin-right: 10px"
-                /> Pay by CC/ACH
+                <div 
+                    *ngIf="!ordersScreen"
+                >
+
+                    <input
+                            type="radio"
+                            name="payment"
+                            value="default"
+                            [checked]="selectionType === 'default'"
+                            (change)="paymentTypeSelection('default')"
+                            style="margin-right: 10px"
+                    /> Pay by CC/ACH
+                </div>
                 <div [hidden]="selectionType !== 'default'">
                     <div *ngIf="paymentOptions; else fetchingExistingPayments">
                         <div style="font-size: 12px; margin: 15px 10px" *ngIf="paymentOptions.length; else noExistingPayments">
@@ -89,14 +94,18 @@
                                                 [checked]="option.is_default == '1' ? true : false"
                                             />
                                         </div >
-                                        <!--<div class="col-md-1" >-->
-                                            <!--<button *ngIf="option.status && option.status.toUpperCase() === 'PAYMENT SETUP COMPLETED'"-->
-                                                    <!--class="btn btn-primary"-->
-                                                    <!--style="text-transform: none"-->
-                                                    <!--(click)="postPaymentsCharge(option)">-->
-                                                <!--Pay-->
-                                            <!--</button>-->
-                                        <!--</div >-->
+                                        <div
+                                            *ngIf="ordersScreen"
+                                        >
+                                            <div class="col-md-1" >
+                                                <button *ngIf="option.status && option.status.toUpperCase() === 'PAYMENT SETUP COMPLETED'"
+                                                        class="btn btn-primary"
+                                                        style="text-transform: none"
+                                                        (click)="postPaymentsCharge(option)">
+                                                    Pay
+                                                </button>
+                                            </div >
+                                        </div>
 
 
                                     </div>
@@ -113,8 +122,13 @@
                     <ng-template #fetchingExistingPayments>
                         <div style="margin: 20px 30px">Fetching existing payments ..</div>
                     </ng-template>
-                    <span style="position: relative; top: 10px">Select NEW : </span>
-                    <div id="fs_widget">
+
+                    <div 
+                        *ngIf="!ordersScreen"
+                    >
+                        <span style="position: relative; top: 10px">Select NEW : </span>
+                        <div id="fs_widget">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -213,6 +227,11 @@
     </div>
     <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
 </div>
-<app-script-embedder [src]="api_fs.widgetV2"
-                     type="text/javascript"></app-script-embedder>
+
+<div 
+    *ngIf="!ordersScreen"
+>
+    <app-script-embedder [src]="api_fs.widgetV2"
+                        type="text/javascript"></app-script-embedder>
+</div>
 

@@ -27,6 +27,7 @@ export class PaymentMethodsComponent implements OnInit {
   selectionType = '';
   paymentOptions: any;
   @Input() orderId: string;
+  @Input() displayOrderID: any;
   vendorId: string;
   showSpinner: boolean;
   api_fs: any;
@@ -37,6 +38,8 @@ export class PaymentMethodsComponent implements OnInit {
   isRoot: boolean;
   paymentsMethodsData: any;
   paymentsChargeData: any;
+  // @Input() ordersScreen: boolean;
+  @Input() ordersScreen: Object;
 
   constructor(
     private route: ActivatedRoute,
@@ -61,7 +64,7 @@ export class PaymentMethodsComponent implements OnInit {
       console.log(window['fs_widget_config']);
       const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
       this.vendorUuid = this.route.snapshot.paramMap.get('vendor_uuid');
-      this.displayId = this.route.snapshot.paramMap.get('displayId');
+      this.displayId = this.displayOrderID || this.route.snapshot.paramMap.get('displayId');
       // this.initVendorUuid();
       window['fs_widget_config'].vendor_id = this.vendorId = this.vendorUuid;
       window['fs_widget_config'].api_key = customerInfo.org.x_api_key;
@@ -245,10 +248,10 @@ export class PaymentMethodsComponent implements OnInit {
   setPaymentsChargeData(option) {
     // [paymentsChargeData]="option.is_default == '1' ? option : false"
     this.paymentsChargeData = {
-      vendorid: this.vendorId,
-      orderid: this.orderId,
-      paymentmethodid: option.paymentmethodid,
-      // "lineitems": [15,16,17]
+      // vendorid: this.vendorId,
+      userid: this.userUuid,
+      paymentmethodid: option.payment_method_id,
+      ...this.ordersScreen
     }
   }
 
