@@ -91,8 +91,12 @@ export class AppPopupButtonComponent implements OnInit, OnChanges {
      //Button Secondary
       if(paramData && paramData['secondaryBtnColor']){
         let secondaryBtnColor = paramData['secondaryBtnColor'];
-        let secondaryBtnTxtColor = paramData['secondaryBtnTxtColor'];
-        $(".btn-secondary").css('cssText','color:'+secondaryBtnTxtColor+'; background-color:'+secondaryBtnColor+'; border-color:'+secondaryBtnColor);
+        let secondaryBtnTxtColor = paramData['secondaryBtnTxtColor'];       
+        if(paramData['secondaryBtnColor']!="#ededed"){
+          $(".btn-secondary").css('cssText','color:'+secondaryBtnTxtColor+'; background-color:'+secondaryBtnColor+'; border-color:'+secondaryBtnColor);
+        }else{
+          $(".btn-secondary").css('cssText','color:'+secondaryBtnTxtColor+'; background-color:'+secondaryBtnColor+'; border-color:#4e9b49');
+        }
       }
   }
   _OnDelete() {

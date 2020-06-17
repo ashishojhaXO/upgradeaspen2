@@ -37,7 +37,7 @@
     </div>
     <div *ngIf="orderDetails" style="background: #fff; padding: 10px 10px 30px 10px">
         <button class="btn action-btn api-action" [disabled]="orderDetails.payment_received_date ? 'disabled' : null" (click)="editOrder()"
-                style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;">
+                style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-family: sans-serif;;">
             <span style="margin-right: 5px; position: relative;">
                 <i class="fa fa-pencil"
                    style="font-size: 20px;"
@@ -45,7 +45,7 @@
             Edit Order
         </button>
         <button class="btn action-btn api-action" [disabled]="orderDetails.payment_received_date ? 'disabled' : null" (click)="cancelOrder()"
-                style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;">
+                style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-family: sans-serif;;">
             <span style="margin-right: 5px; position: relative;">
                 <i class="fa fa-close"
                    style="font-size: 20px;"
@@ -57,7 +57,7 @@
             class="btn action-btn api-action" 
             [disabled]="orderDetails.payment_received_date ? 'disabled' : null" 
             (click)="payOrder()"
-            style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-weight: 600;"
+            style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-family: sans-serif;;"
         >
             <span style="margin-right: 5px; position: relative;">
                 <i class="fa fa-money"
@@ -105,13 +105,13 @@
                         </div>
                     </div>
                     <div style="padding: 10px">
-                        <button class="btn action-btn" style="background: #fefefe;color: #3b3b3b;border-color: #c3c3c3;font-weight: 600;width: 100px;" (click)="extendOrder(lineItem)"
+                        <button class="btn action-btn" style="background: #fefefe;color: #3b3b3b;border-color: #c3c3c3;font-family: sans-serif;width: 100px;" (click)="extendOrder(lineItem)"
                                 [disabled]="lineItemExtensionAllowed(lineItem.line_item_end_date) && orderDetails.payment_received_date ? null : 'disabled'">
                                 <span style="margin-right: 24px;position: relative;">
                                     <i aria-hidden="true" class="fa fa-external-link" style="font-size: 24px;top: -5px;left: -10px;color: #3b3b3b;"></i></span>
                             Extend
                         </button>
-                        <button class="btn action-btn" style="background: #fefefe;color: #3b3b3b;border-color: #c3c3c3;font-weight: 600;width: 100px;" (click)="refundLineItem(lineItem, orderID)"
+                        <button class="btn action-btn" style="background: #fefefe;color: #3b3b3b;border-color: #c3c3c3;font-family: sans-serif;width: 100px;" (click)="refundLineItem(lineItem, orderID)"
                                 [disabled]="!lineItem.ended ? 'disabled' : null">
                                 <span style="margin-right: 24px;position: relative;">
                                     <i aria-hidden="true" class="fa fa-money" style="font-size: 24px;top: -5px;left: -10px;color: #3b3b3b;"></i></span>

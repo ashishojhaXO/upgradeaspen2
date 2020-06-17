@@ -59,20 +59,33 @@ _addFeedbackWidget(){
       if(paramData && paramData['themeColor']){
         let themeColor = paramData['themeColor'];
         let themeTxtColor = paramData['themeTxtColor'];
-          $(".header").css({background: themeColor});     
-          $(".org-dropdown > select").css('cssText','border: 1px solid; background-color: transparent; background-image: linear-gradient(38deg, transparent 50%, '+themeColor+' 50%), linear-gradient(135deg, '+themeColor+' 50%, transparent 50%), linear-gradient(to right, '+ themeTxtColor +', '+ themeTxtColor +') !important');  
+          $(".header").css({background: themeColor});   
           $(".nav.navbar-nav.main-menu a").css('cssText','color:'+themeTxtColor+' !important'); 
-          $(".welcome-user-text-wrap").css({color: themeTxtColor});     
-          $(".nav.navbar-nav.main-menu .active a").css('cssText','color:'+themeTxtColor+' !important; border-color:'+themeTxtColor+' !important');     
+          $(".welcome-user-text-wrap").css({color: themeTxtColor});    
+          if(paramData['themeColor']!="#252425"){
+            $(".org-dropdown > select").css('cssText','color:'+themeTxtColor+';border: 1px solid; background-color: transparent; background-image: linear-gradient(38deg, transparent 50%, '+themeColor+' 50%), linear-gradient(135deg, '+themeColor+' 50%, transparent 50%), linear-gradient(to right, '+ themeTxtColor +', '+ themeTxtColor +') !important');  
+            $(".nav.navbar-nav.main-menu .active a").css('cssText','color:'+themeTxtColor+' !important; border-color:'+themeTxtColor+' !important');     
+            $(".welcome-user-text-wrap .fa-caret-down").css('cssText','color:'+themeTxtColor);
+            $(".dropdown-content a").css('cssText','background:'+themeColor+'; color:'+ themeTxtColor);
+          }else{
+            $(".org-dropdown > select").css('cssText','color:#fff;border: none; background-color: #181818; background-image: linear-gradient(38deg, transparent 50%, white 50%), linear-gradient(135deg, white 50%, transparent 50%), linear-gradient(to right, #54575a, #54575a) !important');  
+            $(".nav.navbar-nav.main-menu .active a").css('cssText','color:'+themeTxtColor+' !important; border-color: #4E9C49 !important');     
+            $(".welcome-user-text-wrap .fa-caret-down").css('cssText','color:#fff');
+            $(".dropdown-content a").css('cssText','background:#252425; color:#adadad');
+          }         
       }
       //Sub Header Menu
       if(paramData && paramData['subMenuColor']){
         let subMenuColor = paramData['subMenuColor'];
         let subMenuTxtColor = paramData['subMenuTxtColor'];
           $(".bottom-menu").css({background: subMenuColor});
-          $(".bottom-menu a").css('cssText','color:'+subMenuTxtColor+' !important')
-          $(".bottom-menu a.active").css('cssText','color: '+subMenuTxtColor+' !important;border-bottom-color:'+subMenuTxtColor+' !important')
-      }
+          $(".bottom-menu a").css('cssText','color:'+subMenuTxtColor+' !important')          
+          if(paramData['subMenuColor']!="#54575A"){
+              $(".bottom-menu a.active").css('cssText','color: '+subMenuTxtColor+' !important;border-bottom-color:'+subMenuTxtColor+' !important');
+            }else{
+              $(".bottom-menu a.active").css('cssText','color: '+subMenuTxtColor+' !important;border-bottom-color:#DC6A35 !important');
+            }
+        }
       //Button Primary
       if(paramData && paramData['primaryBtnColor']){
         let primaryBtnColor = paramData['primaryBtnColor'];
@@ -96,20 +109,30 @@ _addFeedbackWidget(){
       //Button Secondary 
       if(paramData && paramData['secondaryBtnColor']){
         let secondaryBtnColor = paramData['secondaryBtnColor'];
-        let secondaryBtnTxtColor = paramData['secondaryBtnTxtColor'];
-        $(".btn-secondary").css('cssText','color:'+secondaryBtnTxtColor+'; background-color:'+secondaryBtnColor+'; border-color:'+secondaryBtnColor);
+        let secondaryBtnTxtColor = paramData['secondaryBtnTxtColor'];       
+        if(paramData['secondaryBtnColor']!="#ededed"){
+          $(".btn-secondary").css('cssText','color:'+secondaryBtnTxtColor+'; background-color:'+secondaryBtnColor+'; border-color:'+secondaryBtnColor);
+        }else{
+          $(".btn-secondary").css('cssText','color:'+secondaryBtnTxtColor+'; background-color:'+secondaryBtnColor+'; border-color:#4e9b49');
+        }
       }
       //Dashboard
       if(paramData && paramData['filterColor']){
         let filterColor = paramData['filterColor'];
-        let filterTxtColor = paramData['filterTxtColor'];
-          $(".sidebar-form-control .title,.sidebar-title h3").css('cssText','color:'+filterTxtColor);
-          //$(".sidebar-form-control .sidebar-container label.active").css('cssText','background-color:yellow;color:red');
-          $(".sidebar").css('cssText','background:'+filterColor+'; border-color:'+filterTxtColor);
-          $(".sidebar-toggle").css('cssText','background-color:'+filterColor+'; border-color:'+filterTxtColor);
-          $(".sidebar-toggle .fa-caret-left").css('cssText','color:'+filterTxtColor);
-          $(".sidebar-sub-title").css('cssText','color:'+filterTxtColor);
-          $(".sidebar-title").css('cssText','color:'+filterTxtColor);
+        let filterTxtColor = paramData['filterTxtColor'];        
+        $(".sidebar-form-control .title,.sidebar-title h3").css('cssText','color:'+filterTxtColor);
+        if(filterColor=="#54575a" && filterTxtColor=="#adadad"){
+          //$(".sidebar-form-control .sidebar-container label.active").css('cssText','background-color:yellow;color:red');         
+         $(".sidebar").css('cssText','background: #54575a; border-color: #4e9b49');
+         $(".sidebar-toggle").css('cssText','background-color: #4e9b49; border-color:#4e9b49');
+         $(".sidebar-toggle .fa-caret-left").css('cssText','color:#54575a');
+       }else{         
+         $(".sidebar").css('cssText','background:'+filterColor+'; border-color:'+filterTxtColor);
+         $(".sidebar-toggle").css('cssText','background-color:'+filterColor+'; border-color:'+filterTxtColor);
+         $(".sidebar-toggle .fa-caret-left").css('cssText','color:'+filterTxtColor);
+        }
+        $(".sidebar-sub-title").css('cssText','color:'+filterTxtColor);
+        $(".sidebar-title").css('cssText','color:'+filterTxtColor);
       } 
   }
   _applyThemeOnReady(paramData){

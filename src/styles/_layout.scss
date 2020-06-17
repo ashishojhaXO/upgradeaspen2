@@ -2190,8 +2190,8 @@ ul.bottom-menu li a:hover {
     font-family: sans-serif;
 
     &:hover {
-      background-color: $septenary-bg;
-      color: #eeedef
+      background-color: $septenary-bg !important;
+      color: #eeedef !important
     }
   }
 }
@@ -3485,8 +3485,8 @@ div.dataTables_wrapper div.dataTables_paginate {
   cursor: pointer;
   margin: 5px;
   :hover {
-    background: #0085c7;
-    color: #fff;
+    background: #f06d30;
+    color: #000;
   }
 }
 

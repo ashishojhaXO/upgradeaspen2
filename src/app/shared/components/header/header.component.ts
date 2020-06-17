@@ -65,6 +65,9 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   resetForm: FormGroup;
   resetModel: any;
   @ViewChild('oldPassword') oldPasswordEl:ElementRef;
+  loggedInVendorTitle="";
+  siteLogo = './assets/images/accelitas_logo_white_r.png';
+  metaData =  '';
   constructor(
       // private okta: OktaAuthService,
       private translate: TranslateService,
@@ -90,6 +93,13 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
       new: '',
       confirm: ''
     };
+    const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
+    if((custInfo.org.meta_data).length){
+     this.metaData = JSON.parse(custInfo.org.meta_data.replace(/'/g, '"'));
+    }
+    if(this.metaData && this.metaData['logo']){
+       this.siteLogo = this.metaData['logo'];
+    }
   }
 
   __hasSubMenus(e) {
@@ -109,6 +119,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
     this.loggedInVendor = this.auth.getIdentityInfo('loggedInVendor');
     this.loggedInOrg = localStorage.getItem('loggedInOrg');
     this.popoverOpen = false;
+    this.loggedInVendorTitle = this.loggedInVendor!= "-" ? " ( "+this.loggedInVendor + ") " : "" ;
     if (!_.isNull(this.loggedInUser) || !_.isUndefined(this.loggedInUser)) {
       // this.getCountries();
       this.getPreferenceMenu();
