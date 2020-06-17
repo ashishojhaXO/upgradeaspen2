@@ -84,10 +84,12 @@ export class SupportComponent implements OnInit {
     },{
         id: 'order',
         text: 'Order ID'
-    },{
-        id: 'retry',
-        text: 'Retry Orders'
-    }];
+    }
+    // ,{
+    //     id: 'retry',
+    //     text: 'Retry Orders'
+    // }
+    ];
     searchType = '';
     paymentMethods = [];
     matchingResults = [];
@@ -136,6 +138,9 @@ export class SupportComponent implements OnInit {
         this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
         this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
         this.searchOrgRequest();
+
+        this.searchType = this.searchOptions[0].id;
+
         Observable.fromEvent(this.searchField.nativeElement, 'keyup').debounceTime(500).subscribe(value => {
             this.matchingResults = [];
             this.inSearchMode = true;
@@ -252,12 +257,20 @@ export class SupportComponent implements OnInit {
                         const audit_orders = resp.audit_orders || [];
                         this.populateOrders(audit_orders);
                         // Line-Items
-                        let line_items_data = []
+                        let line_items_data = [];
+
+                        console.log('resp.line_items >>')
+                        console.log(resp.line_items);
+
                         if( resp.line_items && resp.line_items.length ) {
                             line_items_data = resp.line_items.map(
                                 (v, k) =>  Object.assign( {}, {line_item_id: v.line_item_id}, v.ar_ap_transaction || {} )
                             );
                         }
+
+                        console.log('line_items_data >>>')
+                        console.log(line_items_data);
+
                         this.populatePayments(line_items_data);
                     }
                 },
