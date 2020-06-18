@@ -9,7 +9,7 @@ import { AuthService, OrganizationService } from '../../../../services';
 import * as _ from 'lodash';
 import * as OktaSignIn from '@okta/okta-signin-widget/dist/js/okta-sign-in-no-jquery';
 import {PopUpModalComponent} from '../pop-up-modal/pop-up-modal.component';
-import {FormControl, FormGroup, FormArray, Validators} from '@angular/forms';
+import {FormControl, FormGroup, FormArray, Validators, ValidatorFn, ValidationErrors} from '@angular/forms';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import { AppNavComponent } from '../app-nav/app-nav.component';
 // import { OktaAuthService } from '@okta/okta-angular';
@@ -57,6 +57,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   clearPreselectedMenuItem: boolean;
   widget: any;
   error: any;
+  success: any;
   api_fs: any;
   externalAuth: any;
   showManagePayments: boolean;
@@ -84,9 +85,9 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
 
     this.resetForm = new FormGroup({
       old: new FormControl('', Validators.required),
-      new: new FormControl('', Validators.required),
+      new: new FormControl('', [Validators.required, Validators.pattern('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$')]),
       confirm: new FormControl('', Validators.required)
-    });
+    },this.checkPasswords);
 
     this.resetModel = {
       old: '',
@@ -592,10 +593,14 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
 
   handleCloseModal(modalComponent: PopUpModalComponent) {
     modalComponent.hide();
+    this.resetForm.reset();
+    this.error = '';
+    this.success = '';
   }
 
   OnReset(modalComponent: PopUpModalComponent) {
     this.error = '';
+    this.success = '';
     const dataObj: any = {};
     dataObj.userId = localStorage.getItem('loggedInUserID');
     dataObj.oldPassword = this.resetForm.controls['old'].value;
@@ -605,7 +610,13 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
     } else {
       return this.performPasswordReset(dataObj).subscribe(
           response => {
-            modalComponent.hide();
+            if(response.status =="Failed" && response.error.errorCauses[0].errorSummary){
+              this.error = response.error.errorCauses[0].errorSummary;
+            }else if(response.status =="Success"){
+              this.success = "Password has been reset successfully!" ;
+              this.resetForm.reset();
+            }
+            //modalComponent.hide();
           },
           err => {
             this.error = err.error.errorCauses[0].errorSummary;
@@ -636,6 +647,13 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   @HostListener('document:click', ['$event']) clickedOutside($event){
     if (this.isMenuOpened) {
       this.isMenuOpened = false;
+    }
+  }
+  checkPasswords: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+    if (this.resetForm) {
+      const newPassword = control.value['new'];
+      const confirmPassword = control.value['confirm'];
+      return (newPassword && confirmPassword && newPassword != confirmPassword) ? { 'confirmMatch': true } : null;
     }
   }
 
