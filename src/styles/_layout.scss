@@ -3910,14 +3910,12 @@ ul.options-actions > li {
   margin: 3px;
 }
 
-.payment-method-row:nth-of-type(odd) {
-  background: blanchedalmond;
-  // background: #4e9b49
+.payment-methods .payment-method-row:nth-of-type(odd) {
+  background: beige;
 }
 
-.payment-method-row:nth-of-type(even) {
+.payment-methods .payment-method-row:nth-of-type(even) {
   background: lightgrey;
-  // background: #54575A
 }
 
 .width-90-pct {

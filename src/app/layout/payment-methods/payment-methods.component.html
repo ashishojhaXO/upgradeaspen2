@@ -1,4 +1,6 @@
-<div>
+<div
+    *ngIf="!ordersScreen"
+>
     <div class="col-lg-12 col-md-12">
         <p class="pull-left page-title">{{isExistingOrder ? 'MODIFY ' : 'CONFIGURE '}}
             PAYMENT</p>
@@ -27,9 +29,7 @@
     <div class="col-lg-12 col-md-12 col-sm-12" style="border-radius: 4px">
         <div style="background: #fff; padding: 10px 0px">
             <div style="margin-bottom: 10px; margin-left: 15px">
-                <div 
-                    *ngIf="!ordersScreen"
-                >
+                <div >
 
                     <input
                             type="radio"
@@ -57,7 +57,9 @@
                                         <div class="col-md-1 h5 bold " ></div>
                                     </div>
                                 </div>
-                                <div >
+                                <div 
+                                    class="payment-methods"
+                                >
                                     <div
                                         class="row margin-3px border-radius-10px payment-method-row"
                                         *ngFor="let option of paymentOptions; let i = index;"
@@ -94,9 +96,7 @@
                                                 [checked]="option.is_default == '1' ? true : false"
                                             />
                                         </div >
-                                        <div
-                                            *ngIf="ordersScreen"
-                                        >
+                                        <div>
                                             <div class="col-md-1" >
                                                 <button *ngIf="option.status && option.status.toUpperCase() === 'PAYMENT SETUP COMPLETED'"
                                                         class="btn btn-primary"
@@ -123,9 +123,7 @@
                         <div style="margin: 20px 30px">Fetching existing payments ..</div>
                     </ng-template>
 
-                    <div 
-                        *ngIf="!ordersScreen"
-                    >
+                    <div >
                         <span style="position: relative; top: 10px">Select NEW : </span>
                         <div id="fs_widget">
                         </div>
@@ -226,12 +224,218 @@
         </div>
     </div>
     <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
+
+    <div 
+    >
+        <app-script-embedder [src]="api_fs.widgetV2"
+                            type="text/javascript"></app-script-embedder>
+    </div>
+
 </div>
 
-<div 
-    *ngIf="!ordersScreen"
+<!-- 
+    NOTE: This below div is seen as a PopUp only when this template is 
+    included inside OrderPayment Pay button
+-->
+<div
+    *ngIf="ordersScreen"
 >
-    <app-script-embedder [src]="api_fs.widgetV2"
-                        type="text/javascript"></app-script-embedder>
-</div>
+    <div class="col-lg-12 col-md-12">
+        <p class="pull-left page-title">
+            PAYMENT METHODS
+        </p>
+    </div>
+    <p style="clear: both"></p>
+    <div class="col-lg-12 col-md-12 col-sm-12" style="border-radius: 4px">
+        <div style="background: #fff; padding: 10px 0px">
+            <div style="margin-bottom: 10px; margin-left: 15px">
+                <div [hidden]="selectionType !== 'default'">
+                    <div *ngIf="paymentOptions; else fetchingExistingPayments">
+                        <div style="font-size: 12px; margin: 15px 10px" *ngIf="paymentOptions.length; else noExistingPayments">
+                            <div
+                                class="width-90-pct payment-methods"
+                                style="border-collapse:separate; border-spacing: 0 1em;"
+                            >
+                                    <h4>
+                                        Default Payment Method
+                                    </h4>
+                                    <div
+                                        *ngFor="let option of paymentOptions; let i = index;"
+                                        class="border-radius-10px payment-method-row"
+                                    >
+                                        <div 
+                                            class="row margin-3px border-radius-10px"
+                                            *ngIf="option.status && option.status.toUpperCase() === 'PAYMENT SETUP COMPLETED' && option.is_default == '1'"
+                                        >
 
+                                            <div class="col-md-6" >
+                                                <img style="width: 40px;margin-right: 10px"
+                                                    src="./../../../assets/images/{{ option.payment_method === 'ACH' ? option.payment_method.toLowerCase() : option.payment_method_type.toLowerCase()}}.png"/>
+                                                <span
+                                                        style="font-size: 12px;margin-left: 15px"
+                                                >
+                                                    {{option.payment_method === 'ACH' ? ('xxxxxxxx' + option.last_four_digits) : ('xxxx-xxxx-' + option.last_four_digits) }}
+                                                </span>
+                                            </div >
+                                            <div>
+                                                <div class="col-md-1" >
+                                                    <button *ngIf="option.status && option.status.toUpperCase() === 'PAYMENT SETUP COMPLETED' && option.is_default == '1'"
+                                                            class="btn btn-primary"
+                                                            style="text-transform: none"
+                                                            (click)="postPaymentsCharge(option)">
+                                                        Pay
+                                                    </button>
+                                                </div >
+                                            </div>
+
+                                        </div>
+
+
+
+                                    </div>
+
+                                    <h4>
+                                        Other Payment Methods
+                                    </h4>
+                                    <div
+                                        *ngFor="let option of paymentOptions; let i = index;"
+                                        class="border-radius-10px payment-method-row"
+                                    >
+                                        <div 
+                                            class="row margin-3px "
+                                            *ngIf="option.status && option.status.toUpperCase() === 'PAYMENT SETUP COMPLETED' && option.is_default != '1'"
+                                        >
+
+                                            <div class="col-md-6" >
+                                                <img style="width: 40px;margin-right: 10px"
+                                                    src="./../../../assets/images/{{ option.payment_method === 'ACH' ? option.payment_method.toLowerCase() : option.payment_method_type.toLowerCase()}}.png"/>
+                                                <span
+                                                        style="font-size: 12px;margin-left: 15px"
+                                                >
+                                                    {{option.payment_method === 'ACH' ? ('xxxxxxxx' + option.last_four_digits) : ('xxxx-xxxx-' + option.last_four_digits) }}
+                                                </span>
+                                            </div >
+                                            <div>
+                                                <div class="col-md-1" >
+                                                    <button *ngIf="option.status && option.status.toUpperCase() === 'PAYMENT SETUP COMPLETED'"
+                                                            class="btn btn-primary"
+                                                            style="text-transform: none"
+                                                            (click)="postPaymentsCharge(option)">
+                                                        Pay
+                                                    </button>
+                                                </div >
+                                            </div>
+                                        </div>
+                                    
+                                    </div>
+
+                            </div>
+
+
+                        </div>
+                        <ng-template #noExistingPayments>
+                            <div style="margin: 20px 30px">No existing payments found</div>
+                        </ng-template>
+                    </div>
+                    <ng-template #fetchingExistingPayments>
+                        <div style="margin: 20px 30px">Fetching existing payments ..</div>
+                    </ng-template>
+
+                </div>
+            </div>
+            <!--<div style="margin-left: 15px">-->
+            <!--<input-->
+            <!--type="radio"-->
+            <!--name="payment"-->
+            <!--value="loan"-->
+            <!--(change)="paymentTypeSelection('loan')"-->
+            <!--style="margin-right: 10px"-->
+            <!--/> Apply for Short Term Business Loan-->
+            <!--<div [hidden]="selectionType !== 'loan'">-->
+            <!--<div>-->
+            <!--<label class="col-lg-2 col-md-2 col-sm-12" style="margin-top: 20px;">Personal Details</label>-->
+            <!--<div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 20px">-->
+            <!--<div>-->
+            <!--<label class="col-lg-2 col-md-2 col-sm-12">Full Name</label>-->
+            <!--<div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">-->
+            <!--<input type="text" class="input-form-control" style="height: 29px"/>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 20px">-->
+            <!--<div>-->
+            <!--<label class="col-lg-2 col-md-2 col-sm-12">Gender</label>-->
+            <!--<div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">-->
+            <!--<select2 width="100%" placeholder="Select"-->
+            <!--class="col-lg-4 col-md-4"-->
+            <!--style="padding: 0px; line-height: 1.42857143; width: 160px"-->
+            <!--[data]="[{id: '1', text: 'Male'}, {id: '2', text: 'Female'}]"></select2>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 20px">-->
+            <!--<div>-->
+            <!--<label class="col-lg-2 col-md-2 col-sm-12">Age</label>-->
+            <!--<div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">-->
+            <!--<input type="text" class="input-form-control" style="height: 29px"/>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 20px">-->
+            <!--<div>-->
+            <!--<label class="col-lg-2 col-md-2 col-sm-12">Street Address</label>-->
+            <!--<div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">-->
+            <!--<input type="text" class="input-form-control" style="height: 29px"/>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 20px">-->
+            <!--<div>-->
+            <!--<label class="col-lg-2 col-md-2 col-sm-12">City</label>-->
+            <!--<div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">-->
+            <!--<input type="text" class="input-form-control" style="height: 29px"/>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 20px">-->
+            <!--<div>-->
+            <!--<label class="col-lg-2 col-md-2 col-sm-12">State</label>-->
+            <!--<div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">-->
+            <!--<input type="text" class="input-form-control" style="height: 29px"/>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="col-lg-12 col-md-12 col-sm-12" style=" margin-top: 20px">-->
+            <!--<div>-->
+            <!--<label class="col-lg-2 col-md-2 col-sm-12">Zip Code</label>-->
+            <!--<div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">-->
+            <!--<input type="text" class="input-form-control" style="height: 29px"/>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div class="col-lg-12 col-md-12 col-sm-12" style=" margin-top: 20px">-->
+            <!--<div>-->
+            <!--<label class="col-lg-2 col-md-2 col-sm-12">Country</label>-->
+            <!--<div class="col-lg-6 col-md-6 col-sm-12" style="position: relative; top: -8px">-->
+            <!--<input type="text" class="input-form-control" style="height: 29px"/>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<p style="clear: both"></p>-->
+
+            <!--</div>-->
+            <!--<div style="margin-top: 20px;">-->
+            <!--<button class="btn btn-primary">CANCEL</button>-->
+            <!--&lt;!&ndash;[disabled]="form && !form.valid"&ndash;&gt;-->
+            <!--<button class="btn btn-primary"-->
+            <!--style="text-transform: none">-->
+            <!--SAVE-->
+            <!--</button>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+        </div>
+    </div>
+    <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
+
+</div>
