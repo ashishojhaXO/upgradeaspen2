@@ -264,7 +264,7 @@ export class PaymentMethodsComponent implements OnInit {
               this.showSpinner = false;
               Swal({
                 title: 'Payment Successfully Charged',
-                text: 'Your payment for the order ' + (this.displayId ? this.displayId : this.orderId) + ' was successfully charged',
+                text: 'Your payment for the order ' + (this.displayId ? this.displayId : (this.displayOrderID ? this.displayOrderID  : this.orderId ) ) + ' was successfully charged',
                 type: 'success'
               }).then( () => {
                 // this.router.navigate(['/app/order/orders']);
