@@ -89,6 +89,9 @@ export class OrderComponent implements OnInit  {
     orgArr = [];
     selectedOrg: any;
     orgValue = '';
+    
+    userUuid:any;
+
     constructor(
         // private okta: OktaAuthService,
         private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder, private okta: OktaAuthService) {
@@ -113,6 +116,8 @@ export class OrderComponent implements OnInit  {
         this.showSpinner = true;
         this.widget = this.okta.getWidget();
 
+        const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
+        this.userUuid = customerInfo.user.user_uuid;
         this.height = '50vh';
         this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
         this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
@@ -1204,7 +1209,8 @@ export class OrderComponent implements OnInit  {
                         }).then(() => {
                             // this.router.navigate(['/app/targetAud/']);
                             // TODO: Commenting For the moment
-                            this.router.navigate(['/app/orderPayment/' + response.order_id, this.vendor_id]);
+                            this.router.navigate(['/app/orderPayment/' + response.order_id, this.userUuid]);
+                            // this.router.navigate(['/app/orderPayment/' + response.order_id, this.vendor_id]);
                         });
                     }
                 },

@@ -133,12 +133,12 @@
     </div>
     <div class="app-modal-body">
       <div class="content">
-        <app-payment-methods
+        <app-order-payment
             [ordersScreen]="{orderid: orderID, lineitems: [lineItemID]}"
             [orderId]="orderID"
             [displayOrderID]="displayOrderID"
         >
-        </app-payment-methods>
+        </app-order-payment>
 
         <div style="margin-left: 42px">
             <button type="button" 
@@ -148,11 +148,9 @@
             </button>
         </div>
 
-
       </div>
     </div>
     <div class="app-modal-footer">
-
 
       <button type="button" class="btn btn-secondary" (click)="managePayments.hide()">
         Cancel

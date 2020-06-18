@@ -26,8 +26,6 @@ export class PaymentMethodsComponent implements OnInit {
 
   selectionType = '';
   paymentOptions: any;
-  @Input() orderId: string;
-  @Input() displayOrderID: any;
   vendorId: string;
   showSpinner: boolean;
   api_fs: any;
@@ -38,8 +36,8 @@ export class PaymentMethodsComponent implements OnInit {
   isRoot: boolean;
   paymentsMethodsData: any;
   paymentsChargeData: any;
-  // @Input() ordersScreen: boolean;
-  @Input() ordersScreen: Object;
+  @Input() orderId: string;
+  @Input() displayOrderID: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -251,7 +249,6 @@ export class PaymentMethodsComponent implements OnInit {
       // vendorid: this.vendorId,
       userid: this.userUuid,
       paymentmethodid: option.payment_method_id,
-      ...this.ordersScreen
     }
   }
 

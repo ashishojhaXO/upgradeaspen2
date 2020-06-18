@@ -16,6 +16,11 @@ import Swal from 'sweetalert2';
 import { OktaAuthService } from '../../../services/okta.service';
 import {Headers, RequestOptions, Http} from '@angular/http';
 
+interface OrderScreenData {
+  orderId: string,
+  lineitems: Array<number>
+}
+
 @Component({
   selector: 'app-order-payment',
   templateUrl: './orderPayment.component.html',
@@ -24,9 +29,9 @@ import {Headers, RequestOptions, Http} from '@angular/http';
 })
 export class OrderPaymentComponent {
 
+
   selectionType = '';
   paymentOptions: any;
-  @Input() orderId: string;
   vendorId: string;
   showSpinner: boolean;
   // domain: string;
@@ -36,6 +41,11 @@ export class OrderPaymentComponent {
   displayId: any;
   widget: any;
   isRoot: boolean;
+  // @Input() ordersScreen: boolean;
+  @Input() orderId: string;
+  @Input() displayOrderID: any;
+  @Input() ordersScreen: OrderScreenData;
+
   constructor(
       private route: ActivatedRoute,
       private genericService: GenericService,
@@ -64,9 +74,9 @@ export class OrderPaymentComponent {
 
       // this.vendorUuid = this.route.snapshot.paramMap.get('vendor_uuid');
       this.vendorUuid = customerInfo.vendor.vendor_id
-      this.userUuid = this.route.snapshot.paramMap.get('vendor_uuid');
+      // this.userUuid = this.route.snapshot.paramMap.get('vendor_uuid');
 
-      this.displayId = this.route.snapshot.paramMap.get('displayId');
+      this.displayId = this.displayOrderID || this.route.snapshot.paramMap.get('displayId');
       this.initVendorUuid();
       window['fs_widget_config'].vendor_id = this.vendorId = this.vendorUuid;
       window['fs_widget_config'].api_key = customerInfo.org.x_api_key;
@@ -142,10 +152,11 @@ export class OrderPaymentComponent {
 
     const self = this;
     self.paymentOptions = [];
-    if(res.attributes && res.attributes.length > 0){
-      self.paymentOptions = res.attributes;
+    if(res.body && res.body.length > 0){
+      self.paymentOptions = res.body;
       // set paymentsChargeData to use it for charging
-      res.attributes.filter((k, i) => {
+      res.body.filter((k, i) => {
+        
         return k.is_default == 1 ? this.setPaymentsChargeData(k) : Object()
       })[0]
 
@@ -170,8 +181,14 @@ export class OrderPaymentComponent {
     this.showSpinner = true;
     this.setPaymentsMethodsData()
 
+    let headers = {
+      org_id: window['fs_widget_config'].org_id,
+      'x-api-key': window['fs_widget_config'].api_key
+    };
+
     return this.genericService
-        .postPaymentsMethods(this.paymentsMethodsData)
+        // .postPaymentsMethods(this.paymentsMethodsData, headers)
+        .postUserPaymentsMethods(this.paymentsMethodsData, headers)
         .subscribe(
             (res) => {
               this.showSpinner = false;
@@ -283,11 +300,16 @@ export class OrderPaymentComponent {
   setPaymentsChargeData(option) {
     // [paymentsChargeData]="option.is_default == '1' ? option : false"
     this.paymentsChargeData = {
-      vendorid: this.vendorId,
+      // vendorid: this.vendorId,
+      userid: this.userUuid,
+      paymentmethodid: option.payment_method_id,
       orderid: this.orderId,
-      paymentmethodid: option.paymentmethodid,
-      // "lineitems": [15,16,17]
     }
+    
+    if(this.ordersScreen && this.ordersScreen.lineitems) {
+      this.paymentsChargeData["lineitems"] = this.ordersScreen.lineitems;
+    }
+
   }
 
   postPaymentsCharge(option) {
@@ -299,10 +321,14 @@ export class OrderPaymentComponent {
               this.showSpinner = false;
               Swal({
                 title: 'Payment Successfully Charged',
-                text: 'Your payment for the order ' + (this.displayId ? this.displayId : this.orderId) + ' was successfully charged',
+                text: 'Your payment for the order ' + (this.displayId ? this.displayId : (this.displayOrderID ? this.displayOrderID  : this.orderId ) ) + ' was successfully charged',
                 type: 'success'
               }).then( () => {
-                this.router.navigate(['/app/order/orders']);
+                // this.router.navigate(['/app/order/orders']);
+                // window.location.reload();
+                // this.ngOnInit();
+                  this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+                  this.router.navigate(["/app/order/orders"]));
               });
             },
             (err) => {
@@ -319,6 +345,7 @@ export class OrderPaymentComponent {
                   title: 'Payment Charge Failed',
                   text: 'We are having trouble charging for the order ' + (this.displayId ? this.displayId : this.orderId) + ' using the selected payment type. Please try again',
                   type: 'error'
+                }).then( () => {
                 });
               }
               // this.errorCB.apply(this, [rej]);
