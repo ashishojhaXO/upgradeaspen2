@@ -79,12 +79,13 @@
                                             >
                                                 {{option.status ? option.status.toUpperCase() : '-'}}
                                             </span>
-                                            <i
-                                                *ngIf="option.status && option.status.toUpperCase() === 'PAYMENT SETUP PENDING'"
+                                            <a
+                                                href="javascript:void(0)"
+                                                *ngIf="option.status && option.status.toUpperCase() === 'PAYMENT SETUP COMPLETED'"
                                                 placement="top"
-                                                style="margin-left: 5px; position: relative; top: 1px"
-                                                class="fa fa-question-circle"
-                                            ></i>
+                                                style="font-size:smaller; margin-top: 5px; padding: 15px; position: relative; top: 1px"
+                                                tooltiptitle="In Process... Payment information in process. Please check back after 15 mins to check for latest status."
+                                            >Status?</a>
                                         </div >
                                         <div class="col-md-1" >
                                             <input
