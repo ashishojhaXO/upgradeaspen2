@@ -77,18 +77,22 @@ export default class DataTableColumnSearchPluginExt {
       // $('div.dataTables_scrollHead table:first thead th.sorting, .sorting_asc, .sorting_desc')
       // $('div.dataTables_scrollHead table thead th tr').find(".sorting, .sorting_asc, .sorting_desc")
       // $('div.dataTables_scrollHead table thead th.sorting, .sorting_asc, .sorting_desc')
-      $('div.dataTables_scrollHead table thead tr')
-      .find("th.sorting, th.sorting_asc, th.sorting_desc")
-      .each( function () {
-        // var title = $("#example thead th").text();
-        var title = $(this).text();
-        // $("#example thead th").html( '<input type="text" placeholder="Search '+title+'" />' );
-        $(this).append(
-          self.getAllElems($, title)
-        );
+      let d = $('div.dataTables_scrollHead table thead tr');
+      let dd = d.find("th.sorting, th.sorting_asc, th.sorting_desc")
 
-      } );
+      if(dd.children(".col-search")) {
 
+        dd.each( function () {
+          // var title = $("#example thead th").text();
+          var title = $(this).text();
+          // $("#example thead th").html( '<input type="text" placeholder="Search '+title+'" />' );
+          $(this).append(
+            self.getAllElems($, title)
+          );
+
+        } );
+
+      }
     })
 
   }

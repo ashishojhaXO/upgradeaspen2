@@ -957,6 +957,10 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     $('#' + __this.tableId + ' tbody td').each(function () {
                         $(this).attr('title', $(this).text());
                     });
+
+                    let table = settings.oInstance.api();
+
+                    __this.dataTableSearchPlugin.columnSearch($, document, table)
                 },
                 pageLength: pageLength,
                 displayStart: this.dataObject.gridData.options.isDisplayStart || 0,
@@ -1333,7 +1337,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // Attaching Column search to all tables
                 // let columnSearch = new DataTableColumnSearchPluginExt($, document, table);
                 // let columnSearch = new DataTableColumnSearchPluginExt();
-                __this.dataTableSearchPlugin.columnSearch($, document, table)
+                // __this.dataTableSearchPlugin.columnSearch($, document, table)
 
                 if(__this.dataObject.gridData.options.isFixedColumn ) {
                     __this.dataObject.gridData.options.isFixedColumn.fixedColumnFilterToggle($, table);
