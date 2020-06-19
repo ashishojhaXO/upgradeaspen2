@@ -57,8 +57,11 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
       fixedColumnFunc: (ev, $, table ) => {
         // Util.DataTable.Func
         // DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
-        let d = new DataTableUtilsPluginExt(ev, $, table).run();
+        // let d = new DataTableUtilsPluginExt(ev, $, table).run();
       },
+      fixedColumnFilterToggle: ($, table) => {
+        // new DataTableUtilsPluginExt(null, $, table).attachClickInputSearch();
+      }
     },
     // Any number starting from 1 to ..., but not 0
     isActionColPosition: 0, // This can not be 0, since zeroth column logic might crash
@@ -364,7 +367,9 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
   }
 
   handleRowSelection(rowObj: any, rowData: any) {
+  }
 
+  handleActions(rowObj: any) {
   }
 
   OnSubmit(modalComponent: PopUpModalComponent) {
