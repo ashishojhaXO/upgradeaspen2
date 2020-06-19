@@ -89,7 +89,7 @@ export class OrderComponent implements OnInit  {
     orgArr = [];
     selectedOrg: any;
     orgValue = '';
-    
+
     userUuid:any;
 
     constructor(
@@ -1054,11 +1054,11 @@ export class OrderComponent implements OnInit  {
         const reqObj: any = {};
 
         if (!this.vendor_id) {
-            this.vendor_id = customerInfo.vendor.vendor_id;
+            this.vendor_id = customerInfo.vendor ? customerInfo.vendor.vendor_id : null;
         }
 
         if (!this.orderId) {
-            reqObj.vendor_id =  customerInfo.vendor.vendor_id;
+            reqObj.vendor_id =  customerInfo.vendor ? customerInfo.vendor.vendor_id : null;
             reqObj.org_id = customerInfo.org.org_id;
             reqObj.template_id = this.originalResponseObj.orderTemplateData.template.template_id;
         };
