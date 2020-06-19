@@ -129,26 +129,26 @@
   </div>
 
   <div *ngIf="isHistory; else regular">
-    <app-line-item-history 
-      *ngIf="selectedLineItemID" 
-      [lineItemID]="selectedLineItemID" 
+    <app-line-item-history
+      *ngIf="selectedLineItemID"
+      [lineItemID]="selectedLineItemID"
       [displayLineItemID]="selectedDisplayLineItemID"
     ></app-line-item-history>
   </div>
   <ng-template #regular>
-    <app-order-dashboard 
-      *ngIf="selectedOrderID && selectedLineItemID" 
-      [vendorUuid]="selectedVendorUuid" 
-      [userUuid]="selectedUserUuid" 
-      [orderID]="selectedOrderID" 
-      [lineItemID]="selectedLineItemID" 
+    <app-order-dashboard
+      *ngIf="selectedOrderID && selectedLineItemID"
+      [vendorUuid]="selectedVendorUuid"
+      [userUuid]="selectedUserUuid"
+      [orderID]="selectedOrderID"
+      [lineItemID]="selectedLineItemID"
       [displayOrderID]="selectedDisplayOrderID"
     ></app-order-dashboard>
   </ng-template>
 </div>
 
-<div 
-    *ngIf="isUser"
+<div
+
 >
   <app-pop-up-modal #ManagePayments>
     <div class="app-modal-header" style="margin: 15px 0px 0px 10px">

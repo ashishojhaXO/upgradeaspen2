@@ -1,5 +1,5 @@
-<!-- 
-    NOTE: This below div is seen as a PopUp only when this template is 
+<!--
+    NOTE: This below div is seen as a PopUp only when this template is
     included inside OrderPayment Pay button
 -->
 <div class="row">
@@ -7,12 +7,6 @@
         <p class="pull-left page-title">
             PAYMENT METHODS
         </p>
-    </div>
-    <div class="col-md-3 pull-right">
-        <a 
-            [routerLink]="['/app/order/orders']"
-            class="btn btn-secondary"><i class="fa fa-angle-double-left" aria-hidden="true"
-        ></i> Back to Orders</a>
     </div>
     <p style="clear: both"></p>
     <div class="col-lg-12 col-md-12 col-sm-12" style="border-radius: 4px">
@@ -32,7 +26,7 @@
                                         *ngFor="let option of paymentOptions; let i = index;"
                                         class="border-radius-10px payment-method-row"
                                     >
-                                        <div 
+                                        <div
                                             class="row margin-3px border-radius-10px"
                                             *ngIf="option.status && option.status.toUpperCase() === 'PAYMENT SETUP COMPLETED' && option.is_default == '1'"
                                         >
@@ -70,7 +64,7 @@
                                         *ngFor="let option of paymentOptions; let i = index;"
                                         class="border-radius-10px payment-method-row"
                                     >
-                                        <div 
+                                        <div
                                             class="row margin-3px "
                                             *ngIf="option.status && option.status.toUpperCase() === 'PAYMENT SETUP COMPLETED' && option.is_default != '1'"
                                         >
@@ -95,7 +89,7 @@
                                                 </div >
                                             </div>
                                         </div>
-                                    
+
                                     </div>
 
                             </div>
@@ -113,8 +107,8 @@
                 </div>
 
         <div style="margin-left: 12px">
-            <button type="button" 
-                class="btn btn-primary" 
+            <button type="button"
+                class="btn btn-primary"
                 [routerLink]="['/app/manage-payments']">
                 Add New Payment Method
             </button>

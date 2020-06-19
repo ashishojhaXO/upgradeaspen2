@@ -156,7 +156,7 @@ export class OrderPaymentComponent {
       self.paymentOptions = res.body;
       // set paymentsChargeData to use it for charging
       res.body.filter((k, i) => {
-        
+
         return k.is_default == 1 ? this.setPaymentsChargeData(k) : Object()
       })[0]
 
@@ -305,9 +305,9 @@ export class OrderPaymentComponent {
       paymentmethodid: option.payment_method_id,
       orderid: this.orderId,
     }
-    
-    if(this.ordersScreen && this.ordersScreen.lineitems) {
-      this.paymentsChargeData["lineitems"] = this.ordersScreen.lineitems;
+
+    if (this.ordersScreen && this.ordersScreen.lineitems) {
+      this.paymentsChargeData.lineitems = [this.ordersScreen.lineitems];
     }
 
   }
