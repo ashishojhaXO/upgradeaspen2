@@ -313,8 +313,9 @@ export class OrderPaymentComponent {
   }
 
   postPaymentsCharge(option) {
+
     this.setPaymentsChargeData(option);
-    this.showSpinner = true;
+    // this.showSpinner = true;
     this.genericService
         .postPaymentsCharge(this.paymentsChargeData)
         .subscribe( (res) => {
@@ -351,4 +352,5 @@ export class OrderPaymentComponent {
               // this.errorCB.apply(this, [rej]);
             });
   }
+
 }

@@ -146,4 +146,30 @@
     ></app-order-dashboard>
   </ng-template>
 </div>
+
+<div 
+    *ngIf="isUser"
+>
+  <app-pop-up-modal #ManagePayments>
+    <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
+       Payment Methods:
+    </div>
+    <div class="app-modal-body">
+      <div class="content">
+        <app-order-payment
+            *ngIf="orderID && lineItemIds && displayOrderID"
+            [ordersScreen]="{orderid: orderID, lineitems: lineItemIds }"
+            [orderId]="orderID"
+            [displayOrderID]="displayOrderID"
+        >
+        </app-order-payment>
+      </div>
+    </div>
+    <div class="app-modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="managePayments.hide()">
+        Cancel
+      </button>
+    </div>
+  </app-pop-up-modal>
+</div>
 <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>

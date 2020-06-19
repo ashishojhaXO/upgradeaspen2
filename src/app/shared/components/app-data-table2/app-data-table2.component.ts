@@ -1267,8 +1267,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             // Handle click on "Select all" control
             $('#' + this.tableId + '-select-all').on('click', function () {
 
-                console.log("ISITISIT")
-
                 // Check/uncheck all checkboxes in the table
                 const rows = table.rows({'search': 'applied'}).nodes();
 
