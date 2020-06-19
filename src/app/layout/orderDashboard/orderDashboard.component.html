@@ -134,19 +134,12 @@
     <div class="app-modal-body">
       <div class="content">
         <app-order-payment
-            [ordersScreen]="{orderid: orderID, lineitems: [lineItemID]}"
+            [ordersScreen]="{orderid: orderID, lineitems: lineItemIds }"
             [orderId]="orderID"
             [displayOrderID]="displayOrderID"
         >
         </app-order-payment>
 
-        <div style="margin-left: 42px">
-            <button type="button" 
-                class="btn btn-primary" 
-                [routerLink]="['/app/manage-payments']">
-                Add New Payment Method
-            </button>
-        </div>
 
       </div>
     </div>

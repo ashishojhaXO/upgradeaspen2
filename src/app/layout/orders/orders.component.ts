@@ -39,6 +39,7 @@ export class OrdersComponent implements OnInit  {
   isDataAvailable: boolean;
   height: any;
   isRoot: boolean;
+  isUser: boolean;
   orgArr = [];
   orgValue = '';
   isHistory: boolean;
@@ -224,6 +225,11 @@ export class OrdersComponent implements OnInit  {
   private toaster: any;
   selectedUserUuid: any;
 
+  @ViewChild('ManagePayments') managePayments: PopUpModalComponent;
+  orderID: any;
+  displayOrderID: any;
+  lineItemIds: any;
+
   dataTableSearchPlugin: DataTableColumnSearchPluginExt;
 
   constructor(
@@ -255,10 +261,10 @@ export class OrdersComponent implements OnInit  {
 
     this.selectedUserUuid = JSON.parse(localStorage.getItem("customerInfo") ).user.user_uuid
 
-    let isUser = false;
+    this.isUser = false;
     grp.forEach(function (item) {
       if (item === 'USER') {
-        isUser = true;
+        this.isUser = true;
       }
       else if(item === 'ROOT' || item === 'SUPER_USER') {
         this.isRoot = true;
@@ -267,7 +273,7 @@ export class OrdersComponent implements OnInit  {
 
     this.allowOrderFunctionality = localStorage.getItem('allowOrderFunctionality') || 'true';
 
-    // if (isUser) {
+    // if (this.isUser) {
     //   this.allowOrderFunctionality = 'false';
     // }
     this.searchTemplates();
@@ -995,21 +1001,16 @@ export class OrdersComponent implements OnInit  {
 
   retryCharge(option) {
     // this.showSpinner = true;
-
     // Compile option/data
-    let order_id = $(option.elem).data("orderId");
-    let display_id = $(option.elem).data("displayId");
-    let vendor_uuid = $(option.elem).data("vendorUuid");
-    console.log("display_id",display_id);
-    // let line_item_id = $(option.elem).data("lineItemId");
-    // let data = {
-    //   "order_id": order_id
-    // };
 
-    // this.selectedOrderID = order_id;
-    // this.hideTable = true;
+    this.orderID = $(option.elem).data("orderId");
+    this.displayOrderID = $(option.elem).data("displayId");
+    this.lineItemIds = $(option.elem).data("lineItemId");
 
-    this.router.navigate(['/app/orderPayment/', order_id, vendor_uuid, display_id]);
+    // this.router.navigate(['/app/orderPayment/', order_id, vendor_uuid, display_id]);
+    // Show orderDash, with this LineItemId
+
+    this.managePayments.show();
   }
 
   regenerateReceipt(option) {

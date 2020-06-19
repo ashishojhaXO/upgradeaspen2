@@ -14,6 +14,7 @@ import {Http, Headers, RequestOptions} from '@angular/http';
 import { OktaAuthService } from '../../../services/okta.service';
 import Swal from 'sweetalert2';
 import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-modal.component';
+import { Item } from '../../shared/components/multiselect-dropdown/core';
 
 @Component({
   selector: 'app-order-dashboard',
@@ -40,6 +41,7 @@ export class OrderDashboardComponent implements OnInit  {
   options: any;
   orderDetails: any;
   lineItemDetails = [];
+  lineItemIds = [];
   isUser: boolean;
   isRoot: boolean;
 
@@ -78,7 +80,7 @@ export class OrderDashboardComponent implements OnInit  {
     let self = this;
     this.searchDate(orderID, lineItemID).subscribe(
         response => {
-          console.log('response >>')
+          console.log('DAT response >>')
           console.log(response);
           this.orderDetails = response.data.order;
           this.lineItemDetails = response.data.lineItems;
@@ -111,6 +113,10 @@ export class OrderDashboardComponent implements OnInit  {
             if(this.orderDetails.end) {
               this.orderDetails.ended = (new Date(this.orderDetails.end) <= new Date());
             }
+
+            this.lineItemIds = this.lineItemDetails.map((item, i) => {
+              return item.line_item_id;
+            })
           }
           this.showSpinner = false;
         },
