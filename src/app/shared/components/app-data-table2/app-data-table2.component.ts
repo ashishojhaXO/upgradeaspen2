@@ -964,6 +964,26 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // },
 
                 createdRow: function (row, data, index, cells) {
+
+                    if(__this.identity === 'orders') {
+                        const is_over_under_spent = __this.dataObject.gridData.headers.find(x=> x.key === '$50+_over/under_spent'); //
+                        if (is_over_under_spent) {
+                            let index1 = __this.dataObject.gridData.headers.indexOf(is_over_under_spent);
+                            if (__this.dataObject.gridData.options.isTree) {
+                                index1--;
+                            }
+
+                            if(__this.dataObject.gridData.options.isEditOption || __this.dataObject.gridData.options.isPlayOption
+                                || __this.dataObject.gridData.options.isDownloadOption || __this.dataObject.gridData.options.isDeleteOption || __this.dataObject.gridData.options.isEmailOption
+                                || __this.dataObject.gridData.options.isCustomOption || __this.dataObject.gridData.options.isCustomOption2 || __this.dataObject.gridData.options.isCustomOption3
+                                || __this.dataObject.gridData.options.isCustomOption4 || __this.dataObject.gridData.options.isCustomOption5) {
+                                index1--;
+                            }
+
+                            $('td', row).eq(index1).html(__this.dataObject.gridData.result[index]['$50+_over/under_spent'] == '1' ? '<div style="text-align: center"><i class="fa fa-flag" style="color: red" aria-hidden="true"></i></div>' : '');
+                        }
+                    }
+
                     if (__this.dataObject.gridData.columnsToColor) {
                         __this.dataObject.gridData.columnsToColor.forEach(function (column) {
                             $('td', row).eq(column.index).css('background-color', column.color);
@@ -1851,6 +1871,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 if (__this.dataObject.gridData.options.isRowSelection) {
                     columnIndex--;
                 }
+
                 __this.dataObject.gridData.result[rowIndex][__this.dataObject.gridData.headers[columnIndex].key] = $(this).val();
                 console.log('__this.dataObject.gridData.result >>>')
                 console.log(__this.dataObject.gridData);
