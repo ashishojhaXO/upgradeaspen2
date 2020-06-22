@@ -956,7 +956,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
                 initComplete: function(settings) {
                     $('#' + __this.tableId + ' tbody td').each(function () {
-                        $(this).attr('title', $(this).text());
+                        $(this).attr('title', this.innerText);
                     });
 
                     let table = settings.oInstance.api();
