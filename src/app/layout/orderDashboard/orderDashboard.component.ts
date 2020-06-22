@@ -41,7 +41,7 @@ export class OrderDashboardComponent implements OnInit  {
   options: any;
   orderDetails: any;
   lineItemDetails = [];
-  lineItemIds = [];
+  // lineItemIds = [];
   isUser: boolean;
   isRoot: boolean;
 
@@ -114,9 +114,9 @@ export class OrderDashboardComponent implements OnInit  {
               this.orderDetails.ended = (new Date(this.orderDetails.end) <= new Date());
             }
 
-            this.lineItemIds = this.lineItemDetails.map((item, i) => {
-              return item.line_item_id;
-            })
+            // this.lineItemIds = this.lineItemDetails.map((item, i) => {
+            //   return item.line_item_id;
+            // })
           }
           this.showSpinner = false;
         },

@@ -158,7 +158,7 @@
       <div class="content">
         <app-order-payment
             *ngIf="orderID && lineItemIds && displayOrderID"
-            [ordersScreen]="{orderid: orderID, lineitems: lineItemIds }"
+            [ordersScreen]="{orderid: orderID, lineitems: [lineItemIds] }"
             [orderId]="orderID"
             [displayOrderID]="displayOrderID"
         >
