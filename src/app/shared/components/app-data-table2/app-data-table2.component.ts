@@ -904,7 +904,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 if (this.dataObject.gridData.options.isPagination) {
                     domConfig += 'p';
                 }
-
+            
                 // columnDefs
                 if (this.dataObject.gridData.options.isColumnDefs) {
                     columnDefs.push( ...this.dataObject.gridData.options.isColumnDefs )
@@ -952,6 +952,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // order: this.dataObject.gridData.options.isOrder ?
                 //     this.dataObject.gridData.options.isOrder :
                 //     [[1, 'asc']],
+                order: [], // No initial ordering applied
 
                 initComplete: function(settings) {
                     $('#' + __this.tableId + ' tbody td').each(function () {

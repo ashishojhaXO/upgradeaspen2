@@ -113,18 +113,18 @@ export class OrdersComponent implements OnInit  {
     isColumnDefs: [
       {
         type: 'name-string-not-nullund',
+        // type: 'name-string-not-nullund-a',
+        // type: 'blah',
+        targets: 2,
+        orderable: false,
+      },
+      {
+        type: 'name-string-not-nullund',
         // type: 'blah',
         targets: '_all',
         render: (data, type, row, meta) =>{
           return data;
         }
-      },
-      {
-        type: 'name-string-not-nullund',
-        // type: 'name-string-not-nullund-a',
-        // type: 'blah',
-        targets: 2,
-        orderable: false,
       }
     ],
 
