@@ -904,7 +904,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 if (this.dataObject.gridData.options.isPagination) {
                     domConfig += 'p';
                 }
-            
+
                 // columnDefs
                 if (this.dataObject.gridData.options.isColumnDefs) {
                     columnDefs.push( ...this.dataObject.gridData.options.isColumnDefs )
@@ -1929,99 +1929,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 console.log(__this.dataObject.gridData);
             });
 
-            $(document).off('click', '.step-nav');
-            $(document).on('click', '.step-nav', function() {
-                const id = $(this).attr('id').replace('#','');
-                $(this).closest('div.steps-main').find('div.step-container').find('.step-content').removeClass('active');
-                $(this).closest('div.steps-main').find('div.step-container').find('.step-content').each(function () {
-                    if($(this).attr('id') === id) {
-                        $(this).addClass('active');
-                    }
-                });
-            });
-
-            // Register ad events
-            $(document).off('click', '.adCopy');
-            $(document).on('click', '.adCopy', function() {
-                console.log('$thid')
-                console.log($(this).next('.adDetails'));
-                $(this).next('.adDetails').show(500);
-            });
-
-            $(document).off('click', '.closeAd');
-            $(document).on('click', '.closeAd', function() {
-                $(this).closest('.adDetails').hide(500);
-            });
-
-            // Initiate ad image click
-            $(document).off('click', '.ad-image');
-            $(document).on('click', '.ad-image', function () {
-
-                // remove existing
-                $('i.fa-check-circle.visible').hide();
-                $('.ad-image').removeClass('visible');
-                $('i.fa-check-circle.visible').removeClass('visible');
-
-                if (!$(this).hasClass('visible')) {
-                    $(this).addClass('visible');
-                    $(this).next('i.fa-check-circle').addClass('visible');
-                    $(this).next('i.fa-check-circle').show(500);
-                } else {
-                    $(this).removeClass('visible');
-                    $(this).next('i.fa-check-circle').removeClass('visible');
-                    $(this).next('i.fa-check-circle').hide(500);
-                }
-            });
-
-            $(document).off('click', '.display-ad');
-            $(document).on('click', '.display-ad', function () {
-
-                $(this).addClass('selected');
-                const adInfo = [{
-                    placeHolder : 'News Feed',
-                    price: 25
-                },{
-                    placeHolder : 'Shopping',
-                    price: 15
-                },{
-                    placeHolder: 'Messenger',
-                    price: 10
-                },{
-                    placeHolder:  'Group',
-                    price: 5
-                }];
-
-                let retHtml = '';
-                for (let i=0; i < adInfo.length; i++) {
-                    retHtml += '<div class="col-lg-6 col-md-6 col-sm-6"><div style="cursor: pointer; height: 150px"><img class="ad-image" width="200px" src="./../../../../assets/images/test_ad_' + (i+1) + '.jpeg"/><i class="fa fa-check-circle" style="font-size: 38px; position: absolute; left: 0px; color: #5FA1DE; display: none"></i></div><div style="text-align: center;"><span>Click to Select</span><br/><span>Placeholder : ' + adInfo[i].placeHolder + '</span><br/><span>Price : $' + adInfo[i].price + '/day</span></div></div>';
-                    if(i % 2 !== 0) {
-                        retHtml += '<p style="clear:both"></p><p style="clear:both"></p>';
-                    }
-                }
-
-                $('#bootstrap-modal-header').text('Select Inventory');
-                $('#bootstrap-modal-body').html('<div style="padding: 15px; width: 500px;">' + retHtml + '<div>');
-                $('#myModal').modal('show');
-            });
-
-            $(document).off('click', '.metric-info');
-            $(document).on('click', '.metric-info', function () {
-                const index1 = $('.metric-info').index(this);
-                $('.metric-info').each(function (index) {
-                    if (index1 !== index && $(this).next('.metric-details').hasClass('shown')) {
-                        $(this).next('.metric-details').removeClass('shown');
-                        $(this).next('.metric-details').hide(500);
-                    }
-                });
-                if (!$(this).next('.metric-details').hasClass('shown')) {
-                    $(this).next('.metric-details').addClass('shown');
-                    $(this).next('.metric-details').show(500);
-                } else {
-                    $(this).next('.metric-details').removeClass('shown');
-                    $(this).next('.metric-details').hide(500);
-                }
-            });
-
             $(document).off('change', '.select-control');
             $(document).on('change', '.select-control', function () {
                 const required = $(this).data('validation');
@@ -2047,66 +1954,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             $('.disabled').css('cursor', 'not-allowed');
             $('.disabled').css('background', '#EEEEEE');
         }
-    }
-
-    handleModalSave() {
-        const __this = this;
-        $('.ad-image').each(function () {
-            if ($(this).hasClass('visible')) {
-                const index = $('.ad-image').index(this);
-                const adInfo = [{
-                    placeHolder : 'News Feed',
-                    price: 25
-                }, {
-                    placeHolder : 'Shopping',
-                    price: 15
-                }, {
-                    placeHolder: 'Messenger',
-                    price: 10
-                }, {
-                    placeHolder:  'Group',
-                    price: 5
-                }];
-                const price = adInfo[index].price;
-                const imageIndex = (index + 1);
-                $('.display-ad').each(function () {
-                    if ($(this).hasClass('selected')) {
-                        $(this).attr('src','./../../../../assets/images/test_ad_' + imageIndex + '.jpeg');
-                        $(this).css('width', '100px');
-                        const start = $(this).closest('tr').find('td').eq(1).find('input.inlineEditor').val();
-                        const end = $(this).closest('tr').find('td').eq(2).find('input.inlineEditor').val();
-                        if (start && end) {
-                            const daysDiff = __this.getDaysBetweenDates(new Date(end), new Date(start));
-                            $(this).closest('tr').find('td').last().find('input.inlineEditor').val((daysDiff + 1) * price);
-                            $(this).closest('tr').find('td').find('.alert-danger').hide();
-                        }
-                    }
-                });
-                $('.display-ad').removeClass('selected');
-            }
-        });
-        $('#myModal').modal('hide');
-    }
-
-    getLineItemWidth(i, steps) {
-        const d = new Date();
-        let retHtml = '';
-        if (d.getTime() <= new Date(steps[1].subTitle).getTime() && d.getTime() >= new Date(steps[0].subTitle).getTime()) {
-            const daysLeft = this.getDaysBetweenDates(new Date(steps[1].subTitle), new Date()) + 1;
-            const totaldays = (this.getDaysBetweenDates(new Date(steps[1].subTitle), new Date(steps[0].subTitle))) + 1;
-            const markerPointLeft = 128.28 + ((485 / (totaldays)) * (totaldays - (daysLeft + 1)));
-            retHtml += '<li class="crumb pull-left done" style="width: ' + markerPointLeft + 'px"><div><span style="font-size: 10px">' + steps[i].title + '</span><p style="clear:both"></p><small style="position: absolute;top: 20px; font-size: 8px">' +  steps[i].subTitle +  '</small></div></li>';
-            retHtml += '<li><span style="position: absolute; top: -22px; left: '  + (markerPointLeft + 21)  + 'px; border: 1px solid #5bc0de; padding: 4px; background: #5bc0de; color: white; border-radius: 4px; font-size: 9px ">In Progress (' + (daysLeft) + ' days left)</span></li>';
-            // retHtml += '<li><span style="position: absolute; top: -6px; z-index: 100; left: ' + markerPointLeft + 'px; color: #5bc0de">|</span></li>';
-        } else if (d.getTime() >= new Date(steps[1].subTitle).getTime()) {
-            retHtml += '<li class="crumb pull-left done" style="width: 485px"><div><span style="font-size: 10px">' + steps[i].title + '</span><p style="clear:both"></p><small style="position: absolute;top: 20px; font-size: 8px">' +  steps[i].subTitle +  '</small></div></li>';
-            retHtml += '<li><span style="position: absolute; top: -22px; left: '  + (485 + 48)  + 'px; border: 1px solid #5bc0de; padding: 4px; background: #5bc0de; color: white; border-radius: 4px; font-size: 9px ">Completed</span></li>';
-        } else {
-            retHtml += '<li class="crumb pull-left invalid"><div><span style="font-size: 10px">' + steps[i].title + '</span><p style="clear:both"></p><small style="position: absolute;top: 20px; font-size: 8px">' +  steps[i].subTitle +  '</small></div></li>';
-            retHtml += '<li><span style="position: absolute; top: -22px; left: '  + (170)  + 'px; border: 1px solid #5bc0de; padding: 4px; background: #5bc0de; color: white; border-radius: 4px; font-size: 9px ">Not Started</span></li>';
-        }
-
-        return retHtml;
     }
 
     getDaysBetweenDates(second, first) {
