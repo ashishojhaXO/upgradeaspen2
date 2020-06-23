@@ -127,11 +127,11 @@ select {
 }
 
 .datepicker.datepicker-dropdown {
-  z-index: 10000 !important;
+  z-index: 1000 !important;
 }
 
  //Following style is used for setting z-index on angular directive for eonasdan-bootstrap-datetimepicker
-.usetwentyfour{z-index:100000 !important}
+.usetwentyfour{z-index:1000 !important}
 
 .page-content {
   background: #ededed;
