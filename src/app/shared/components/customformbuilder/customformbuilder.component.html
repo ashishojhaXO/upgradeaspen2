@@ -279,7 +279,7 @@
             <div *ngIf="item.toggle && isBaseField" class="toggle-Wrapper">
               <div class="form-group-fields">
                 <label>Name</label>
-                <input class="form-control" type="text" [(ngModel)]="item.name" />
+                <input class="form-control" (keyup)="formatInput($event)" type="text" [(ngModel)]="item.name" />
               </div>
             </div>
           </div>
