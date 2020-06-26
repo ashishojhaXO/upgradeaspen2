@@ -542,4 +542,10 @@ export class CustomFormbuilderComponent implements OnInit {
           }).share();
     }
   }
+  formatInput(event){
+    let inputVal = event.target.value.replace(/ /g,"_");
+    let underScoreReplace = inputVal.replace(/-/g, '_');
+    let specialChars = underScoreReplace.replace(/[^A-Za-z0-9_\s]/, '');
+        event.target.value = specialChars;
+   }
 }
