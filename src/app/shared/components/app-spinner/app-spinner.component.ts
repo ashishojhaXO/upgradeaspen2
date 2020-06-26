@@ -38,7 +38,9 @@ export class AppSpinnerComponent implements OnInit {
 
     @Input()
     showSpinnerFlag: boolean;
-
+    @Input() isSpinnerActive: boolean;
+    isTimeOut: boolean = false;
+    timeOutFlag;
     constructor(
         private translate: TranslateService,
         private elt: ElementRef,
@@ -52,6 +54,21 @@ export class AppSpinnerComponent implements OnInit {
        // this.startTimerCond()
     }
 
+    ngOnChanges(){
+       if(this.isSpinnerActive == true){
+           this.timeOutFlag = setTimeout(() => {
+               this.isSpinnerActive = false;
+               this.isTimeOut = true;
+           }, 10000); // 10 Seconds
+       }else{
+        this.isTimeOut = false;
+        clearTimeout(this.timeOutFlag);
+       }
+       console.log("Spinner flag from Parent",this.isSpinnerActive);
+    }
+    hideCustToast(){
+        this.isTimeOut = false;
+    }
     ngAfterViewInit() {}
 
     ngOnDestroy() {
