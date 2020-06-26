@@ -52,12 +52,12 @@ export class OrgManagementComponent implements OnInit, DataTableAction  {
     isPagination: true,
     isFixedColumn: {
       fixedColumns: {
-        leftColumns: 0,
+        leftColumns: 1,
       },
       fixedColumnFunc: (ev, $, table ) => {
         // Util.DataTable.Func
         // DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
-        // let d = new DataTableUtilsPluginExt(ev, $, table).run();
+        let d = new DataTableUtilsPluginExt(ev, $, table).run();
       },
       fixedColumnFilterToggle: ($, table) => {
         // new DataTableUtilsPluginExt(null, $, table).attachClickInputSearch();
