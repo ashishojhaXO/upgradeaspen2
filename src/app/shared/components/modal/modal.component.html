@@ -29,7 +29,7 @@
             </app-data-table-popup>
           </div>
           <div class="page-header" *ngIf="!isDataAvailable">
-            <app-custom-spinner class="page-spinner" ></app-custom-spinner>
+            <app-custom-spinner [isSpinnerActive]=true class=""></app-custom-spinner>
           </div>
           <div class="clearfix"></div>
           <button  type="button" class="btn pull-right" (click)="saveModal()">SAVE</button>

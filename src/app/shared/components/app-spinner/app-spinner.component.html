@@ -1,1 +1,13 @@
+<div *ngIf="isSpinnerActive" class="page-spinner">
 <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+</div>
+
+<div *ngIf="isTimeOut" class="cust-toast-container">
+    <div class="cust-toast-msg warning">
+        <div class="cust-toast-message">
+            There was a problem to connecting to server. Please try again.
+          </div>
+        <div class="close-cust-toast" (click)="hideCustToast();"><i class="fa fa-times"></i></div>
+        <div class="clearfix"></div>         
+    </div>
+</div>

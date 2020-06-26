@@ -81,7 +81,7 @@
       (triggerActions)="handleRow($event)"></app-data-table2>
     </div>
     <div class="page-header" *ngIf="!dataObject.isDataAvailable">
-      <app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
+      <app-custom-spinner [isSpinnerActive]="showSpinner" class=""></app-custom-spinner>
       <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to display.</div>
     </div>
   </div>
@@ -93,7 +93,7 @@
   </div>
   <app-reconciliation-profiles [filters]="selectedFilters" [period]="selectedPeriod" [supplier]="selectedSupplier" [invoiceId]="selectedInvoice" [invoiceNumber]="selectedInvoiceNumber"></app-reconciliation-profiles>
 </div>
-<app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
+<app-custom-spinner [isSpinnerActive]="showSpinner" class=""></app-custom-spinner>
 <div style="width:100%">
   <app-pop-up-modal #UploadInvoice>
     <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
