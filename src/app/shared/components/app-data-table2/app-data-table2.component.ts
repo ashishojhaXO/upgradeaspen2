@@ -783,31 +783,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     columnButtonDefs += '</ul>';
                 }
 
-                if (columnButtonDefs) {
-                    let actionColPosition =
-                        this.dataObject.gridData.options.isActionColPosition && this.dataObject.gridData.options.isActionColPosition != null ?
-                            this.dataObject.gridData.options.isActionColPosition :
-                            0;
-
-                    columns.splice(
-                        actionColPosition,
-                        0,
-                        {
-                            title: 'ACTIONS',
-                            data: null,
-                            orderable: false,
-                            render: function() {
-                                return columnButtonDefs
-                            }
-                        }
-                    );
-                    // columnDefs.push(
-                    //     {
-                    //     targets: -1,
-                    //     defaultContent: columnButtonDefs
-                    // });
-                }
-
                 if (this.dataObject.gridData.options.isTree) {
                     columnDefs.push({
                         targets: this.dataObject.gridData.options.isActionColPosition === 0 ? 1 : 0,
@@ -819,7 +794,49 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                             return '<img class="details-control collapsed" style="width: 15px; cursor: pointer" src="./../../../../assets/images/expand.png"/>';
                         }
                     });
+
+                    this.dataObject.gridData.headers.unshift(
+                        {
+                            title: '',
+                            key: 'tree',
+                            id: 'tree'
+                        }
+                    );
                 }
+
+                if (columnButtonDefs) {
+                    let actionColPosition =
+                        this.dataObject.gridData.options.isActionColPosition && this.dataObject.gridData.options.isActionColPosition != null ?
+                            this.dataObject.gridData.options.isActionColPosition :
+                            0;
+
+                    columns.splice(
+                        actionColPosition,
+                        0,
+                        {
+                            title: 'ACTIONS',
+                            id: 'actions',
+                            data: null,
+                            orderable: false,
+                            render: function() {
+                                return columnButtonDefs
+                            }
+                        }
+                    );
+
+                    this.dataObject.gridData.headers.splice(
+                        actionColPosition,
+                        0,
+                        {
+                            title: 'ACTIONS',
+                            id: 'actions',
+                            key: 'actions',
+                            data: null,
+                            orderable: false
+                        }
+                    );
+                }
+
 
                 if (this.dataObject.gridData.options.isRowSelection) {
                     columnDefs.push({
@@ -851,10 +868,11 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     columnDefs.push({
                         targets: targ,
                         visible: false,
-                    })
+                    });
                 }
 
-
+                // Apply user preference
+                this.applyUserPreference(columns, columnDefs);
 
                 if (this.dataObject.gridData.options.isDownloadAsCsv) {
                     let dict = {
@@ -1108,12 +1126,17 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             });
 
             // Delegate click event to show/hide tick
+           // $(document).off('click', '.buttons-columnVisibility');
             $(document).on('click', '.buttons-columnVisibility', function () {
                 if ($(this).hasClass('active') && !$(this).find('.check-tick').length) {
                     $('<span class="check-tick" style="font-family: wingdings; font-size: 200%; position: relative; top: 3px; left: -5px">&#252;</span>').insertBefore($(this).find('span'));
                 } else {
                     $(this).find('.check-tick').remove();
                 }
+
+                // Store User Column Preference
+                __this.storeUserPreference();
+
             });
 
             // Apply selected class when a row is clicked
@@ -1160,6 +1183,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
 
             });
 
+            $(document).off('click', 'body');
             $(document).on('click', 'body', function (event) {
                 if (!$(event.target).hasClass('actionToggleLink')) {
                     $('.actionToggleLink').each(function(index, ele) {
@@ -2107,5 +2131,120 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     exportTable(){
         // console.log('from table', $.fn.jquery);
         $('.buttons-csv').click();
+    }
+
+    applyUserPreference(columns, columnDefs) {
+
+        let userPreference = null;
+        if (localStorage.getItem('userPreference')) {
+            userPreference = JSON.parse(localStorage.getItem('userPreference'));
+        }
+
+        if (userPreference) {
+            const config = userPreference.dataTables[this.identity];
+            if (config && config.columnsExcluded && config.columnsExcluded.length) {
+                const columnToExclude = config.columnsExcluded;
+                let targ: Array<Number>;
+                targ = columns.map(
+                    (v, k) => {
+                        if( v.id
+                            &&
+                            columnToExclude.indexOf(v.id) != -1
+                        ) {
+                            return k;
+                        }
+                    }
+                ).filter( (v, k) => v != undefined);
+
+                const columns1 = this.dataObject.gridData.headers.map(function (x) {
+                    return {id: x.key, title: x.title};
+                });
+
+                columnDefs.push({
+                    targets: targ,
+                    visible: false
+                });
+            }
+        }
+    }
+
+    storeUserPreference() {
+        const columns = this.dataObject.gridData.headers.map(function (x) {
+            return {id: x.key, title: x.title};
+        });
+
+        const columnsToExclude = [];
+        $('.dt-button-collection button.dt-button.buttons-columnVisibility').each(function (index, ele) {
+            if (!$(this).hasClass('active')) {
+                columnsToExclude.push(columns[index].id);
+            }
+        });
+
+        if (this.identity && columnsToExclude.length) {
+            let userPref = null;
+            if (localStorage.getItem('userPreference')) {
+                 userPref = JSON.parse(localStorage.getItem('userPreference'));
+            } else {
+                 userPref = {
+                    "dashboards" : {},
+                    "dataTables" : {}
+                };
+            }
+
+            userPref.dataTables[this.identity] = userPref.dataTables[this.identity] ? userPref.dataTables[this.identity] : {};
+            userPref.dataTables[this.identity].columnsExcluded = columnsToExclude;
+
+            this.updateUserPreference(userPref).subscribe(
+                response => {
+                    localStorage.setItem('userPreference', JSON.stringify(userPref));
+                },
+                err => {
+
+                    if(err.status === 401) {
+                        if (localStorage.getItem('accessToken')) {
+                            // this.widget.tokenManager.refresh('accessToken')
+                            //     .then(function (newToken) {
+                            //         localStorage.setItem('accessToken', newToken);
+                            //         this.showSpinner = false;
+                            //         this.searchOrgRequest();
+                            //     })
+                            //     .catch(function (err1) {
+                            //         console.log('error >>')
+                            //         console.log(err1);
+                            //     });
+                        } else {
+                            // this.widget.signOut(() => {
+                            //     localStorage.removeItem('accessToken');
+                            //     window.location.href = '/login';
+                            // });
+                        }
+                    }
+                }
+            );
+        }
+    }
+
+    updateUserPreference(userPref) {
+        const AccessToken: any = localStorage.getItem('accessToken');
+        let token = '';
+        if (AccessToken) {
+            token = AccessToken;
+        }
+
+        const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
+
+        const obj = JSON.stringify({
+            user_id : customerInfo.user.user_uuid,
+            prefs: JSON.stringify(userPref)
+        })
+
+        const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+        const options = new RequestOptions({headers: headers});
+        var url = this.api_fs.api + '/api/users/prefs';
+        return this.http
+            .post(url, obj, options)
+            .map(res => {
+                return res.json();
+            }).share();
     }
 }
