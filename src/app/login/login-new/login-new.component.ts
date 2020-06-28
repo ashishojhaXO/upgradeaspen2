@@ -171,6 +171,11 @@ export class LoginNewComponent implements OnInit {
                 }
                 localStorage.setItem('allowOrderFunctionality', allowOrderFunctionality);
 
+                //localStorage.removeItem('userPreference');
+                if (responseDetails.user.prefs) {
+                 localStorage.setItem('userPreference', JSON.parse(responseDetails.user.prefs.toString().replace(/'/g, '"')));
+                }
+
                 this.router.navigate(['/app/dashboards/'], { relativeTo: this.route } ).then( res => {
                   this.showSpinner = false;
                 });

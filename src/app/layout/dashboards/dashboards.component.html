@@ -109,7 +109,7 @@
     </div>
   </div>
   <div *ngIf="chartConfig.data.length">
-    <a class="btn btn-secondary pull-right mb-1" (click)="exportAll()" 
+    <a class="btn btn-secondary pull-right mb-1" (click)="exportAll()"
     tooltiptitle="Export All"><i class="fa fa-fw fa-download" aria-hidden="true"></i>Export All</a>
     <div class="clear-fix"></div>
     <app-charts #chart [config]="chartConfig"></app-charts>
@@ -120,7 +120,7 @@
   <div>
     <div class="gridOverflow" *ngIf="dataObject.isDataAvailable">
       <div style="padding: 20px">
-        <app-data-table2 #table [dataObject]="dataObject" tableId="dashboard_dataTable" (triggerActions)="this[$event.action]($event)"></app-data-table2>
+        <app-data-table2 #table identity="dashboard_dataTable" [dataObject]="dataObject" tableId="dashboard_dataTable" (triggerActions)="this[$event.action]($event)"></app-data-table2>
       </div>
       <!--<app-data-table1 [dataObject]="dataObject" [id]="dashboard" [height]="height"></app-data-table1>-->
     </div>
