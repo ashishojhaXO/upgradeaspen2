@@ -6,6 +6,7 @@
  */
 
 import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
+import {Location} from '@angular/common';
 import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
@@ -44,7 +45,8 @@ export class PaymentMethodsComponent implements OnInit {
     private genericService: GenericService,
     private router: Router,
     private okta: OktaAuthService,
-    private http: Http
+    private http: Http,
+    private location: Location
   ) {
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
 
@@ -79,6 +81,11 @@ export class PaymentMethodsComponent implements OnInit {
                     }).then(() => {
 
                     });
+                }
+
+                if (params['paymentStatus']) {
+                    const url = this.router.createUrlTree([], {relativeTo: this.route, queryParams: null}).toString()
+                    this.location.go(url);
                 }
             });
     }
