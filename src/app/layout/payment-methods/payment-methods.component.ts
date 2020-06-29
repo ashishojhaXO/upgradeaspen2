@@ -69,11 +69,18 @@ export class PaymentMethodsComponent implements OnInit {
       window['fs_widget_config'].org_id = customerInfo.org.org_id;
       window['fs_widget_config'].user_uuid = this.userUuid = customerInfo.user.user_uuid;
 
-      // console.log("vendorUuid",this.vendorId);
-      // FTM
-      // Temp assignment FOR TESTING:
-      // window['fs_widget_config'].vendor_id = '592f94f3-e2b1-4621-b1c0-c795ee2a1814'
-      // this.vendorId = '592f94f3-e2b1-4621-b1c0-c795ee2a1814';
+        this.route.queryParams.subscribe(
+            params => {
+                if (params['message']) {
+                    Swal({
+                        title: 'Error',
+                        text: params['message'],
+                        type: 'error'
+                    }).then(() => {
+
+                    });
+                }
+            });
     }
     const groups = localStorage.getItem('loggedInUserGroup') || '';
     const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
