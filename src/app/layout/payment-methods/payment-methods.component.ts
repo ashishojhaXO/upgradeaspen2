@@ -27,6 +27,9 @@ export class PaymentMethodsComponent implements OnInit {
 
   selectionType = '';
   paymentOptions: any;
+  achPaymentMethods: any;
+  ccPaymentMethods: any;
+  poPaymentMethods: any;
   vendorId: string;
   showSpinner: boolean;
   api_fs: any;
@@ -116,6 +119,10 @@ export class PaymentMethodsComponent implements OnInit {
     }
   }
 
+  toggleDetails(paymentOptions, index) {
+      paymentOptions[index].opened = !paymentOptions[index].opened;
+  }
+
   // initVars() {
   //   if(!this.orderId) {
   //     this.orderId = this.route.snapshot.paramMap.get('id') || '';
@@ -156,8 +163,25 @@ export class PaymentMethodsComponent implements OnInit {
 
     const self = this;
     self.paymentOptions = [];
-    if(res.body && res.body.length > 0){
+    self.achPaymentMethods = [];
+    self.ccPaymentMethods = [];
+    self.poPaymentMethods = [];
+    if(res.body && res.body.length > 0) {
       self.paymentOptions = res.body;
+      self.paymentOptions.map(function (ele) {
+            ele.opened = false;
+      })
+
+      self.achPaymentMethods = self.paymentOptions.filter(function (option) {
+          return option.payment_method && option.payment_method.toUpperCase() === 'ACH';
+      });
+      self.ccPaymentMethods = self.paymentOptions.filter(function (option) {
+            return option.payment_method && option.payment_method.toUpperCase() !== 'ACH' && option.payment_method.toUpperCase() !== 'PO';
+      });
+      self.poPaymentMethods = self.paymentOptions.filter(function (option) {
+          return option.payment_method && option.payment_method.toUpperCase() === 'PO';
+      });
+
       // set paymentsChargeData to use it for charging
       res.body.filter((k, i) => {
         return k.is_default == 1 ? this.setPaymentsChargeData(k) : Object()
@@ -212,6 +236,64 @@ export class PaymentMethodsComponent implements OnInit {
             }
         )
   }
+
+  downloadPODocument(option) {
+      this.getPODocument(option.po_file_reference_id).subscribe(
+          response => {
+              if (response && response.data && response.data.pre_signed_url) {
+                  const link = document.createElement('a');
+                  link.setAttribute('href', response.data.pre_signed_url);
+                  link.setAttribute('target', '_blank');
+                  document.body.appendChild(link);
+                  link.click();
+              } else {
+                  Swal({
+                      title: 'No downloadable link available',
+                      text: 'We did not find a download link for that PO',
+                      type: 'error'
+                  });
+              }
+          },
+          err => {
+              if (err.status === 401) {
+                  let self = this;
+                  this.widget.refreshElseSignout(
+                      this,
+                      err,
+                      self.downloadPODocument.bind(self, option)
+                  );
+              } else {
+                  this.showSpinner = false;
+                  Swal({
+                      title: 'An error occurred',
+                      html: err._body ? JSON.parse(err._body).message : 'No error definition available',
+                      type: 'error'
+                  });
+              }
+          });
+  }
+
+  getPODocument(refId) {
+        const AccessToken: any = localStorage.getItem('accessToken');
+        let token = '';
+        if (AccessToken) {
+            // token = AccessToken.accessToken;
+            token = AccessToken;
+        }
+
+        const data = JSON.stringify({
+            reference_id : refId
+        });
+
+        const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+        const options = new RequestOptions({headers: headers});
+        var url = this.api_fs.api + '/api/reports/download';
+        return this.http
+            .post(url, data, options)
+            .map(res => {
+                return res.json();
+            }).share();
+    }
 
   setDefaultPaymentMethod(option) {
 
