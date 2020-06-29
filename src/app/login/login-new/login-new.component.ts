@@ -174,6 +174,8 @@ export class LoginNewComponent implements OnInit {
                 //localStorage.removeItem('userPreference');
                 if (responseDetails.user.prefs) {
                  localStorage.setItem('userPreference', JSON.parse(responseDetails.user.prefs.toString().replace(/'/g, '"')));
+                } else {
+                  localStorage.removeItem('userPreference');
                 }
 
                 this.router.navigate(['/app/dashboards/'], { relativeTo: this.route } ).then( res => {
