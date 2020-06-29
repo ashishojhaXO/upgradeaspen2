@@ -178,9 +178,15 @@ export class LoginNewComponent implements OnInit {
                   localStorage.removeItem('userPreference');
                 }
 
-                this.router.navigate(['/app/dashboards/'], { relativeTo: this.route } ).then( res => {
-                  this.showSpinner = false;
-                });
+                if(this.isSupportRole()) {
+                  this.router.navigate(['app/admin/invoices']).then( res => {
+                    this.showSpinner = false;
+                  });
+                } else {
+                  this.router.navigate(['/app/dashboards/'], {relativeTo: this.route}).then(res => {
+                    this.showSpinner = false;
+                  });
+                }
               } else {
                 this.showSpinner = false;
                 this.formError = 'No User details found. Please contact administrator';
@@ -211,6 +217,36 @@ export class LoginNewComponent implements OnInit {
         this.formError = rej.json().message; //for error handling
       });
     }
+  }
+
+  isSupportRole() {
+    const groupArr = [];
+    const groups = localStorage.getItem('loggedInUserGroup') || '';
+    if (groups) {
+      const grp = JSON.parse(groups);
+      grp.forEach(function (item) {
+        groupArr.push(item);
+      });
+    }
+    let isRoot = false;
+    let isAdmin = false;
+    let isSupport = false;
+    if (groupArr.length) {
+      groupArr.forEach(function (grp) {
+        if (grp === 'ROOT' || grp === 'SUPER_USER' || grp === 'ORG_ADMIN' || grp === 'SUPPORT') {
+          if(grp === 'ORG_ADMIN') {
+            isAdmin = true;
+          }
+          if (grp === 'ROOT' || grp === 'SUPER_USER') {
+            isRoot = true;
+          }
+          if (grp === 'SUPPORT') {
+            isSupport = true;
+          }
+        }
+      });
+    }
+    return isSupport;
   }
 
   getCustomerInfo(): any {
