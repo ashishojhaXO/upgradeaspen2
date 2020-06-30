@@ -506,7 +506,7 @@ export class UserManagementComponent implements OnInit  {
       });
     }
 
-    this.isRoleSuperUser = this.selectedRole == '4' ? true : false;
+    this.isRoleSuperUser = this.selectedRole == '4' || this.selectedRole == '5' ? true : false;
 
     // if (this.isRoleSuperUser) {
     //   this.userForm.controls['vendor'].setValidators(null);
