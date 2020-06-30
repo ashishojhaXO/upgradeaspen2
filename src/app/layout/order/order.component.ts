@@ -1142,8 +1142,14 @@ export class OrderComponent implements OnInit  {
             reqObj.orderDetail.lineItems[extendedLineItemIndex].lineItemFields.forEach(function (item) {
                 if (item.name && item.name !== 'line_item_id') {
 
-                    if (item.name === 'end_date' &&  new Date(item.field_value).setHours(0,0,0) > Date.parse( item._original_value) ) {
-                        dataObj['extended_end_date'] = item.field_value;
+                    if (item.name === 'end_date') {
+                        const d = new Date(item.field_value);
+                        d.setHours(0,0,0, 0);
+                        d.setDate(d.getDate() + 1);
+
+                        if (d.getTime() > new Date(item._original_value).getTime()) {
+                            dataObj['extended_end_date'] = item.field_value;
+                        }
                     } else if (item.name === 'additional_budget' && item.field_value > 0) {
                         dataObj['extended_item_budget'] = item.field_value;
                     } else {
