@@ -178,7 +178,7 @@ export class LoginNewComponent implements OnInit {
                   localStorage.removeItem('userPreference');
                 }
 
-                if(this.isSupportRole()) {
+                if (this.isSupportRole()) {
                   this.router.navigate(['app/admin/invoices']).then( res => {
                     this.showSpinner = false;
                   });
