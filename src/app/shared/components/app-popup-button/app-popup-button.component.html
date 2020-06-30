@@ -25,7 +25,7 @@
                            <!--[dataObject]="dataObject" [id]="tableId"></app-data-table1>-->
         </div>
         <div class="page-header" *ngIf="!showPopUp">
-          <app-custom-spinner class="page-spinner"></app-custom-spinner>
+          <app-custom-spinner [isSpinnerActive]="showPopUp" class=""></app-custom-spinner>
         </div>
       </div>
       <div class="app-modal-footer">

@@ -35,4 +35,4 @@
         <app-file-uploader [uploadedFile]="uploadedFile" (processFile)="OnProcessFile($event)"></app-file-uploader>
     </div>
 </div>
-<app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
+<app-custom-spinner [isSpinnerActive]="showSpinner" class=""></app-custom-spinner>

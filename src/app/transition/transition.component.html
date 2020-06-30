@@ -8,4 +8,4 @@
 <div [hidden]="!error ? 'hidden' : ''" style="color:red; margin: 20px">
     <span>{{error}}</span>
 </div>
-<app-custom-spinner *ngIf="showSpinner" class="page-spinner"></app-custom-spinner>
+<app-custom-spinner [isSpinnerActive]="showSpinner" class=""></app-custom-spinner>

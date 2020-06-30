@@ -6,6 +6,7 @@
  */
 
 import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
+import {Location} from '@angular/common';
 import 'rxjs/add/operator/filter';
 import 'jquery';
 import 'bootstrap';
@@ -26,6 +27,9 @@ export class PaymentMethodsComponent implements OnInit {
 
   selectionType = '';
   paymentOptions: any;
+  achPaymentMethods: any;
+  ccPaymentMethods: any;
+  poPaymentMethods: any;
   vendorId: string;
   showSpinner: boolean;
   api_fs: any;
@@ -44,7 +48,8 @@ export class PaymentMethodsComponent implements OnInit {
     private genericService: GenericService,
     private router: Router,
     private okta: OktaAuthService,
-    private http: Http
+    private http: Http,
+    private location: Location
   ) {
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
 
@@ -69,11 +74,23 @@ export class PaymentMethodsComponent implements OnInit {
       window['fs_widget_config'].org_id = customerInfo.org.org_id;
       window['fs_widget_config'].user_uuid = this.userUuid = customerInfo.user.user_uuid;
 
-      // console.log("vendorUuid",this.vendorId);
-      // FTM
-      // Temp assignment FOR TESTING:
-      // window['fs_widget_config'].vendor_id = '592f94f3-e2b1-4621-b1c0-c795ee2a1814'
-      // this.vendorId = '592f94f3-e2b1-4621-b1c0-c795ee2a1814';
+        this.route.queryParams.subscribe(
+            params => {
+                if (params['message']) {
+                    Swal({
+                        title: 'Error',
+                        text: params['message'],
+                        type: 'error'
+                    }).then(() => {
+
+                    });
+                }
+
+                if (params['paymentStatus']) {
+                    const url = this.router.createUrlTree([], {relativeTo: this.route, queryParams: null}).toString()
+                    this.location.go(url);
+                }
+            });
     }
     const groups = localStorage.getItem('loggedInUserGroup') || '';
     const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
@@ -100,6 +117,10 @@ export class PaymentMethodsComponent implements OnInit {
         __this.postPaymentMethods(1);
       }, 1000);
     }
+  }
+
+  toggleDetails(paymentOptions, index) {
+      paymentOptions[index].opened = !paymentOptions[index].opened;
   }
 
   // initVars() {
@@ -142,8 +163,25 @@ export class PaymentMethodsComponent implements OnInit {
 
     const self = this;
     self.paymentOptions = [];
-    if(res.body && res.body.length > 0){
+    self.achPaymentMethods = [];
+    self.ccPaymentMethods = [];
+    self.poPaymentMethods = [];
+    if(res.body && res.body.length > 0) {
       self.paymentOptions = res.body;
+      self.paymentOptions.map(function (ele) {
+            ele.opened = false;
+      })
+
+      self.achPaymentMethods = self.paymentOptions.filter(function (option) {
+          return option.payment_method && option.payment_method.toUpperCase() === 'ACH';
+      });
+      self.ccPaymentMethods = self.paymentOptions.filter(function (option) {
+            return option.payment_method && option.payment_method.toUpperCase() !== 'ACH' && option.payment_method.toUpperCase() !== 'PO';
+      });
+      self.poPaymentMethods = self.paymentOptions.filter(function (option) {
+          return option.payment_method && option.payment_method.toUpperCase() === 'PO';
+      });
+
       // set paymentsChargeData to use it for charging
       res.body.filter((k, i) => {
         return k.is_default == 1 ? this.setPaymentsChargeData(k) : Object()
@@ -199,6 +237,64 @@ export class PaymentMethodsComponent implements OnInit {
         )
   }
 
+  downloadPODocument(option) {
+      this.getPODocument(option.po_file_reference_id).subscribe(
+          response => {
+              if (response && response.data && response.data.pre_signed_url) {
+                  const link = document.createElement('a');
+                  link.setAttribute('href', response.data.pre_signed_url);
+                  link.setAttribute('target', '_blank');
+                  document.body.appendChild(link);
+                  link.click();
+              } else {
+                  Swal({
+                      title: 'No downloadable link available',
+                      text: 'We did not find a download link for that PO',
+                      type: 'error'
+                  });
+              }
+          },
+          err => {
+              if (err.status === 401) {
+                  let self = this;
+                  this.widget.refreshElseSignout(
+                      this,
+                      err,
+                      self.downloadPODocument.bind(self, option)
+                  );
+              } else {
+                  this.showSpinner = false;
+                  Swal({
+                      title: 'An error occurred',
+                      html: err._body ? JSON.parse(err._body).message : 'No error definition available',
+                      type: 'error'
+                  });
+              }
+          });
+  }
+
+  getPODocument(refId) {
+        const AccessToken: any = localStorage.getItem('accessToken');
+        let token = '';
+        if (AccessToken) {
+            // token = AccessToken.accessToken;
+            token = AccessToken;
+        }
+
+        const data = JSON.stringify({
+            reference_id : refId
+        });
+
+        const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+        const options = new RequestOptions({headers: headers});
+        var url = this.api_fs.api + '/api/reports/download';
+        return this.http
+            .post(url, data, options)
+            .map(res => {
+                return res.json();
+            }).share();
+    }
+
   setDefaultPaymentMethod(option) {
 
     const obj = {
@@ -221,7 +317,7 @@ export class PaymentMethodsComponent implements OnInit {
                 text: 'Your default payment method for future payments has been changed successfully',
                 type: 'success'
               }).then( () => {
-
+                  this.postPaymentMethods(1);
               });
             },
             (err) => {

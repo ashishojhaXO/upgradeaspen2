@@ -621,8 +621,8 @@
           <button type="button" *ngIf="reportDeleteAction !== 'no'" class="btn data-btn btn-default btn-width-100 pull-right" (click)="handleDelete()">DELETE</button>
         </div>
 
-         <div *ngIf="showSpinner">
-           <app-custom-spinner class="page-spinner"></app-custom-spinner>
+         <div>
+           <app-custom-spinner [isSpinnerActive]="showSpinner" class=""></app-custom-spinner>
          </div>
 
         <!--<div>-->
