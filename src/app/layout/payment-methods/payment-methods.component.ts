@@ -317,7 +317,7 @@ export class PaymentMethodsComponent implements OnInit {
                 text: 'Your default payment method for future payments has been changed successfully',
                 type: 'success'
               }).then( () => {
-
+                  this.postPaymentMethods(1);
               });
             },
             (err) => {
