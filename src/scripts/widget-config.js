@@ -23,4 +23,6 @@ var fs_widget_config = {
     payment_domain: 'https://www.snappayglobal.com/interop/interoprequest?reqno=', // required
     redirectUrl: '',  // if left empty, the page would refresh ( optional ),
     displayExistingPayment: false
-}
+};
+
+var air_widget_config = fs_widget_config;
