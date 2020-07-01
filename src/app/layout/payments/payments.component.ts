@@ -169,7 +169,7 @@ export class PaymentsComponent implements OnInit  {
     const groups = localStorage.getItem('loggedInUserGroup') || '';
     const grp = JSON.parse(groups);
     grp.forEach(function (item) {
-      if(item === 'ROOT' || item === 'SUPER_USER') {
+      if(item === 'ROOT' || item === 'SUPER_USER' || item === 'SUPPORT') {
         this.isRoot = true;
       }
     }, this);
