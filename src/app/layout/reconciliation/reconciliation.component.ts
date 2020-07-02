@@ -123,7 +123,9 @@ export class ReconciliationComponent implements OnInit {
     placeholder: { id: '', text: 'Select a channel' }
   };
   channelOptions: any;
-
+  dashType : any = "reconciliation";
+  isInit : boolean = true;
+  isSearchInit : boolean = true;
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
 
     this.uploadModel = {
@@ -168,6 +170,9 @@ export class ReconciliationComponent implements OnInit {
     this.selectedChannel = [this.channelData[0]];
     if (this.isRoot) {
       this.searchOrgRequest();
+      if(this.isInit){
+        this.setUserOrgPreference(this.dashType);
+        }
     }
     if (this.selectedOrg[0].id) {
       this.orgValue = this.selectedOrg[0].id;
@@ -243,6 +248,11 @@ export class ReconciliationComponent implements OnInit {
 
   populateFilters(filterResponse, seedResponse = null) {
 
+    if(this.checkPreferencesAvail(this.dashType)){
+      if(this.isInit){      
+        seedResponse = this.getFilterPreferences(this.dashType);
+      }
+    }
     localStorage.setItem('dashboardConfig_reconciliation', JSON.stringify(filterResponse));
     const dashboardConfig = filterResponse.data;
 
@@ -263,10 +273,19 @@ export class ReconciliationComponent implements OnInit {
           if (!newFilter.displayDefault && seedResponse) {
             if (seedResponse[newFilter.f7Name] && seedResponse[newFilter.f7Name].length) {
               if (seedResponse[newFilter.f7Name] !== 'period') {
-                newFilter.values = [{
+                let seedValues = [];
+                seedResponse[newFilter.f7Name].forEach(function (ele) {
+                  seedValues.push({
+                    id: ele,
+                    label: ele
+                  });
+                });
+                newFilter.values = seedValues;
+              /*newFilter.values = [{
                   id: seedResponse[newFilter.f7Name][0],
                   label: seedResponse[newFilter.f7Name][0]
                 }];
+                */
               }
             }
           }
@@ -307,6 +326,12 @@ export class ReconciliationComponent implements OnInit {
           year = d.getFullYear();
       this.period.display = moment(year + '-' + ( month.length < 2 ? ('0' + month) : month) + '-01').format('MMM YYYY');
       this.period.value =  moment(year + '-' + ( month.length < 2 ? ('0' + month) : month) + '-01').format('MMM YYYY');
+    }
+    if(this.checkPreferencesAvail(this.dashType)){
+      if(this.isSearchInit == true){
+        this.search();
+        this.isSearchInit = false;
+      }
     }
   }
 
@@ -582,6 +607,7 @@ export class ReconciliationComponent implements OnInit {
     const obj = JSON.stringify(dataObj);
     console.log('obj >>')
     console.log(obj)
+    this.saveDashPreferences(dataObj);
     let org = this.orgValue;
     const headers = new Headers({ 'Content-Type': 'application/json', 'token': token, 'callingapp': 'aspen' });
     const options = new RequestOptions({ headers: headers });
@@ -1307,6 +1333,7 @@ export class ReconciliationComponent implements OnInit {
     if (selectedItem.id) {
       console.log("Org", selectedItem);
       this.selectedOrg = [selectedItem];
+      this.isInit = false;
       this.ngOnInit();
     }
   }
@@ -1314,6 +1341,7 @@ export class ReconciliationComponent implements OnInit {
   handleOrgDeSelect(selectedItem, type) {
     this.selectedOrg = [{}];
     this.orgValue = "";
+    this.isInit = false;
     this.ngOnInit();
   }
   handleDelete(dataObj: any) {
@@ -1389,4 +1417,135 @@ export class ReconciliationComponent implements OnInit {
       case 'Dec' : return '12';
     }
   }
+  saveDashPreferences(data){
+    let userPref:any = null;
+    if (localStorage.getItem('userPreference')) {
+         userPref = JSON.parse(localStorage.getItem('userPreference'));
+    } else {
+         userPref = {
+            "dashboards" : {},
+            "dataTables" : {}
+        };
+    }    
+    let allFilters = data.filters ? data.filters : [];
+    let supplier = [], invoice_number = [], marketing_contract = [], purchase_order = [], month ='' ,year = '';
+      if(allFilters.supplier){
+        supplier = allFilters.supplier;
+      }
+      if(allFilters.invoice_number){
+        invoice_number = allFilters.invoice_number;
+      }
+      if(allFilters.mk_number){
+        marketing_contract = allFilters.mk_number;
+      }
+      if(allFilters.po_number){
+        purchase_order = allFilters.po_number;
+      }
+      const objDate = this.period.display;
+      let dateField;
+      if (objDate) {
+        dateField = objDate.split(' ')[1] + '-' + this.getMonthNum(objDate.split(' ')[0]) + '-01';
+      } 
+
+  let filterObj = {
+    "org" : this.selectedOrg,
+    "period" : {
+        startDate: dateField,
+        endDate: dateField
+     },
+    "supplier" : supplier,
+    "invoice_number": invoice_number,
+    "marketing_contract": marketing_contract,
+    "purchase_order" : purchase_order,
+  }    
+   userPref.dashboards[this.dashType] = {};
+   userPref.dashboards[this.dashType].filters = filterObj;
+   this.updateUserPreference(userPref).subscribe(
+    response => {
+        localStorage.setItem('userPreference', JSON.stringify(userPref));
+    },
+    err => {
+        if(err.status === 401) {
+            if (localStorage.getItem('accessToken')) {
+              
+            } else {
+            }
+        }
+    }
+   );
+ }
+ updateUserPreference(userPref) {
+  const AccessToken: any = localStorage.getItem('accessToken');
+  let token = '';
+  if (AccessToken) {
+      token = AccessToken;
+  }
+  const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
+  const obj = JSON.stringify({
+      user_id : customerInfo.user.user_uuid,
+      prefs: JSON.stringify(userPref)
+  })
+
+  const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+  const options = new RequestOptions({headers: headers});
+  var url = this.api_fs.api + '/api/users/prefs';
+  return this.http
+      .post(url, obj, options)
+      .map(res => {
+          return res.json();
+      }).share();
+  }
+
+  setUserOrgPreference(type){
+ if (localStorage.getItem('userPreference')) {
+         let userPref = JSON.parse(localStorage.getItem('userPreference'));
+         if(userPref.dashboards[type]){           
+         let dashData = userPref.dashboards[type]['filters'] ? userPref.dashboards[type]['filters'] : [];
+         if(dashData.org){
+          this.selectedOrg = dashData.org;
+          }
+      }
+    }
+  }
+  checkPreferencesAvail(type){
+    let isAvail = false;
+    if (localStorage.getItem('userPreference')) {
+      let userPref = JSON.parse(localStorage.getItem('userPreference'));
+      if(userPref.dashboards[type]){ 
+        isAvail = true;
+     }
+   }
+   return isAvail;
+  }
+  getFilterPreferences(type){
+    const filterRes:any = {};
+    if (localStorage.getItem('userPreference')) {
+      let userPref = JSON.parse(localStorage.getItem('userPreference'));
+      if(userPref.dashboards[type]){ 
+        let dashData = userPref.dashboards[type]['filters'] ? userPref.dashboards[type]['filters'] : [];
+       if(dashData.invoice_number){
+          filterRes.invoice_number = dashData.invoice_number; 
+         }         
+         if(dashData.marketing_contract){
+          filterRes.mk_number = dashData.marketing_contract; 
+         }
+         if(dashData.purchase_order){
+          filterRes.po_number = dashData.purchase_order; 
+         }
+         if(dashData.supplier){
+          filterRes.supplier = dashData.supplier; 
+         }     
+         if(dashData.period){
+         let startDate = dashData.period.startDate;         
+         let endDate = dashData.period.endDate;         
+          filterRes.period = {
+            values: {startDate : startDate, endDate: endDate}
+          }
+        }
+       console.debug("filterRes",filterRes);
+     }
+   }    
+   return filterRes;
+  }
+
 }

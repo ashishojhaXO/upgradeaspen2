@@ -36,7 +36,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   api_fs: any;
   externalAuth: any;
   showSpinner: any;
-
+  isInit : boolean = true;
+  isSearchInit : boolean = true;
   defaultFilters = [
     {
       f7Name : 'type',
@@ -387,9 +388,13 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     this.dashboardType = this.router.url.substr(this.router.url.lastIndexOf('/') + 1);
     this.height = '50vh';
     this.dashboardConfig = {};
+    this.isViewPref(this.dashboardType);
     this.dashboardConfig.filterProps = JSON.parse(JSON.stringify(this.defaultFilters));
     if(this.isRoot){
      this.searchOrgRequest();
+     if(this.isInit){
+     this.setUserOrgPreference(this.dashboardType);
+     }
     }
     if(this.selectedOrg[0].id){
       this.orgValue = this.selectedOrg[0].id;
@@ -407,29 +412,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
                             this.populateFilters(response.data, response1);
                             //this.search();
                           });
-
-                  this.getSeedDashboard()
-                      .then(
-                          response2 => {
-                            response2 = response2.json();
-                            this.showSpinner = false;
-                            this.populateChart(response2);
-                            this.populateDataTable(response2);
-                          }, error => {
-                            if(error.status === 401) {
-                              let self = this;
-                              this.widget.refreshElseSignout(
-                                  this,
-                                  error,
-                                  // self.searchDataRequest.bind(self),
-                                  self.ngOnInit.bind(self)
-                              );
-
-                            } else {
-                              this.showSpinner = false;
-                            }
-
-                          });
+                if(!this.checkPreferencesAvail(this.dashboardType)){
+                  this.getSeedDashboardInit();
+                 }
                 } else {
                   //this.toasterService.pop('success', 'No Report Template Definition Available', 'There is no report template definition available for the selected org');
                   this.isReportTemp = false;
@@ -466,6 +451,30 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     }
   }
 
+getSeedDashboardInit(){
+  this.getSeedDashboard()
+  .then(
+      response2 => {
+        response2 = response2.json();
+        this.showSpinner = false;
+        this.populateChart(response2);
+        this.populateDataTable(response2);
+      }, error => {
+        if(error.status === 401) {
+          let self = this;
+          this.widget.refreshElseSignout(
+              this,
+              error,
+              // self.searchDataRequest.bind(self),
+              self.ngOnInit.bind(self)
+          );
+
+        } else {
+          this.showSpinner = false;
+        }
+
+      });
+    }
   getSeedData() {
 
     const AccessToken: any = localStorage.getItem('accessToken');
@@ -522,6 +531,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
   populateFilters(filterResponse, seedResponse) {
 
+    if(this.checkPreferencesAvail(this.dashboardType)){
+      seedResponse = this.getFilterPreferences(this.dashboardType);
+    }
     localStorage.setItem('dashboardConfig_' + this.dashboardType, JSON.stringify(filterResponse));
     var dashboardConfig = filterResponse;
     var selectedType = this.dashboardConfig.filterProps.filter(function (filter) {
@@ -558,10 +570,19 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
             if (!newFilter.displayDefault) {
               if (seedResponse[newFilter.f7Name] && seedResponse[newFilter.f7Name].length) {
                 if (seedResponse[newFilter.f7Name] !== 'period') {
-                  newFilter.values = [{
+                  let seedValues = [];
+                  seedResponse[newFilter.f7Name].forEach(function (ele) {
+                    seedValues.push({
+                      id: ele,
+                      label: ele
+                    });
+                  });
+                  newFilter.values = seedValues;
+                 /* newFilter.values = [{
                     id: seedResponse[newFilter.f7Name][0],
                     label: seedResponse[newFilter.f7Name][0]
                   }];
+                  */
                 }
               }
             }
@@ -583,6 +604,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
         }, this);
       }
 
+      console.log("mainaa",this.dashboardConfig.filterProps);
       const periodFilter = this.dashboardConfig.filterProps.find( x=> x.f7Name === 'period');
       if (periodFilter && seedResponse['period'] && seedResponse['period'].values && seedResponse['period'].values.startDate) {
 
@@ -596,6 +618,12 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
 
         this.period.display = moment(periodFilter.values[0].id).format('MMM YYYY');
         this.period.value =  moment(periodFilter.values[0].id).format('MMM YYYY');
+      }
+    }
+    if(this.checkPreferencesAvail(this.dashboardType)){
+      if(this.isSearchInit == true){
+        this.search();
+        this.isSearchInit = false;
       }
     }
   }
@@ -955,6 +983,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     dataObj.clientCode = 'homd';
     dataObj.dashboard = this.dashboardType;
     const filters = [];
+    console.log("this.dashboardConfig.filterProps", this.dashboardConfig.filterProps);
     this.dashboardConfig.filterProps.forEach(function (filter) {
       if(filter.f7Name !== 'type' && filter.f7Name !== 'period') {
         var newFilter: any = {};
@@ -1007,7 +1036,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
     this.getSearchData(dataObj).subscribe(
         response => {
           if(response) {
-
+            this.saveDashPreferences(dataObj);
             console.log('chart response >>')
             console.log(response);
 
@@ -1134,6 +1163,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   handleSelect(selectedItem, type) {
    if(selectedItem.id){
     this.selectedOrg = [selectedItem];
+    this.isInit = false;
     this.ngOnInit();
    }
  }
@@ -1141,6 +1171,7 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
  handleDeSelect(selectedItem, type) {
   this.selectedOrg = [{}];
   this.orgValue="";
+  this.isInit = false;
   this.ngOnInit();
  }
 
@@ -1160,4 +1191,148 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
       case 'Dec' : return '12';
     }
   }
+  saveDashPreferences(data){
+    let userPref:any = null;
+    if (localStorage.getItem('userPreference')) {
+         userPref = JSON.parse(localStorage.getItem('userPreference'));
+    } else {
+         userPref = {
+            "dashboards" : {},
+            "dataTables" : {}
+        };
+    }    
+    let allFilters = data.filter ? data.filter : [];
+    let vendor = [], site_name = [], order_id = [], line_item_id = [];
+    allFilters.forEach((key,val)=>{
+      if(key.f7Name && key.f7Name =="ctrt_vend_vendor_name"){
+        vendor = key.values;
+      }
+      if(key.f7Name && key.f7Name =="site_name"){
+        site_name = key.values;
+      }
+      if(key.f7Name && key.f7Name =="ctrt_iord_order_id"){
+        order_id = key.values;
+      }
+      if(key.f7Name && key.f7Name =="ctrt_litm_line_item_id"){
+        line_item_id = key.values;
+      }
+    });
+  let filterObj = {
+    "org" : this.selectedOrg,
+    "view": data.type,
+    "period" : data.period.values,
+    "vendor" : vendor,
+    "site_name": site_name,
+    "order_id": order_id,
+    "line_item_id" : line_item_id,
+  }    
+   userPref.dashboards[data.dashboard] = {};
+   userPref.dashboards[data.dashboard].filters = filterObj;
+   this.updateUserPreference(userPref).subscribe(
+    response => {
+        localStorage.setItem('userPreference', JSON.stringify(userPref));
+    },
+    err => {
+        if(err.status === 401) {
+            if (localStorage.getItem('accessToken')) {
+              
+            } else {
+            }
+        }
+    }
+   );
+ }
+ updateUserPreference(userPref) {
+  const AccessToken: any = localStorage.getItem('accessToken');
+  let token = '';
+  if (AccessToken) {
+      token = AccessToken;
+  }
+  const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
+  const obj = JSON.stringify({
+      user_id : customerInfo.user.user_uuid,
+      prefs: JSON.stringify(userPref)
+  })
+
+  const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+  const options = new RequestOptions({headers: headers});
+  var url = this.api_fs.api + '/api/users/prefs';
+  return this.http
+      .post(url, obj, options)
+      .map(res => {
+          return res.json();
+      }).share();
+  }
+
+  setUserOrgPreference(type){
+ if (localStorage.getItem('userPreference')) {
+         let userPref = JSON.parse(localStorage.getItem('userPreference'));
+         if(userPref.dashboards[type]){           
+         let dashData = userPref.dashboards[type]['filters'] ? userPref.dashboards[type]['filters'] : [];
+         if(dashData.org){
+          this.selectedOrg = dashData.org;
+          }
+      }
+    }
+  }
+  isViewPref(type){
+    if (localStorage.getItem('userPreference')) {
+      let userPref = JSON.parse(localStorage.getItem('userPreference'));
+      if(userPref.dashboards[type]){           
+      let dashData = userPref.dashboards[type]['filters'] ? userPref.dashboards[type]['filters'] : [];
+      if(dashData.view){        
+       this.defaultFilters[0].values = this.capitalizeFirstLetter(dashData.view);
+       this.selectedView = this.capitalizeFirstLetter(dashData.view);
+       console.log("this.selectedView",this.selectedView);
+       }
+    }
+   }
+  }
+  checkPreferencesAvail(type){
+    let isAvail = false;
+    if (localStorage.getItem('userPreference')) {
+      let userPref = JSON.parse(localStorage.getItem('userPreference'));
+      if(userPref.dashboards[type]){ 
+        isAvail = true;
+     }
+   }
+   return isAvail;
+  }
+  getFilterPreferences(type){
+    const filterRes:any = {};
+    if (localStorage.getItem('userPreference')) {
+      let userPref = JSON.parse(localStorage.getItem('userPreference'));
+      if(userPref.dashboards[type]){ 
+        let dashData = userPref.dashboards[type]['filters'] ? userPref.dashboards[type]['filters'] : [];
+        if(dashData.vendor){
+          filterRes['ctrt_vend_vendor_name'] = dashData.vendor; 
+         }         
+         if(dashData.site_name){
+          filterRes.site_name = dashData.site_name; 
+         }
+         if(dashData.site_name){
+          filterRes.ctrt_iord_order_id = dashData.order_id; 
+         }
+         if(dashData.line_item_id){
+          filterRes.ctrt_litm_line_item_id = dashData.line_item_id; 
+         }
+         if(dashData.period){
+           let startDate = dashData.period.startDate.split("T")[0];
+           let endDate = dashData.period.endDate.split("T")[0];
+          filterRes.period= {
+            f7Name: 'date',
+            values: {
+              startDate: startDate,
+              endDate: endDate
+            }
+         }
+        }
+       console.log("filterRes",filterRes);
+     }
+   }    
+   return filterRes;
+  }
+  capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }  
 }
