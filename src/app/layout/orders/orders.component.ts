@@ -224,6 +224,7 @@ export class OrdersComponent implements OnInit  {
   hasTemplates = false;
   private toaster: any;
   selectedUserUuid: any;
+  resultStatus:any;
 
   @ViewChild('ManagePayments') managePayments: PopUpModalComponent;
   orderID: any;
@@ -276,6 +277,7 @@ export class OrdersComponent implements OnInit  {
     // if (this.isUser) {
     //   this.allowOrderFunctionality = 'false';
     // }
+    this.resultStatus = 'Fetching results';
     this.searchTemplates();
     if (this.isRoot) {
       this.allowOrderFunctionality = 'true';
@@ -380,7 +382,7 @@ export class OrdersComponent implements OnInit  {
   searchTemplates() {
     this.getTemplates().subscribe(
         response => {
-          this.showSpinner = false;
+          //this.showSpinner = false;
           if (response && response.orgTemplates && response.orgTemplates.templates && response.orgTemplates.templates.length) {
             const publishedTemplates = response.orgTemplates.templates.filter(function (ele) {
               return ele.is_publish === 'True';
@@ -644,6 +646,7 @@ export class OrdersComponent implements OnInit  {
                 this.searchDataRequestCB(response, table);
               } else {
                 this.showSpinner = false;
+                this.resultStatus = 'There is no data to display.'; 
                 // self.popUp.showPopUp(self.popUp.popUpDict.noData)
                 // console.log("No data to show")
               }
@@ -702,6 +705,7 @@ export class OrdersComponent implements OnInit  {
                 this.showSpinner = false;
                 // self.popUp.showPopUp(self.popUp.popUpDict.noData)
                 // console.log("No data to show")
+                this.resultStatus = 'There is no data to display.'; 
               }
             },
             err => {
@@ -1115,7 +1119,7 @@ export class OrdersComponent implements OnInit  {
 
         // this.appDataTable2Component.table.page(0)
       }
-
+      this.resultStatus = 'Fetching results';
       this.searchDataRequest(this.orgValue, this.currentTable);
     }
   }
