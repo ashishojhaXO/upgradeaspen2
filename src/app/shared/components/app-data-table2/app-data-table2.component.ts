@@ -1379,6 +1379,19 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 })
             }
 
+            // HACK: Changing the fixedColumns data: on Page Change 
+            if(__this.dataObject.gridData.options.isFixedColumn 
+                &&
+                __this.dataObject.gridData.options.isFixedColumn.fixedColumns
+                &&
+                __this.dataObject.gridData.options.isFixedColumn.changeFixedColumnData
+            ) {
+                table.off('page.dt');
+                table.on('page.dt', function(ev, settings){
+                    __this.dataObject.gridData.options.isFixedColumn.changeFixedColumnData(ev, $, table);
+                })
+            }
+
             // if(__this.dataObject.gridData.options.isFixedColumnFilterToggle) {
             //     __this.dataObject.gridData.options.isFixedColumnFilterToggle.toggle($, table);
             // }
