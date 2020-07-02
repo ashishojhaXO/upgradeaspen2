@@ -50,6 +50,15 @@ export class PaymentsComponent implements OnInit  {
       fixedColumns: {
         leftColumns: 1,
       },
+      changeFixedColumnData: (ev, $, table) => {
+        // HACK: If Last page, a hack to avoid the DataTables 'anCells' error
+        if(table.page.info().page+1 == table.page.info().pages) {
+          let d = new DataTableUtilsPluginExt(ev, $, table).hideSticky();
+        } else {
+          let d = new DataTableUtilsPluginExt(ev, $, table).showSticky();
+          table.fixedColumns().update();
+        }
+      },
       fixedColumnFunc: (ev, $, table ) => {
         // Util.DataTable.Func
         // DataTableUtilsPluginExt.fixedColumnFunc(ev, $, table);
