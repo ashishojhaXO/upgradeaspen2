@@ -59,7 +59,7 @@ export class AppSpinnerComponent implements OnInit {
            this.timeOutFlag = setTimeout(() => {
                this.isSpinnerActive = false;
                this.isTimeOut = true;
-           }, 10000); // 10 Seconds
+           }, 20000); // 20 Seconds
        }else{
         this.isTimeOut = false;
         clearTimeout(this.timeOutFlag);

@@ -120,7 +120,7 @@ export class InvoicesComponent implements OnInit  {
   select2Options = {
     // placeholder: { id: '', text: 'Select organization' }
   };
-
+  resultStatus: any;
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
     const groups = localStorage.getItem('loggedInUserGroup') || '';
     const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
@@ -146,6 +146,7 @@ export class InvoicesComponent implements OnInit  {
 
     this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
     this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
+    this.resultStatus = 'Fetching results';
     this.searchOrgRequest();
     this.searchDataRequest();
   }
@@ -154,8 +155,11 @@ export class InvoicesComponent implements OnInit  {
     let self = this;
      this.searchData().subscribe(
         response => {
-          if (response && response.data) {
+          if (response && response.data && response.data.length) {
             this.populateDataTable(response.data, true);
+            this.showSpinner = false;
+          }else{           
+            this.resultStatus = 'There is no data to display.'; 
             this.showSpinner = false;
           }
         },
@@ -731,6 +735,7 @@ export class InvoicesComponent implements OnInit  {
       this.orgValue = e.value;
       this.showSpinner = true;
       this.dataObject.isDataAvailable = false;
+      this.resultStatus = 'Fetching results';
       this.searchDataRequest();
     }
   }
