@@ -41,6 +41,8 @@ export class AppSpinnerComponent implements OnInit {
     @Input() isSpinnerActive: boolean;
     isTimeOut: boolean = false;
     timeOutFlag;
+    waitTime;
+    api_fs;
     constructor(
         private translate: TranslateService,
         private elt: ElementRef,
@@ -48,6 +50,13 @@ export class AppSpinnerComponent implements OnInit {
         private popUp: AppPopUpComponent
     ) {
         this.config.pageReloadCountdownTimerMax = this.config.pageReloadCountdownTimerMaxFunc()()
+        this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
+        if(this.api_fs.spinnerTimeout){
+          this.waitTime = parseInt(this.api_fs.spinnerTimeout);
+        }else{
+          this.waitTime = 20000; // 20 Seconds
+        }
+        console.log("Spinner waitTime",this.waitTime);
     }
 
     ngOnInit() {
@@ -59,7 +68,7 @@ export class AppSpinnerComponent implements OnInit {
            this.timeOutFlag = setTimeout(() => {
                this.isSpinnerActive = false;
                this.isTimeOut = true;
-           }, 20000); // 20 Seconds
+           }, this.waitTime); 
        }else{
         this.isTimeOut = false;
         clearTimeout(this.timeOutFlag);
