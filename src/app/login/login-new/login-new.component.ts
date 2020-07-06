@@ -173,7 +173,12 @@ export class LoginNewComponent implements OnInit {
 
                 //localStorage.removeItem('userPreference');
                 if (responseDetails.user.prefs) {
-                 localStorage.setItem('userPreference', JSON.parse(responseDetails.user.prefs.toString().replace(/'/g, '"')));
+                let uPprefs = responseDetails.user.prefs.toString().replace(/'/g, '"');
+                if(this.IsJsonString(uPprefs)){
+                  localStorage.setItem('userPreference', JSON.parse(uPprefs));
+                }else{
+                  localStorage.removeItem('userPreference');
+                 }                 
                 } else {
                   localStorage.removeItem('userPreference');
                 }
@@ -218,7 +223,14 @@ export class LoginNewComponent implements OnInit {
       });
     }
   }
-
+  IsJsonString(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
   isSupportRole() {
     const groupArr = [];
     const groups = localStorage.getItem('loggedInUserGroup') || '';
