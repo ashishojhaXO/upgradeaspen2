@@ -326,7 +326,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
             this.mainmenu = menu.map(function (m){
               if (m.name === 'admin') {
                 m.submenu = m.submenu.filter(function (ele: any) {
-                  return ele.name !== 'orgmanagement' && ele.name !== 'usermanagement' && ele.name !== 'vendormanagement' && ele.name !== 'uploads' && ele.name !== 'baseFields' && ele.name !== 'ordertemplatelist' ;
+                  return ele.name !== 'orgmanagement' && ele.name !== 'uploads' && ele.name !== 'baseFields' && ele.name !== 'ordertemplatelist' ;
                 });
               }
               return m;

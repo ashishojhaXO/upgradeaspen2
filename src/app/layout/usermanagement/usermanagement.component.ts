@@ -187,7 +187,7 @@ export class UserManagementComponent implements OnInit  {
 
     const grp = JSON.parse(groups);
     grp.forEach(function (item) {
-      if(item === 'ROOT' || item === 'SUPER_USER') {
+      if(item === 'ROOT' || item === 'SUPER_USER' || item === 'SUPPORT') {
         this.isRoot = true;
       }
     }, this);
