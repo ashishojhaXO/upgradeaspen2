@@ -148,7 +148,16 @@ export class OrdersComponent implements OnInit  {
         // Call Search api & pass the result to DataTable Object
         // this.dataTableSearchPlugin.search(ev, $, document, table)
         // this.searchApiDataRequest(this.orgValue, table)
-        this.searchDataRequest(this.orgValue, this.currentTable, table.search());
+
+        if( table.search()
+            && table.search().length > 1 
+            // &&__this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchQuery != table.search()
+            && this.options[0].isDataTableGlobalSearchApi.searchQuery != table.search()
+        ) {
+          console.log("IFIAPI")
+          this.searchDataRequest(this.orgValue, this.currentTable, table.search());
+        }
+
       }
     },
 
