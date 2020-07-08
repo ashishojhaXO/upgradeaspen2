@@ -922,7 +922,7 @@ export class UserManagementComponent implements OnInit  {
       type: 'question',
       showCloseButton: true,
       showCancelButton: true,
-      reverseButtons: true,
+      reverseButtons: false,
     }
 
     const prom = this.popUp.showPopUp(popUpOptions);
@@ -981,7 +981,7 @@ export class UserManagementComponent implements OnInit  {
 
   handleActions(ev: any) {
     const action = $(ev.elem).data('action');
-    this.userID = ev.data.data()[4];
+    this.userID = ev.data.data()[11];
 
     if(this[action]) {
       // const func = this[action];
