@@ -1494,9 +1494,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         // Introduced sortTriggered to avoid multiples call. TODO # figure out whats causing such behavior
                         __this.dataObject.gridData.options.isDataTableGlobalSortApi.sortTriggered = true;
                         let columnAdjustment = 0;
-                        if(__this.identity === 'orders') {
-                            columnAdjustment = 2;
-                        }
+                        // if(__this.identity === 'orders') {
+                        //     columnAdjustment = 2;
+                        // }
                         const sort = {
                             sortColumn : __this.dataObject.gridData.headers[table.order()[0][0] - columnAdjustment],
                             sortDirection : table.order()[0][1]
