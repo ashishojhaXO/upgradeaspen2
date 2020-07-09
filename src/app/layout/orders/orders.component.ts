@@ -67,8 +67,8 @@ export class OrdersComponent implements OnInit  {
       value: true,
       icon: '',
       dependency: ['vendor_receipt_id'],
-      tooltip: 'Download Vendor Receipt',
-      dependencyToolTip:'Vendor receipt generation is pending'
+      tooltip: 'Download Receipt',
+      dependencyToolTip:'Receipt generation is pending'
     },
     isPlayOption: {
       value : true,
@@ -646,7 +646,7 @@ export class OrdersComponent implements OnInit  {
                 this.searchDataRequestCB(response, table);
               } else {
                 this.showSpinner = false;
-                this.resultStatus = 'There is no data to display.'; 
+                this.resultStatus = 'There is no data to display.';
                 // self.popUp.showPopUp(self.popUp.popUpDict.noData)
                 // console.log("No data to show")
               }
@@ -705,7 +705,7 @@ export class OrdersComponent implements OnInit  {
                 this.showSpinner = false;
                 // self.popUp.showPopUp(self.popUp.popUpDict.noData)
                 // console.log("No data to show")
-                this.resultStatus = 'There is no data to display.'; 
+                this.resultStatus = 'There is no data to display.';
               }
             },
             err => {
