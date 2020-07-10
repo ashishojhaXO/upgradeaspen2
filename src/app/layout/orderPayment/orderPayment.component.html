@@ -35,7 +35,7 @@
 
                                             <div class="col-md-6" >
                                                 <img style="width: 40px; height:20px; margin-right: 10px" title="{{option.payment_method}}"
-                                                    src="./../../../assets/images/{{ option.payment_method === 'ACH' ? 'ach' : option.payment_method === 'PO' ? 'po' : 'cc' }}.png"
+                                                    src="./../../../assets/images/{{ option.payment_method === 'ACH' ? 'ach' : option.payment_method === 'PO' ? 'po' : option.payment_method_type ? option.payment_method_type.toLowerCase() : ''}}.png"
                                                 />
                                                 <span
                                                         style="font-size: 12px;margin-left: 15px"

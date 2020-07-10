@@ -79,3 +79,25 @@ input.form-field {
 .mandatory {
   color: red;
 }
+.profile-wrap{
+  text-align: center;
+  font-weight: bold;
+  border-bottom: 1px solid #adadad;
+  cursor: default;
+}
+.profile-av{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  cursor: pointer;
+  margin-top: -5px;
+  margin-left: 8px;  
+  color: #fff;
+}
+.profile-av-thumb{
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  padding-top: 7px;
+}
