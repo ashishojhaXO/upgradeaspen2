@@ -2170,8 +2170,9 @@ ul.bottom-menu li a:hover {
   min-width: 170px;
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   z-index: 9999;
-  right: 0;
+  right: -16px;
   font-size: 12px;
+  top: 46px;
   a {
     color: #adadad;
     //color: $secondary-color;
