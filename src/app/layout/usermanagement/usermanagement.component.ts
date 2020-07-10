@@ -35,7 +35,11 @@ export class UserManagementComponent implements OnInit  {
   options: Array<any> = [{
     isSearchColumn: true,
     isTableInfo: true,
-    isEditOption: false,
+    isEditOption: {
+      value : true,
+      icon : '',
+      tooltip: 'Edit User'
+    },
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
@@ -51,7 +55,7 @@ export class UserManagementComponent implements OnInit  {
     isPageLengthNo: 25,
     isPagination: true,
     isTree: true,
-
+    isActionColPosition: 1,
     // To start the DataTables from a particular page number
     isDisplayStart: 0,
 
@@ -138,7 +142,7 @@ export class UserManagementComponent implements OnInit  {
   roleOptions = [];
   widget: any;
   @ViewChild('userEmail') userEmailEl:ElementRef;
-
+  editID: any;
   constructor(
     private okta: OktaAuthService,
     private route: ActivatedRoute,
@@ -175,7 +179,10 @@ export class UserManagementComponent implements OnInit  {
       city: '',
       state: '',
       zip: '',
-      country: ''
+      country: '',
+      role: '',
+      org: '',
+      vendor:''
     };
 
     const groups = localStorage.getItem('loggedInUserGroup') || '';
@@ -1108,6 +1115,65 @@ export class UserManagementComponent implements OnInit  {
 
   errorCB(rej) {
     console.log("errorCB: ", rej)
+  }
+  handleEdit(dataObj: any) {
+    this.getRoles();
+    console.log('rowData >>>')
+    console.log(dataObj.data);
+    this.editID = dataObj.data.id;
+    this.userModel.email = dataObj.data.email_id;
+    this.userForm.patchValue({
+      email : dataObj.data.email_id
+    });
+    this.userModel.first = dataObj.data.first_name;
+    this.userForm.patchValue({
+      first : dataObj.data.first_name
+    });
+    this.userModel.last = dataObj.data.last_name;
+    this.userForm.patchValue({
+      last : dataObj.data.last_name
+    });
+    this.userModel.phone = dataObj.data.phone;
+    this.userForm.patchValue({
+      phone : dataObj.data.phone
+    });
+    this.userModel.address_1 = dataObj.data.address_1;
+    this.userForm.patchValue({
+      address_1 : dataObj.data.address_1
+    });
+    this.userModel.address_2 = dataObj.data.address_2;
+    this.userForm.patchValue({
+      address_2 : dataObj.data.address_2
+    });
+    this.userModel.city = dataObj.data.city;
+    this.userForm.patchValue({
+      city : dataObj.data.city
+    });
+    this.userModel.state = dataObj.data.state;
+    this.userForm.patchValue({
+      state : dataObj.data.state
+    });
+    this.userModel.zip = dataObj.data.zip;
+    this.userForm.patchValue({
+      zip : dataObj.data.zip
+    });
+    this.userModel.country = dataObj.data.country;
+    this.userForm.patchValue({
+      country : dataObj.data.country
+    });
+    if(this.roleOptions.length) {
+      this.selectedRole = String(this.roleOptions[1].id );
+      this.userForm.patchValue({
+        role : String(this.roleOptions[1].id )
+      });
+    }
+    if (this.orgArr.length) {
+      this.selectedOrg = "918427f5-8691-11e9-9e7c-0a76cb863686";
+      this.userForm.patchValue({
+        org : "918427f5-8691-11e9-9e7c-0a76cb863686"
+      });
+    }
+    this.addUser.show();
   }
 
 
