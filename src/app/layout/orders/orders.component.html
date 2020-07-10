@@ -24,6 +24,15 @@
                [data]="orgArr"></select2>
     </div>
   </div>
+  <div class="clearfix"></div>
+  <div class="alert-msg-dash" *ngIf="!hasTemplates">
+    <div class="alert alert-warning alert-dismissible">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+      <div><i class="fa fa-exclamation-triangle"></i> <strong> No Order Templates Available</strong></div>
+      <div class="fs-12">No order template has been setup for your organization. Please contact your Administrator</div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
   <!--<div class="col-lg-12 col-md-12" style="margin: 0px 0px 20px">-->
   <!--<button type="submit"-->
   <!--[attr.disabled]="!selectedRow ? '' : null"-->
