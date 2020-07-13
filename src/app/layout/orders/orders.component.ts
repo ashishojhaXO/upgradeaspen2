@@ -211,7 +211,7 @@ export class OrdersComponent implements OnInit  {
   };
   // retryChargeState: boolean = true;
   searchQuery: string = "";
-
+ 
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
   selectedRow: any;
@@ -227,6 +227,7 @@ export class OrdersComponent implements OnInit  {
   selectedUserUuid: any;
   resultStatus:any;
   searchVal = "";
+  isForbidden:boolean = false;
 
   @ViewChild('ManagePayments') managePayments: PopUpModalComponent;
   orderID: any;
@@ -373,6 +374,9 @@ export class OrdersComponent implements OnInit  {
                 err,
                 self.searchOrgRequest.bind(self)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
           }
@@ -405,6 +409,9 @@ export class OrdersComponent implements OnInit  {
                 err,
                 self.searchTemplates.bind(self)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
             Swal({
@@ -470,6 +477,9 @@ export class OrdersComponent implements OnInit  {
                     err,
                     self.searchDataRequestCsv.bind(self, org, table)
                 );
+              } else if(err.status === 403) {
+                this.isForbidden = true;
+                this.showSpinner = false;
               } else {
                 this.showSpinner = false;
               }
@@ -663,6 +673,9 @@ export class OrdersComponent implements OnInit  {
                     self.searchDataRequest.bind(self, org, table),
                     self.errorCallback.bind(self)
                 );
+              } else if(err.status === 403) {
+                this.isForbidden = true;
+                this.showSpinner = false;
               } else {
                 this.showSpinner = false;
               }
@@ -720,6 +733,9 @@ export class OrdersComponent implements OnInit  {
                     self.searchApiDataRequest.bind(self, org, table),
                     self.errorCallback.bind(self)
                 );
+              } else if(err.status === 403) {
+                this.isForbidden = true;
+                this.showSpinner = false;
               } else {
                 this.showSpinner = false;
               }
@@ -910,6 +926,9 @@ export class OrdersComponent implements OnInit  {
                 self.searchDownloadLink.bind(self, downloadId, orderId),
                 self.errorCallback.bind(self)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             Swal({
               title: 'Unable to download the order details',
@@ -1163,6 +1182,9 @@ export class OrdersComponent implements OnInit  {
                 err,
                 self.submitPayoutDate.bind(self, selectedPayoutDate)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
             Swal({

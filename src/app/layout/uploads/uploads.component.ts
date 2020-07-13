@@ -31,6 +31,8 @@ export class UploadsComponent implements OnInit  {
   isRoot: boolean;
   orgArr = [];
   orgValue = '';
+  isForbidden:boolean = false;
+
   constructor(
     private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder, private okta: OktaAuthService) {
   }
@@ -90,6 +92,9 @@ export class UploadsComponent implements OnInit  {
                 window.location.href = '/login';
               });
             }
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
           }
@@ -160,6 +165,9 @@ export class UploadsComponent implements OnInit  {
                   err,
                   __this.convertToBase64.bind(self, file)
               );
+            } else if(err.status === 403) {
+              __this.isForbidden = true;
+              __this.showSpinner = false;
             } else {
               __this.showSpinner = false;
             }

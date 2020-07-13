@@ -128,6 +128,8 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
   period: any= {};
   private toasterService: ToasterService;
   isReportTemp = true;
+  isForbidden:boolean = false;
+  
   constructor(
       private okta: OktaAuthService,
       private route: ActivatedRoute, private router: Router, private http: Http,
@@ -438,6 +440,9 @@ export class DashboardsComponent implements OnInit, PopupDataAction  {
                       error,
                       self.ngOnInit.bind(self)
                   );
+                } else if(error.status === 403) {
+                  this.isForbidden = true;
+                  this.showSpinner = false;
                 } else {
                   this.showSpinner = false;
                 }
@@ -469,6 +474,9 @@ getSeedDashboardInit(){
               self.ngOnInit.bind(self)
           );
 
+        } else if(error.status === 403) {
+          this.isForbidden = true;
+          this.showSpinner = false;
         } else {
           this.showSpinner = false;
         }
@@ -1061,6 +1069,9 @@ getSeedDashboardInit(){
                 self.getSearchDataRequest.bind(self, dataObj)
             );
 
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
           }
@@ -1132,6 +1143,9 @@ getSeedDashboardInit(){
               err,
               self.searchOrgRequest.bind(self)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
           }
