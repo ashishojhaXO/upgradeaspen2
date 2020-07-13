@@ -59,6 +59,7 @@ export class OrdersListComponent implements OnInit  {
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
   selectedRow: any;
+  isForbidden:boolean = false;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
   }
@@ -122,6 +123,9 @@ export class OrdersListComponent implements OnInit  {
               err,
               self.processDataRequest.bind(self, templateValue)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
             Swal({
@@ -272,7 +276,10 @@ export class OrdersListComponent implements OnInit  {
               err,
               self.getTemplates.bind(self)
             );
-        } else {
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
+          } else {
           this.showSpinner = false;
           Swal({
             title: 'An error occurred',

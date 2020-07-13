@@ -39,6 +39,8 @@ export class OrderTemplateComponent implements OnInit {
   orgUUID = '';
   clearSelectedFields = false;
   isRoot: boolean;
+  isForbidden:boolean = false;
+
   select2Options = {
      placeholder: { id: '', text: 'Select organization' }
   };
@@ -129,6 +131,9 @@ export class OrderTemplateComponent implements OnInit {
             err,
             self.getOrganizations.bind(self)
           );
+        } else if(err.status === 403) {
+          this.isForbidden = true;
+          this.showSpinner = false;
         } else {
           this.showSpinner = false;
           Swal({
@@ -280,7 +285,10 @@ export class OrderTemplateComponent implements OnInit {
               err,
               self.createTemplate.bind(self, template)
             );
-        } else {
+        } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
+          } else {
           this.showSpinner = false;
           Swal({
             title: 'An error occurred',
@@ -381,7 +389,10 @@ export class OrderTemplateComponent implements OnInit {
               err,
               self.getTemplate.bind(self, templateId)
             );
-        } else {
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
+          } else {
           Swal({
             title: 'An error occurred',
             html: err._body ? JSON.parse(err._body).message : 'No error definition available',

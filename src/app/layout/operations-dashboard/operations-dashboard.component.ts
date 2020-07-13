@@ -45,6 +45,7 @@ export class OperationsDashboardComponent implements OnInit {
   widget: any;
   editID: any;
   resultStatus: any;
+  isForbidden:boolean = false;
 
   constructor(
     private okta: OktaAuthService,
@@ -86,7 +87,10 @@ export class OperationsDashboardComponent implements OnInit {
             err,
             self.searchDataRequest.bind(self)
           );
-        } else {
+         } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
+          } else {
           this.showSpinner = false;
         }
       }

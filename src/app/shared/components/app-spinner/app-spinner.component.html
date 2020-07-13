@@ -11,3 +11,13 @@
         <div class="clearfix"></div>         
     </div>
 </div>
+
+<div *ngIf="showForbiddenToast" class="cust-toast-container">
+    <div class="cust-toast-msg warning">
+        <div class="cust-toast-message">
+            You don't have permissions to access this page.
+          </div>
+        <div class="close-cust-toast" (click)="hideCustToast();"><i class="fa fa-times"></i></div>
+        <div class="clearfix"></div>         
+    </div>
+</div>

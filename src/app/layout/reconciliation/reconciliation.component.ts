@@ -126,6 +126,8 @@ export class ReconciliationComponent implements OnInit {
   dashType : any = "reconciliation";
   isInit : boolean = true;
   isSearchInit : boolean = true;
+  isForbidden:boolean = false;
+
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
 
     this.uploadModel = {
@@ -536,6 +538,9 @@ export class ReconciliationComponent implements OnInit {
             err,
             self.searchDataRequest.bind(self)
           );
+        } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
         } else {
           this.showSpinner = false;
           console.log('err')
@@ -762,6 +767,9 @@ export class ReconciliationComponent implements OnInit {
             err,
             self.searchDownloadLink.bind(self, downloadId, invoiceId)
           );
+        } else if(err.status === 403) {
+          this.isForbidden = true;
+          this.showSpinner = false;
         } else {
           Swal({
             title: 'Unable to download the invoice',
@@ -824,6 +832,9 @@ export class ReconciliationComponent implements OnInit {
               err,
               self.searchDataRequestCsv.bind(self, org, table)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
           }
@@ -946,6 +957,9 @@ export class ReconciliationComponent implements OnInit {
               err,
               self.handleCustom.bind(self, dataObj)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
           }
@@ -991,6 +1005,9 @@ export class ReconciliationComponent implements OnInit {
                 err,
                 self.submitSES.bind(self)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
             Swal({
@@ -1095,6 +1112,9 @@ export class ReconciliationComponent implements OnInit {
             err,
             this.getChannelEmails.bind(self)
           );
+        } else if(err.status === 403) {
+          this.isForbidden = true;
+          this.showSpinner = false;
         } else {
           this.showSpinner = false;
         }
@@ -1144,6 +1164,9 @@ export class ReconciliationComponent implements OnInit {
             err,
             this.performChannelEmailUpdate.bind(self)
           );
+        } else if(err.status === 403) {
+          this.isForbidden = true;
+          this.showSpinner = false;
         } else {
           // Swal({
           //     title: 'Invoice email failed',
@@ -1181,6 +1204,9 @@ export class ReconciliationComponent implements OnInit {
             err,
             this.performChannelInvoiceUpload.bind(self)
           );
+        } else if(err.status === 403) {
+          this.isForbidden = true;
+          this.showSpinner = false;
         } else {
           Swal({
             title: 'Invoice email failed',
@@ -1306,6 +1332,9 @@ export class ReconciliationComponent implements OnInit {
             err,
             self.searchOrgRequest.bind(self)
           );
+        } else if(err.status === 403) {
+          this.isForbidden = true;
+          this.showSpinner = false;
         } else {
           this.showSpinner = false;
         }
@@ -1379,6 +1408,9 @@ export class ReconciliationComponent implements OnInit {
             err,
             self.searchOrgRequest.bind(self)
           );
+        } else if(err.status === 403) {
+          this.isForbidden = true;
+          this.showSpinner = false;
         } else {
           this.showSpinner = false;
         }
