@@ -154,8 +154,8 @@ export class OrdersComponent implements OnInit  {
             // &&__this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchQuery != table.search()
             && this.options[0].isDataTableGlobalSearchApi.searchQuery != table.search()
         ) {
-          console.log("IFIAPI")
-          this.searchDataRequest(this.orgValue, this.currentTable, table.search());
+          console.log("IFIAPI sear: ", table.search() )
+          // this.searchDataRequest(this.orgValue, this.currentTable, table.search());
         }
 
       }
