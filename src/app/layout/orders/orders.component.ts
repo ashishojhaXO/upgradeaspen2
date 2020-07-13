@@ -148,6 +148,7 @@ export class OrdersComponent implements OnInit  {
         // Call Search api & pass the result to DataTable Object
         // this.dataTableSearchPlugin.search(ev, $, document, table)
         // this.searchApiDataRequest(this.orgValue, table)
+        this.searchVal = table.search();
         this.searchDataRequest(this.orgValue, this.currentTable, table.search());
       }
     },
@@ -225,6 +226,7 @@ export class OrdersComponent implements OnInit  {
   private toaster: any;
   selectedUserUuid: any;
   resultStatus:any;
+  searchVal = "";
   isForbidden:boolean = false;
 
   @ViewChild('ManagePayments') managePayments: PopUpModalComponent;
@@ -292,9 +294,9 @@ export class OrdersComponent implements OnInit  {
 
   apiMethod = (table, pageLength, csv?) => {
     let searchVal = table.search();
-    if((searchVal.trim())!=""){
+    /*if((searchVal.trim())!=""){
       this.doDownloadOrderCsv(table);
-    }else{
+    }else{*/
       this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
 
       if(csv){
@@ -305,7 +307,6 @@ export class OrdersComponent implements OnInit  {
         // this.searchDataRequest(null, table);
         this.searchDataRequest(this.orgValue, table);
       }
-    }
   }
   doDownloadOrderCsv(table){
     let tblData = table.rows( {page: 'current', filter : 'applied'} ).data();
@@ -445,12 +446,15 @@ export class OrdersComponent implements OnInit  {
 
     // if no table, then send all default, page=1 & limit=25
     // else, send table data
+    let search = this.searchVal;    
     let data = {
       page: 0,
       limit: 10000000,
       org: org ? org : ''
     };
-
+    if(search!=""){
+      data['search'] = search;
+    }
     // this.hasData = false;
     this.showSpinner = true;
 
