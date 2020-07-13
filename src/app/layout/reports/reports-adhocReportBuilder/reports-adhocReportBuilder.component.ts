@@ -266,7 +266,7 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
   showMonthOfQuarter = false;
   showDayOfMonth = false;
   showDaySelectorError = false;
-
+  isForbidden:boolean = false;
   public myDatePeriodPickerOptions: IMyDpOptions = {
     dateFormat: 'yyyy-mm-dd',
     showTodayBtn: false,
@@ -696,8 +696,11 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
               err,
               self.getEmailRequest.bind(self)
             );
+      } else if(err.status === 403) {
+        this.isForbidden = true;
+        this.showSpinner = false;  
       } else {
-        this.showSpinner = false;
+        this.showSpinner = false;    
       }
     });
   }
@@ -1356,6 +1359,9 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
               err,
               self.handleSubmit.bind(self, saveType, reportform)
             );
+         } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;  
           } else {
             this.showSpinner = false;
           }
@@ -1580,6 +1586,9 @@ export class AdhocReportBuilderComponent implements OnInit, PopupDataAction {
                   err,
                   self.fetchReportData.bind(self)
                 );
+              } else if(err.status === 403) {
+                this.isForbidden = true;
+                this.showSpinner = false;  
               } else {
                 this.showSpinner = false;
               }
