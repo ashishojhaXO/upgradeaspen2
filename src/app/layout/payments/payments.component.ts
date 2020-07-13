@@ -142,6 +142,7 @@ export class PaymentsComponent implements OnInit  {
   isRoot: boolean;
   orgArr = [];
   orgValue = '';
+  isForbidden:boolean = false;
 
   constructor(private okta: OktaAuthService, private organizationService: OrganizationService, private route: ActivatedRoute, private router: Router, private http: Http) {
     this.paymentForm = new FormGroup({
@@ -282,6 +283,9 @@ export class PaymentsComponent implements OnInit  {
               err,
               self.searchDataRequest.bind(self, org)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
           }
@@ -406,7 +410,10 @@ export class PaymentsComponent implements OnInit  {
                     console.log('error >>')
                     console.log(err1);
                   });
-            } else {
+              } else if(err.status === 403) {
+                  this.isForbidden = true;
+                  this.showSpinner = false;
+              } else {
               this.widget.signOut(() => {
                 localStorage.removeItem('accessToken');
                 window.location.href = '/login';
@@ -470,7 +477,10 @@ export class PaymentsComponent implements OnInit  {
               self.getOrganizations.bind(self)
             );
 
-        } else {
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
+          } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
           this.showSpinner = false;
         }
@@ -515,7 +525,10 @@ export class PaymentsComponent implements OnInit  {
               self.getPayees.bind(self)
             );
 
-        } else {
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
+          } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
           this.showSpinner = false;
         }
@@ -569,7 +582,10 @@ export class PaymentsComponent implements OnInit  {
               err,
               self.getVendors.bind(self, orgid)
             );
-        } else {
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
+          } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
           this.showSpinner = false;
         }
@@ -741,6 +757,9 @@ export class PaymentsComponent implements OnInit  {
               err,
               self.createTransactionRequest.bind(self, dataObj)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
             this.showSpinner = false;
@@ -904,7 +923,10 @@ export class PaymentsComponent implements OnInit  {
               self.updateAp.bind(self, formData, modalComponent)
             );
 
-        } else {
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
+          } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
           swal({
             title: 'Error',

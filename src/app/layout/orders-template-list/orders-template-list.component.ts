@@ -59,6 +59,7 @@ export class OrdersTemplateListComponent implements OnInit  {
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
   selectedRow: any;
+  isForbidden:boolean = false;
 
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
     const groups = localStorage.getItem('loggedInUserGroup') || '';
@@ -126,6 +127,9 @@ export class OrdersTemplateListComponent implements OnInit  {
               err,
               self.searchDataRequest.bind(self)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
             Swal({
@@ -233,6 +237,9 @@ export class OrdersTemplateListComponent implements OnInit  {
               err,
               self.searchOrgRequest.bind(self)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
           }

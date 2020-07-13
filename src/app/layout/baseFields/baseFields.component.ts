@@ -29,6 +29,7 @@ export class BaseFieldsComponent implements OnInit {
     // placeholder: { id: '', text: 'Select organization' }
   };
   orgValue = '';
+  isForbidden:boolean = false;
 
   constructor(private okta: OktaAuthService, private http: Http, private route: ActivatedRoute, private router: Router, ) { }
 
@@ -138,6 +139,9 @@ export class BaseFieldsComponent implements OnInit {
                 window.location.href = '/login';
               });
             }
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
           }
@@ -182,6 +186,9 @@ export class BaseFieldsComponent implements OnInit {
             err,
             self.createBase.bind(self, template)
           );
+        } else if(err.status === 403) {
+          this.isForbidden = true;
+          this.showSpinner = false;
         } else {
           this.showSpinner = false;
           Swal({
