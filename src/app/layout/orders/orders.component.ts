@@ -25,6 +25,7 @@ import {ToasterService} from 'angular2-toaster';
 import {moment} from 'ngx-bootstrap/chronos/test/chain';
 import DataTableColumnSearchPluginExt from '../../../scripts/data-table/data-table-search-plugin-ext';
 import DataTableUtilsPluginExt from '../../../scripts/data-table/data-table-utils-plugin-ext';
+import { nextTick } from 'q';
 
 @Component({
   selector: 'app-orders',
@@ -140,8 +141,20 @@ export class OrdersComponent implements OnInit  {
 
     isDataTableGlobalSearchApi: {
       value: true,
-      searchDelay: 2000, // in milli Second
+      searchDelay: 3000, // in milli Second
       searchQuery: "",
+      // debounce: this.debounce,
+      debounce: (func, delay) => {
+        // let debounceTimer;
+        let __this = this;
+        return function() {
+            const args = arguments;
+            clearTimeout(__this.debounceTimer);
+            // debounceTimer = setTimeout(() => func.apply(context, args), delay)
+            __this.debounceTimer = setTimeout(() => func.apply(__this, args), delay)
+            // __this.debounceTimer = setTimeout(() => console.log("SETtimeOUT"), delay)
+        }
+      },
       apiMethod: (ev, $, document, table) => {
         // Initiate Search Api Call/Class
         // DataTable Api class
@@ -149,7 +162,16 @@ export class OrdersComponent implements OnInit  {
         // this.dataTableSearchPlugin.search(ev, $, document, table)
         // this.searchApiDataRequest(this.orgValue, table)
         this.searchVal = table.search();
-        this.searchDataRequest(this.orgValue, this.currentTable, table.search());
+        if( 
+          table.search()
+            && table.search().length > 1 
+            && this.options[0].isDataTableGlobalSearchApi.searchQuery != table.search()
+        ) {
+          this.searchDataRequest(this.orgValue, this.currentTable, table.search());
+          // Seeting this after because, we need to compare oldVal to newVal above
+          this.options[0].isDataTableGlobalSearchApi.searchQuery = table.search();
+        }
+
       }
     },
 
@@ -192,6 +214,7 @@ export class OrdersComponent implements OnInit  {
     }
 
   }];
+  debounceTimer: any;
   dashboard: any;
   api_fs: any;
   externalAuth: any;
@@ -290,6 +313,28 @@ export class OrdersComponent implements OnInit  {
     }
 
     this.dataTableSearchPlugin =  new DataTableColumnSearchPluginExt();
+  }
+  
+  debounce(func, delay) {
+    let debounceTimer;
+    console.log("TT: ", this);
+
+    return function() {
+        const context = this;
+        const args = arguments;
+
+        console.log("debO: ", " context: ", context, " this,: ", this, " args: ", args);
+
+        // clearTimeout(debounceTimer)
+        // debounceTimer = setTimeout(() => func.apply(context, args), delay)
+    }
+  }
+
+  runFuncOnTimeout(func) {
+    let timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(func, this.options[0].isDataTableGlobalSearchApi.searchDelay);
+    return timeout;
   }
 
   apiMethod = (table, pageLength, csv?) => {
