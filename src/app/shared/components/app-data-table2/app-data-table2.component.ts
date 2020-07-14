@@ -955,10 +955,10 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     style: this.dataObject.gridData.options.isRowSelection && this.dataObject.gridData.options.isRowSelection.isMultiple ? 'multi' : 'os',
                 },
 
-                searchDelay: __this.dataObject.gridData.options.isDataTableGlobalSearchApi &&
-                    __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchDelay ?
-                    __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchDelay :
-                    0,
+                // searchDelay: __this.dataObject.gridData.options.isDataTableGlobalSearchApi &&
+                //     __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchDelay ?
+                //     __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchDelay :
+                //     0,
 
                 // NOTE: setting search value here, triggers the on 'search' routine
                 // search:
@@ -1472,20 +1472,18 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     // WARN: Optimization Problem: When typed 2 Char,
                     // Though its ignoring the call for Frist Char
                     // But still sending 2 calls in type of Second Char
-                    
-                    console.log("sssSearcH: ", table.search() )
-                    console.log(table);
-
                     // if( table.search()
                     //     && table.search().length > 1 &&
                     //     __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchQuery != table.search()
                     // ) {
                     //     __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod(ev, $, document, table);
                     // }
-                    __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod(ev, $, document, table);
-
+                    __this.dataObject.gridData.options.isDataTableGlobalSearchApi.debounce
+                    ( __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod, __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchDelay )
+                    (ev, $, document, table)
+                    // __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod(ev, $, document, table);
                     // Seeting this after because, we need to compare oldVal to newVal above
-                    __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchQuery = table.search();
+                    // __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchQuery = searchQ;
                 })
             }
 
