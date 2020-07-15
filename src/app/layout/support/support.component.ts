@@ -108,6 +108,7 @@ export class SupportComponent implements OnInit {
     select2Options = {
         // placeholder: { id: '', text: 'Select organization' }
     };
+    isForbidden:boolean = false;
 
     constructor(
         private okta: OktaAuthService,
@@ -770,6 +771,9 @@ export class SupportComponent implements OnInit {
                   err,
                   self.searchOrgRequest.bind(self)
                 );
+              } else if(err.status === 403) {
+                this.isForbidden = true;
+                this.showSpinner = false;
               } else {
                 this.showSpinner = false;
               }

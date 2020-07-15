@@ -91,7 +91,8 @@ export class OrderComponent implements OnInit  {
     orgValue = '';
 
     userUuid:any;
-
+    isForbidden:boolean = false;
+    
     constructor(
         // private okta: OktaAuthService,
         private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder, private okta: OktaAuthService) {
@@ -171,8 +172,11 @@ export class OrderComponent implements OnInit  {
                         this,
                         err,
                         self.extractOrderDetails.bind(self, id, lineItemId)
-                    );
-                } else {
+                    );                
+                    } else if(err.status === 403) {
+                        this.isForbidden = true;
+                        this.showSpinner = false;
+                    } else {
                     this.showSpinner = false;
                     Swal({
                         title: 'An error occurred',
@@ -240,8 +244,11 @@ export class OrderComponent implements OnInit  {
                         this,
                         err,
                         self.searchTemplates.bind(self, existingOrder)
-                    );
-                } else {
+                    );                
+                    } else if(err.status === 403) {
+                        this.isForbidden = true;
+                        this.showSpinner = false;
+                    } else {
                     this.showSpinner = false;
                     Swal({
                         title: 'An error occurred',
@@ -422,8 +429,11 @@ export class OrderComponent implements OnInit  {
                                             this,
                                             err,
                                             self.searchTemplateDetails.bind(self, templateID, existingOrderInfo, lineItemId)
-                                        );
-                                    } else {
+                                        );                                    
+                                        } else if(err.status === 403) {
+                                            this.isForbidden = true;
+                                            this.showSpinner = false;
+                                        } else {
                                         this.data.controls.forEach(function (ctrl) {
                                             if (ctrl.name === ele.name) {
                                                 ctrl.options = [];
@@ -473,8 +483,11 @@ export class OrderComponent implements OnInit  {
                                                 this,
                                                 err,
                                                 self.searchTemplateDetails.bind(self, templateID, existingOrderInfo, lineItemId)
-                                            );
-                                        } else {
+                                            );                                        
+                                            } else if(err.status === 403) {
+                                                this.isForbidden = true;
+                                                this.showSpinner = false;
+                                            } else {
                                             lineItem.options = [];
                                         }
                                     });
@@ -526,7 +539,10 @@ export class OrderComponent implements OnInit  {
                                                 err,
                                                 self.searchTemplateDetails.bind(self, templateID, existingOrderInfo, lineItemId)
                                             );
-                                        } else {
+                                        } else if(err.status === 403) {
+                                            this.isForbidden = true;
+                                            this.showSpinner = false;
+                                          } else {
                                             lineItem.options = [];
                                         }
                                     });
@@ -544,7 +560,10 @@ export class OrderComponent implements OnInit  {
                         err,
                         self.searchTemplateDetails.bind(self, templateID, existingOrderInfo, lineItemId)
                     );
-                } else {
+                } else if(err.status === 403) {
+                    this.isForbidden = true;
+                    this.showSpinner = false;
+                  } else {
                     this.showSpinner = false;
                     Swal({
                         title: 'An error occurred',
@@ -577,8 +596,10 @@ export class OrderComponent implements OnInit  {
                         err,
                         self.searchDateRequest.bind(self, orderID, lineItemId)
                     );
-
-                } else {
+                } else if(err.status === 403) {
+                    this.isForbidden = true;
+                    this.showSpinner = false;
+                  } else {
                 }
             }
         );
@@ -881,7 +902,10 @@ export class OrderComponent implements OnInit  {
                                     //     err,
                                     //     self.searchTemplates.bind(self)
                                     // );
-                                } else {
+                                } else if(err.status === 403) {
+                                    this.isForbidden = true;
+                                    this.showSpinner = false;
+                                  } else {
                                     this.data.controls.forEach(function (ctrl) {
                                         if (ctrl.name === ele.name) {
                                             ctrl.options = [];
@@ -1189,7 +1213,10 @@ export class OrderComponent implements OnInit  {
                             err,
                             self.OnSubmit.bind(self)
                         );
-                    } else {
+                    } else if(err.status === 403) {
+                        this.isForbidden = true;
+                        this.showSpinner = false;
+                      } else {
                         this.showSpinner = false;
                         Swal({
                             title: 'An error occurred',
@@ -1228,7 +1255,10 @@ export class OrderComponent implements OnInit  {
                             err,
                             self.OnSubmit.bind(self)
                         );
-                    } else {
+                    } else if(err.status === 403) {
+                        this.isForbidden = true;
+                        this.showSpinner = false;
+                      } else {
                         this.showSpinner = false;
                         Swal({
                             title: 'An error occurred',
@@ -1330,6 +1360,9 @@ export class OrderComponent implements OnInit  {
                   err,
                   self.searchOrgRequest.bind(self)
                 );
+            } else if(err.status === 403) {
+                this.isForbidden = true;
+                this.showSpinner = false;
               } else {
                 this.showSpinner = false;
               }

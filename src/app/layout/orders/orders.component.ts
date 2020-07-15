@@ -148,6 +148,7 @@ export class OrdersComponent implements OnInit  {
         // Call Search api & pass the result to DataTable Object
         // this.dataTableSearchPlugin.search(ev, $, document, table)
         // this.searchApiDataRequest(this.orgValue, table)
+        this.searchVal = table.search();
         this.searchDataRequest(this.orgValue, this.currentTable, table.search());
       }
     },
@@ -210,7 +211,7 @@ export class OrdersComponent implements OnInit  {
   };
   // retryChargeState: boolean = true;
   searchQuery: string = "";
-
+ 
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
   selectedRow: any;
@@ -225,6 +226,8 @@ export class OrdersComponent implements OnInit  {
   private toaster: any;
   selectedUserUuid: any;
   resultStatus:any;
+  searchVal = "";
+  isForbidden:boolean = false;
 
   @ViewChild('ManagePayments') managePayments: PopUpModalComponent;
   orderID: any;
@@ -291,9 +294,9 @@ export class OrdersComponent implements OnInit  {
 
   apiMethod = (table, pageLength, csv?) => {
     let searchVal = table.search();
-    if((searchVal.trim())!=""){
+    /*if((searchVal.trim())!=""){
       this.doDownloadOrderCsv(table);
-    }else{
+    }else{*/
       this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
 
       if(csv){
@@ -304,7 +307,6 @@ export class OrdersComponent implements OnInit  {
         // this.searchDataRequest(null, table);
         this.searchDataRequest(this.orgValue, table);
       }
-    }
   }
   doDownloadOrderCsv(table){
     let tblData = table.rows( {page: 'current', filter : 'applied'} ).data();
@@ -372,6 +374,9 @@ export class OrdersComponent implements OnInit  {
                 err,
                 self.searchOrgRequest.bind(self)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
           }
@@ -404,6 +409,9 @@ export class OrdersComponent implements OnInit  {
                 err,
                 self.searchTemplates.bind(self)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
             Swal({
@@ -438,12 +446,15 @@ export class OrdersComponent implements OnInit  {
 
     // if no table, then send all default, page=1 & limit=25
     // else, send table data
+    let search = this.searchVal;    
     let data = {
       page: 0,
       limit: 10000000,
       org: org ? org : ''
     };
-
+    if(search!=""){
+      data['search'] = search;
+    }
     // this.hasData = false;
     this.showSpinner = true;
 
@@ -466,6 +477,9 @@ export class OrdersComponent implements OnInit  {
                     err,
                     self.searchDataRequestCsv.bind(self, org, table)
                 );
+              } else if(err.status === 403) {
+                this.isForbidden = true;
+                this.showSpinner = false;
               } else {
                 this.showSpinner = false;
               }
@@ -659,6 +673,9 @@ export class OrdersComponent implements OnInit  {
                     self.searchDataRequest.bind(self, org, table),
                     self.errorCallback.bind(self)
                 );
+              } else if(err.status === 403) {
+                this.isForbidden = true;
+                this.showSpinner = false;
               } else {
                 this.showSpinner = false;
               }
@@ -716,6 +733,9 @@ export class OrdersComponent implements OnInit  {
                     self.searchApiDataRequest.bind(self, org, table),
                     self.errorCallback.bind(self)
                 );
+              } else if(err.status === 403) {
+                this.isForbidden = true;
+                this.showSpinner = false;
               } else {
                 this.showSpinner = false;
               }
@@ -906,6 +926,9 @@ export class OrdersComponent implements OnInit  {
                 self.searchDownloadLink.bind(self, downloadId, orderId),
                 self.errorCallback.bind(self)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             Swal({
               title: 'Unable to download the order details',
@@ -1159,6 +1182,9 @@ export class OrdersComponent implements OnInit  {
                 err,
                 self.submitPayoutDate.bind(self, selectedPayoutDate)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
             Swal({

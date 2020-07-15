@@ -84,7 +84,8 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
   orgArr = [];
   selectedOrg: any;
   orgValue = '';
-
+  isForbidden:boolean = false;
+  
   constructor(private route: ActivatedRoute, private router: Router,
               public reportsService: TheReportsService, public datePipe: DatePipe,
               public toastr: ToastsManager, private authService: AuthService, private okta: OktaAuthService, private http: Http,
@@ -265,6 +266,9 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
               err,
               self.populateReportDataTable.bind(self)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;  
           } else {
             this.showSpinner = false;
           }
@@ -381,6 +385,9 @@ export class ReportsSummaryComponent implements OnInit, DataTableAction  {
               err,
               self.searchOrgRequest.bind(self)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;  
           } else {
             this.showSpinner = false;
           }

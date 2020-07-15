@@ -138,6 +138,7 @@ export class UserManagementComponent implements OnInit  {
   roleOptions = [];
   widget: any;
   @ViewChild('userEmail') userEmailEl:ElementRef;
+  isForbidden:boolean = false;
 
   constructor(
     private okta: OktaAuthService,
@@ -288,6 +289,9 @@ export class UserManagementComponent implements OnInit  {
                 window.location.href = '/login';
               });
             }
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
           }
@@ -347,6 +351,9 @@ export class UserManagementComponent implements OnInit  {
               err,
               self.getVendorsService.bind(self, org)
           );
+        }else if(err.status === 403) {
+          this.isForbidden = true;
+          this.showSpinner = false;
         }
       }
     )
@@ -393,6 +400,9 @@ export class UserManagementComponent implements OnInit  {
             err,
             self.searchDataRequest.bind(self, org, table)
           );
+        } else if(err.status === 403) {
+          this.isForbidden = true;
+          this.showSpinner = false;
         } else {
           this.showSpinner = false;
         }
@@ -436,6 +446,9 @@ export class UserManagementComponent implements OnInit  {
             err,
             self.searchDataRequestCsv.bind(self, org, table)
           );
+        } else if(err.status === 403) {
+          this.isForbidden = true;
+          this.showSpinner = false;
         } else {
           this.showSpinner = false;
         }
@@ -732,7 +745,10 @@ export class UserManagementComponent implements OnInit  {
               err,
               self.getRoles.bind(self)
             );
-        } else {
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
+          } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
           this.showSpinner = false;
         }
@@ -763,6 +779,9 @@ export class UserManagementComponent implements OnInit  {
               err,
               self.performUserAdditionRequest.bind(self, dataObj)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
             this.showSpinner = false;

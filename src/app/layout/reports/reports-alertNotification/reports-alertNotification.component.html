@@ -23,9 +23,9 @@
     </div>
     <div class="clearfix"></div>
     <div class="page-header" *ngIf="!dataObject.isDataAvailable">
-      <app-custom-spinner [isSpinnerActive]="showSpinner" class=""></app-custom-spinner>
+      <app-custom-spinner [isForbidden]="isForbidden" [isSpinnerActive]="showSpinner" class=""></app-custom-spinner>
       <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%;">There is no data to display.</div>
     </div>
   </div>
 </div>
-<app-custom-spinner [isSpinnerActive]="showSpinner" class=""></app-custom-spinner>
+<app-custom-spinner [isForbidden]="isForbidden" [isSpinnerActive]="showSpinner" class=""></app-custom-spinner>

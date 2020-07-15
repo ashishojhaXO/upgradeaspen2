@@ -60,7 +60,8 @@ export class AlertNoticationdashboardsComponent implements OnInit {
   orgArr = [];
   selectedOrg: any;
   orgValue = '';
-
+  isForbidden:boolean = false;
+  
   constructor(private okta: OktaAuthService, private route: ActivatedRoute, private router: Router, private http: Http) {
     const groups = localStorage.getItem('loggedInUserGroup') || '';
     const custInfo =  JSON.parse(localStorage.getItem('customerInfo') || '');
@@ -107,6 +108,9 @@ export class AlertNoticationdashboardsComponent implements OnInit {
               err,
               self.searchDataRequest.bind(self)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;  
           } else {
             this.showSpinner = false;
           }
@@ -198,6 +202,9 @@ export class AlertNoticationdashboardsComponent implements OnInit {
               err,
               self.searchOrgRequest.bind(self)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;  
           } else {
             this.showSpinner = false;
           }
