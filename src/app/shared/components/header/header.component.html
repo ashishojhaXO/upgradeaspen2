@@ -29,21 +29,26 @@
           </nav>
         </div>
         <div style="float: right; margin-top: 11px">
-          <div style="float: right">
-            <button style="background-color: transparent; border: none" (click)="toggleMenu($event)">
+          <div style="float: right;position: relative;">
+             <div class="profile-av" (click)="toggleMenu($event)">
+              <div class="profile-av-thumb">{{userInitials}}</div>
+            </div>
+            <!--<button style="background-color: transparent; border: none" (click)="toggleMenu($event)">
               <span class="prof-img" style="position: relative;top: -2px;margin-right: 20px; float:left;">
                   <i class="fa fa-user-circle" style="font-size: 2.7em"></i>
                 </span>
-              <span class="welcome-user-text-wrap"
-                tooltiptitle="{{loggedInUser}} {{loggedInVendorTitle}}"
-              >
+              <span class="welcome-user-text-wrap" tooltiptitle="{{loggedInUser}} {{loggedInVendorTitle}}">
                 <span class="welcome-txt">Welcome </span>
                 <span class="welcome-user-text">{{loggedInUser}}</span>
                 <span class="welcome-user-text" [style.opacity]="loggedInVendorTitle == '' ? 0  : ''">( {{loggedInVendor}} )</span>
-                <!---->
-                <i aria-hidden="true" class="fa fa-caret-down"></i></span>
+                <i aria-hidden="true" class="fa fa-caret-down"></i></span>             
             </button>
+              -->
             <div class="dropdown-content" [hidden]="!isMenuOpened">
+              <a class="profile-wrap">
+                <div class="user-name-profile">{{loggedInUser}}</div>
+                <div class="vendor-name-profile" *ngIf="loggedInVendorTitle">( {{loggedInVendor}} )</div>
+              </a>
               <a routerLink="/app/user-setting">User Settings</a>
               <a *ngIf="showManagePayments" routerLink="/app/manage-payments">Manage Payments</a>
               <a href="javascript:void(0)" (click)="resetPassword()">Change Password</a>

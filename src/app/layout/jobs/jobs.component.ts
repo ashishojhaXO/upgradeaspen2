@@ -78,6 +78,7 @@ export class JobsComponent implements OnInit {
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
   selectedRow: any;
+  isForbidden:boolean = false;
 
   constructor(
     private okta: OktaAuthService, 
@@ -135,6 +136,9 @@ export class JobsComponent implements OnInit {
               err, 
               self.searchDataRequest.bind(self)
             );
+           } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
           }

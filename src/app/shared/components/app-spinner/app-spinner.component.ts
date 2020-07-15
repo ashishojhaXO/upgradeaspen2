@@ -39,10 +39,12 @@ export class AppSpinnerComponent implements OnInit {
     @Input()
     showSpinnerFlag: boolean;
     @Input() isSpinnerActive: boolean;
+    @Input() isForbidden: boolean; 
     isTimeOut: boolean = false;
     timeOutFlag;
     waitTime;
     api_fs;
+    showForbiddenToast: boolean = false;
     constructor(
         private translate: TranslateService,
         private elt: ElementRef,
@@ -51,7 +53,7 @@ export class AppSpinnerComponent implements OnInit {
     ) {
         this.config.pageReloadCountdownTimerMax = this.config.pageReloadCountdownTimerMaxFunc()()
         this.api_fs = JSON.parse(localStorage.getItem('apis_fs'));
-        if(this.api_fs.spinnerTimeout){
+        if(this.api_fs && this.api_fs.spinnerTimeout){
           this.waitTime = parseInt(this.api_fs.spinnerTimeout);
         }else{
           this.waitTime = 20000; // 20 Seconds
@@ -68,15 +70,19 @@ export class AppSpinnerComponent implements OnInit {
            this.timeOutFlag = setTimeout(() => {
                this.isSpinnerActive = false;
                this.isTimeOut = true;
-           }, this.waitTime); 
+           }, this.waitTime);
        }else{
         this.isTimeOut = false;
         clearTimeout(this.timeOutFlag);
        }
-       console.log("Spinner flag from Parent",this.isSpinnerActive);
+       console.log("Spinner time",this.isSpinnerActive);
+       if(this.isForbidden){
+         this.showForbiddenToast = true;
+       }
     }
     hideCustToast(){
         this.isTimeOut = false;
+        this.showForbiddenToast = false;
     }
     ngAfterViewInit() {}
 

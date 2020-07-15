@@ -85,6 +85,7 @@ export class UserManagementComponent implements OnInit  {
     // isOrder: [[1, 'desc']],
     // isOrder: [[1, 'name-string-not-nullund']],
     isOrder: [],
+    isHideColumns: ['user_uuid'],
     // isOrdering: false,
     // For limited pagewise data
     isApiCallForNextPage: {
@@ -143,6 +144,8 @@ export class UserManagementComponent implements OnInit  {
   widget: any;
   @ViewChild('userEmail') userEmailEl:ElementRef;
   editID: any;
+  isForbidden:boolean = false;
+
   constructor(
     private okta: OktaAuthService,
     private route: ActivatedRoute,
@@ -295,6 +298,9 @@ export class UserManagementComponent implements OnInit  {
                 window.location.href = '/login';
               });
             }
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
           }
@@ -354,6 +360,9 @@ export class UserManagementComponent implements OnInit  {
               err,
               self.getVendorsService.bind(self, org)
           );
+        }else if(err.status === 403) {
+          this.isForbidden = true;
+          this.showSpinner = false;
         }
       }
     )
@@ -400,6 +409,9 @@ export class UserManagementComponent implements OnInit  {
             err,
             self.searchDataRequest.bind(self, org, table)
           );
+        } else if(err.status === 403) {
+          this.isForbidden = true;
+          this.showSpinner = false;
         } else {
           this.showSpinner = false;
         }
@@ -443,6 +455,9 @@ export class UserManagementComponent implements OnInit  {
             err,
             self.searchDataRequestCsv.bind(self, org, table)
           );
+        } else if(err.status === 403) {
+          this.isForbidden = true;
+          this.showSpinner = false;
         } else {
           this.showSpinner = false;
         }
@@ -511,6 +526,10 @@ export class UserManagementComponent implements OnInit  {
       this.userForm.patchValue({
         role : e.value
       });
+    }else if(this.editID){
+      this.userForm.patchValue({
+        role : this.selectedRole
+      });
     }
 
     this.isRoleSuperUser = this.selectedRole == '4' || this.selectedRole == '5' ? true : false;
@@ -527,7 +546,6 @@ export class UserManagementComponent implements OnInit  {
 
     console.log('this.isRoleSuperUser >>>')
     console.log(this.isRoleSuperUser);
-
   }
 
   OnSourceChanged(e: any): void {
@@ -537,30 +555,31 @@ export class UserManagementComponent implements OnInit  {
   }
 
   OnVendorChanged(e: any): void {
-    console.log('e.value >>>')
-    console.log(e.value);
-    console.log('this.selectedVendor')
-    console.log(this.selectedVendor);
+    if(this.vendorOptions.length){
     if (this.selectedVendor !== e.value ) {
       this.selectedVendor = e.value;
       this.userForm.patchValue({
         vendor : e.value
       });
-    }
+     }
+   }
   }
 
   OnOrgChanged(e: any) {
-    if (!this.selectedOrg || this.selectedOrg !== e.value ) {
+    if(this.editID){
+      this.selectedOrg = e.value;
+      this.getVendorsService(this.selectedOrg);
+    } else if (!this.selectedOrg || this.selectedOrg !== e.value ) {
       this.userForm.patchValue({
         org : e.value
       });
       this.selectedOrg = e.value;
       this.showSpinner = true;
-      this.userForm.patchValue({
-        vendor : ''
-      });
-      this.getVendorsService(this.selectedOrg);
-    }
+        this.userForm.patchValue({
+          vendor : ''
+        });
+    this.getVendorsService(this.selectedOrg);
+    }   
   }
 
   OnOrgLandingChange(e) {
@@ -685,7 +704,9 @@ export class UserManagementComponent implements OnInit  {
       }
       dataObj.vendor_id = this.selectedVendor  ? this.selectedVendor : null;
     }
-
+    if(this.editID){
+      dataObj.user_id = this.editID;
+    }
      this.performUserAdditionRequest(dataObj);
   }
 
@@ -724,10 +745,16 @@ export class UserManagementComponent implements OnInit  {
           this.roleOptions = roleOptions;
 
           if(this.roleOptions.length) {
+           if(this.editID){
+              this.userForm.patchValue({
+                role : this.selectedRole
+              });
+            }else{
             this.selectedRole = String(this.roleOptions[0].id );
             this.userForm.patchValue({
               role : String(this.roleOptions[0].id )
             });
+            }
           }
         }
       },
@@ -739,7 +766,10 @@ export class UserManagementComponent implements OnInit  {
               err,
               self.getRoles.bind(self)
             );
-        } else {
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
+          } else {
           this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
           this.showSpinner = false;
         }
@@ -756,7 +786,7 @@ export class UserManagementComponent implements OnInit  {
           console.log(response);
           if (response) {
             this.showSpinner = false;
-            this.error = { type : 'success' , message : response };
+            this.error = { type : 'success' , message : this.editID ? response.message : response };
             this.hideSubmit = true;
           }
           // modalComponent.hide();
@@ -770,6 +800,9 @@ export class UserManagementComponent implements OnInit  {
               err,
               self.performUserAdditionRequest.bind(self, dataObj)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
             this.showSpinner = false;
@@ -788,12 +821,20 @@ export class UserManagementComponent implements OnInit  {
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     const data = JSON.stringify(dataObj);
-    const url = this.api_fs.api + '/api/users';
+    const url = this.editID ? this.api_fs.api + '/api/user' : this.api_fs.api + '/api/users';
+    if (this.editID) {
+      return this.http
+          .put(url, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    } else {
     return this.http
       .post(url, data, options)
       .map(res => {
         return res.json();
       }).share();
+   }
   }
 
   handleCloseModal(modalComponent: PopUpModalComponent) {
@@ -802,6 +843,9 @@ export class UserManagementComponent implements OnInit  {
     this.userForm.reset();
     this.selectedSource = '';
     this.isRoleSuperUser = false;
+    this.editID = '';
+    this.selectedRole = '';
+    this.selectedVendor = '';
    // this.userForm.controls['vendor'].setValidators([Validators.required]);
    // this.userForm.controls['vendor'].updateValueAndValidity();
 
@@ -929,7 +973,7 @@ export class UserManagementComponent implements OnInit  {
       type: 'question',
       showCloseButton: true,
       showCancelButton: true,
-      reverseButtons: true,
+      reverseButtons: false,
     }
 
     const prom = this.popUp.showPopUp(popUpOptions);
@@ -988,7 +1032,7 @@ export class UserManagementComponent implements OnInit  {
 
   handleActions(ev: any) {
     const action = $(ev.elem).data('action');
-    this.userID = ev.data.data()[4];
+    this.userID = ev.data.data()[11];
 
     if(this[action]) {
       // const func = this[action];
@@ -1116,65 +1160,108 @@ export class UserManagementComponent implements OnInit  {
   errorCB(rej) {
     console.log("errorCB: ", rej)
   }
-  handleEdit(dataObj: any) {
-    this.getRoles();
-    console.log('rowData >>>')
-    console.log(dataObj.data);
-    this.editID = dataObj.data.id;
-    this.userModel.email = dataObj.data.email_id;
+  async handleEdit(dataObj: any) {
+    await this.getRoles();
+    this.selectedVendor = "";
+    if(!this.isRoleSuperUser){
+      this.vendorOptions = [];
+    }
+    this.editID = dataObj.data.user_uuid;  
+    this.getEditDetails(this.editID);
+  }
+getEditDetails(editId) {
+  this.showSpinner = true;
+    this.getEditDetailsService(editId).subscribe(response => {
+    if (response) {
+    this.showSpinner = false;
+    let data = response;    
+    this.selectedOrg = data.org_uuid;    
+    this.getVendorsService(this.selectedOrg);
+    this.userModel.email = data.email_id;
     this.userForm.patchValue({
-      email : dataObj.data.email_id
+      email : data.email_id
     });
-    this.userModel.first = dataObj.data.first_name;
+    this.userModel.first = data.first_name;
     this.userForm.patchValue({
-      first : dataObj.data.first_name
+      first : data.first_name
     });
-    this.userModel.last = dataObj.data.last_name;
+    this.userModel.last = data.last_name;
     this.userForm.patchValue({
-      last : dataObj.data.last_name
+      last : data.last_name
     });
-    this.userModel.phone = dataObj.data.phone;
+    this.userModel.phone = data.phone;
     this.userForm.patchValue({
-      phone : dataObj.data.phone
+      phone : data.phone
     });
-    this.userModel.address_1 = dataObj.data.address_1;
+    this.userModel.address_1 = data.address_1;
     this.userForm.patchValue({
-      address_1 : dataObj.data.address_1
+      address_1 : data.address_1
     });
-    this.userModel.address_2 = dataObj.data.address_2;
+    this.userModel.address_2 = data.address_2;
     this.userForm.patchValue({
-      address_2 : dataObj.data.address_2
+      address_2 : data.address_2
     });
-    this.userModel.city = dataObj.data.city;
+    this.userModel.city = data.city;
     this.userForm.patchValue({
-      city : dataObj.data.city
+      city : data.city
     });
-    this.userModel.state = dataObj.data.state;
+    this.userModel.state = data.state;
     this.userForm.patchValue({
-      state : dataObj.data.state
+      state : data.state
     });
-    this.userModel.zip = dataObj.data.zip;
+    this.userModel.zip = data.zip;
     this.userForm.patchValue({
-      zip : dataObj.data.zip
+      zip : data.zip
     });
-    this.userModel.country = dataObj.data.country;
+    this.userModel.country = data.country;
     this.userForm.patchValue({
-      country : dataObj.data.country
-    });
+      country : data.country
+    });    
+    this.selectedRole = String(data.role_id);
     if(this.roleOptions.length) {
-      this.selectedRole = String(this.roleOptions[1].id );
       this.userForm.patchValue({
-        role : String(this.roleOptions[1].id )
+        role : String(data.role_id)
       });
     }
     if (this.orgArr.length) {
-      this.selectedOrg = "918427f5-8691-11e9-9e7c-0a76cb863686";
       this.userForm.patchValue({
-        org : "918427f5-8691-11e9-9e7c-0a76cb863686"
-      });
-    }
+        org : data.org_uuid
+      });     
+    }        
+    this.selectedVendor = data.vendor_id;
     this.addUser.show();
+    }
+   },
+      err => {
+        if(err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.getEditDetails.bind(self, editId)
+            );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
+          } else {
+          this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
+          this.showSpinner = false;
+        }
+      });
   }
-
-
+  getEditDetailsService(editId){
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/user/' + editId;
+    return this.http
+      .get(url, options)
+      .map(res => {
+        return res.json();
+      }).share();
+  }
 }

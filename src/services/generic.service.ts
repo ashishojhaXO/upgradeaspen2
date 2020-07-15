@@ -370,7 +370,7 @@ export class GenericService {
     let limit = data.limit != null ? data.limit : 25;
     let page = data.page != null ? data.page : 1;
     let org = data.org;
-
+    let search = data.search || "";
     const apiPath = JSON.parse(localStorage.getItem('apis_fs'));
 
     return this.service.Call(
@@ -380,6 +380,7 @@ export class GenericService {
         + '?limit='+limit+'&page='+page
         // + (isRoot ? ('&org_uuid=' + org) : '')
         + ( org ? ('&org_uuid=' + org)  : '')
+        + ( search ? ('&search=' + search)  : '')
         ,
       {},
       {"Content-Type": "application/csv"}

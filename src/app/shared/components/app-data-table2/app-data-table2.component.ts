@@ -66,7 +66,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     @Input() height: any;
     @Input() existingIdentity: boolean;
     fixedColumnFlag: boolean;
-
     rowEle: any;
     dataTableSearchPlugin: DataTableColumnSearchPluginExt;
     searchQ: string;
@@ -992,7 +991,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         const is_over_under_spent = __this.dataObject.gridData.headers.find(x=> x.key === '$50+_over/under_spent'); //
                         if (is_over_under_spent) {
                             let index1 = __this.dataObject.gridData.headers.indexOf(is_over_under_spent);
-                            
+
                             // if (__this.dataObject.gridData.options.isTree) {
                             //     index1--;
                             // }
@@ -1130,7 +1129,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             });
 
             // Delegate click event to show/hide tick
-           // $(document).off('click', '.buttons-columnVisibility');
+            $(document).off('click', '.buttons-columnVisibility');
             $(document).on('click', '.buttons-columnVisibility', function () {
                 if ($(this).hasClass('active') && !$(this).find('.check-tick').length) {
                     $('<span class="check-tick" style="font-family: wingdings; font-size: 200%; position: relative; top: 3px; left: -5px">&#252;</span>').insertBefore($(this).find('span'));
@@ -1383,8 +1382,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 })
             }
 
-            // HACK: Changing the fixedColumns data: on Page Change 
-            if(__this.dataObject.gridData.options.isFixedColumn 
+            // HACK: Changing the fixedColumns data: on Page Change
+            if(__this.dataObject.gridData.options.isFixedColumn
                 &&
                 __this.dataObject.gridData.options.isFixedColumn.fixedColumns
                 &&
@@ -1495,9 +1494,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         // Introduced sortTriggered to avoid multiples call. TODO # figure out whats causing such behavior
                         __this.dataObject.gridData.options.isDataTableGlobalSortApi.sortTriggered = true;
                         let columnAdjustment = 0;
-                        if(__this.identity === 'orders') {
-                            columnAdjustment = 2;
-                        }
+                        // if(__this.identity === 'orders') {
+                        //     columnAdjustment = 2;
+                        // }
                         const sort = {
                             sortColumn : __this.dataObject.gridData.headers[table.order()[0][0] - columnAdjustment],
                             sortDirection : table.order()[0][1]
@@ -2186,13 +2185,14 @@ export class AppDataTable2Component implements OnInit, OnChanges {
     }
 
     storeUserPreference() {
+
         const columns = this.dataObject.gridData.headers.map(function (x) {
             return {id: x.key, title: x.title};
         });
 
         const columnsToExclude = [];
         $('.dt-button-collection button.dt-button.buttons-columnVisibility').each(function (index, ele) {
-            if (!$(this).hasClass('active')) {
+            if (!$(this).hasClass('active') && columns[index]) {
                 columnsToExclude.push(columns[index].id);
             }
         });
@@ -2216,7 +2216,6 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     localStorage.setItem('userPreference', JSON.stringify(userPref));
                 },
                 err => {
-
                     if(err.status === 401) {
                         if (localStorage.getItem('accessToken')) {
                             // this.widget.tokenManager.refresh('accessToken')

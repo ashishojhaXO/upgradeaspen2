@@ -69,6 +69,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   loggedInVendorTitle="";
   siteLogo = './assets/images/accelitas_logo_white_r.png';
   metaData =  '';
+  userInitials = '';
   constructor(
       // private okta: OktaAuthService,
       private translate: TranslateService,
@@ -101,6 +102,7 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
     if(this.metaData && this.metaData['logo']){
        this.siteLogo = this.metaData['logo'];
     }
+    this.userInitials = custInfo.user.first_name.charAt(0).toUpperCase() + custInfo.user.last_name.charAt(0).toUpperCase();
   }
 
   __hasSubMenus(e) {
