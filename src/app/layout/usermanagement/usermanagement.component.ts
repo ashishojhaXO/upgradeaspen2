@@ -35,7 +35,11 @@ export class UserManagementComponent implements OnInit  {
   options: Array<any> = [{
     isSearchColumn: true,
     isTableInfo: true,
-    isEditOption: false,
+    isEditOption: {
+      value : true,
+      icon : '',
+      tooltip: 'Edit User'
+    },
     isDeleteOption: false,
     isAddRow: false,
     isColVisibility: true,
@@ -51,7 +55,7 @@ export class UserManagementComponent implements OnInit  {
     isPageLengthNo: 25,
     isPagination: true,
     isTree: true,
-
+    isActionColPosition: 1,
     // To start the DataTables from a particular page number
     isDisplayStart: 0,
 
@@ -81,6 +85,7 @@ export class UserManagementComponent implements OnInit  {
     // isOrder: [[1, 'desc']],
     // isOrder: [[1, 'name-string-not-nullund']],
     isOrder: [],
+    isHideColumns: ['user_uuid'],
     // isOrdering: false,
     // For limited pagewise data
     isApiCallForNextPage: {
@@ -138,6 +143,7 @@ export class UserManagementComponent implements OnInit  {
   roleOptions = [];
   widget: any;
   @ViewChild('userEmail') userEmailEl:ElementRef;
+  editID: any;
   isForbidden:boolean = false;
 
   constructor(
@@ -176,7 +182,10 @@ export class UserManagementComponent implements OnInit  {
       city: '',
       state: '',
       zip: '',
-      country: ''
+      country: '',
+      role: '',
+      org: '',
+      vendor:''
     };
 
     const groups = localStorage.getItem('loggedInUserGroup') || '';
@@ -517,6 +526,10 @@ export class UserManagementComponent implements OnInit  {
       this.userForm.patchValue({
         role : e.value
       });
+    }else if(this.editID){
+      this.userForm.patchValue({
+        role : this.selectedRole
+      });
     }
 
     this.isRoleSuperUser = this.selectedRole == '4' || this.selectedRole == '5' ? true : false;
@@ -533,7 +546,6 @@ export class UserManagementComponent implements OnInit  {
 
     console.log('this.isRoleSuperUser >>>')
     console.log(this.isRoleSuperUser);
-
   }
 
   OnSourceChanged(e: any): void {
@@ -543,30 +555,31 @@ export class UserManagementComponent implements OnInit  {
   }
 
   OnVendorChanged(e: any): void {
-    console.log('e.value >>>')
-    console.log(e.value);
-    console.log('this.selectedVendor')
-    console.log(this.selectedVendor);
+    if(this.vendorOptions.length){
     if (this.selectedVendor !== e.value ) {
       this.selectedVendor = e.value;
       this.userForm.patchValue({
         vendor : e.value
       });
-    }
+     }
+   }
   }
 
   OnOrgChanged(e: any) {
-    if (!this.selectedOrg || this.selectedOrg !== e.value ) {
+    if(this.editID){
+      this.selectedOrg = e.value;
+      this.getVendorsService(this.selectedOrg);
+    } else if (!this.selectedOrg || this.selectedOrg !== e.value ) {
       this.userForm.patchValue({
         org : e.value
       });
       this.selectedOrg = e.value;
       this.showSpinner = true;
-      this.userForm.patchValue({
-        vendor : ''
-      });
-      this.getVendorsService(this.selectedOrg);
-    }
+        this.userForm.patchValue({
+          vendor : ''
+        });
+    this.getVendorsService(this.selectedOrg);
+    }   
   }
 
   OnOrgLandingChange(e) {
@@ -691,7 +704,9 @@ export class UserManagementComponent implements OnInit  {
       }
       dataObj.vendor_id = this.selectedVendor  ? this.selectedVendor : null;
     }
-
+    if(this.editID){
+      dataObj.user_id = this.editID;
+    }
      this.performUserAdditionRequest(dataObj);
   }
 
@@ -730,10 +745,16 @@ export class UserManagementComponent implements OnInit  {
           this.roleOptions = roleOptions;
 
           if(this.roleOptions.length) {
+           if(this.editID){
+              this.userForm.patchValue({
+                role : this.selectedRole
+              });
+            }else{
             this.selectedRole = String(this.roleOptions[0].id );
             this.userForm.patchValue({
               role : String(this.roleOptions[0].id )
             });
+            }
           }
         }
       },
@@ -765,7 +786,7 @@ export class UserManagementComponent implements OnInit  {
           console.log(response);
           if (response) {
             this.showSpinner = false;
-            this.error = { type : 'success' , message : response };
+            this.error = { type : 'success' , message : this.editID ? response.message : response };
             this.hideSubmit = true;
           }
           // modalComponent.hide();
@@ -800,12 +821,20 @@ export class UserManagementComponent implements OnInit  {
     const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
     const options = new RequestOptions({headers: headers});
     const data = JSON.stringify(dataObj);
-    const url = this.api_fs.api + '/api/users';
+    const url = this.editID ? this.api_fs.api + '/api/user' : this.api_fs.api + '/api/users';
+    if (this.editID) {
+      return this.http
+          .put(url, data, options)
+          .map(res => {
+            return res.json();
+          }).share();
+    } else {
     return this.http
       .post(url, data, options)
       .map(res => {
         return res.json();
       }).share();
+   }
   }
 
   handleCloseModal(modalComponent: PopUpModalComponent) {
@@ -814,6 +843,9 @@ export class UserManagementComponent implements OnInit  {
     this.userForm.reset();
     this.selectedSource = '';
     this.isRoleSuperUser = false;
+    this.editID = '';
+    this.selectedRole = '';
+    this.selectedVendor = '';
    // this.userForm.controls['vendor'].setValidators([Validators.required]);
    // this.userForm.controls['vendor'].updateValueAndValidity();
 
@@ -1128,6 +1160,108 @@ export class UserManagementComponent implements OnInit  {
   errorCB(rej) {
     console.log("errorCB: ", rej)
   }
-
-
+  async handleEdit(dataObj: any) {
+    await this.getRoles();
+    this.selectedVendor = "";
+    if(!this.isRoleSuperUser){
+      this.vendorOptions = [];
+    }
+    this.editID = dataObj.data.user_uuid;  
+    this.getEditDetails(this.editID);
+  }
+getEditDetails(editId) {
+  this.showSpinner = true;
+    this.getEditDetailsService(editId).subscribe(response => {
+    if (response) {
+    this.showSpinner = false;
+    let data = response;    
+    this.selectedOrg = data.org_uuid;    
+    this.getVendorsService(this.selectedOrg);
+    this.userModel.email = data.email_id;
+    this.userForm.patchValue({
+      email : data.email_id
+    });
+    this.userModel.first = data.first_name;
+    this.userForm.patchValue({
+      first : data.first_name
+    });
+    this.userModel.last = data.last_name;
+    this.userForm.patchValue({
+      last : data.last_name
+    });
+    this.userModel.phone = data.phone;
+    this.userForm.patchValue({
+      phone : data.phone
+    });
+    this.userModel.address_1 = data.address_1;
+    this.userForm.patchValue({
+      address_1 : data.address_1
+    });
+    this.userModel.address_2 = data.address_2;
+    this.userForm.patchValue({
+      address_2 : data.address_2
+    });
+    this.userModel.city = data.city;
+    this.userForm.patchValue({
+      city : data.city
+    });
+    this.userModel.state = data.state;
+    this.userForm.patchValue({
+      state : data.state
+    });
+    this.userModel.zip = data.zip;
+    this.userForm.patchValue({
+      zip : data.zip
+    });
+    this.userModel.country = data.country;
+    this.userForm.patchValue({
+      country : data.country
+    });    
+    this.selectedRole = String(data.role_id);
+    if(this.roleOptions.length) {
+      this.userForm.patchValue({
+        role : String(data.role_id)
+      });
+    }
+    if (this.orgArr.length) {
+      this.userForm.patchValue({
+        org : data.org_uuid
+      });     
+    }        
+    this.selectedVendor = data.vendor_id;
+    this.addUser.show();
+    }
+   },
+      err => {
+        if(err.status === 401) {
+            let self = this;
+            this.widget.refreshElseSignout(
+              this,
+              err,
+              self.getEditDetails.bind(self, editId)
+            );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
+          } else {
+          this.error = { type : 'fail' , message : JSON.parse(err._body).errorMessage};
+          this.showSpinner = false;
+        }
+      });
+  }
+  getEditDetailsService(editId){
+    const AccessToken: any = localStorage.getItem('accessToken');
+    let token = '';
+    if (AccessToken) {
+      token = AccessToken;
+    }
+    const headers = new Headers({'Content-Type': 'application/json', 'token' : token, 'callingapp' : 'aspen'});
+    const options = new RequestOptions({headers: headers});
+    var url = this.api_fs.api + '/api/user/' + editId;
+    return this.http
+      .get(url, options)
+      .map(res => {
+        return res.json();
+      }).share();
+  }
 }
