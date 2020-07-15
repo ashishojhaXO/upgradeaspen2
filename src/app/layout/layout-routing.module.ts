@@ -287,7 +287,7 @@ const routes: Routes = [
                 },
             },
             {
-                path: 'orderPayment/:id/:vendor_uuid',
+                path: 'orderPayment/:id/:user_uuid',
                 component: OrderPaymentComponent,
                 data: {
                     breadcrumbs: true,

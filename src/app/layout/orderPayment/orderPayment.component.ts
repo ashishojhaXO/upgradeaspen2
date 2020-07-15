@@ -74,11 +74,12 @@ export class OrderPaymentComponent {
       const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
 
       // this.vendorUuid = this.route.snapshot.paramMap.get('vendor_uuid');
-      this.vendorUuid = customerInfo.vendor.vendor_id
+      // this.vendorUuid = customerInfo.vendor ? customerInfo.vendor.vendor_id : this.route.snapshot.paramMap.get('user_uuid') ? this.route.snapshot.paramMap.get('user_uuid') : undefined;
       // this.userUuid = this.route.snapshot.paramMap.get('vendor_uuid');
 
+      // this.initVendorUuid();
+
       this.displayId = this.displayOrderID || this.route.snapshot.paramMap.get('displayId');
-      this.initVendorUuid();
       window['fs_widget_config'].vendor_id = this.vendorId = this.vendorUuid;
       window['fs_widget_config'].api_key = customerInfo.org.x_api_key;
       window['fs_widget_config'].org_id = customerInfo.org.org_id;
