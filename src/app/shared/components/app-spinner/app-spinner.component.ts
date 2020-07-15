@@ -39,10 +39,12 @@ export class AppSpinnerComponent implements OnInit {
     @Input()
     showSpinnerFlag: boolean;
     @Input() isSpinnerActive: boolean;
+    @Input() isForbidden: boolean; 
     isTimeOut: boolean = false;
     timeOutFlag;
     waitTime;
     api_fs;
+    showForbiddenToast: boolean = false;
     constructor(
         private translate: TranslateService,
         private elt: ElementRef,
@@ -73,10 +75,14 @@ export class AppSpinnerComponent implements OnInit {
         this.isTimeOut = false;
         clearTimeout(this.timeOutFlag);
        }
-       console.log("Spinner flag from Parent",this.isSpinnerActive);
+       console.log("Spinner time",this.isSpinnerActive);
+       if(this.isForbidden){
+         this.showForbiddenToast = true;
+       }
     }
     hideCustToast(){
         this.isTimeOut = false;
+        this.showForbiddenToast = false;
     }
     ngAfterViewInit() {}
 

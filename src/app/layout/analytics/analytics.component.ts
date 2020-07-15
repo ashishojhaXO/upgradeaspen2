@@ -31,6 +31,7 @@ export class AnalyticsComponent implements OnInit {
   userId;
   emailId;
   chartConfig;
+  isForbidden:boolean = false;
 
   ngOnInit() {
     this.widget = this.okta.getWidget();
@@ -97,6 +98,9 @@ export class AnalyticsComponent implements OnInit {
               err,
               self.getToken.bind(self)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
           }
@@ -187,7 +191,10 @@ export class AnalyticsComponent implements OnInit {
               err,
               self.getUserDetails.bind(self)
             );
-         } else {
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
+          } else {
            this.showSpinner = false;
            swal({
             title: 'Error',

@@ -42,6 +42,7 @@ export class PaymentMethodsComponent implements OnInit {
   paymentsChargeData: any;
   @Input() orderId: string;
   @Input() displayOrderID: any;
+  isForbidden:boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -225,6 +226,9 @@ export class PaymentMethodsComponent implements OnInit {
                     err,
                     self.postPaymentMethods.bind(self, option)
                 );
+              } else if(err.status === 403) {
+                this.isForbidden = true;
+                this.showSpinner = false;
               } else {
                 this.showSpinner = false;
                 Swal({
@@ -262,7 +266,10 @@ export class PaymentMethodsComponent implements OnInit {
                       err,
                       self.downloadPODocument.bind(self, option)
                   );
-              } else {
+                } else if(err.status === 403) {
+                  this.isForbidden = true;
+                  this.showSpinner = false;
+                } else {
                   this.showSpinner = false;
                   Swal({
                       title: 'An error occurred',
@@ -328,6 +335,9 @@ export class PaymentMethodsComponent implements OnInit {
                     err,
                     self.setDefaultPaymentMethod.bind(self, option)
                 );
+              } else if(err.status === 403) {
+                this.isForbidden = true;
+                this.showSpinner = false;
               } else {
                 this.showSpinner = false;
                 Swal({
@@ -371,6 +381,9 @@ export class PaymentMethodsComponent implements OnInit {
                     err,
                     self.postPaymentsCharge.bind(self, option)
                 );
+              } else if(err.status === 403) {
+                this.isForbidden = true;
+                this.showSpinner = false;
               } else {
                 this.showSpinner = false;
                 Swal({

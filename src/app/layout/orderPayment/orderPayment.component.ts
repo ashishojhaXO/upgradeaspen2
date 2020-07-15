@@ -45,6 +45,7 @@ export class OrderPaymentComponent {
   @Input() orderId: string;
   @Input() displayOrderID: any;
   @Input() ordersScreen: OrderScreenData;
+  isForbidden:boolean = false;
 
   constructor(
       private route: ActivatedRoute,
@@ -203,6 +204,9 @@ export class OrderPaymentComponent {
                     err,
                     self.postPaymentMethods.bind(self, option)
                 );
+               } else if(err.status === 403) {
+                this.isForbidden = true;
+                this.showSpinner = false;
               } else {
                 console.log('err >>')
                 console.log(err);
@@ -254,6 +258,9 @@ export class OrderPaymentComponent {
                     err,
                     self.setDefaultPaymentMethod.bind(self, option)
                 );
+              } else if(err.status === 403) {
+                this.isForbidden = true;
+                this.showSpinner = false;
               } else {
                 this.showSpinner = false;
                 Swal({
@@ -340,6 +347,9 @@ export class OrderPaymentComponent {
                     err,
                     self.postPaymentsCharge.bind(self, option)
                 );
+              } else if(err.status === 403) {
+                this.isForbidden = true;
+                this.showSpinner = false;
               } else {
                 this.showSpinner = false;
                 Swal({

@@ -51,6 +51,7 @@ export class BaseFieldsListComponent implements OnInit  {
     // placeholder: { id: '', text: 'Select organization' }
   };
   isRoot: boolean;
+  isForbidden:boolean = false;
 
   @ViewChild ( AppDataTable2Component )
   private appDataTable2Component : AppDataTable2Component;
@@ -116,6 +117,9 @@ export class BaseFieldsListComponent implements OnInit  {
               err,
               self.searchDataRequest.bind(self)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
             Swal({
@@ -232,6 +236,9 @@ export class BaseFieldsListComponent implements OnInit  {
               err,
               self.searchOrgRequest.bind(self)
             );
+          } else if(err.status === 403) {
+            this.isForbidden = true;
+            this.showSpinner = false;
           } else {
             this.showSpinner = false;
           }
