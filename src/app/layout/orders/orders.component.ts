@@ -442,9 +442,9 @@ export class OrdersComponent implements OnInit  {
             this.hasTemplates = false;
           }
 
-          if (!this.hasTemplates) {
+          /*if (!this.hasTemplates) {
             this.toaster.pop('success', 'No Order Templates Available', 'No order template has been setup for your organization. Please contact your Administrator');
-          }
+          }*/
         },
         err => {
           if(err.status === 401) {
