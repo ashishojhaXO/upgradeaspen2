@@ -229,7 +229,7 @@ export class UserManagementComponent implements OnInit  {
     this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
 
     if(csv){
-      this.searchDataRequestCsv(null, table);
+      this.searchDataRequestCsv(this.orgValue, table);
     }
     else
       this.searchDataRequest(null, table);
