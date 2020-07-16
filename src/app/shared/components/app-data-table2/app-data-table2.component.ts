@@ -1348,6 +1348,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             });
 
             // Handle table draw event ( like pagination, sorting )
+            table.off('draw');
             table.on('draw', function (ev) {
                 // Update state of "Select all" control
                 console.log('drawn....');
@@ -1371,7 +1372,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                     __this.dataObject.gridData.options.isFixedColumn.fixedColumnFilterToggle($, table);
                 }
 
-                table.off('draw');
+                // table.off('draw');
             });
 
             // HACK: Hiding the fixedColumns: leftColumn, on Search event on table
@@ -1406,7 +1407,8 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 $(document).off('click', 'li.paginate_button');
                 $(document).on('click', "li.paginate_button", function (ev) {
                     if (! $(ev.target).parent().is(".active") ) {
-                        localStorage.setItem('gridPageCount', table.page.len() );
+                        // localStorage.setItem('gridPageCount', table.page.len() );
+                        __this.dataObject.gridData.options.isDisplayStart = table.page.info().start;
                         __this.dataObject.gridData.options.isApiCallForNextPage.apiMethod.apply(__this, [table, table.page.len()] );
                     }
                 });
@@ -1414,6 +1416,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // Using table.on for PageLength change, instead of class select input-sm
                 table.off("length");
                 table.on("length", function (ev) {
+                    __this.dataObject.gridData.options.isDisplayStart = table.page.info().start;
                     __this.dataObject.gridData.options.isPageLengthNo = table.page.len();
                     localStorage.setItem('gridPageCount', table.page.len() );
 
@@ -1457,10 +1460,9 @@ export class AppDataTable2Component implements OnInit, OnChanges {
             // search
             // Datatable Main table global search
             if (__this.dataObject.gridData.options.isDataTableGlobalSearchApi ) {
-
-                if(__this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchQuery) {
+                if(__this.dataObject.gridData.options.prevSearchQuery) {
                     $("input.input-sm").val(
-                        __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchQuery
+                        __this.dataObject.gridData.options.prevSearchQuery
                     );
                 }
 
@@ -1468,22 +1470,24 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod();
                 table.off('search.dt');
                 table.on('search.dt', function(ev, settings){
+                    // TODO: NOTE: CHECK: Over here it prints new table instance, 
+                    // but sends old table instance in the below function call
                     // NOTE: Might be a bad logic
                     // WARN: Optimization Problem: When typed 2 Char,
                     // Though its ignoring the call for Frist Char
                     // But still sending 2 calls in type of Second Char
                     // if( table.search()
                     //     && table.search().length > 1 &&
-                    //     __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchQuery != table.search()
+                    //     __this.dataObject.gridData.options.isDataTableGlobalSearchApi. prevSearchQuery != table.search()
                     // ) {
                     //     __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod(ev, $, document, table);
                     // }
-                    __this.dataObject.gridData.options.isDataTableGlobalSearchApi.debounce
-                    ( __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod, __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchDelay )
-                    (ev, $, document, table)
+                    __this.dataObject.gridData.options.isDisplayStart = table.page.info().start;
+                    let dtIsGlobalSearchApi = __this.dataObject.gridData.options.isDataTableGlobalSearchApi;
+                    dtIsGlobalSearchApi.debounce( dtIsGlobalSearchApi.apiMethod, dtIsGlobalSearchApi.searchDelay)(ev, $, document, table)
                     // __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod(ev, $, document, table);
                     // Seeting this after because, we need to compare oldVal to newVal above
-                    // __this.dataObject.gridData.options.isDataTableGlobalSearchApi.searchQuery = searchQ;
+                    // __this.dataObject.gridData.options.isDataTableGlobalSearchApi.prevSearchQuery = searchQ;
                 })
             }
 

@@ -135,13 +135,14 @@ export class OrdersComponent implements OnInit  {
       apiMethod: ( table, pageLength, csv?) => {
         // Make ApiCall to backend with PageNo, Limit,
         this.apiMethod(table, pageLength, csv);
+        // this.searchDataRequest(this.orgValue, this.currentTable, table.search());
       },
 
     },
 
     isDataTableGlobalSearchApi: {
       value: true,
-      searchDelay: 3000, // in milli Second
+      searchDelay: 2000, // in milli Second
       searchQuery: "",
       // debounce: this.debounce,
       debounce: (func, delay) => {
@@ -162,18 +163,23 @@ export class OrdersComponent implements OnInit  {
         // this.dataTableSearchPlugin.search(ev, $, document, table)
         // this.searchApiDataRequest(this.orgValue, table)
         this.searchVal = table.search();
+
         if( 
-          table.search()
-            && table.search().length > 1 
-            && this.options[0].isDataTableGlobalSearchApi.searchQuery != table.search()
+            table.search()
+            // && table.search().length > 1 
+            && 
+            this.options[0].prevSearchQuery != table.search()
         ) {
+
           this.searchDataRequest(this.orgValue, this.currentTable, table.search());
           // Seeting this after because, we need to compare oldVal to newVal above
-          this.options[0].isDataTableGlobalSearchApi.searchQuery = table.search();
+          // this.options[0].isDataTableGlobalSearchApi.searchQuery = table.search();
+          this.options[0].prevSearchQuery = table.search();
         }
 
       }
     },
+    prevSearchQuery: "",
 
     isDataTableGlobalSortApi: {
       sortTriggered: false,
@@ -214,6 +220,7 @@ export class OrdersComponent implements OnInit  {
     }
 
   }];
+
   debounceTimer: any;
   dashboard: any;
   api_fs: any;
@@ -317,13 +324,10 @@ export class OrdersComponent implements OnInit  {
   
   debounce(func, delay) {
     let debounceTimer;
-    console.log("TT: ", this);
 
     return function() {
         const context = this;
         const args = arguments;
-
-        console.log("debO: ", " context: ", context, " this,: ", this, " args: ", args);
 
         // clearTimeout(debounceTimer)
         // debounceTimer = setTimeout(() => func.apply(context, args), delay)
@@ -342,7 +346,9 @@ export class OrdersComponent implements OnInit  {
     /*if((searchVal.trim())!=""){
       this.doDownloadOrderCsv(table);
     }else{*/
-      this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
+
+      // HERE, NOTE: Commented this
+      // this.options[0].isDisplayStart = table && table.page.info().start ? table.page.info().start : 0;
 
       if(csv){
         // Later we need csv function here
@@ -350,7 +356,7 @@ export class OrdersComponent implements OnInit  {
       }
       else {
         // this.searchDataRequest(null, table);
-        this.searchDataRequest(this.orgValue, table);
+        this.searchDataRequest(this.orgValue, table, this.options[0].prevSearchQuery);
       }
   }
   doDownloadOrderCsv(table){
@@ -602,6 +608,7 @@ export class OrdersComponent implements OnInit  {
 
   calc(res, table) {
     let li = [];
+
     if (res.data.rows.length) {
       let keyNames = {};
       let keyNamesList = Object.keys(res.data.rows[0]);
@@ -1183,7 +1190,8 @@ export class OrdersComponent implements OnInit  {
       if (this.currentTable) {
         // if(this.appDataTable2Component && this.appDataTable2Component.table) {
         // this.currentTable.page(0)
-        this.options[0].isDisplayStart = this.currentTable && this.currentTable.page.info().start ? this.currentTable.page.info().start : 0;
+        // HERE, NOTE: Commented this
+        // this.options[0].isDisplayStart = this.currentTable && this.currentTable.page.info().start ? this.currentTable.page.info().start : 0;
 
         // this.appDataTable2Component.table.page(0)
       }
