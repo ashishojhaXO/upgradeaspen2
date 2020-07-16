@@ -238,7 +238,13 @@ export class OrderDashboardComponent implements OnInit  {
 
   editOrder() {
     if (!this.orderDetails.payment_received_date) {
-      this.router.navigate(['/app/order/create', this.orderID, this.vendorUuid]);
+      console.log('this.vendorUuid >>')
+      console.log(this.vendorUuid);
+      if (this.vendorUuid) {
+        this.router.navigate(['/app/order/create', this.orderID, this.vendorUuid]);
+      } else {
+        this.router.navigate(['/app/order/create', this.orderID]);
+      }
     }
   }
 
