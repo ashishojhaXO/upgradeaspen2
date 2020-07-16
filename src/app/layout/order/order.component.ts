@@ -92,7 +92,7 @@ export class OrderComponent implements OnInit  {
 
     userUuid:any;
     isForbidden:boolean = false;
-    
+
     constructor(
         // private okta: OktaAuthService,
         private route: ActivatedRoute, private router: Router, private http: Http, fb: FormBuilder, private okta: OktaAuthService) {
@@ -124,9 +124,9 @@ export class OrderComponent implements OnInit  {
         this.externalAuth = JSON.parse(localStorage.getItem('externalAuth'));
         this.route.params.subscribe(params => {
             if (params['id']) {
-                if (params['vendorId']) {
-                    this.vendor_id = params['vendorId'];
-                }
+                // if (params['vendorId']) {
+                //     this.vendor_id = params['vendorId'];
+                // }
                 this.searchTemplates(params['id'], params['lineItemId'], true);
                 // if(this.templates.length) {
                 //   this.template = '41';
@@ -172,7 +172,7 @@ export class OrderComponent implements OnInit  {
                         this,
                         err,
                         self.extractOrderDetails.bind(self, id, lineItemId)
-                    );                
+                    );
                     } else if(err.status === 403) {
                         this.isForbidden = true;
                         this.showSpinner = false;
@@ -244,7 +244,7 @@ export class OrderComponent implements OnInit  {
                         this,
                         err,
                         self.searchTemplates.bind(self, existingOrder)
-                    );                
+                    );
                     } else if(err.status === 403) {
                         this.isForbidden = true;
                         this.showSpinner = false;
@@ -429,7 +429,7 @@ export class OrderComponent implements OnInit  {
                                             this,
                                             err,
                                             self.searchTemplateDetails.bind(self, templateID, existingOrderInfo, lineItemId)
-                                        );                                    
+                                        );
                                         } else if(err.status === 403) {
                                             this.isForbidden = true;
                                             this.showSpinner = false;
@@ -483,7 +483,7 @@ export class OrderComponent implements OnInit  {
                                                 this,
                                                 err,
                                                 self.searchTemplateDetails.bind(self, templateID, existingOrderInfo, lineItemId)
-                                            );                                        
+                                            );
                                             } else if(err.status === 403) {
                                                 this.isForbidden = true;
                                                 this.showSpinner = false;
@@ -1077,9 +1077,9 @@ export class OrderComponent implements OnInit  {
         const customerInfo = JSON.parse(localStorage.getItem('customerInfo'));
         const reqObj: any = {};
 
-        if (!this.vendor_id) {
-            this.vendor_id = customerInfo.vendor ? customerInfo.vendor.vendor_id : null;
-        }
+        // if (!this.vendor_id) {
+        //     this.vendor_id = customerInfo.vendor ? customerInfo.vendor.vendor_id : null;
+        // }
 
         if (!this.orderId) {
             reqObj.vendor_id =  customerInfo.vendor ? customerInfo.vendor.vendor_id : null;

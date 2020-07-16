@@ -33,6 +33,8 @@ import { ColorPickerModule } from 'ngx-color-picker';
 import { DashboardsComponent } from './dashboards/dashboards.component';
 import { VendorManagementComponent } from './vendorManagement/vendorManagement.component';
 import { OrdersComponent } from './orders/orders.component';
+import { OrdersV2Component } from './ordersV2/ordersV2.component';
+import { OrderV2DetailsComponent } from './orderV2Details/orderV2Details.component';
 import { PaymentsComponent } from './payments/payments.component';
 import { ReconciliationComponent } from './reconciliation/reconciliation.component';
 import { SupportComponent } from './support/support.component';
@@ -115,6 +117,8 @@ import { PaymentMethodsComponent } from './payment-methods/payment-methods.compo
         FooterComponent,
         DashboardsComponent,
         OrdersComponent,
+        OrdersV2Component,
+        OrderV2DetailsComponent,
         OrdersTemplateListComponent,
         OrdersListComponent,
         PaymentsComponent,

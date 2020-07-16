@@ -1,0 +1,200 @@
+<div>
+  <div class="col-lg-12 col-md-12">
+    <p class="pull-left page-title">ORDER DETAILS</p></div>
+  <div class="col-lg-12 col-md-12 col-sm-12" style="background-color: white; padding: 10px">
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="col-lg-6 col-md-6 col-sm-12" style="padding-left: 0px">
+          <div>
+            <span><span style="font-weight: 600">ORDER:</span> {{orderInfo.external_order_id}}</span>
+          </div>
+          <div>
+            <span><span style="font-weight: 600">DATE:</span> {{orderInfo.created_at}}</span>
+          </div>
+          <div>
+            <span><span style="font-weight: 600">ORDER AMOUNT:</span> {{orderInfo.total_budget ? (orderInfo.total_budget | currency:"USD":true:'1.2-2') : '-'}}</span>
+          </div>
+          <div>
+            <span><span style="font-weight: 600">SUBMITTED BY:</span> {{orderInfo.order_created_by}}</span>
+          </div>
+          <div>
+            <span><span style="font-weight: 600">STATUS:</span> {{orderInfo.status}}</span>
+          </div>
+        </div>
+        <!--<div class="col-lg-6 col-md-6 col-sm-12" style="background-color: #eee; padding: 20px">-->
+          <!--<div>-->
+            <!--<span>EXTERNAL ORDER: 12312</span>-->
+          <!--</div>-->
+          <!--<div>-->
+            <!--<span>EXTERNAL DESCRIPTION: Jun 10,2020</span>-->
+          <!--</div>-->
+          <!--<div>-->
+            <!--<span>EXTERNAL SUBMITTED BY: Some User</span>-->
+          <!--</div>-->
+          <!--<div>-->
+            <!--<span>EXTERNAL VENDOR: Some Vendor</span>-->
+          <!--</div>-->
+        <!--</div>-->
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12" style="margin: 10px 10px 10px 0px" *ngIf="orderDetails">
+        <button *ngIf="isUser" class="btn action-btn api-action" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-family: sans-serif; padding: 7px" [disabled]="orderDetails.payment_received_date ? 'disabled' : null" (click)="editOrder()">
+            <span style="margin-right: 5px; position: relative;">
+                <i aria-hidden="true" class="fa fa-pencil" style="font-size: 20px; position: relative; top: 2px"></i></span>
+          Edit Order
+        </button>
+        <button *ngIf="isUser" class="btn action-btn api-action" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-family: sans-serif; padding: 7px" [disabled]="orderDetails.payment_received_date ? 'disabled' : null" (click)="cancelOrder()">
+            <span style="margin-right: 5px; position: relative;">
+                <i aria-hidden="true" class="fa fa-close" style="font-size: 20px; position: relative; top: 2px"></i></span>
+          Cancel Order
+        </button>
+        <button *ngIf="isUser" class="btn action-btn api-action" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-family: sans-serif; padding: 7px" [disabled]="orderDetails.payment_received_date ? 'disabled' : null" (click)="payOrder()">
+            <span style="margin-right: 5px; position: relative;">
+                <i aria-hidden="true" class="fa fa-money" style="font-size: 20px; position: relative; top: 2px"></i></span>
+          Pay Order
+        </button>
+        <!--<button class="btn action-btn api-action" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-family: sans-serif; padding: 7px" (click)="handleDownload(null)">-->
+            <!--<span style="margin-right: 5px; position: relative;">-->
+                <!--<i aria-hidden="true" class="fa fa-money" style="font-size: 20px; position: relative; top: 2px"></i></span>-->
+          <!--Download Order Receipts-->
+        <!--</button>-->
+        <button *ngIf="isRoot" class="btn action-btn api-action" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-family: sans-serif; padding: 7px" (click)="handleRecalculate()">
+            <span style="margin-right: 5px; position: relative;">
+                <i aria-hidden="true" class="fa fa-calculator" style="font-size: 20px; position: relative; top: 2px"></i></span>
+          Recalculate
+        </button>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 15px">
+        <h4 style="color: #f06d30">LINE ITEMS</h4>
+        <div class="gridOverflow pull-left" *ngIf="dataObjectLineItemSummary.isDataAvailable">
+          <app-data-table2 identity="lineItemSummary"
+                           height="48vh"
+                           [dataObject]="dataObjectLineItemSummary"
+                           [sendResponseOnCheckboxClick]=true
+                           (triggerActions)="handleRow($event)">
+          </app-data-table2>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+      <div class="page-header" *ngIf="!dataObjectLineItemSummary.isDataAvailable">
+        <div style="height: 200px;background-color: #ffff; width: 100%;padding: 17% 42%; margin-top: 10px">{{resultStatus}}</div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12" *ngIf="selectedLineItemID && orderDetails && selectedLineItemDetails">
+      <h4 style="color: #f06d30">LINE ITEM : {{selectedDisplayLineItemID}}</h4>
+      <div class="col-lg-12 col-md-12 col-sm-12" style="padding-left: 0px; margin-top: 20px">
+        <div>
+          <span><span style="font-weight: 600">CHANNEL:</span> {{selectedLineItemDetails.channel}}</span>
+        </div>
+        <div>
+          <span><span style="font-weight: 600">BALANCE:</span> {{selectedLineItemDetails.balance_amount ? (selectedLineItemDetails.balance_amount | currency:"USD":true:'1.2-2') : ''}}</span>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12" style="margin: 10px 10px 20px 0px; padding-left: 0px">
+        <button *ngIf="isUser" class="btn action-btn api-action" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-family: sans-serif; padding: 7px" [disabled]="lineItemExtensionAllowed(selectedLineItemDetails.line_item_end_date) && orderDetails.payment_received_date ? null : 'disabled'" (click)="extendOrder(selectedLineItemDetails)">
+            <span style="margin-right: 5px; position: relative;">
+                <i aria-hidden="true" class="fa fa-external-link" style="font-size: 20px; position: relative; top: 2px"></i></span>
+          Extend Order
+        </button>
+        <button *ngIf="isUser" class="btn action-btn api-action" style="width: auto; background: #fefefe; color: #3b3b3b; border-color: #c3c3c3; font-family: sans-serif; padding: 7px" [disabled]="!selectedLineItemDetails.ended ? 'disabled' : null" (click)="refundLineItem(selectedLineItemDetails)">
+            <span style="margin-right: 5px; position: relative;">
+                <i aria-hidden="true" class="fa fa-money" style="font-size: 20px; position: relative; top: 2px"></i></span>
+          Refund
+        </button>
+      </div>
+      <h5>TRANSACTION DETAILS</h5>
+      <app-line-item-history
+              *ngIf="selectedLineItemID"
+              [lineItemID]="selectedLineItemID"
+              [displayLineItemID]="selectedDisplayLineItemID"
+      ></app-line-item-history>
+    </div>
+  </div>
+  <div>
+    <app-pop-up-modal #ManagePayments>
+      <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
+        Payment Methods:
+      </div>
+      <div class="app-modal-body">
+        <div class="content">
+          <app-order-payment
+                  *ngIf="orderID && lineItemIds"
+                  [ordersScreen]="{orderid: orderID, lineitems: [lineItemIds] }"
+                  [orderId]="orderID"
+                  [displayOrderID]="orderID"
+          >
+          </app-order-payment>
+        </div>
+      </div>
+      <div class="app-modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="managePayments.hide()">
+          Cancel
+        </button>
+      </div>
+    </app-pop-up-modal>
+  </div>
+  <div style="width:100%">
+    <app-pop-up-modal #PayoutDate>
+      <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
+        Line Item : {{selectedDisplayLineItemID ? selectedDisplayLineItemID : selectedLineItemID}}
+      </div>
+      <div class="app-modal-body">
+        <div class="content">
+          <label>Payout Date</label>
+          <div>
+            <input class="input-form-control"
+                   a2e-datetimepicker
+                   [(ngModel)]="selectedPayoutDate"
+                   [options]="dateOptions"/>
+          </div>
+        </div>
+      </div>
+      <div class="app-modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="handleSubmitPayoutDate()">
+          Submit
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="handleClosePayoutDate()">
+          Cancel
+        </button>
+      </div>
+    </app-pop-up-modal>
+  </div>
+  <div style="width:100%">
+    <app-pop-up-modal #ReceiptsList>
+      <div class="app-modal-header" style="margin: 15px 0px 0px 10px">
+        List of Receipts to download
+      </div>
+      <div class="app-modal-body">
+        <div class="content">
+          <div class="row text-center" style="font-size:13px;">
+            <div class="col-md-2 font-weight-bold">Order ID</div>
+            <div class="col-md-2 font-weight-bold">Lind Item ID</div>
+            <div class="col-md-2 font-weight-bold">Start Date</div>
+            <div class="col-md-2 font-weight-bold">End Date</div>
+            <div class="col-md-2 font-weight-bold">Download Link</div>
+          </div>
+          <div class="row text-center" *ngFor="let rec of receiptList" style="margin-top:15px;">
+            <div class="col-md-2 font-size-larger">{{rec.order_id}}</div>
+            <div class="col-md-2 font-size-larger">{{rec.line_item_id}}</div>
+            <div class="col-md-2 font-size-larger">{{rec.start_date}}</div>
+            <div class="col-md-2 font-size-larger">{{rec.end_date}}</div>
+            <div class="col-md-2 font-size-larger">
+              <a
+                      class="fa fa-download fa-action-view downloadLink"
+                      (click)="handleDownloadLink(rec)"
+                      title="Download"
+                      style="margin-right: 15px; cursor: pointer"
+              >
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="app-modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="receiptsList.hide()">
+          Close
+        </button>
+      </div>
+    </app-pop-up-modal>
+  </div>
+</div>

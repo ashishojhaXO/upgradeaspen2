@@ -7,6 +7,7 @@ import {AuthGuard} from '../shared/guard/auth.guard';
 import {VendorManagementComponent} from './../layout/vendorManagement/vendorManagement.component';
 import {DashboardsComponent} from './../layout/dashboards/dashboards.component';
 import {OrdersComponent} from './orders/orders.component';
+import { OrderV2DetailsComponent } from './orderV2Details/orderV2Details.component';
 import {OrderComponent} from './order/order.component';
 import {OrderPaymentComponent} from './orderPayment/orderPayment.component';
 import {PaymentsComponent} from './payments/payments.component';
@@ -34,6 +35,7 @@ import { OperationsDashboardComponent } from './operations-dashboard/operations-
 import {UploadsComponent} from './../layout/uploads/uploads.component';
 import { BaseFieldsListComponent } from './base-fields-list/base-fields-list.component';
 import { PaymentMethodsComponent } from './payment-methods/payment-methods.component';
+import {OrdersV2Component} from './ordersV2/ordersV2.component';
 
 const routes: Routes = [
     {
@@ -133,7 +135,7 @@ const routes: Routes = [
                     },
                     {
                         path: 'orders',
-                        component: OrdersComponent,
+                        component: OrdersV2Component,
                         data: {
                             breadcrumbs: true,
                             text: 'Orders'
@@ -148,7 +150,7 @@ const routes: Routes = [
                         },
                     },
                     {
-                        path: 'create/:id/:vendorId',
+                        path: 'create/:id',
                         component: OrderComponent,
                         data: {
                             breadcrumbs: true,
@@ -156,7 +158,7 @@ const routes: Routes = [
                         },
                     },
                     {
-                        path: 'create/:id/:vendorId/:lineItemId',
+                        path: 'create/:id/:lineItemId',
                         component: OrderComponent,
                         data: {
                             breadcrumbs: true,
