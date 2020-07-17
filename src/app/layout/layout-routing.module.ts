@@ -135,6 +135,14 @@ const routes: Routes = [
                     },
                     {
                         path: 'orders',
+                        component: OrdersComponent,
+                        data: {
+                            breadcrumbs: true,
+                            text: 'Orders'
+                        },
+                    },
+                    {
+                        path: 'ordersV2',
                         component: OrdersV2Component,
                         data: {
                             breadcrumbs: true,
