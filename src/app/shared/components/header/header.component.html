@@ -41,7 +41,7 @@
                 <span class="welcome-txt">Welcome </span>
                 <span class="welcome-user-text">{{loggedInUser}}</span>
                 <span class="welcome-user-text" [style.opacity]="loggedInVendorTitle == '' ? 0  : ''">( {{loggedInVendor}} )</span>
-                <i aria-hidden="true" class="fa fa-caret-down"></i></span>             
+                <i aria-hidden="true" class="fa fa-caret-down"></i></span>
             </button>
               -->
             <div class="dropdown-content" [hidden]="!isMenuOpened">
@@ -55,7 +55,7 @@
               <a href="javascript:void(0)" (click)="logout()">Log Out</a>
             </div>
           </div>
-          <div class="org-dropdown theme-org-dropdown">
+          <div class="org-dropdown theme-org-dropdown" *ngIf="!isRoot && !isSupport">
             <select disabled="disabled">
               <option>{{loggedInOrg}}</option>
             </select>
