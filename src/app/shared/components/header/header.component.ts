@@ -61,6 +61,8 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   api_fs: any;
   externalAuth: any;
   showManagePayments: boolean;
+  isRoot: boolean;
+  isSupport: boolean;
 
   isMenuOpened: boolean;
   resetForm: FormGroup;
@@ -153,6 +155,31 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
     } else {
       this.onLoggedOut('logout');
     }
+
+    const groupArr = [];
+    const groups = localStorage.getItem('loggedInUserGroup') || '';
+    if (groups) {
+      const grp = JSON.parse(groups);
+      grp.forEach(function (item) {
+        groupArr.push(item);
+      });
+    }
+    let isAdmin = false;
+    if (groupArr.length) {
+      groupArr.forEach(function (grp) {
+        if (grp === 'ROOT' || grp === 'SUPER_USER' || grp === 'ORG_ADMIN' || grp === 'SUPPORT') {
+          if(grp === 'ORG_ADMIN') {
+            isAdmin = true;
+          }
+          if (grp === 'ROOT' || grp === 'SUPER_USER') {
+            this.isRoot = true;
+          }
+          if (grp === 'SUPPORT') {
+            this.isSupport = true;
+          }
+        }
+      }, this);
+    }
   }
 
   ngDoCheck() {
@@ -196,41 +223,11 @@ export class HeaderComponentDirective implements DoCheck, OnInit {
   }
 
   navigateToHomePage() {
-    if (this.isSupportRole()) {
+    if (this.isSupport) {
       this.router.navigate(['app/admin/invoices']);
     } else {
       this.router.navigate(['/app/dashboards']);
     }
-  }
-
-  isSupportRole() {
-    const groupArr = [];
-    const groups = localStorage.getItem('loggedInUserGroup') || '';
-    if (groups) {
-      const grp = JSON.parse(groups);
-      grp.forEach(function (item) {
-        groupArr.push(item);
-      });
-    }
-    let isRoot = false;
-    let isAdmin = false;
-    let isSupport = false;
-    if (groupArr.length) {
-      groupArr.forEach(function (grp) {
-        if (grp === 'ROOT' || grp === 'SUPER_USER' || grp === 'ORG_ADMIN' || grp === 'SUPPORT') {
-          if(grp === 'ORG_ADMIN') {
-            isAdmin = true;
-          }
-          if (grp === 'ROOT' || grp === 'SUPER_USER') {
-            isRoot = true;
-          }
-          if (grp === 'SUPPORT') {
-            isSupport = true;
-          }
-        }
-      });
-    }
-    return isSupport;
   }
 
   getPreferenceMenu() {
