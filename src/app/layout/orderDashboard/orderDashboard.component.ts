@@ -240,11 +240,12 @@ export class OrderDashboardComponent implements OnInit  {
     if (!this.orderDetails.payment_received_date) {
       console.log('this.vendorUuid >>')
       console.log(this.vendorUuid);
-      if (this.vendorUuid) {
-        this.router.navigate(['/app/order/create', this.orderID, this.vendorUuid]);
-      } else {
-        this.router.navigate(['/app/order/create', this.orderID]);
-      }
+      this.router.navigate(['/app/order/create', this.orderID]);
+      // if (this.vendorUuid) {
+      //   this.router.navigate(['/app/order/create', this.orderID, this.vendorUuid]);
+      // } else {
+      //   this.router.navigate(['/app/order/create', this.orderID]);
+      // }
     }
   }
 
@@ -403,7 +404,8 @@ export class OrderDashboardComponent implements OnInit  {
     console.log(lineItem.line_item_id);
 
     if (this.lineItemExtensionAllowed(lineItem.line_item_end_date) && this.orderDetails.payment_received_date) {
-      this.router.navigate(['/app/order/create', this.orderID, this.vendorUuid, lineItem.line_item_id]);
+      this.router.navigate(['/app/order/create', this.orderID, lineItem.line_item_id]);
+      // this.router.navigate(['/app/order/create', this.orderID, this.vendorUuid, lineItem.line_item_id]);
     }
   }
 }
