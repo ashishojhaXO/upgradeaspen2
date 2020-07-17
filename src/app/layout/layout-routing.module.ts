@@ -154,7 +154,7 @@ const routes: Routes = [
                         component: OrderComponent,
                         data: {
                             breadcrumbs: true,
-                            text: 'Order Management'
+                            text: 'Create Order'
                         },
                     },
                     {
@@ -162,7 +162,7 @@ const routes: Routes = [
                         component: OrderComponent,
                         data: {
                             breadcrumbs: true,
-                            text: 'Modify Order Management'
+                            text: 'Modify Order'
                         },
                     },
                     {
@@ -456,7 +456,7 @@ const routes: Routes = [
                       component: OrderTemplateComponent,
                       data: {
                         breadcrumbs: true,
-                        text: 'Order Template'
+                        text: 'Create Order Template'
                       },
                     },
                     {
