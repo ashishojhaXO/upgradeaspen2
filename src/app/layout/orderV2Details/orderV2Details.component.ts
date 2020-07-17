@@ -67,7 +67,11 @@ export class OrderV2DetailsComponent implements OnInit  {
     isCustomOption2: {
       value : true,
       icon : 'fa-credit-card-alt',
-      tooltip: 'Retry Charge'
+      tooltip: 'Retry Charge',
+      disabledToolTip : 'Charge was successful',
+      disabled: function (row) {
+          return row.Status !== 'ERROR_PROCESSING_PAYMENT';
+      }
     },
     isCustomOption3: {
       value : true,
@@ -287,8 +291,11 @@ export class OrderV2DetailsComponent implements OnInit  {
 
       if (!this.isRoot) {
           this.options[0].isCustomOption.value = false;
-          this.options[0].isCustomOption2.value = false;
           this.options[0].isCustomOption3.value = false;
+      }
+
+      if (!this.isUser) {
+          this.options[0].isCustomOption2.value = false;
       }
 
     this.gridData['options'] = this.options[0];

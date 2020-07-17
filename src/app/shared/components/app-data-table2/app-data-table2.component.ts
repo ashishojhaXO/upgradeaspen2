@@ -1043,6 +1043,22 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                         }
                     }
 
+                    if (__this.dataObject.gridData.options.isCustomOption2 && __this.dataObject.gridData.options.isCustomOption2.disabledToolTip) {
+                        let isValid = true;
+                        if(__this.dataObject.gridData.options.isCustomOption2.disabled(__this.dataObject.gridData.result[index])) {
+                            isValid = false;
+                        }
+
+                        if (!isValid) {
+                            // $('td', row).find('a.fa-download').css('pointer-events', 'none');
+                            $('td', row).find('a.' + __this.dataObject.gridData.options.isCustomOption2.icon).addClass('disabled');
+                            $('td', row).find('a.' + __this.dataObject.gridData.options.isCustomOption2.icon).attr('title', __this.dataObject.gridData.options.isCustomOption2.disabledToolTip ? __this.dataObject.gridData.options.isCustomOption2.disabledToolTip :'');
+                            if (__this.dataObject.gridData.options.isCustomOption2.disabledToolTip) {
+                                $('td', row).find('a.' + __this.dataObject.gridData.options.isCustomOption2.icon).addClass('prevent-click');
+                            }
+                        }
+                    }
+
 
                     if (__this.dataObject.gridData.result[index] && __this.dataObject.gridData.result[index].isChecked) {
                         $('td', row).find('input.check-row-selection').prop('checked', true);
@@ -1470,7 +1486,7 @@ export class AppDataTable2Component implements OnInit, OnChanges {
                 // __this.dataObject.gridData.options.isDataTableGlobalSearchApi.apiMethod();
                 table.off('search.dt');
                 table.on('search.dt', function(ev, settings){
-                    // TODO: NOTE: CHECK: Over here it prints new table instance, 
+                    // TODO: NOTE: CHECK: Over here it prints new table instance,
                     // but sends old table instance in the below function call
                     // NOTE: Might be a bad logic
                     // WARN: Optimization Problem: When typed 2 Char,
