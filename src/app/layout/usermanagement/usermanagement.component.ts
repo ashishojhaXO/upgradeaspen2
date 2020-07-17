@@ -1051,7 +1051,7 @@ export class UserManagementComponent implements OnInit  {
     this.showSpinner = true;
     this.dataObject.isDataAvailable = false;
 
-    let org = ""
+    let org = this.orgValue;
     let table = this.appDataTable2Component.table;
 
     this.searchDataRequest(org, table);
