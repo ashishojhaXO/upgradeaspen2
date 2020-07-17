@@ -721,7 +721,7 @@ export class OrderV2DetailsComponent implements OnInit  {
     console.log(this.orderID);
 
       if (this.lineItemExtensionAllowed(lineItem.line_item_end_date) && this.orderDetails.payment_received_date) {
-          this.router.navigate(['/app/order/create', this.orderID, this.vendorUuid, lineItem.line_item_id]);
+          this.router.navigate(['/app/order/create', this.orderID, lineItem.line_item_id]);
       }
 
     // console.log('lineItem.line_item_id >>')
