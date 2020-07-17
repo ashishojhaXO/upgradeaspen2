@@ -291,7 +291,6 @@ export class OrderV2DetailsComponent implements OnInit  {
 
       if (!this.isRoot) {
           this.options[0].isCustomOption.value = false;
-          this.options[0].isCustomOption3.value = false;
       }
 
       if (!this.isUser) {
