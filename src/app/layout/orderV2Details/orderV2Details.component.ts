@@ -19,6 +19,9 @@ import {ToasterService} from 'angular2-toaster';
 import {PopUpModalComponent} from '../../shared/components/pop-up-modal/pop-up-modal.component';
 import Swal from 'sweetalert2';
 import {moment} from 'ngx-bootstrap/chronos/test/chain';
+import set = Reflect.set;
+
+declare var $: any;
 
 @Component({
   selector: 'app-order-v2-details',
@@ -71,10 +74,12 @@ export class OrderV2DetailsComponent implements OnInit  {
       icon : 'fa-newspaper-o',
       tooltip: 'Regenerate Receipt'
     },
-    isCustomOption4: {
-          value : true,
-          icon : 'fa-money',
-          tooltip: 'Download Receipt'
+    isDownloadOption: {
+      value : true,
+      icon : 'fa-download',
+      tooltip: 'Download Receipt',
+      dependency: ['vendor_receipt_id'],
+      dependencyToolTip: 'Receipt generation is pending'
     },
     isPageLength: true,
     isPagination: true,
@@ -176,7 +181,7 @@ export class OrderV2DetailsComponent implements OnInit  {
                 if(response.data && response.data.rows && response.data.rows.length) {
                     this.populateDataTable(response.data.rows, true);
                 } else {
-                    this.resultStatus = 'No data found'
+                    this.resultStatus = 'No data found';
                 }
                console.log('response >>>$$$')
                console.log(response);
@@ -302,6 +307,23 @@ export class OrderV2DetailsComponent implements OnInit  {
 
     this.dataObjectLineItemSummary.isDataAvailable = this.gridData.result && this.gridData.result.length ? true : false;
     // this.dataObject.isDataAvailable = initialLoad ? true : this.dataObject.isDataAvailable;
+
+      console.log('this.gridData[\'result\'] >>')
+      console.log(this.gridData['result']);
+
+      if (this.gridData['result'].length) {
+          const __this = this;
+          setTimeout(function () {
+              $('table.dataTable').find('tbody tr').eq(0).click();
+              __this.selectedLineItemID = __this.gridData['result'][0].internal_line_item_id;
+              __this.selectedDisplayLineItemID = __this.gridData['result'][0].line_item_id;
+              const lineItem = __this.lineItemDetails.find( x=> x.line_item_id === __this.selectedLineItemID);
+              if (lineItem) {
+                  __this.selectedLineItemDetails = lineItem;
+              }
+          }, 100);
+      }
+
   }
 
     successCB(res, display_id = null) {
@@ -382,7 +404,7 @@ export class OrderV2DetailsComponent implements OnInit  {
         )
   }
 
-    handleCustom4(dataObj: any) {
+    handleDownload(dataObj: any) {
         // Show modal with Downloadable Receipts and their Download links
         // Call all receipts & then call this.handleDownloadLink or this.searchDownloadLink
 
