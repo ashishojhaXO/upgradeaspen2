@@ -2233,7 +2233,10 @@ ul.password-re li {
     }
   }
 }
-
+.bread-v0{
+  float: left;
+  width: 30%;
+}
 .breadcrumb > li + li:before {
   color: #54575a;
 }
@@ -3925,4 +3928,9 @@ ul.options-actions > li {
 
 .DTFC_LeftBodyWrapper > .DTFC_LeftBodyLiner {
   padding-top: 14px;
+}
+.heading-pane-v0{
+  width: 40%;
+  float: right;
+  margin-top: -5px;
 }

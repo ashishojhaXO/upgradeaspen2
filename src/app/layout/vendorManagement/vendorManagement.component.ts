@@ -594,7 +594,7 @@ export class VendorManagementComponent implements OnInit, DataTableAction  {
 
   handleShowModal(modalComponent: PopUpModalComponent) {
     modalComponent.show();
-    setTimeout(() => this.orgNameEl.nativeElement.focus());
+    //setTimeout(() => this.orgNameEl.nativeElement.focus());
   }
 
   reLoad(){

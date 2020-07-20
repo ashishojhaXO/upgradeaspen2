@@ -66,14 +66,12 @@ _addFeedbackWidget(){
             $(".org-dropdown > select").css('cssText','color:'+themeTxtColor+';border: 1px solid; background-color: transparent; background-image: linear-gradient(38deg, transparent 50%, '+themeColor+' 50%), linear-gradient(135deg, '+themeColor+' 50%, transparent 50%), linear-gradient(to right, '+ themeTxtColor +', '+ themeTxtColor +') !important');  
             $(".nav.navbar-nav.main-menu .active a").css('cssText','color:'+themeTxtColor+' !important; border-color:'+themeTxtColor+' !important');     
             $(".welcome-user-text-wrap .fa-caret-down").css('cssText','color:'+themeTxtColor);
-            $(".dropdown-content a").css('cssText','background:'+themeColor+'; color:'+ themeTxtColor);
-            $(".profile-av").css('cssText','color:'+themeTxtColor+'; border-color:'+ themeTxtColor);
+            $(".dropdown-content a").css('cssText','background:'+themeColor+'; color:'+ themeTxtColor);            
           }else{
             $(".org-dropdown > select").css('cssText','color:#fff;border: none; background-color: #181818; background-image: linear-gradient(38deg, transparent 50%, white 50%), linear-gradient(135deg, white 50%, transparent 50%), linear-gradient(to right, #54575a, #54575a) !important');  
             $(".nav.navbar-nav.main-menu .active a").css('cssText','color:'+themeTxtColor+' !important; border-color: #4E9C49 !important');     
             $(".welcome-user-text-wrap .fa-caret-down").css('cssText','color:#fff');
             $(".dropdown-content a").css('cssText','background:#252425; color:#adadad');
-            $(".profile-av").css('cssText','color: #fff; border-color: #ccc');
           }         
       }
       //Sub Header Menu

@@ -1,9 +1,9 @@
 <div class="row">
-  <div class="col-xs-12">
-    <p class="pull-left page-title">{{ editTemplate ? 'Modify Order Template' : 'Create Order Template'}}</p>
+  <div class="col-xs-12 heading-pane-v0">
+    <!-- <p class="pull-left page-title">{{ editTemplate ? 'Modify Order Template' : 'Create Order Template'}}</p>-->
   </div>
 </div>
-
+<div class="clearfix"></div>
 <div class="row">
   <div class="col-xs-12">
     <form [formGroup]="templateForm" (ngSubmit)="onSubmitTemplate()" class="templateForm">

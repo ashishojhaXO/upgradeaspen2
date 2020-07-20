@@ -89,11 +89,25 @@ input.form-field {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 2px solid #ccc;
   cursor: pointer;
-  margin-top: -5px;
-  margin-left: 8px;  
   color: #fff;
+  background: #192a4d;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+}
+.profile-av-wrap{
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  position: relative;
+  margin-top: -8px;
+  margin-left: 11px;
+}
+.profile-av-wrap:hover{
+  background-color: rgba(122,123,124,0.6);
+  box-shadow: 0 0 0 2px transparent;
+  color: #ffffff;
 }
 .profile-av-thumb{
   text-align: center;
