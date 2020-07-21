@@ -7,7 +7,7 @@ import {AuthGuard} from '../shared/guard/auth.guard';
 import {VendorManagementComponent} from './../layout/vendorManagement/vendorManagement.component';
 import {DashboardsComponent} from './../layout/dashboards/dashboards.component';
 import {OrdersComponent} from './orders/orders.component';
-import { OrderV2DetailsComponent } from './orderV2Details/orderV2Details.component';
+// import { OrderV2DetailsComponent } from './orderV2Details/orderV2Details.component';
 import {OrderComponent} from './order/order.component';
 import {OrderPaymentComponent} from './orderPayment/orderPayment.component';
 import {PaymentsComponent} from './payments/payments.component';
