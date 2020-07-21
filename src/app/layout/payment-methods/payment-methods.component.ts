@@ -87,10 +87,10 @@ export class PaymentMethodsComponent implements OnInit {
                     });
                 }
 
-                if (params['paymentStatus']) {
-                    const url = this.router.createUrlTree([], {relativeTo: this.route, queryParams: null}).toString()
-                    this.location.go(url);
-                }
+                // if (params['paymentStatus']) {
+                //     const url = this.router.createUrlTree([], {relativeTo: this.route, queryParams: null}).toString()
+                //     this.location.go(url);
+                // }
             });
     }
     const groups = localStorage.getItem('loggedInUserGroup') || '';
