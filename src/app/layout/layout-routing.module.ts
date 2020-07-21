@@ -35,7 +35,7 @@ import { OperationsDashboardComponent } from './operations-dashboard/operations-
 import {UploadsComponent} from './../layout/uploads/uploads.component';
 import { BaseFieldsListComponent } from './base-fields-list/base-fields-list.component';
 import { PaymentMethodsComponent } from './payment-methods/payment-methods.component';
-import {OrdersV2Component} from './ordersV2/ordersV2.component';
+// import {OrdersV2Component} from './ordersV2/ordersV2.component';
 
 const routes: Routes = [
     {
@@ -141,14 +141,14 @@ const routes: Routes = [
                             text: 'Orders'
                         },
                     },
-                    {
-                        path: 'ordersV2',
-                        component: OrdersV2Component,
-                        data: {
-                            breadcrumbs: true,
-                            text: 'Orders'
-                        },
-                    },
+                    // {
+                    //     path: 'ordersV2',
+                    //     component: OrdersV2Component,
+                    //     data: {
+                    //         breadcrumbs: true,
+                    //         text: 'Orders'
+                    //     },
+                    // },
                     {
                         path: 'create',
                         component: OrderComponent,
