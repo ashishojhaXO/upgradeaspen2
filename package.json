@@ -93,7 +93,7 @@
     "ngx-chips": "1.5.11",
     "ngx-color-picker": "^4.5.3",
     "ngx-drag-drop": "^1.1.0",
-    "ngx-papaparse": "1.2.5",
+    "ngx-papaparse": "6.0.2",
     "node-gyp": "^3.6.2",
     "node-loader": "^0.6.0",
     "pdfmake": "^0.1.35",
